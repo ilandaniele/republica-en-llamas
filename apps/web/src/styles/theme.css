@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-navy: #1e3a5f;
+    --color-crimson: #cc2222;
+    --color-gold: #d4af37;
+    --color-smoke: #f0f0f0;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-navy-900 text-smoke-100 font-sans antialiased;
+    background-image:
+      radial-gradient(ellipse at 20% 80%, rgba(204, 34, 34, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(30, 58, 95, 0.3) 0%, transparent 50%);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1, h2, h3 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  /* ─── Fire particles (CSS-only, no JS) ───── */
+  .fire-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fire-particle {
+    position: absolute;
+    bottom: 0;
+    width: 4px;
+    border-radius: 50% 50% 20% 20%;
+    animation: fire-flicker 0.8s ease-in-out infinite;
+    background: linear-gradient(to top, #ff4400, #ff8800, #ffcc00);
+  }
+
+  .fire-particle:nth-child(1) { left: 10%; height: 30px; animation-delay: 0s; }
+  .fire-particle:nth-child(2) { left: 25%; height: 45px; animation-delay: 0.15s; }
+  .fire-particle:nth-child(3) { left: 40%; height: 35px; animation-delay: 0.3s; }
+  .fire-particle:nth-child(4) { left: 55%; height: 50px; animation-delay: 0.1s; }
+  .fire-particle:nth-child(5) { left: 70%; height: 38px; animation-delay: 0.25s; }
+  .fire-particle:nth-child(6) { left: 85%; height: 28px; animation-delay: 0.4s; }
+
+  .smoke-particle {
+    position: absolute;
+    bottom: 30px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(100, 100, 100, 0.3);
+    animation: smoke-rise 3s ease-out infinite;
+  }
+
+  .smoke-particle:nth-child(7) { left: 15%; animation-delay: 0.5s; }
+  .smoke-particle:nth-child(8) { left: 50%; animation-delay: 1.2s; }
+  .smoke-particle:nth-child(9) { left: 80%; animation-delay: 2s; }
+
+  /* ─── Card styles ─────────────────────────── */
+  .event-card {
+    @apply bg-navy-800 border border-navy-600 rounded-lg p-6 shadow-2xl;
+    background-image: linear-gradient(135deg, rgba(30,58,95,0.9), rgba(9,21,37,0.95));
+  }
+
+  .choice-card {
+    @apply bg-navy-700 border border-navy-500 rounded-md p-4 cursor-pointer;
+    transition: all 0.2s ease;
+  }
+
+  .choice-card:hover {
+    @apply border-gold-400;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+  }
+
+  /* ─── Choice ripple effect ────────────────── */
+  .choice-card {
+    position: relative;
+  }
+
+  .choice-ripple {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .choice-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    animation: ripple 0.4s ease-out forwards;
+  }
+
+  @keyframes ripple {
+    0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.5; }
+    100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+  }
+
+  /* ─── Variable meters ─────────────────────── */
+  .variable-meter {
+    @apply flex flex-col gap-1;
+  }
+
+  .meter-bar {
+    @apply h-2 rounded-full bg-navy-600 overflow-hidden;
+  }
+
+  .meter-fill {
+    @apply h-full rounded-full transition-all duration-700 ease-out;
+  }
+
+  /* ─── Crisis vignette overlay ─────────────── */
+  .crisis-vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(204, 34, 34, 0.25) 100%);
+    animation: pulse-red 2s ease-in-out infinite;
+    z-index: 50;
+  }
+
+  /* ─── Newspaper layout (game over) ─────────── */
+  .newspaper-header {
+    @apply border-b-4 border-smoke-800 pb-4 mb-6;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(255,255,255,0.02) 1px,
+      rgba(255,255,255,0.02) 2px
+    );
+  }
+
+  /* ─── Scrollbar styling ───────────────────── */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #091525;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1e3a5f;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #d4af37;
+  }
+}
+
+@layer utilities {
+  .text-shadow-gold {
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  }
+
+  .text-shadow-crimson {
+    text-shadow: 0 0 20px rgba(204, 34, 34, 0.6);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+  }
+
+  .glow-crimson {
+    box-shadow: 0 0 20px rgba(204, 34, 34, 0.4);
+  }
+}

@@ -1,0 +1,11 @@
+export { PresidentAvatar } from './PresidentAvatar.js';
+export { PoliticalIllustration } from './PoliticalIllustration.js';
+export { EconomicIllustration } from './EconomicIllustration.js';
+export { SocialIllustration } from './SocialIllustration.js';
+export { InternationalIllustration } from './InternationalIllustration.js';
+export { GameOverNewspaper } from './GameOverNewspaper.js';
+export { ArgentinaMapSVG } from './ArgentinaMapSVG.js';
+export { PresidentCaricature } from './presidents/PresidentCaricature.js';
+export type { CaricatureState } from './presidents/PresidentCaricature.js';
+export { CharacterPortrait } from './characters/CharacterPortrait.js';
+export { PixelCharacter } from './PixelCharacter.js';
