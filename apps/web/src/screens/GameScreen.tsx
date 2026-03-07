@@ -10,7 +10,9 @@ import { TutorialOverlay } from '../components/TutorialOverlay.js';
 import { OfflineBanner } from '../components/OfflineBanner.js';
 import { TurnTransitionScreen } from '../components/TurnTransitionScreen.js';
 import { DecisionDiary } from '../components/DecisionDiary.js';
-import { PresidentCaricature } from '../components/illustrations/presidents/PresidentCaricature.js';
+import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
+import { CongressSession } from '../components/CongressSession.js';
+import type { PortraitMood } from '../components/illustrations/PixelPortrait.js';
 import { ArgentinaMapSVG } from '../components/illustrations/ArgentinaMapSVG.js';
 import { getAnibalLine } from '@republica/game-engine';
 import { UserMenu } from '../components/UserMenu.js';
@@ -42,6 +44,7 @@ export default function GameScreen() {
   const transitionData = useGameStore((s) => s.transitionData);
   const selectChoice = useGameStore((s) => s.selectChoice);
   const confirmChoice = useGameStore((s) => s.confirmChoice);
+  const resolveCongressSession = useGameStore((s) => s.resolveCongressSession);
   const dismissTransition = useGameStore((s) => s.dismissTransition);
   const presidentId = useGameStore((s) => s.presidentId);
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
@@ -103,6 +106,11 @@ export default function GameScreen() {
     gameState.economic.currencyStrength,
     gameState.economic.foreignReserves,
   ].some((v) => v < 10);
+  const presidentMood: PortraitMood = hasCrisis || anyBelowTen
+    ? 'panic'
+    : gameState.political.popularity > 65
+      ? 'victory'
+      : 'neutral';
 
   return (
     <div className={`min-h-screen relative transition-colors duration-500 ${hasCrisis ? 'bg-crimson-900/15' : inRedZone ? 'bg-crimson-900/5' : ''} ${anyBelowTen ? 'animate-pulse' : ''}`}>
@@ -137,12 +145,10 @@ export default function GameScreen() {
         >
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 overflow-hidden rounded-full border border-navy-600">
-              <PresidentCaricature
-                presidentId={presidentId}
-                popularity={gameState.political.popularity}
-                hasCrisis={hasCrisis}
-                width={48}
-                height={48}
+              <PixelPortrait
+                id={presidentId as import('../components/illustrations/PixelPortrait.js').PortraitId}
+                mood={presidentMood}
+                px={48}
               />
             </div>
             <div>
@@ -216,7 +222,17 @@ export default function GameScreen() {
           {/* Right: Event card + choices */}
           <main>
             <AnimatePresence mode="wait">
-              {!isAnimating && (
+              {!isAnimating && currentCard?.isLaw ? (
+                <CongressSession
+                  key={currentCard.id}
+                  card={currentCard}
+                  gameState={gameState}
+                  presidentId={presidentId}
+                  onComplete={(choiceIdx, negEffects) =>
+                    resolveCongressSession(choiceIdx, currentCard.id, negEffects)
+                  }
+                />
+              ) : !isAnimating ? (
                 <EventCardComponent
                   key={currentCard.id}
                   card={currentCard}
@@ -227,7 +243,7 @@ export default function GameScreen() {
                   presidentId={presidentId}
                   gameState={gameState}
                 />
-              )}
+              ) : null}
             </AnimatePresence>
 
             {isAnimating && !showTransition && (

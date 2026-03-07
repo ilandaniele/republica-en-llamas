@@ -24,23 +24,28 @@ function TrendArrow({ current, prev, inverse = false }: { current: number; prev?
   if (prev === undefined) return null;
   const delta = current - prev;
   if (Math.abs(delta) < 1) return <span className="text-smoke-600 text-xs">→</span>;
-  const isGood = inverse ? delta < 0 : delta > 0;
+  const goingUp = delta > 0;
+  // For higher-is-better vars: up = green. For lower-is-better (inverse): down = green.
+  const isGood = inverse ? !goingUp : goingUp;
   const isVeryBig = Math.abs(delta) > 10;
   if (isVeryBig) {
-    return <span className={isGood ? 'text-green-400 text-sm' : 'text-crimson-400 text-sm'}>{isGood ? '↑↑' : '↓↓'}</span>;
+    return <span className={isGood ? 'text-green-400 text-sm' : 'text-crimson-400 text-sm'}>{goingUp ? '↑↑' : '↓↓'}</span>;
   }
-  return <span className={isGood ? 'text-green-400 text-xs' : 'text-crimson-400 text-xs'}>{isGood ? '↑' : '↓'}</span>;
+  return <span className={isGood ? 'text-green-400 text-xs' : 'text-crimson-400 text-xs'}>{goingUp ? '↑' : '↓'}</span>;
 }
 
-function AnimatedNumber({ value }: { value: number }) {
+function AnimatedNumber({ value, inverse = false }: { value: number; inverse?: boolean }) {
   const [displayed, setDisplayed] = useState(value);
-  const [flash, setFlash] = useState<'up' | 'down' | null>(null);
+  const [flash, setFlash] = useState<'good' | 'bad' | null>(null);
   const prev = useRef(value);
 
   useEffect(() => {
     if (prev.current !== value) {
       const delta = value - prev.current;
-      setFlash(delta > 0 ? 'up' : 'down');
+      const goingUp = delta > 0;
+      // For inverse vars (inflation, deficit): going up = bad; for normal vars: going up = good
+      const isGood = inverse ? !goingUp : goingUp;
+      setFlash(isGood ? 'good' : 'bad');
       const timer = setTimeout(() => {
         setDisplayed(value);
         setFlash(null);
@@ -48,13 +53,13 @@ function AnimatedNumber({ value }: { value: number }) {
       }, 200);
       return () => clearTimeout(timer);
     }
-  }, [value]);
+  }, [value, inverse]);
 
   return (
     <motion.span
       animate={flash ? { scale: [1, 1.2, 1] } : {}}
       transition={{ duration: 0.3 }}
-      className={flash === 'up' ? 'text-green-400' : flash === 'down' ? 'text-crimson-400' : 'text-smoke-100'}
+      className={flash === 'good' ? 'text-green-400' : flash === 'bad' ? 'text-crimson-400' : 'text-smoke-100'}
     >
       {Math.round(displayed)}
     </motion.span>
@@ -79,7 +84,7 @@ function Meter({ label, value, prevValue, max = 100, color, icon, inverse = fals
         </span>
         <span className="font-mono font-bold flex items-center gap-1">
           <TrendArrow current={value} prev={prevValue} inverse={inverse} />
-          <AnimatedNumber value={Math.round(value)} />
+          <AnimatedNumber value={Math.round(value)} inverse={inverse} />
           <span className="text-smoke-600">/{max}</span>
         </span>
       </div>
@@ -127,6 +132,7 @@ export function VariablesPanel({ state }: Props) {
       { key: 'currencyStrength', curr: economic.currencyStrength, prev: prevSnapshot.currencyStrength },
       { key: 'foreignReserves', curr: economic.foreignReserves, prev: prevSnapshot.foreignReserves },
       { key: 'inflation', curr: economic.inflation, prev: prevSnapshot.inflation, inverse: true },
+      { key: 'publicDeficit', curr: economic.publicDeficit, prev: prevSnapshot.publicDeficit ?? economic.publicDeficit, inverse: true },
     ];
     let hasFlash = false;
     for (const { key, curr, prev, inverse } of checks) {
@@ -187,7 +193,7 @@ export function VariablesPanel({ state }: Props) {
             </motion.div>
           )}
         </AnimatePresence>
-        <Meter label="Déficit Público" value={economic.publicDeficit} color="bg-red-500" icon="📊" inverse />
+        <Meter label="Déficit Público" value={economic.publicDeficit} prevValue={prevSnapshot?.publicDeficit} color="bg-red-500" icon="📊" inverse flashDir={flashMap['publicDeficit']} />
         <Meter label="Confianza Mercados" value={economic.marketConfidence} prevValue={prevSnapshot?.marketConfidence} color="bg-teal-500" icon="📈" flashDir={flashMap['marketConfidence']} />
         <Meter label="Fuerza Monetaria" value={economic.currencyStrength} prevValue={prevSnapshot?.currencyStrength} color="bg-yellow-500" icon="💰" flashDir={flashMap['currencyStrength']} />
         <Meter label="Reservas Ext." value={economic.foreignReserves} prevValue={prevSnapshot?.foreignReserves} color="bg-cyan-500" icon="🏦" flashDir={flashMap['foreignReserves']} />

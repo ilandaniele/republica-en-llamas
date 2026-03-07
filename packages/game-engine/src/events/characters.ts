@@ -23,6 +23,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_min_001.choice_b',
         effects: { popularityDelta: 2, marketConfidenceDelta: -3 },
       },
+      {
+        id: 'char_min_001_c',
+        textKey: 'event.char_min_001.choice_c',
+        effects: { deficitDelta: -2, marketConfidenceDelta: 3 },
+      },
+      {
+        id: 'char_min_001_d',
+        textKey: 'event.char_min_001.choice_d',
+        effects: { deficitDelta: -3, popularityDelta: 1, marketConfidenceDelta: 5 },
+      },
     ],
   },
   {
@@ -47,6 +57,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_min_002.choice_b',
         effects: { popularityDelta: 5, deficitDelta: 3, marketConfidenceDelta: -5 },
       },
+      {
+        id: 'char_min_002_c',
+        textKey: 'event.char_min_002.choice_c',
+        effects: { deficitDelta: -4, inflationDelta: -1, popularityDelta: -2, marketConfidenceDelta: 5 },
+      },
+      {
+        id: 'char_min_002_d',
+        textKey: 'event.char_min_002.choice_d',
+        effects: { popularityDelta: 3, deficitDelta: 1, stabilityDelta: 2, marketConfidenceDelta: 2 },
+      },
     ],
   },
   {
@@ -68,6 +88,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         id: 'char_min_003_b',
         textKey: 'event.char_min_003.choice_b',
         effects: { popularityDelta: 3, stabilityDelta: -5, marketConfidenceDelta: -10 },
+      },
+      {
+        id: 'char_min_003_c',
+        textKey: 'event.char_min_003.choice_c',
+        effects: { popularityDelta: -5, stabilityDelta: 5, marketConfidenceDelta: 5 },
+      },
+      {
+        id: 'char_min_003_d',
+        textKey: 'event.char_min_003.choice_d',
+        effects: { deficitDelta: -5, inflationDelta: -3, popularityDelta: -4, marketConfidenceDelta: 8 },
       },
     ],
   },
@@ -94,6 +124,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_sind_001.choice_b',
         effects: { popularityDelta: -2, stabilityDelta: -2 },
       },
+      {
+        id: 'char_sind_001_c',
+        textKey: 'event.char_sind_001.choice_c',
+        effects: { popularityDelta: 4, stabilityDelta: 3, deficitDelta: 2 },
+      },
+      {
+        id: 'char_sind_001_d',
+        textKey: 'event.char_sind_001.choice_d',
+        effects: { popularityDelta: 3, stabilityDelta: 4, deficitDelta: 1 },
+      },
     ],
   },
   {
@@ -118,6 +158,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_sind_002.choice_b',
         effects: { popularityDelta: -5, stabilityDelta: -8, mediaCredibilityDelta: 5 },
       },
+      {
+        id: 'char_sind_002_c',
+        textKey: 'event.char_sind_002.choice_c',
+        effects: { popularityDelta: 2, stabilityDelta: 5, deficitDelta: 3 },
+      },
+      {
+        id: 'char_sind_002_d',
+        textKey: 'event.char_sind_002.choice_d',
+        effects: { popularityDelta: -1, stabilityDelta: 3, mediaCredibilityDelta: 3 },
+      },
     ],
   },
   {
@@ -139,6 +189,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         id: 'char_sind_003_b',
         textKey: 'event.char_sind_003.choice_b',
         effects: { popularityDelta: 8, stabilityDelta: -5, mediaCredibilityDelta: 10 },
+      },
+      {
+        id: 'char_sind_003_c',
+        textKey: 'event.char_sind_003.choice_c',
+        effects: { popularityDelta: 6, stabilityDelta: 10, deficitDelta: 4 },
+      },
+      {
+        id: 'char_sind_003_d',
+        textKey: 'event.char_sind_003.choice_d',
+        effects: { popularityDelta: 2, stabilityDelta: 5, marketConfidenceDelta: 8, deficitDelta: -3 },
       },
     ],
   },
@@ -165,6 +225,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_per_001.choice_b',
         effects: { mediaCredibilityDelta: -5, popularityDelta: -2 },
       },
+      {
+        id: 'char_per_001_c',
+        textKey: 'event.char_per_001.choice_c',
+        effects: { popularityDelta: 2, mediaCredibilityDelta: 3 },
+      },
+      {
+        id: 'char_per_001_d',
+        textKey: 'event.char_per_001.choice_d',
+        effects: { popularityDelta: 1, mediaCredibilityDelta: 4 },
+      },
     ],
   },
   {
@@ -189,6 +259,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_per_002.choice_b',
         effects: { mediaCredibilityDelta: -8, popularityDelta: -3 },
       },
+      {
+        id: 'char_per_002_c',
+        textKey: 'event.char_per_002.choice_c',
+        effects: { mediaCredibilityDelta: -2, popularityDelta: 1 },
+      },
+      {
+        id: 'char_per_002_d',
+        textKey: 'event.char_per_002.choice_d',
+        effects: { mediaCredibilityDelta: 2, popularityDelta: 2 },
+      },
     ],
   },
   {
@@ -210,6 +290,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         id: 'char_per_003_b',
         textKey: 'event.char_per_003.choice_b',
         effects: { popularityDelta: -5, mediaCredibilityDelta: -10 },
+      },
+      {
+        id: 'char_per_003_c',
+        textKey: 'event.char_per_003.choice_c',
+        effects: { mediaCredibilityDelta: 5, popularityDelta: 2 },
+      },
+      {
+        id: 'char_per_003_d',
+        textKey: 'event.char_per_003.choice_d',
+        effects: { mediaCredibilityDelta: 6, popularityDelta: 3, deficitDelta: 2 },
       },
     ],
   },
@@ -236,6 +326,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_emb_001.choice_b',
         effects: { popularityDelta: 3, marketConfidenceDelta: -3 },
       },
+      {
+        id: 'char_emb_001_c',
+        textKey: 'event.char_emb_001.choice_c',
+        effects: { marketConfidenceDelta: 3, foreignReservesDelta: 2 },
+      },
+      {
+        id: 'char_emb_001_d',
+        textKey: 'event.char_emb_001.choice_d',
+        effects: { marketConfidenceDelta: 4, foreignReservesDelta: 3, popularityDelta: 2 },
+      },
     ],
   },
   {
@@ -260,6 +360,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_emb_002.choice_b',
         effects: { popularityDelta: 5, marketConfidenceDelta: -5 },
       },
+      {
+        id: 'char_emb_002_c',
+        textKey: 'event.char_emb_002.choice_c',
+        effects: { foreignReservesDelta: 5, marketConfidenceDelta: 4, deficitDelta: -2 },
+      },
+      {
+        id: 'char_emb_002_d',
+        textKey: 'event.char_emb_002.choice_d',
+        effects: { foreignReservesDelta: 7, marketConfidenceDelta: 6, popularityDelta: 3 },
+      },
     ],
   },
   {
@@ -281,6 +391,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         id: 'char_emb_003_b',
         textKey: 'event.char_emb_003.choice_b',
         effects: { popularityDelta: 8, foreignReservesDelta: -5, marketConfidenceDelta: -8 },
+      },
+      {
+        id: 'char_emb_003_c',
+        textKey: 'event.char_emb_003.choice_c',
+        effects: { foreignReservesDelta: 10, marketConfidenceDelta: 8, deficitDelta: -5, popularityDelta: 2 },
+      },
+      {
+        id: 'char_emb_003_d',
+        textKey: 'event.char_emb_003.choice_d',
+        effects: { foreignReservesDelta: 8, marketConfidenceDelta: 5, popularityDelta: 5 },
       },
     ],
   },
@@ -307,6 +427,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_gob_001.choice_b',
         effects: { popularityDelta: -3, stabilityDelta: -5 },
       },
+      {
+        id: 'char_gob_001_c',
+        textKey: 'event.char_gob_001.choice_c',
+        effects: { popularityDelta: 5, stabilityDelta: 2, governmentSeatsDelta: 3, deficitDelta: 2 },
+      },
+      {
+        id: 'char_gob_001_d',
+        textKey: 'event.char_gob_001.choice_d',
+        effects: { popularityDelta: 4, stabilityDelta: 3, governmentSeatsDelta: 4 },
+      },
     ],
   },
   {
@@ -331,6 +461,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         textKey: 'event.char_gob_002.choice_b',
         effects: { popularityDelta: 3, stabilityDelta: -8, governmentSeatsDelta: -10 },
       },
+      {
+        id: 'char_gob_002_c',
+        textKey: 'event.char_gob_002.choice_c',
+        effects: { popularityDelta: 4, stabilityDelta: 2, governmentSeatsDelta: 5, deficitDelta: 3 },
+      },
+      {
+        id: 'char_gob_002_d',
+        textKey: 'event.char_gob_002.choice_d',
+        effects: { popularityDelta: 3, stabilityDelta: 4, governmentSeatsDelta: 4 },
+      },
     ],
   },
   {
@@ -352,6 +492,16 @@ export const CHARACTER_CARDS: EventCard[] = [
         id: 'char_gob_003_b',
         textKey: 'event.char_gob_003.choice_b',
         effects: { popularityDelta: -2, stabilityDelta: -5, governmentSeatsDelta: -5 },
+      },
+      {
+        id: 'char_gob_003_c',
+        textKey: 'event.char_gob_003.choice_c',
+        effects: { popularityDelta: 4, stabilityDelta: 3, governmentSeatsDelta: 10 },
+      },
+      {
+        id: 'char_gob_003_d',
+        textKey: 'event.char_gob_003.choice_d',
+        effects: { popularityDelta: 3, stabilityDelta: 2, governmentSeatsDelta: 12, deficitDelta: 1 },
       },
     ],
   },

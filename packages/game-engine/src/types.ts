@@ -135,6 +135,8 @@ export interface EventCard {
   // Lifeline fields
   isLifeline?: boolean;         // priority draw when variables in red zone
   lifelineFor?: string[];       // variable names this card helps recover
+  // Congressional session
+  isLaw?: boolean;              // triggers congressional minigame instead of normal choice UI
 }
 
 export interface TurnEvent {
@@ -177,6 +179,8 @@ export interface GameState {
   score: number;
   characters: RecurringCharacter[];
   lastInflationBreakdown?: InflationBreakdown;
+  /** Maps cardId → turn it was last played; used for cooldown enforcement */
+  cardCooldowns: Record<string, number>;
 }
 
 export interface VoteResult {

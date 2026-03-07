@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useGameStore } from './stores/gameStore.js';
+import { SoundProvider } from './components/SoundManager.js';
 
 const HomeScreen = lazy(() => import('./screens/HomeScreen.js'));
 const GameScreen = lazy(() => import('./screens/GameScreen.js'));
@@ -26,6 +27,7 @@ function LoadingSpinner() {
 
 export default function App() {
   return (
+    <SoundProvider>
     <BrowserRouter>
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
@@ -43,6 +45,7 @@ export default function App() {
         </Routes>
       </Suspense>
     </BrowserRouter>
+    </SoundProvider>
   );
 }
 

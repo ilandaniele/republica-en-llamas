@@ -18,6 +18,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         textKey: 'event.int_001.choice_b',
         effects: { marketConfidenceDelta: -10, popularityDelta: 10, stabilityDelta: 5 },
       },
+      {
+        id: 'int_001_c',
+        textKey: 'event.int_001.choice_c',
+        effects: { marketConfidenceDelta: 8, popularityDelta: 3, deficitDelta: -2 },
+      },
+      {
+        id: 'int_001_d',
+        textKey: 'event.int_001.choice_d',
+        effects: { marketConfidenceDelta: 5, gdpGrowthDelta: 0.5, popularityDelta: 2 },
+      },
     ],
   },
   {
@@ -36,6 +46,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         id: 'int_002_b',
         textKey: 'event.int_002.choice_b',
         effects: { marketConfidenceDelta: -12, popularityDelta: 8, stabilityDelta: 5 },
+      },
+      {
+        id: 'int_002_c',
+        textKey: 'event.int_002.choice_c',
+        effects: { marketConfidenceDelta: 8, foreignReservesDelta: 5, popularityDelta: 2 },
+      },
+      {
+        id: 'int_002_d',
+        textKey: 'event.int_002.choice_d',
+        effects: { marketConfidenceDelta: 5, foreignReservesDelta: 8, popularityDelta: 3 },
       },
     ],
   },
@@ -57,6 +77,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         textKey: 'event.int_003.choice_b',
         effects: { foreignReservesDelta: 10, deficitDelta: 5, popularityDelta: 3 },
       },
+      {
+        id: 'int_003_c',
+        textKey: 'event.int_003.choice_c',
+        effects: { inflationDelta: 2, popularityDelta: 2, stabilityDelta: 3 },
+      },
+      {
+        id: 'int_003_d',
+        textKey: 'event.int_003.choice_d',
+        effects: { marketConfidenceDelta: -3, popularityDelta: 5, stabilityDelta: 5 },
+      },
     ],
   },
   {
@@ -77,6 +107,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         textKey: 'event.int_004.choice_b',
         effects: { currencyStrengthDelta: -8, popularityDelta: 8, foreignReservesDelta: 5 },
       },
+      {
+        id: 'int_004_c',
+        textKey: 'event.int_004.choice_c',
+        effects: { currencyStrengthDelta: 6, inflationDelta: -3, foreignReservesDelta: 3 },
+      },
+      {
+        id: 'int_004_d',
+        textKey: 'event.int_004.choice_d',
+        effects: { currencyStrengthDelta: 5, marketConfidenceDelta: 5, popularityDelta: 3 },
+      },
     ],
   },
   {
@@ -95,6 +135,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         id: 'int_005_b',
         textKey: 'event.int_005.choice_b',
         effects: { marketConfidenceDelta: 12, deficitDelta: -5, popularityDelta: -3 },
+      },
+      {
+        id: 'int_005_c',
+        textKey: 'event.int_005.choice_c',
+        effects: { popularityDelta: 5, mediaCredibilityDelta: 5, deficitDelta: 2 },
+      },
+      {
+        id: 'int_005_d',
+        textKey: 'event.int_005.choice_d',
+        effects: { popularityDelta: 6, mediaCredibilityDelta: 6, stabilityDelta: 2 },
       },
     ],
   },
@@ -116,6 +166,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         textKey: 'event.int_006.choice_b',
         effects: { foreignReservesDelta: 15, deficitDelta: 5, popularityDelta: 3 },
       },
+      {
+        id: 'int_006_c',
+        textKey: 'event.int_006.choice_c',
+        effects: { foreignReservesDelta: -3, marketConfidenceDelta: 5, popularityDelta: 2 },
+      },
+      {
+        id: 'int_006_d',
+        textKey: 'event.int_006.choice_d',
+        effects: { foreignReservesDelta: 5, marketConfidenceDelta: 3, popularityDelta: 3 },
+      },
     ],
   },
   {
@@ -136,6 +196,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         textKey: 'event.int_007.choice_b',
         effects: { popularityDelta: 10, stabilityDelta: 6, deficitDelta: 5 },
       },
+      {
+        id: 'int_007_c',
+        textKey: 'event.int_007.choice_c',
+        effects: { gdpGrowthDelta: 1, foreignReservesDelta: 8, marketConfidenceDelta: 5 },
+      },
+      {
+        id: 'int_007_d',
+        textKey: 'event.int_007.choice_d',
+        effects: { foreignReservesDelta: 5, popularityDelta: 5, marketConfidenceDelta: -8 },
+      },
     ],
   },
   {
@@ -154,6 +224,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         id: 'int_008_b',
         textKey: 'event.int_008.choice_b',
         effects: { marketConfidenceDelta: -8, popularityDelta: 8, stabilityDelta: 4 },
+      },
+      {
+        id: 'int_008_c',
+        textKey: 'event.int_008.choice_c',
+        effects: { mediaCredibilityDelta: 5, popularityDelta: 5, stabilityDelta: 3 },
+      },
+      {
+        id: 'int_008_d',
+        textKey: 'event.int_008.choice_d',
+        effects: { popularityDelta: 6, marketConfidenceDelta: 4, mediaCredibilityDelta: 3 },
       },
     ],
   },
@@ -175,6 +255,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         textKey: 'event.int_009.choice_b',
         effects: { foreignReservesDelta: -15, currencyStrengthDelta: 10, inflationDelta: -5 },
       },
+      {
+        id: 'int_009_c',
+        textKey: 'event.int_009.choice_c',
+        effects: { currencyStrengthDelta: 5, foreignReservesDelta: 5, inflationDelta: -2 },
+      },
+      {
+        id: 'int_009_d',
+        textKey: 'event.int_009.choice_d',
+        effects: { currencyStrengthDelta: 6, marketConfidenceDelta: -5, foreignReservesDelta: 3 },
+      },
     ],
   },
   {
@@ -193,6 +283,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         id: 'int_010_b',
         textKey: 'event.int_010.choice_b',
         effects: { marketConfidenceDelta: 15, deficitDelta: -6, popularityDelta: -3 },
+      },
+      {
+        id: 'int_010_c',
+        textKey: 'event.int_010.choice_c',
+        effects: { marketConfidenceDelta: 8, foreignReservesDelta: 5, popularityDelta: 3 },
+      },
+      {
+        id: 'int_010_d',
+        textKey: 'event.int_010.choice_d',
+        effects: { popularityDelta: 5, mediaCredibilityDelta: 8, stabilityDelta: 3 },
       },
     ],
   },
@@ -214,6 +314,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         textKey: 'event.int_011.choice_b',
         effects: { popularityDelta: 12, stabilityDelta: 8, deficitDelta: 5 },
       },
+      {
+        id: 'int_011_c',
+        textKey: 'event.int_011.choice_c',
+        effects: { foreignReservesDelta: 12, deficitDelta: -5, marketConfidenceDelta: 5 },
+      },
+      {
+        id: 'int_011_d',
+        textKey: 'event.int_011.choice_d',
+        effects: { foreignReservesDelta: 8, marketConfidenceDelta: 8, deficitDelta: -4 },
+      },
     ],
   },
   {
@@ -232,6 +342,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         id: 'int_012_b',
         textKey: 'event.int_012.choice_b',
         effects: { marketConfidenceDelta: -8, popularityDelta: 12, stabilityDelta: 8 },
+      },
+      {
+        id: 'int_012_c',
+        textKey: 'event.int_012.choice_c',
+        effects: { marketConfidenceDelta: 8, popularityDelta: 3, foreignReservesDelta: 3 },
+      },
+      {
+        id: 'int_012_d',
+        textKey: 'event.int_012.choice_d',
+        effects: { marketConfidenceDelta: 5, popularityDelta: 5, stabilityDelta: 3 },
       },
     ],
   },
@@ -253,6 +373,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         textKey: 'event.int_013.choice_b',
         effects: { marketConfidenceDelta: 10, deficitDelta: -5, popularityDelta: -4 },
       },
+      {
+        id: 'int_013_c',
+        textKey: 'event.int_013.choice_c',
+        effects: { marketConfidenceDelta: 5, popularityDelta: 3, foreignReservesDelta: 3 },
+      },
+      {
+        id: 'int_013_d',
+        textKey: 'event.int_013.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 3, mediaCredibilityDelta: 3 },
+      },
     ],
   },
   {
@@ -271,6 +401,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         id: 'int_014_b',
         textKey: 'event.int_014.choice_b',
         effects: { deficitDelta: 6, popularityDelta: 5, stabilityDelta: 3 },
+      },
+      {
+        id: 'int_014_c',
+        textKey: 'event.int_014.choice_c',
+        effects: { marketConfidenceDelta: 5, popularityDelta: 3, deficitDelta: 2 },
+      },
+      {
+        id: 'int_014_d',
+        textKey: 'event.int_014.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 5, mediaCredibilityDelta: 3 },
       },
     ],
   },
@@ -291,6 +431,16 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
         id: 'int_015_b',
         textKey: 'event.int_015.choice_b',
         effects: { popularityDelta: 15, stabilityDelta: 10, deficitDelta: 8 },
+      },
+      {
+        id: 'int_015_c',
+        textKey: 'event.int_015.choice_c',
+        effects: { marketConfidenceDelta: 8, deficitDelta: -5, foreignReservesDelta: 5 },
+      },
+      {
+        id: 'int_015_d',
+        textKey: 'event.int_015.choice_d',
+        effects: { marketConfidenceDelta: 5, foreignReservesDelta: 8, popularityDelta: 5 },
       },
     ],
   },

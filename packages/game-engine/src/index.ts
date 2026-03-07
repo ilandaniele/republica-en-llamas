@@ -36,7 +36,7 @@ export { calculateScore } from './scoring.js';
 export { detectCrises, isCrisisResolved } from './crises.js';
 export { checkGameOver } from './gameOver.js';
 export { rollInternationalShock } from './shocks.js';
-export { initGame, applyChoice, advanceTurn, drawNextCard, getSafestChoiceIndex } from './gameLoop.js';
+export { initGame, applyChoice, advanceTurn, drawNextCard, getSafestChoiceIndex, applyChoiceEffects } from './gameLoop.js';
 export { ALL_CARDS, CARD_REGISTRY, getCard, drawCard } from './events/index.js';
 export { es } from './i18n/es.js';
 export { en } from './i18n/en.js';

@@ -23,6 +23,11 @@ export const POLITICAL_CARDS: EventCard[] = [
         textKey: 'event.pol_001.choice_c',
         effects: { popularityDelta: 3, stabilityDelta: 5 },
       },
+      {
+        id: 'pol_001_d',
+        textKey: 'event.pol_001.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 3, mediaCredibilityDelta: 8 },
+      },
     ],
   },
   {
@@ -42,6 +47,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         textKey: 'event.pol_002.choice_b',
         effects: { popularityDelta: -8, stabilityDelta: -5, mediaCredibilityDelta: 8 },
       },
+      {
+        id: 'pol_002_c',
+        textKey: 'event.pol_002.choice_c',
+        effects: { stabilityDelta: 5, popularityDelta: 2, deficitDelta: 2 },
+      },
+      {
+        id: 'pol_002_d',
+        textKey: 'event.pol_002.choice_d',
+        effects: { stabilityDelta: 8, popularityDelta: -5, mediaCredibilityDelta: -3 },
+      },
     ],
   },
   {
@@ -60,6 +75,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         id: 'pol_003_b',
         textKey: 'event.pol_003.choice_b',
         effects: { popularityDelta: -3, mediaCredibilityDelta: 12, stabilityDelta: 5 },
+      },
+      {
+        id: 'pol_003_c',
+        textKey: 'event.pol_003.choice_c',
+        effects: { governmentSeatsDelta: 5, deficitDelta: 3, popularityDelta: -2 },
+      },
+      {
+        id: 'pol_003_d',
+        textKey: 'event.pol_003.choice_d',
+        effects: { governmentSeatsDelta: -5, stabilityDelta: 3, mediaCredibilityDelta: 5 },
       },
     ],
   },
@@ -88,6 +113,11 @@ export const POLITICAL_CARDS: EventCard[] = [
         requiresVote: true,
         voteChance: 0.5,
       },
+      {
+        id: 'pol_004_d',
+        textKey: 'event.pol_004.choice_d',
+        effects: { popularityDelta: 8, stabilityDelta: 3, lawsPassedDelta: 1, deficitDelta: 2 },
+      },
     ],
   },
   {
@@ -106,6 +136,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         id: 'pol_005_b',
         textKey: 'event.pol_005.choice_b',
         effects: { mediaCredibilityDelta: 15, popularityDelta: -10, stabilityDelta: -5 },
+      },
+      {
+        id: 'pol_005_c',
+        textKey: 'event.pol_005.choice_c',
+        effects: { mediaCredibilityDelta: 10, popularityDelta: 2, deficitDelta: 2 },
+      },
+      {
+        id: 'pol_005_d',
+        textKey: 'event.pol_005.choice_d',
+        effects: { mediaCredibilityDelta: 5, popularityDelta: 4, stabilityDelta: -2 },
       },
     ],
   },
@@ -127,6 +167,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         textKey: 'event.pol_006.choice_b',
         effects: { popularityDelta: -3, deficitDelta: -3, marketConfidenceDelta: 5 },
       },
+      {
+        id: 'pol_006_c',
+        textKey: 'event.pol_006.choice_c',
+        effects: { popularityDelta: 8, deficitDelta: 2, stabilityDelta: 3 },
+      },
+      {
+        id: 'pol_006_d',
+        textKey: 'event.pol_006.choice_d',
+        effects: { popularityDelta: 5, deficitDelta: 3, stabilityDelta: 2 },
+      },
     ],
   },
   {
@@ -147,6 +197,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         textKey: 'event.pol_007.choice_b',
         effects: { popularityDelta: 5, stabilityDelta: 11 },
       },
+      {
+        id: 'pol_007_c',
+        textKey: 'event.pol_007.choice_c',
+        effects: { popularityDelta: 3, stabilityDelta: 8, mediaCredibilityDelta: 4 },
+      },
+      {
+        id: 'pol_007_d',
+        textKey: 'event.pol_007.choice_d',
+        effects: { popularityDelta: 2, stabilityDelta: 6, mediaCredibilityDelta: 5 },
+      },
     ],
   },
   {
@@ -165,6 +225,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         id: 'pol_008_b',
         textKey: 'event.pol_008.choice_b',
         effects: { popularityDelta: -4, stabilityDelta: -5 },
+      },
+      {
+        id: 'pol_008_c',
+        textKey: 'event.pol_008.choice_c',
+        effects: { popularityDelta: 5, stabilityDelta: 3, mediaCredibilityDelta: 4 },
+      },
+      {
+        id: 'pol_008_d',
+        textKey: 'event.pol_008.choice_d',
+        effects: { popularityDelta: 3, stabilityDelta: 5, mediaCredibilityDelta: 5 },
       },
     ],
   },
@@ -188,6 +258,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         textKey: 'event.pol_009.choice_b',
         effects: { emergencyDecreeDelta: 1, popularityDelta: -5, stabilityDelta: -5 },
       },
+      {
+        id: 'pol_009_c',
+        textKey: 'event.pol_009.choice_c',
+        effects: { deficitDelta: -3, foreignReservesDelta: 5, marketConfidenceDelta: 8 },
+      },
+      {
+        id: 'pol_009_d',
+        textKey: 'event.pol_009.choice_d',
+        effects: { popularityDelta: 5, deficitDelta: -2, stabilityDelta: 3 },
+      },
     ],
   },
   {
@@ -206,6 +286,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         id: 'pol_010_b',
         textKey: 'event.pol_010.choice_b',
         effects: { mediaCredibilityDelta: -8, popularityDelta: -3, stabilityDelta: 8 },
+      },
+      {
+        id: 'pol_010_c',
+        textKey: 'event.pol_010.choice_c',
+        effects: { popularityDelta: 4, stabilityDelta: 5, mediaCredibilityDelta: 5 },
+      },
+      {
+        id: 'pol_010_d',
+        textKey: 'event.pol_010.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 6, mediaCredibilityDelta: 3 },
       },
     ],
   },
@@ -227,6 +317,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         textKey: 'event.pol_011.choice_b',
         effects: { popularityDelta: -2, stabilityDelta: 5 },
       },
+      {
+        id: 'pol_011_c',
+        textKey: 'event.pol_011.choice_c',
+        effects: { popularityDelta: 8, stabilityDelta: 5, deficitDelta: 4 },
+      },
+      {
+        id: 'pol_011_d',
+        textKey: 'event.pol_011.choice_d',
+        effects: { popularityDelta: 6, deficitDelta: 3, marketConfidenceDelta: 3 },
+      },
     ],
   },
   {
@@ -247,6 +347,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         textKey: 'event.pol_012.choice_b',
         effects: { popularityDelta: -4, stabilityDelta: 6 },
       },
+      {
+        id: 'pol_012_c',
+        textKey: 'event.pol_012.choice_c',
+        effects: { popularityDelta: 5, stabilityDelta: 4, gdpGrowthDelta: 0.5 },
+      },
+      {
+        id: 'pol_012_d',
+        textKey: 'event.pol_012.choice_d',
+        effects: { popularityDelta: 4, stabilityDelta: 3, mediaCredibilityDelta: 5 },
+      },
     ],
   },
   {
@@ -265,6 +375,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         id: 'pol_013_b',
         textKey: 'event.pol_013.choice_b',
         effects: { stabilityDelta: -2, popularityDelta: 10 },
+      },
+      {
+        id: 'pol_013_c',
+        textKey: 'event.pol_013.choice_c',
+        effects: { stabilityDelta: 5, mediaCredibilityDelta: 8, popularityDelta: 2 },
+      },
+      {
+        id: 'pol_013_d',
+        textKey: 'event.pol_013.choice_d',
+        effects: { stabilityDelta: 6, popularityDelta: 5, mediaCredibilityDelta: 3 },
       },
     ],
   },
@@ -286,6 +406,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         textKey: 'event.pol_014.choice_b',
         effects: { governmentSeatsDelta: -10, popularityDelta: 8, mediaCredibilityDelta: 10 },
       },
+      {
+        id: 'pol_014_c',
+        textKey: 'event.pol_014.choice_c',
+        effects: { governmentSeatsDelta: 8, popularityDelta: 3, mediaCredibilityDelta: -2 },
+      },
+      {
+        id: 'pol_014_d',
+        textKey: 'event.pol_014.choice_d',
+        effects: { governmentSeatsDelta: 3, popularityDelta: 5, mediaCredibilityDelta: 5 },
+      },
     ],
   },
   {
@@ -304,6 +434,16 @@ export const POLITICAL_CARDS: EventCard[] = [
         id: 'pol_015_b',
         textKey: 'event.pol_015.choice_b',
         effects: { popularityDelta: 8, stabilityDelta: -8, mediaCredibilityDelta: -10 },
+      },
+      {
+        id: 'pol_015_c',
+        textKey: 'event.pol_015.choice_c',
+        effects: { popularityDelta: 3, stabilityDelta: 5, mediaCredibilityDelta: 8 },
+      },
+      {
+        id: 'pol_015_d',
+        textKey: 'event.pol_015.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 5, mediaCredibilityDelta: 5 },
       },
     ],
   },

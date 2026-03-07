@@ -25,6 +25,11 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_001.choice_c',
         effects: { popularityDelta: -20, inflationDelta: -15, stabilityDelta: -15 },
       },
+      {
+        id: 'arg_001_d',
+        textKey: 'event.arg_001.choice_d',
+        effects: { popularityDelta: -10, inflationDelta: -5, marketConfidenceDelta: -8, stabilityDelta: -5 },
+      },
     ],
   },
   // 2 — Corralito 2
@@ -46,6 +51,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_002.choice_b',
         effects: { marketConfidenceDelta: -20, foreignReservesDelta: -15, popularityDelta: 5 },
       },
+      {
+        id: 'arg_002_c',
+        textKey: 'event.arg_002.choice_c',
+        effects: { popularityDelta: -10, marketConfidenceDelta: -5, foreignReservesDelta: 5, stabilityDelta: 3 },
+      },
+      {
+        id: 'arg_002_d',
+        textKey: 'event.arg_002.choice_d',
+        effects: { popularityDelta: -5, stabilityDelta: -3, mediaCredibilityDelta: 5 },
+      },
     ],
   },
   // 3 — Campo no siembra
@@ -66,6 +81,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         id: 'arg_003_b',
         textKey: 'event.arg_003.choice_b',
         effects: { popularityDelta: 12, stabilityDelta: 5, marketConfidenceDelta: -15, foreignReservesDelta: -10 },
+      },
+      {
+        id: 'arg_003_c',
+        textKey: 'event.arg_003.choice_c',
+        effects: { popularityDelta: -3, marketConfidenceDelta: 5, foreignReservesDelta: 5, stabilityDelta: -3 },
+      },
+      {
+        id: 'arg_003_d',
+        textKey: 'event.arg_003.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 3, marketConfidenceDelta: -8 },
       },
     ],
   },
@@ -93,6 +118,11 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_004.choice_c',
         effects: { popularityDelta: 5, stabilityDelta: 5, mediaCredibilityDelta: -10 },
       },
+      {
+        id: 'arg_004_d',
+        textKey: 'event.arg_004.choice_d',
+        effects: { popularityDelta: 3, stabilityDelta: 8, mediaCredibilityDelta: 5 },
+      },
     ],
   },
   // 5 — Dólar blue
@@ -119,6 +149,11 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_005.choice_c',
         effects: { popularityDelta: -10, marketConfidenceDelta: 5, currencyStrengthDelta: 5, inflationDelta: -5 },
       },
+      {
+        id: 'arg_005_d',
+        textKey: 'event.arg_005.choice_d',
+        effects: { currencyStrengthDelta: 3, marketConfidenceDelta: 5, inflationDelta: 5, popularityDelta: -5 },
+      },
     ],
   },
   // 6 — Pacto Olivos 2
@@ -141,6 +176,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_006.choice_b',
         effects: { popularityDelta: 8, mediaCredibilityDelta: 10, stabilityDelta: -5 },
       },
+      {
+        id: 'arg_006_c',
+        textKey: 'event.arg_006.choice_c',
+        effects: { governmentSeatsDelta: 8, popularityDelta: -3, stabilityDelta: 3 },
+      },
+      {
+        id: 'arg_006_d',
+        textKey: 'event.arg_006.choice_d',
+        effects: { governmentSeatsDelta: 5, popularityDelta: 3, stabilityDelta: 5 },
+      },
     ],
   },
   // 7 — FMI última oportunidad
@@ -162,6 +207,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_007.choice_b',
         effects: { foreignReservesDelta: -25, marketConfidenceDelta: -25, popularityDelta: 10, inflationDelta: 15 },
       },
+      {
+        id: 'arg_007_c',
+        textKey: 'event.arg_007.choice_c',
+        effects: { foreignReservesDelta: 12, marketConfidenceDelta: 8, popularityDelta: -8, deficitDelta: -5 },
+      },
+      {
+        id: 'arg_007_d',
+        textKey: 'event.arg_007.choice_d',
+        effects: { foreignReservesDelta: 10, marketConfidenceDelta: 5, popularityDelta: -5, deficitDelta: -3 },
+      },
     ],
   },
   // 8 — Piquetes 9 de Julio
@@ -182,6 +237,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         id: 'arg_008_b',
         textKey: 'event.arg_008.choice_b',
         effects: { popularityDelta: -15, stabilityDelta: -10, mediaCredibilityDelta: -8 },
+      },
+      {
+        id: 'arg_008_c',
+        textKey: 'event.arg_008.choice_c',
+        effects: { popularityDelta: 2, stabilityDelta: 5, deficitDelta: 4 },
+      },
+      {
+        id: 'arg_008_d',
+        textKey: 'event.arg_008.choice_d',
+        effects: { popularityDelta: -2, stabilityDelta: 6, mediaCredibilityDelta: 3 },
       },
     ],
   },
@@ -205,6 +270,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_009.choice_b',
         effects: { popularityDelta: -20, stabilityDelta: -15, governmentSeatsDelta: -30 },
       },
+      {
+        id: 'arg_009_c',
+        textKey: 'event.arg_009.choice_c',
+        effects: { popularityDelta: -8, mediaCredibilityDelta: 5, stabilityDelta: 3 },
+      },
+      {
+        id: 'arg_009_d',
+        textKey: 'event.arg_009.choice_d',
+        effects: { popularityDelta: -3, mediaCredibilityDelta: -5, stabilityDelta: -2 },
+      },
     ],
   },
   // 10 — Elecciones de medio término
@@ -227,6 +302,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_010.choice_b',
         effects: { governmentSeatsDelta: -25, popularityDelta: -10, deficitDelta: -3 },
       },
+      {
+        id: 'arg_010_c',
+        textKey: 'event.arg_010.choice_c',
+        effects: { governmentSeatsDelta: -15, deficitDelta: 5, popularityDelta: 5 },
+      },
+      {
+        id: 'arg_010_d',
+        textKey: 'event.arg_010.choice_d',
+        effects: { governmentSeatsDelta: -10, popularityDelta: 3, stabilityDelta: 3 },
+      },
     ],
   },
   // 11 — Plan Bonex
@@ -248,6 +333,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_011.choice_b',
         effects: { inflationDelta: 15, deficitDelta: 10, popularityDelta: 5 },
       },
+      {
+        id: 'arg_011_c',
+        textKey: 'event.arg_011.choice_c',
+        effects: { inflationDelta: -12, popularityDelta: -18, stabilityDelta: -10, deficitDelta: -10 },
+      },
+      {
+        id: 'arg_011_d',
+        textKey: 'event.arg_011.choice_d',
+        effects: { inflationDelta: -8, popularityDelta: -10, deficitDelta: -5, marketConfidenceDelta: 5 },
+      },
     ],
   },
   // 12 — Visita del Papa
@@ -267,6 +362,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         id: 'arg_012_b',
         textKey: 'event.arg_012.choice_b',
         effects: { popularityDelta: 5, mediaCredibilityDelta: -5 },
+      },
+      {
+        id: 'arg_012_c',
+        textKey: 'event.arg_012.choice_c',
+        effects: { popularityDelta: 12, stabilityDelta: 6, mediaCredibilityDelta: 5 },
+      },
+      {
+        id: 'arg_012_d',
+        textKey: 'event.arg_012.choice_d',
+        effects: { popularityDelta: 8, stabilityDelta: 5, mediaCredibilityDelta: 6 },
       },
     ],
   },
@@ -288,6 +393,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         id: 'arg_013_b',
         textKey: 'event.arg_013.choice_b',
         effects: { inflationDelta: 10, currencyStrengthDelta: -5, popularityDelta: 5 },
+      },
+      {
+        id: 'arg_013_c',
+        textKey: 'event.arg_013.choice_c',
+        effects: { inflationDelta: -10, currencyStrengthDelta: 8, foreignReservesDelta: -12, marketConfidenceDelta: 5 },
+      },
+      {
+        id: 'arg_013_d',
+        textKey: 'event.arg_013.choice_d',
+        effects: { inflationDelta: -8, currencyStrengthDelta: 10, foreignReservesDelta: -8, marketConfidenceDelta: 8 },
       },
     ],
   },
@@ -311,6 +426,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         textKey: 'event.arg_014.choice_b',
         effects: { popularityDelta: -10, stabilityDelta: -8, mediaCredibilityDelta: 5 },
       },
+      {
+        id: 'arg_014_c',
+        textKey: 'event.arg_014.choice_c',
+        effects: { popularityDelta: -15, stabilityDelta: -10, mediaCredibilityDelta: -8 },
+      },
+      {
+        id: 'arg_014_d',
+        textKey: 'event.arg_014.choice_d',
+        effects: { popularityDelta: -8, stabilityDelta: -5, mediaCredibilityDelta: 8 },
+      },
     ],
   },
   // 15 — Argentina Campeón
@@ -330,6 +455,16 @@ export const ARGENTINA_CARDS: EventCard[] = [
         id: 'arg_015_b',
         textKey: 'event.arg_015.choice_b',
         effects: { popularityDelta: 12, stabilityDelta: 8, deficitDelta: 5 },
+      },
+      {
+        id: 'arg_015_c',
+        textKey: 'event.arg_015.choice_c',
+        effects: { popularityDelta: 18, stabilityDelta: 12, deficitDelta: 3 },
+      },
+      {
+        id: 'arg_015_d',
+        textKey: 'event.arg_015.choice_d',
+        effects: { popularityDelta: 10, stabilityDelta: 6, deficitDelta: 2, gdpGrowthDelta: 0.3 },
       },
     ],
   },

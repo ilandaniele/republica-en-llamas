@@ -1,4 +1,5 @@
 import type { EventCard, GameState, CrisisType, Difficulty } from '../types.js';
+import { CARD_COOLDOWN_TURNS, CARD_WEIGHT_DECAY_WINDOW } from '../constants.js';
 import { POLITICAL_CARDS } from './political.js';
 import { ECONOMIC_CARDS } from './economic.js';
 import { SOCIAL_CARDS } from './social.js';
@@ -8,6 +9,8 @@ import { CHARACTER_CARDS } from './characters.js';
 import { LIFELINE_CARDS } from './lifelines.js';
 import { ARGENTINA_CARDS } from './argentina.js';
 import { SCANDAL_CARDS } from './scandals.js';
+import { LAW_CARDS } from './laws.js';
+import { NEW_CARDS } from './new.js';
 
 const DIFFICULTY_ORDER: Difficulty[] = ['easy', 'normal', 'hard', 'crisis'];
 
@@ -25,6 +28,8 @@ export const ALL_CARDS: EventCard[] = [
   ...LIFELINE_CARDS,
   ...ARGENTINA_CARDS,
   ...SCANDAL_CARDS,
+  ...LAW_CARDS,
+  ...NEW_CARDS,
 ];
 
 export const CARD_REGISTRY = new Map<string, EventCard>(
@@ -59,11 +64,14 @@ function isCharacterCardEligible(card: EventCard, state: GameState): boolean {
 /**
  * Draw a card for the current turn using weighted random selection.
  * Priority: lifeline cards when 2+ variables in red zone (or forceLifeline), then weighted random.
+ * Cooldown: cards cannot be redrawn within CARD_COOLDOWN_TURNS turns.
+ * Weight decay: cards drawn within CARD_WEIGHT_DECAY_WINDOW turns have 30% of their normal weight.
  */
 export function drawCard(state: GameState, rng: () => number, forceLifeline = false): EventCard {
   const activeCrisisTypes = new Set<CrisisType>(state.activeCrises.map((c) => c.type));
+  const cooldowns = state.cardCooldowns ?? {};
 
-  // Eligible cards (base filter)
+  // Eligible cards (base filter + cooldown)
   const eligible = ALL_CARDS.filter((card) => {
     if (state.drawnCardIds.includes(card.id)) return false;
     if (card.minTurn !== undefined && state.turn < card.minTurn) return false;
@@ -72,6 +80,9 @@ export function drawCard(state: GameState, rng: () => number, forceLifeline = fa
     if (card.category === 'crisis' && card.requiredCrisis === undefined) return false;
     if (card.minDifficulty !== undefined && !difficultyAtLeast(state.difficulty, card.minDifficulty)) return false;
     if (!isCharacterCardEligible(card, state)) return false;
+    // Cooldown: skip if fired too recently
+    const lastFiredTurn = cooldowns[card.id];
+    if (lastFiredTurn !== undefined && (state.turn - lastFiredTurn) < CARD_COOLDOWN_TURNS) return false;
     return true;
   });
 
@@ -93,11 +104,20 @@ export function drawCard(state: GameState, rng: () => number, forceLifeline = fa
     if (lifeline) return lifeline;
   }
 
-  const totalWeight = eligible.reduce((s, c) => s + c.weight, 0);
+  // Apply weight decay for recently-played cards (within CARD_WEIGHT_DECAY_WINDOW turns)
+  const effectiveWeight = (card: EventCard): number => {
+    const lastFiredTurn = cooldowns[card.id];
+    if (lastFiredTurn !== undefined && (state.turn - lastFiredTurn) < CARD_WEIGHT_DECAY_WINDOW) {
+      return card.weight * 0.3;
+    }
+    return card.weight;
+  };
+
+  const totalWeight = eligible.reduce((s, c) => s + effectiveWeight(c), 0);
   let roll = rng() * totalWeight;
 
   for (const card of eligible) {
-    roll -= card.weight;
+    roll -= effectiveWeight(card);
     if (roll <= 0) return card;
   }
 

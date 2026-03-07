@@ -9,3 +9,5 @@ export { PresidentCaricature } from './presidents/PresidentCaricature.js';
 export type { CaricatureState } from './presidents/PresidentCaricature.js';
 export { CharacterPortrait } from './characters/CharacterPortrait.js';
 export { PixelCharacter } from './PixelCharacter.js';
+export { PixelPortrait } from './PixelPortrait.js';
+export type { PortraitMood, PortraitId } from './PixelPortrait.js';

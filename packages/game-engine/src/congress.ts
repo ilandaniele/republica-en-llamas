@@ -6,27 +6,40 @@ export function calculateVote(
   state: GameState,
   _negotiation: NegotiationType | null
 ): VoteResult {
-  const { congress } = state;
-  const totalSeats = TOTAL_SEATS;
-  const required = Math.floor(totalSeats / 2) + 1;
+  const { congress, political } = state;
+  const requiredVotes = 128;
 
-  // Coalition bonus
+  // Coalition bonus (same as before)
   const effectiveGovSeats =
     congress.coalitionTurnsRemaining > 0
       ? congress.governmentSeats + NEGOTIATION_CONFIG.COALITION_BUILDING.governmentSeatsDelta
       : congress.governmentSeats;
 
-  const independentSupport = congress.independentSupportBonus / 100;
-  const independentVotes = Math.floor(congress.independentSeats * independentSupport);
+  // New independent support formula from patch spec
+  let independentSupport = 0.3;
+  if (political.popularity > 60) independentSupport += 0.2;
+  // Use independentSupportBonus as proxy for last action type:
+  //   BUDGET_CONCESSION adds 30 bonus → treat as 'budget' (+0.4)
+  //   POLITICAL_DEAL adds 20 bonus → treat as 'deal' (+0.3)
+  if (congress.independentSupportBonus >= 30) {
+    independentSupport += 0.4; // budget concession
+  } else if (congress.independentSupportBonus >= 20) {
+    independentSupport += 0.3; // political deal
+  } else if (congress.independentSupportBonus > 0) {
+    independentSupport += congress.independentSupportBonus / 100;
+  }
+  if (political.emergencyDecreesUsed > 2) independentSupport -= 0.2;
+  independentSupport = Math.max(0, Math.min(1, independentSupport));
 
-  const totalVotes = Math.min(effectiveGovSeats + independentVotes, totalSeats);
+  const independentVotes = Math.round(35 * independentSupport);
+  const totalGovVotes = effectiveGovSeats + independentVotes;
 
   return {
-    passed: totalVotes >= required,
-    governmentVotes: Math.min(effectiveGovSeats, totalSeats),
+    passed: totalGovVotes >= requiredVotes,
+    governmentVotes: effectiveGovSeats,
     independentVotes,
-    totalVotes,
-    requiredVotes: required,
+    totalVotes: totalGovVotes,
+    requiredVotes,
   };
 }
 

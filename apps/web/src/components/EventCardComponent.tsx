@@ -1,10 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import type { EventCard, GameState } from '@republica/game-engine';
 import { getSafestChoiceIndex } from '@republica/game-engine';
 import { CharacterPortrait } from './illustrations/characters/CharacterPortrait.js';
 import { EventIllustration } from './illustrations/EventIllustration.js';
+import { PixelPortrait } from './illustrations/PixelPortrait.js';
+import type { PortraitId } from './illustrations/PixelPortrait.js';
+
+const PRESIDENT_IDS = new Set<string>(['milei', 'massa', 'bullrich', 'ingeniero', 'populista', 'tecnocrata']);
 
 interface Props {
   card: EventCard;
@@ -41,6 +45,25 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
   const isEasy = gameState?.difficulty === 'easy';
   const safestIndex = isEasy ? getSafestChoiceIndex(card) : -1;
   const [ripplingChoice, setRipplingChoice] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current === null || disabled) return;
+    const dx = (e.changedTouches[0]?.clientX ?? 0) - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(dx) < 50) return;
+    const n = card.choices.length;
+    const current = selectedIndex ?? -1;
+    if (dx < 0) {
+      onSelect(card.id, (current + 1 + n) % n);
+    } else {
+      onSelect(card.id, ((current < 0 ? 0 : current) - 1 + n) % n);
+    }
+  }, [card.choices.length, card.id, disabled, onSelect, selectedIndex]);
 
   const handleChoiceClick = useCallback((idx: number) => {
     if (disabled) return;
@@ -59,6 +82,8 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       style={{
         backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,255,255,0.015) 24px)',
       }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Context prefix */}
       {contextPrefix && (
@@ -77,8 +102,12 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       </h2>
 
       {/* Character portrait or large scene illustration */}
-      <div className="mb-4 rounded-lg overflow-hidden h-36">
-        {card.characterId ? (
+      <div className="mb-4 rounded-lg overflow-hidden h-[234px] md:h-[378px] lg:h-[576px]">
+        {card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
+          <div className="flex items-center justify-center bg-navy-800/60 border border-navy-600 rounded-lg h-full">
+            <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={96} />
+          </div>
+        ) : card.characterId ? (
           <div className="flex items-center gap-3 bg-navy-800/60 border border-navy-600 rounded-lg px-3 py-2">
             <CharacterPortrait characterId={card.characterId} size={72} />
             <div className="text-smoke-400 font-mono text-xs italic opacity-70">
@@ -101,7 +130,7 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       </p>
 
       {/* Choices — all remain visible; can switch until Confirmar is pressed */}
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
         {card.choices.map((choice, index) => {
           const isSelected = selectedIndex === index;
 

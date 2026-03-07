@@ -171,3 +171,16 @@ export const SCORE_CONFIG = {
   INFLATION_PENALTY: 10,
   DEFICIT_PENALTY: 5,
 } as const;
+
+// ─── Card cooldown & weight-decay ──────────────────────────────────────────────
+
+/** A card cannot be drawn again for this many turns after it fires. */
+export const CARD_COOLDOWN_TURNS = 6;
+
+/** If a card fired within this many turns it gets its weight multiplied by 0.3. */
+export const CARD_WEIGHT_DECAY_WINDOW = 10;
+
+// ─── Congress session cadence ─────────────────────────────────────────────────
+
+/** Every N turns a SESIÓN LEGISLATIVA card is forced instead of a normal draw. */
+export const CONGRESS_SESSION_INTERVAL = 4;

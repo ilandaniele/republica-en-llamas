@@ -1,12 +1,12 @@
 import type { GameState, Difficulty, Language, ChoiceEffect, TurnEvent, RecurringCharacter } from './types.js';
-import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS } from './constants.js';
+import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS, CONGRESS_SESSION_INTERVAL } from './constants.js';
 import { calculateInflationBreakdown } from './inflation.js';
 import { calculateScore } from './scoring.js';
 import { detectCrises, tickCrises } from './crises.js';
 import { checkGameOver } from './gameOver.js';
 import { rollInternationalShock, tickShocks } from './shocks.js';
 import { tickMediaEffects } from './media.js';
-import { drawCard, getCard } from './events/index.js';
+import { drawCard, getCard, CARD_REGISTRY } from './events/index.js';
 import { createRng, clamp, generateId } from './utils.js';
 
 export function initGame(
@@ -64,6 +64,7 @@ export function initGame(
     gameOverReason: null,
     score: 0,
     characters: INITIAL_CHARACTERS,
+    cardCooldowns: {},
   };
 }
 
@@ -86,10 +87,11 @@ export function applyChoice(
 
   let s = applyEffects(state, choice.effects);
 
-  // Track card as drawn
+  // Track card as drawn + record cooldown
   s = {
     ...s,
     drawnCardIds: [...s.drawnCardIds, cardId],
+    cardCooldowns: { ...s.cardCooldowns, [cardId]: s.turn },
   };
 
   // Apply character memory if this is a character card
@@ -232,6 +234,15 @@ export function advanceTurn(state: GameState): GameState {
 export function drawNextCard(state: GameState): ReturnType<typeof drawCard> {
   const mod = DIFFICULTY_MODIFIERS[state.difficulty] ?? DIFFICULTY_MODIFIERS['normal']!;
   const rng = createRng(state.seed + state.turn * 777);
+
+  // Every CONGRESS_SESSION_INTERVAL turns, force a rotating session law card
+  if (state.turn > 1 && state.turn % CONGRESS_SESSION_INTERVAL === 0) {
+    const lawIndex = (Math.floor((state.turn - 1) / CONGRESS_SESSION_INTERVAL)) % 5;
+    const sessionLawId = `session_law_00${lawIndex + 1}`;
+    const sessionCard = CARD_REGISTRY.get(sessionLawId);
+    if (sessionCard) return sessionCard;
+  }
+
   // Guarantee a lifeline card every N turns (easy/normal only)
   const forceLifeline =
     state.turn > 1 &&
@@ -266,6 +277,11 @@ export function getSafestChoiceIndex(card: { choices: Array<{ effects: ChoiceEff
     }
   }
   return safest;
+}
+
+/** Apply raw ChoiceEffect to a GameState with difficulty scaling. */
+export function applyChoiceEffects(state: GameState, effects: ChoiceEffect): GameState {
+  return applyEffects(state, effects);
 }
 
 function applyEffects(state: GameState, effects: ChoiceEffect): GameState {

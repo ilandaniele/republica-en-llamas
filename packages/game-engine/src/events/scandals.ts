@@ -25,6 +25,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_001.choice_c',
         effects: { popularityDelta: -5, mediaCredibilityDelta: 5, stabilityDelta: 5 },
       },
+      {
+        id: 'scn_001_d',
+        textKey: 'event.scn_001.choice_d',
+        effects: { popularityDelta: -2, mediaCredibilityDelta: 8, stabilityDelta: 8 },
+      },
     ],
   },
   // 2 — Los Rugbiers
@@ -44,6 +49,16 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_002_b',
         textKey: 'event.scn_002.choice_b',
         effects: { popularityDelta: -8, stabilityDelta: -12, mediaCredibilityDelta: -10 },
+      },
+      {
+        id: 'scn_002_c',
+        textKey: 'event.scn_002.choice_c',
+        effects: { popularityDelta: 3, stabilityDelta: -2, mediaCredibilityDelta: 5 },
+      },
+      {
+        id: 'scn_002_d',
+        textKey: 'event.scn_002.choice_d',
+        effects: { popularityDelta: -3, mediaCredibilityDelta: -5 },
       },
     ],
   },
@@ -71,6 +86,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_003.choice_c',
         effects: { marketConfidenceDelta: -10, popularityDelta: 5, currencyStrengthDelta: -8 },
       },
+      {
+        id: 'scn_003_d',
+        textKey: 'event.scn_003.choice_d',
+        effects: { marketConfidenceDelta: -5, popularityDelta: -5, mediaCredibilityDelta: 15 },
+      },
     ],
   },
   // 4 — PAMI Medicamentos
@@ -95,6 +115,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_004_c',
         textKey: 'event.scn_004.choice_c',
         effects: { popularityDelta: -5, stabilityDelta: 6 },
+      },
+      {
+        id: 'scn_004_d',
+        textKey: 'event.scn_004.choice_d',
+        effects: { popularityDelta: -3, stabilityDelta: 3, mediaCredibilityDelta: 8 },
       },
     ],
   },
@@ -121,6 +146,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_005.choice_c',
         effects: { popularityDelta: -12, mediaCredibilityDelta: -5, stabilityDelta: -5 },
       },
+      {
+        id: 'scn_005_d',
+        textKey: 'event.scn_005.choice_d',
+        effects: { popularityDelta: -8, mediaCredibilityDelta: 12, stabilityDelta: 3 },
+      },
     ],
   },
   // 6 — Nisman 2.0
@@ -141,6 +171,16 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_006_b',
         textKey: 'event.scn_006.choice_b',
         effects: { popularityDelta: -15, mediaCredibilityDelta: -18, stabilityDelta: -12 },
+      },
+      {
+        id: 'scn_006_c',
+        textKey: 'event.scn_006.choice_c',
+        effects: { popularityDelta: -2, mediaCredibilityDelta: 7, stabilityDelta: -5 },
+      },
+      {
+        id: 'scn_006_d',
+        textKey: 'event.scn_006.choice_d',
+        effects: { popularityDelta: -5, mediaCredibilityDelta: -3, stabilityDelta: -4 },
       },
     ],
   },
@@ -168,6 +208,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_007.choice_c',
         effects: { popularityDelta: -8, mediaCredibilityDelta: 5, stabilityDelta: -5 },
       },
+      {
+        id: 'scn_007_d',
+        textKey: 'event.scn_007.choice_d',
+        effects: { popularityDelta: -3, mediaCredibilityDelta: 10, stabilityDelta: -3 },
+      },
     ],
   },
   // 8 — Senadores con Sobre
@@ -188,6 +233,16 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_008_b',
         textKey: 'event.scn_008.choice_b',
         effects: { popularityDelta: 8, mediaCredibilityDelta: 12, stabilityDelta: 5 },
+      },
+      {
+        id: 'scn_008_c',
+        textKey: 'event.scn_008.choice_c',
+        effects: { popularityDelta: -5, mediaCredibilityDelta: 8, stabilityDelta: 5 },
+      },
+      {
+        id: 'scn_008_d',
+        textKey: 'event.scn_008.choice_d',
+        effects: { popularityDelta: 5, mediaCredibilityDelta: -3, stabilityDelta: 2 },
       },
     ],
   },
@@ -215,6 +270,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_009.choice_c',
         effects: { popularityDelta: -5, mediaCredibilityDelta: 5, foreignReservesDelta: 5 },
       },
+      {
+        id: 'scn_009_d',
+        textKey: 'event.scn_009.choice_d',
+        effects: { popularityDelta: -3, mediaCredibilityDelta: 8, foreignReservesDelta: 3 },
+      },
     ],
   },
   // 10 — Vacunas VIP
@@ -234,6 +294,16 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_010_b',
         textKey: 'event.scn_010.choice_b',
         effects: { popularityDelta: -20, mediaCredibilityDelta: -18, stabilityDelta: -10 },
+      },
+      {
+        id: 'scn_010_c',
+        textKey: 'event.scn_010.choice_c',
+        effects: { popularityDelta: -8, mediaCredibilityDelta: 10, stabilityDelta: 3 },
+      },
+      {
+        id: 'scn_010_d',
+        textKey: 'event.scn_010.choice_d',
+        effects: { popularityDelta: -12, mediaCredibilityDelta: -8, stabilityDelta: -5 },
       },
     ],
   },
@@ -260,6 +330,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_011.choice_c',
         effects: { popularityDelta: -5, stabilityDelta: -3 },
       },
+      {
+        id: 'scn_011_d',
+        textKey: 'event.scn_011.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 8, deficitDelta: 5 },
+      },
     ],
   },
   // 12 — Buitres en Nueva York
@@ -280,6 +355,16 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_012_b',
         textKey: 'event.scn_012.choice_b',
         effects: { marketConfidenceDelta: -15, foreignReservesDelta: 5, popularityDelta: 8 },
+      },
+      {
+        id: 'scn_012_c',
+        textKey: 'event.scn_012.choice_c',
+        effects: { marketConfidenceDelta: 5, foreignReservesDelta: -8, popularityDelta: -3 },
+      },
+      {
+        id: 'scn_012_d',
+        textKey: 'event.scn_012.choice_d',
+        effects: { marketConfidenceDelta: -5, foreignReservesDelta: 3, popularityDelta: 8 },
       },
     ],
   },
@@ -306,6 +391,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_013_c',
         textKey: 'event.scn_013.choice_c',
         effects: { foreignReservesDelta: 8, marketConfidenceDelta: -5, popularityDelta: 8 },
+      },
+      {
+        id: 'scn_013_d',
+        textKey: 'event.scn_013.choice_d',
+        effects: { foreignReservesDelta: 12, marketConfidenceDelta: 5, popularityDelta: 3 },
       },
     ],
   },
@@ -334,6 +424,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_014.choice_c',
         effects: { stabilityDelta: 2, popularityDelta: -5 },
       },
+      {
+        id: 'scn_014_d',
+        textKey: 'event.scn_014.choice_d',
+        effects: { stabilityDelta: 1, popularityDelta: -2 },
+      },
     ],
   },
   // 15 — DNU Desregulatorio
@@ -355,6 +450,16 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_015.choice_b',
         effects: { popularityDelta: 5, stabilityDelta: 10 },
       },
+      {
+        id: 'scn_015_c',
+        textKey: 'event.scn_015.choice_c',
+        effects: { popularityDelta: -5, stabilityDelta: 3 },
+      },
+      {
+        id: 'scn_015_d',
+        textKey: 'event.scn_015.choice_d',
+        effects: { popularityDelta: 2, stabilityDelta: 5, deficitDelta: 2 },
+      },
     ],
   },
   // 16 — Colapso de Silicon Valley Bank Argentina
@@ -375,6 +480,16 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_016_b',
         textKey: 'event.scn_016.choice_b',
         effects: { marketConfidenceDelta: -20, foreignReservesDelta: -5, stabilityDelta: -15 },
+      },
+      {
+        id: 'scn_016_c',
+        textKey: 'event.scn_016.choice_c',
+        effects: { marketConfidenceDelta: 5, deficitDelta: 3, foreignReservesDelta: -5 },
+      },
+      {
+        id: 'scn_016_d',
+        textKey: 'event.scn_016.choice_d',
+        effects: { marketConfidenceDelta: 8, deficitDelta: 5, stabilityDelta: 5 },
       },
     ],
   },
@@ -402,6 +517,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_017.choice_c',
         effects: { foreignReservesDelta: 5, popularityDelta: -3, marketConfidenceDelta: 3 },
       },
+      {
+        id: 'scn_017_d',
+        textKey: 'event.scn_017.choice_d',
+        effects: { foreignReservesDelta: 3, popularityDelta: -2, marketConfidenceDelta: 5, mediaCredibilityDelta: 5 },
+      },
     ],
   },
   // 18 — Relaciones con China: El Swap
@@ -422,6 +542,16 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_018_b',
         textKey: 'event.scn_018.choice_b',
         effects: { foreignReservesDelta: -10, marketConfidenceDelta: 12, popularityDelta: 5 },
+      },
+      {
+        id: 'scn_018_c',
+        textKey: 'event.scn_018.choice_c',
+        effects: { foreignReservesDelta: 10, marketConfidenceDelta: 4, popularityDelta: -2 },
+      },
+      {
+        id: 'scn_018_d',
+        textKey: 'event.scn_018.choice_d',
+        effects: { foreignReservesDelta: 12, marketConfidenceDelta: -2, popularityDelta: -4 },
       },
     ],
   },
@@ -449,6 +579,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         textKey: 'event.scn_019.choice_c',
         effects: { popularityDelta: -5, stabilityDelta: -2 },
       },
+      {
+        id: 'scn_019_d',
+        textKey: 'event.scn_019.choice_d',
+        effects: { popularityDelta: 3, stabilityDelta: 8, deficitDelta: 3 },
+      },
     ],
   },
   // 20 — El Dólar a $1500
@@ -474,6 +609,11 @@ export const SCANDAL_CARDS: EventCard[] = [
         id: 'scn_020_c',
         textKey: 'event.scn_020.choice_c',
         effects: { currencyStrengthDelta: -8, inflationDelta: 8, popularityDelta: -8, marketConfidenceDelta: -5 },
+      },
+      {
+        id: 'scn_020_d',
+        textKey: 'event.scn_020.choice_d',
+        effects: { currencyStrengthDelta: -3, inflationDelta: 5, popularityDelta: -5, marketConfidenceDelta: -8 },
       },
     ],
   },

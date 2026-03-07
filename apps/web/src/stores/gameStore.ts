@@ -8,6 +8,7 @@ import {
   advanceTurn,
   drawNextCard,
   applyNegotiation,
+  applyChoiceEffects,
   calculateScore,
 } from '@republica/game-engine';
 import type { EventCard } from '@republica/game-engine';
@@ -32,6 +33,7 @@ export interface VarSnapshot {
   currencyStrength: number;
   foreignReserves: number;
   inflation: number;
+  publicDeficit: number;
 }
 
 function applyCrisisExpressMultiplier(before: GameState, after: GameState): GameState {
@@ -93,6 +95,7 @@ interface GameStore {
   isCrisisExpress: boolean;
 
   // Actions
+  resolveCongressSession: (choiceIndex: number, cardId: string, negEffects: import('@republica/game-engine').ChoiceEffect) => void;
   startNewGame: (difficulty: Difficulty, seed?: number) => void;
   setUserId: (id: string | null) => void;
   setCrisisExpress: (val: boolean) => void;
@@ -179,6 +182,30 @@ export const useGameStore = create<GameStore>()(
       userId: null,
       isCrisisExpress: false,
 
+      resolveCongressSession: (choiceIndex, cardId, negEffects) => {
+        const { gameState, isCrisisExpress } = get();
+        if (!gameState) return;
+        // Apply negotiation side-effects (costs from actions taken)
+        const withNeg = Object.keys(negEffects).length > 0
+          ? applyChoiceEffects(gameState, negEffects)
+          : gameState;
+        // Apply law outcome
+        let afterChoice = applyChoice(withNeg, cardId, choiceIndex);
+        if (isCrisisExpress) afterChoice = applyCrisisExpressMultiplier(withNeg, afterChoice);
+        let score = calculateScore(afterChoice);
+        if (isCrisisExpress) score = Math.round(score * 2);
+        const stateWithScore = { ...afterChoice, score };
+        const transitionData = buildTransitionData(gameState, stateWithScore, cardId, choiceIndex);
+        set({
+          gameState: stateWithScore,
+          pendingCardId: null,
+          pendingChoiceIndex: null,
+          isAnimating: true,
+          showTransition: true,
+          transitionData,
+        });
+      },
+
       startNewGame: (difficulty, seed) => {
         const s = seed ?? Math.floor(Math.random() * 1_000_000);
         const state = initGame(difficulty, s, get().language);
@@ -250,6 +277,7 @@ export const useGameStore = create<GameStore>()(
           currencyStrength: gameState.economic.currencyStrength,
           foreignReserves: gameState.economic.foreignReserves,
           inflation: gameState.economic.inflation,
+          publicDeficit: gameState.economic.publicDeficit,
         };
 
         let next = advanceTurn(gameState);

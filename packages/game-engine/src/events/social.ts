@@ -23,6 +23,11 @@ export const SOCIAL_CARDS: EventCard[] = [
         textKey: 'event.soc_001.choice_c',
         effects: { stabilityDelta: 4, popularityDelta: 3 },
       },
+      {
+        id: 'soc_001_d',
+        textKey: 'event.soc_001.choice_d',
+        effects: { stabilityDelta: 5, popularityDelta: 5, deficitDelta: 2 },
+      },
     ],
   },
   {
@@ -42,6 +47,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         textKey: 'event.soc_002.choice_b',
         effects: { popularityDelta: -8, stabilityDelta: -1 },
       },
+      {
+        id: 'soc_002_c',
+        textKey: 'event.soc_002.choice_c',
+        effects: { popularityDelta: 5, stabilityDelta: 3, deficitDelta: 4 },
+      },
+      {
+        id: 'soc_002_d',
+        textKey: 'event.soc_002.choice_d',
+        effects: { popularityDelta: 3, stabilityDelta: 4, deficitDelta: 2 },
+      },
     ],
   },
   {
@@ -60,6 +75,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         id: 'soc_003_b',
         textKey: 'event.soc_003.choice_b',
         effects: { stabilityDelta: 5, popularityDelta: 3, deficitDelta: 5 },
+      },
+      {
+        id: 'soc_003_c',
+        textKey: 'event.soc_003.choice_c',
+        effects: { stabilityDelta: 5, popularityDelta: 5, deficitDelta: 3 },
+      },
+      {
+        id: 'soc_003_d',
+        textKey: 'event.soc_003.choice_d',
+        effects: { popularityDelta: 6, stabilityDelta: 3, deficitDelta: 4 },
       },
     ],
   },
@@ -83,6 +108,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         textKey: 'event.soc_004.choice_b',
         effects: { popularityDelta: -6, stabilityDelta: -4 },
       },
+      {
+        id: 'soc_004_c',
+        textKey: 'event.soc_004.choice_c',
+        effects: { stabilityDelta: 6, popularityDelta: -2, deficitDelta: 2 },
+      },
+      {
+        id: 'soc_004_d',
+        textKey: 'event.soc_004.choice_d',
+        effects: { stabilityDelta: 5, popularityDelta: 2, deficitDelta: 2 },
+      },
     ],
   },
   {
@@ -101,6 +136,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         id: 'soc_005_b',
         textKey: 'event.soc_005.choice_b',
         effects: { mediaCredibilityDelta: -12, stabilityDelta: -8, popularityDelta: 8 },
+      },
+      {
+        id: 'soc_005_c',
+        textKey: 'event.soc_005.choice_c',
+        effects: { mediaCredibilityDelta: 5, stabilityDelta: 3, popularityDelta: 2 },
+      },
+      {
+        id: 'soc_005_d',
+        textKey: 'event.soc_005.choice_d',
+        effects: { mediaCredibilityDelta: 6, popularityDelta: 3, stabilityDelta: 2 },
       },
     ],
   },
@@ -122,6 +167,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         textKey: 'event.soc_006.choice_b',
         effects: { popularityDelta: -8, stabilityDelta: -10 },
       },
+      {
+        id: 'soc_006_c',
+        textKey: 'event.soc_006.choice_c',
+        effects: { popularityDelta: 8, stabilityDelta: 5, deficitDelta: 3 },
+      },
+      {
+        id: 'soc_006_d',
+        textKey: 'event.soc_006.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 6, mediaCredibilityDelta: 3 },
+      },
     ],
   },
   {
@@ -141,6 +196,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         textKey: 'event.soc_007.choice_b',
         effects: { stabilityDelta: -8, popularityDelta: -5, mediaCredibilityDelta: 8 },
       },
+      {
+        id: 'soc_007_c',
+        textKey: 'event.soc_007.choice_c',
+        effects: { stabilityDelta: 5, popularityDelta: 2, mediaCredibilityDelta: 4 },
+      },
+      {
+        id: 'soc_007_d',
+        textKey: 'event.soc_007.choice_d',
+        effects: { stabilityDelta: 4, popularityDelta: 3, mediaCredibilityDelta: 5 },
+      },
     ],
   },
   {
@@ -159,6 +224,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         id: 'soc_008_b',
         textKey: 'event.soc_008.choice_b',
         effects: { popularityDelta: -5, stabilityDelta: 1 },
+      },
+      {
+        id: 'soc_008_c',
+        textKey: 'event.soc_008.choice_c',
+        effects: { popularityDelta: -5, stabilityDelta: 5, deficitDelta: -5 },
+      },
+      {
+        id: 'soc_008_d',
+        textKey: 'event.soc_008.choice_d',
+        effects: { popularityDelta: 2, stabilityDelta: 6, deficitDelta: -3 },
       },
     ],
   },
@@ -180,6 +255,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         textKey: 'event.soc_009.choice_b',
         effects: { stabilityDelta: 11, popularityDelta: 5 },
       },
+      {
+        id: 'soc_009_c',
+        textKey: 'event.soc_009.choice_c',
+        effects: { stabilityDelta: 8, popularityDelta: 3, deficitDelta: 3 },
+      },
+      {
+        id: 'soc_009_d',
+        textKey: 'event.soc_009.choice_d',
+        effects: { stabilityDelta: 7, popularityDelta: 4, mediaCredibilityDelta: 3 },
+      },
     ],
   },
   {
@@ -198,6 +283,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         id: 'soc_010_b',
         textKey: 'event.soc_010.choice_b',
         effects: { popularityDelta: -3, stabilityDelta: 8 },
+      },
+      {
+        id: 'soc_010_c',
+        textKey: 'event.soc_010.choice_c',
+        effects: { stabilityDelta: 4, popularityDelta: 3, deficitDelta: -2 },
+      },
+      {
+        id: 'soc_010_d',
+        textKey: 'event.soc_010.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 3, mediaCredibilityDelta: 5 },
       },
     ],
   },
@@ -218,6 +313,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         id: 'soc_011_b',
         textKey: 'event.soc_011.choice_b',
         effects: { popularityDelta: -1, stabilityDelta: -1 },
+      },
+      {
+        id: 'soc_011_c',
+        textKey: 'event.soc_011.choice_c',
+        effects: { popularityDelta: 5, stabilityDelta: 4, mediaCredibilityDelta: 3 },
+      },
+      {
+        id: 'soc_011_d',
+        textKey: 'event.soc_011.choice_d',
+        effects: { popularityDelta: 4, stabilityDelta: 5, mediaCredibilityDelta: 2 },
       },
     ],
   },
@@ -240,6 +345,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         textKey: 'event.soc_012.choice_b',
         effects: { stabilityDelta: -5, popularityDelta: -3 },
       },
+      {
+        id: 'soc_012_c',
+        textKey: 'event.soc_012.choice_c',
+        effects: { stabilityDelta: -5, popularityDelta: -5, marketConfidenceDelta: 5 },
+      },
+      {
+        id: 'soc_012_d',
+        textKey: 'event.soc_012.choice_d',
+        effects: { stabilityDelta: 5, popularityDelta: 3, deficitDelta: 2 },
+      },
     ],
   },
   {
@@ -258,6 +373,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         id: 'soc_013_b',
         textKey: 'event.soc_013.choice_b',
         effects: { popularityDelta: -8, stabilityDelta: -5, mediaCredibilityDelta: 10 },
+      },
+      {
+        id: 'soc_013_c',
+        textKey: 'event.soc_013.choice_c',
+        effects: { popularityDelta: 6, stabilityDelta: 6, deficitDelta: 3 },
+      },
+      {
+        id: 'soc_013_d',
+        textKey: 'event.soc_013.choice_d',
+        effects: { popularityDelta: 5, stabilityDelta: 5, deficitDelta: 2 },
       },
     ],
   },
@@ -279,6 +404,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         textKey: 'event.soc_014.choice_b',
         effects: { stabilityDelta: -8, popularityDelta: 10, deficitDelta: 5 },
       },
+      {
+        id: 'soc_014_c',
+        textKey: 'event.soc_014.choice_c',
+        effects: { stabilityDelta: 5, popularityDelta: 4, mediaCredibilityDelta: 3 },
+      },
+      {
+        id: 'soc_014_d',
+        textKey: 'event.soc_014.choice_d',
+        effects: { popularityDelta: 8, stabilityDelta: 5, deficitDelta: 4 },
+      },
     ],
   },
   {
@@ -297,6 +432,16 @@ export const SOCIAL_CARDS: EventCard[] = [
         id: 'soc_015_b',
         textKey: 'event.soc_015.choice_b',
         effects: { popularityDelta: -5, stabilityDelta: 2 },
+      },
+      {
+        id: 'soc_015_c',
+        textKey: 'event.soc_015.choice_c',
+        effects: { popularityDelta: 5, stabilityDelta: 5, deficitDelta: 3 },
+      },
+      {
+        id: 'soc_015_d',
+        textKey: 'event.soc_015.choice_d',
+        effects: { popularityDelta: 4, stabilityDelta: 4, marketConfidenceDelta: 3 },
       },
     ],
   },

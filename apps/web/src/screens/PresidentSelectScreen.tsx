@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameStore } from '../stores/gameStore.js';
-import { PresidentCaricature } from '../components/illustrations/presidents/PresidentCaricature.js';
+import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
 
 interface Archetype {
   id: string;
@@ -74,7 +74,7 @@ function ArchetypeCard({ archetype, selected, onSelect }: { archetype: Archetype
     >
       {/* President caricature */}
       <div className="flex justify-center mb-3">
-        <PresidentCaricature presidentId={archetype.id} popularity={selected ? 70 : 50} width={120} height={138} />
+        <PixelPortrait id={archetype.id as import('../components/illustrations/PixelPortrait.js').PortraitId} mood={selected ? 'victory' : 'neutral'} px={120} />
       </div>
 
       {/* Name */}
