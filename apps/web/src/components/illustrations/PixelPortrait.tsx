@@ -1,4 +1,5 @@
 import React from 'react';
+import { useGameImage } from '../../hooks/useGameImage.js';
 
 export type PortraitId = 'milei' | 'massa' | 'bullrich' | 'ingeniero' | 'populista' | 'tecnocrata';
 export type PortraitMood = 'neutral' | 'panic' | 'victory';
@@ -174,6 +175,23 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
     id === 'populista' ? 'massa' :
     id === 'tecnocrata' ? 'bullrich' : id;
 
+  const imageUrl = useGameImage(`char_${base}`);
+
+  // AI-generated portrait if available
+  if (imageUrl) {
+    return (
+      <img
+        src={imageUrl}
+        alt={`Retrato de ${id}`}
+        width={px}
+        height={px}
+        style={{ display: 'block', objectFit: 'cover', borderRadius: 4 }}
+        loading="lazy"
+      />
+    );
+  }
+
+  // Fallback: inline SVG cartoon
   return (
     <svg
       width={px}

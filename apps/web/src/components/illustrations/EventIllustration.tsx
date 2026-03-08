@@ -1,5 +1,6 @@
 import React from 'react';
 import type { GameState } from '@republica/game-engine';
+import { useGameImage } from '../../hooks/useGameImage.js';
 
 interface Props {
   eventCategory: string;
@@ -636,10 +637,14 @@ function SceneCrisis({ presidentId }: { presidentId: string }) {
 
 // ── Scene selector ────────────────────────────────────────────────────────────
 function selectScene(category: string, eventId: string, gameState: GameState | null | undefined): string {
+  // Specific event IDs
   if (eventId === 'arg_015' || eventId?.includes('mundial') || eventId?.includes('campeon')) return 'arg_mundial';
   if (eventId === 'arg_002' || eventId?.includes('corralito')) return 'arg_corralito';
   if (eventId === 'arg_003' || eventId?.includes('campo')) return 'arg_campo';
-  if (eventId?.startsWith('session_law_') || eventId?.startsWith('law_')) return 'pol_congress';
+  if (eventId?.includes('impeach') || eventId?.includes('juicio_politico')) return 'crisis_impeachment';
+  if (eventId?.includes('dolar') || eventId?.includes('dollar') || eventId?.includes('devalua') || eventId?.includes('tipo_cambio')) return 'arg_dolar';
+  if (eventId?.includes('fmi_deal') || eventId?.includes('imf_deal') || eventId?.includes('fmi_neg')) return 'arg_fmi_negocio';
+  if (eventId?.startsWith('session_law_') || eventId?.startsWith('law_')) return 'arg_congreso_ley';
 
   if (category === 'crisis') return 'crisis';
 
@@ -679,14 +684,40 @@ export function EventIllustration({
   eventCategory, presidentId, eventId = '', gameState, width = 320, height = 180,
 }: Props) {
   const scene = selectScene(eventCategory, eventId, gameState);
+  const imageUrl = useGameImage(scene);
+
+  // If we have a real AI-generated image, show it
+  if (imageUrl) {
+    return (
+      <div
+        style={{
+          width,
+          height,
+          overflow: 'hidden',
+          borderRadius: 8,
+          background: '#1a1a2e',
+          flexShrink: 0,
+        }}
+      >
+        <img
+          src={imageUrl}
+          alt={eventCategory}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+
+  // Fallback: inline SVG scenes
   return (
     <svg width={width} height={height} viewBox="0 0 320 180"
       xmlns="http://www.w3.org/2000/svg"
       style={{ width: '100%', height: '100%', display: 'block' }}
       preserveAspectRatio="xMidYMid meet"
       role="img" aria-label={`Ilustración: ${eventCategory}`}>
-      {scene === 'pol_congress'  && <ScenePolCongress presidentId={presidentId} />}
-      {scene === 'pol_scandal'   && <ScenePolScandal presidentId={presidentId} />}
+      {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} />}
+      {(scene === 'pol_scandal' || scene === 'arg_fmi_negocio')   && <ScenePolScandal presidentId={presidentId} />}
       {scene === 'pol_protest'   && <ScenePolProtest />}
       {scene === 'eco_inflation' && <SceneEcoInflation />}
       {scene === 'eco_reserves'  && <SceneEcoReserves />}
@@ -699,8 +730,8 @@ export function EventIllustration({
       {scene === 'int_trade'     && <SceneIntTrade />}
       {scene === 'arg_mundial'   && <SceneArgMundial />}
       {scene === 'arg_corralito' && <SceneArgCorralito />}
-      {scene === 'arg_campo'     && <SceneArgCampo />}
-      {scene === 'crisis'        && <SceneCrisis presidentId={presidentId} />}
+      {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}
+      {(scene === 'crisis' || scene === 'crisis_impeachment') && <SceneCrisis presidentId={presidentId} />}
     </svg>
   );
 }
