@@ -31,6 +31,7 @@ if (!IMG_TOKEN || !SUPABASE_URL || !SERVICE_ROLE_KEY) {
 const BUCKET       = 'game-images';
 const FOLDER       = 'illustrations';
 const IMG_MODEL     = 'stabilityai/stable-diffusion-xl-base-1.0';
+const IMG_BASE_URL  = 'https://image-api.invalid';
 const STYLE_SUFFIX = ', editorial cartoon illustration, Argentine political satire, bold black outlines, flat bright colors, newspaper caricature style, white background, no text, no words, no letters, no watermarks';
 const MANIFEST_PATH = path.join(__dirname, '../apps/web/src/assets/image-manifest.json');
 const RETRY_WAIT_MS = 25_000;
@@ -87,7 +88,7 @@ async function sleep(ms: number) {
 }
 
 async function generateImage(prompt: string): Promise<ArrayBuffer> {
-  const url = `https://image-api.invalid/models/${IMG_MODEL}`;
+  const url = `${IMG_BASE_URL}/models/${IMG_MODEL}`;
   let attempt = 0;
   while (attempt < 3) {
     const res = await fetch(url, {
