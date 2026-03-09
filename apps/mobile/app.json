@@ -25,7 +25,11 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      ["react-native-google-mobile-ads", {
+        "androidAppId": "ca-app-pub-1784864280582108~9429279056",
+        "iosAppId": "ca-app-pub-1784864280582108~8631056919"
+      }]
     ],
     "scheme": "republica",
     "experiments": {

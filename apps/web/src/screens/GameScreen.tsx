@@ -16,6 +16,7 @@ import type { PortraitMood } from '../components/illustrations/PixelPortrait.js'
 import { ArgentinaMapSVG } from '../components/illustrations/ArgentinaMapSVG.js';
 import { getAnibalLine } from '@republica/game-engine';
 import { UserMenu } from '../components/UserMenu.js';
+import { trackCongressSession, trackTurnCompleted } from '../lib/analytics.js';
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   easy: 'Fácil',
@@ -228,9 +229,10 @@ export default function GameScreen() {
                   card={currentCard}
                   gameState={gameState}
                   presidentId={presidentId}
-                  onComplete={(choiceIdx, negEffects) =>
-                    resolveCongressSession(choiceIdx, currentCard.id, negEffects)
-                  }
+                  onComplete={(choiceIdx, negEffects) => {
+                    trackCongressSession({ law: currentCard.id, turn: gameState.turn });
+                    resolveCongressSession(choiceIdx, currentCard.id, negEffects);
+                  }}
                 />
               ) : !isAnimating ? (
                 <EventCardComponent
@@ -238,7 +240,12 @@ export default function GameScreen() {
                   card={currentCard}
                   selectedIndex={pendingChoiceIndex}
                   onSelect={selectChoice}
-                  onConfirm={confirmChoice}
+                  onConfirm={() => {
+                    if (pendingChoiceIndex !== null && currentCard) {
+                      trackTurnCompleted({ turn_number: gameState.turn, event_category: currentCard.category, choice_index: pendingChoiceIndex });
+                    }
+                    confirmChoice();
+                  }}
                   disabled={isAnimating}
                   presidentId={presidentId}
                   gameState={gameState}

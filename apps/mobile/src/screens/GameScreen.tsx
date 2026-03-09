@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, {
@@ -17,6 +18,7 @@ import Animated, {
   SlideInDown,
 } from 'react-native-reanimated';
 import { useMobileGameStore } from '../stores/gameStore.js';
+import { useRewardedAd } from '../hooks/useRewardedAd.js';
 
 export default function GameScreen() {
   const router = useRouter();
@@ -27,11 +29,28 @@ export default function GameScreen() {
   const selectChoice = useMobileGameStore((s) => s.selectChoice);
   const confirmChoice = useMobileGameStore((s) => s.confirmChoice);
   const advanceTurnAction = useMobileGameStore((s) => s.advanceTurnAction);
+  const [independentVoteRevealed, setIndependentVoteRevealed] = useState(false);
+  const [independentVote, setIndependentVote] = useState<string | null>(null);
+
+  const { isLoaded: adReady, isLoading: adLoading, showAd, adsDisabled } = useRewardedAd({
+    placement: 'congress_reveal',
+    onRewarded: () => {
+      // Reveal a mock "independent bloc" tendency
+      const options = ['Probablemente a favor', 'Incierto — podría ir a cualquier lado', 'En contra'];
+      setIndependentVote(options[Math.floor(Math.random() * options.length)]);
+      setIndependentVoteRevealed(true);
+    },
+  });
 
   useEffect(() => {
     if (!gameState) { router.replace('/'); return; }
     if (gameState.isGameOver) { router.replace('/gameover'); return; }
   }, [gameState, router]);
+
+  useEffect(() => {
+    setIndependentVoteRevealed(false);
+    setIndependentVote(null);
+  }, [currentCard?.id]);
 
   useEffect(() => {
     if (isAnimating) {
@@ -108,6 +127,30 @@ export default function GameScreen() {
             <TouchableOpacity onPress={confirmChoice} style={styles.confirmButton} activeOpacity={0.9}>
               <Text style={styles.confirmButtonText}>Confirmar Decisión</Text>
             </TouchableOpacity>
+          )}
+
+          {/* Congress reveal — rewarded ad */}
+          {currentCard.isLaw && !adsDisabled && !independentVoteRevealed && (
+            <TouchableOpacity
+              onPress={showAd}
+              style={[styles.revealButton, !adReady && styles.disabledButton]}
+              disabled={!adReady || adLoading}
+              activeOpacity={0.85}
+            >
+              {adLoading ? (
+                <ActivityIndicator color="#d4af37" size="small" />
+              ) : (
+                <Text style={styles.revealButtonText}>
+                  📺 Ver anuncio → Revelar voto independiente
+                </Text>
+              )}
+            </TouchableOpacity>
+          )}
+          {independentVoteRevealed && independentVote && (
+            <View style={styles.revealResult}>
+              <Text style={styles.revealResultLabel}>🗳 Bloque Independiente:</Text>
+              <Text style={styles.revealResultValue}>{independentVote}</Text>
+            </View>
           )}
         </Animated.View>
       )}
@@ -277,6 +320,27 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     letterSpacing: 1,
   },
+  revealButton: {
+    backgroundColor: '#162d4a',
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#1e3a5f',
+  },
+  revealButtonText: { color: '#d4af37', fontSize: 12, fontFamily: 'monospace' },
+  revealResult: {
+    backgroundColor: '#091525',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#d4af37',
+  },
+  revealResultLabel: { fontSize: 11, color: '#d4af37', fontFamily: 'monospace', marginBottom: 4 },
+  revealResultValue: { fontSize: 14, color: '#f0f0f0', fontWeight: '700', fontFamily: 'monospace' },
+  disabledButton: { opacity: 0.5 },
   loadingContainer: {
     alignItems: 'center',
     justifyContent: 'center',
