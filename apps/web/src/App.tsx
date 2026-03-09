@@ -1,7 +1,9 @@
-import React, { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { useGameStore } from './stores/gameStore.js';
 import { SoundProvider } from './components/SoundManager.js';
+import { initAnalytics } from './lib/analytics.js';
+import { useEntitlements } from './hooks/useEntitlements.js';
 
 const HomeScreen = lazy(() => import('./screens/HomeScreen.js'));
 const GameScreen = lazy(() => import('./screens/GameScreen.js'));
@@ -25,11 +27,32 @@ function LoadingSpinner() {
   );
 }
 
+function PurchaseSuccessToast() {
+  const [params] = useSearchParams();
+  const { refetch } = useEntitlements();
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (params.get('purchase_success') === '1') {
+      setShow(true);
+      void refetch();
+      setTimeout(() => setShow(false), 4000);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  if (!show) return null;
+  return (
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-800 border border-emerald-500 text-emerald-100 font-mono text-sm px-6 py-3 rounded-xl shadow-xl">
+      ✅ Compra exitosa — contenido desbloqueado
+    </div>
+  );
+}
+
 export default function App() {
+  useEffect(() => { initAnalytics(); }, []);
   return (
     <SoundProvider>
     <BrowserRouter>
       <Suspense fallback={<LoadingSpinner />}>
+        <PurchaseSuccessToast />
         <Routes>
           <Route path="/" element={<HomeScreen />} />
           <Route path="/president" element={<PresidentSelectRoute />} />

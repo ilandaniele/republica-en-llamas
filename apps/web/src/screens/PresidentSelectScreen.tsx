@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameStore } from '../stores/gameStore.js';
 import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
+import { useEntitlements } from '../hooks/useEntitlements.js';
+import { PaywallModal } from '../components/PaywallModal.js';
 
 interface Archetype {
   id: string;
@@ -120,6 +122,25 @@ export default function PresidentSelectScreen() {
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
   const setCrisisExpress = useGameStore((s) => s.setCrisisExpress);
   const [selected, setSelected] = useState<string>('populista');
+  const [paywall, setPaywall] = useState<{ entitlement: import('@republica/game-engine').EntitlementId; trigger: string } | null>(null);
+  const { hasEntitlement } = useEntitlements();
+
+  const canPlay = (archetypeId: string) => {
+    if (archetypeId === 'ingeniero') return true;
+    return hasEntitlement('presidents_pack') || hasEntitlement('full_access');
+  };
+
+  const canUseCrisisExpress = hasEntitlement('mode_crisis_express') || hasEntitlement('full_access');
+
+  const handleSelect = (id: string) => {
+    if (!canPlay(id)) { setPaywall({ entitlement: 'presidents_pack', trigger: 'president_select' }); return; }
+    setSelected(id);
+  };
+
+  const handleToggleCrisisExpress = () => {
+    if (!canUseCrisisExpress && !isCrisisExpress) { setPaywall({ entitlement: 'mode_crisis_express', trigger: 'president_select' }); return; }
+    setCrisisExpress(!isCrisisExpress);
+  };
 
   const handleConfirm = () => {
     setPresidentId(selected);
@@ -148,14 +169,24 @@ export default function PresidentSelectScreen() {
 
         {/* Archetype grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {ARCHETYPES.map((a) => (
-            <ArchetypeCard
-              key={a.id}
-              archetype={a}
-              selected={selected === a.id}
-              onSelect={() => setSelected(a.id)}
-            />
-          ))}
+          {ARCHETYPES.map((a) => {
+            const locked = !canPlay(a.id);
+            return (
+              <div key={a.id} className="relative">
+                <ArchetypeCard
+                  archetype={a}
+                  selected={selected === a.id}
+                  onSelect={() => handleSelect(a.id)}
+                />
+                {locked && (
+                  <div className="absolute inset-0 rounded-xl flex flex-col items-center justify-center bg-navy-900/70 pointer-events-none">
+                    <span className="text-3xl">🔒</span>
+                    <span className="text-gold-400 font-mono text-xs mt-1">$2.99</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Crisis Express toggle */}
@@ -166,7 +197,7 @@ export default function PresidentSelectScreen() {
           className="mb-4"
         >
           <button
-            onClick={() => setCrisisExpress(!isCrisisExpress)}
+            onClick={handleToggleCrisisExpress}
             className={`w-full flex items-center justify-between px-5 py-4 rounded-xl border-2 transition-all duration-200 ${
               isCrisisExpress
                 ? 'bg-crimson-900/50 border-crimson-500 shadow-lg shadow-crimson-500/20'
@@ -175,7 +206,7 @@ export default function PresidentSelectScreen() {
           >
             <div className="text-left">
               <p className={`font-mono font-bold text-sm uppercase tracking-widest ${isCrisisExpress ? 'text-crimson-300' : 'text-smoke-400'}`}>
-                ⚡ Crisis Express
+                ⚡ Crisis Express {!canUseCrisisExpress && <span className="ml-2 text-gold-400">🔒 $1.99</span>}
               </p>
               <p className="font-mono text-xs text-smoke-500 mt-0.5">
                 45s por turno · 15 turnos · ×1.5 daño · ×2 puntaje
@@ -212,6 +243,15 @@ export default function PresidentSelectScreen() {
           ← Volver al inicio
         </button>
       </div>
+
+      {/* Paywall modal */}
+      {paywall && (
+        <PaywallModal
+          entitlement={paywall.entitlement}
+          triggerPoint={paywall.trigger}
+          onClose={() => setPaywall(null)}
+        />
+      )}
     </motion.div>
   );
 }

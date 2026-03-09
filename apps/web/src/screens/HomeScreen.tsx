@@ -7,6 +7,9 @@ import { useGameStore } from '../stores/gameStore.js';
 import { useAuth } from '../hooks/useAuth.js';
 import { isOfflineMode } from '../lib/supabase.js';
 import { UserMenu } from '../components/UserMenu.js';
+import { useEntitlements, getDailyRunsRemaining, consumeDailyRun } from '../hooks/useEntitlements.js';
+import { BuyButton } from '../components/BuyButton.js';
+import { trackGameStarted } from '../lib/analytics.js';
 
 type AuthMode = 'menu' | 'login' | 'register';
 
@@ -123,27 +126,26 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const startNewGame = useGameStore((s) => s.startNewGame);
   const gameState = useGameStore((s) => s.gameState);
+  const presidentId = useGameStore((s) => s.presidentId);
   const { user, loading: authLoading, signOut } = useAuth();
+  const { hasEntitlement, hasPremium } = useEntitlements();
   const [authMode, setAuthMode] = useState<AuthMode>('menu');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('normal');
 
-  const handleGuest = () => {
-    startNewGame(selectedDifficulty);
+  const dailyRemaining = getDailyRunsRemaining();
+  const dailyLimitReached = !hasPremium && dailyRemaining <= 0;
+
+  const startGame = (difficulty: Difficulty) => {
+    consumeDailyRun();
+    startNewGame(difficulty);
+    trackGameStarted({ difficulty, president: presidentId, mode: 'normal' });
     navigate('/president');
   };
 
-  const handleContinue = () => {
-    navigate('/game');
-  };
-
-  const handleLogout = () => {
-    void signOut();
-  };
-
-  const handleLoggedInStart = () => {
-    startNewGame(selectedDifficulty);
-    navigate('/president');
-  };
+  const handleGuest = () => startGame(selectedDifficulty);
+  const handleLoggedInStart = () => startGame(selectedDifficulty);
+  const handleContinue = () => { navigate('/game'); };
+  const handleLogout = () => { void signOut(); };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
@@ -235,8 +237,17 @@ export default function HomeScreen() {
               </div>
 
               {/* Auth / Start buttons */}
+              {/* Daily run limit banner */}
+              {dailyLimitReached && (
+                <div className="mb-4 bg-crimson-900/40 border border-crimson-700 rounded-xl p-4 text-center">
+                  <p className="text-crimson-300 font-mono text-sm font-bold mb-1">⏰ Límite diario alcanzado (3/3)</p>
+                  <p className="text-smoke-400 font-mono text-xs mb-3">Volvé mañana o desbloqueá acceso ilimitado</p>
+                  <BuyButton entitlement="full_access" label="Acceso Total — $5.99" className="mx-auto" />
+                </div>
+              )}
+
               <div className="space-y-3">
-                {user ? (
+                {!dailyLimitReached && (user ? (
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -276,7 +287,7 @@ export default function HomeScreen() {
                       {isOfflineMode ? 'Nueva Partida' : 'Jugar como invitado'}
                     </motion.button>
                   </>
-                )}
+                ))}
 
                 {gameState && !gameState.isGameOver && (
                   <motion.button

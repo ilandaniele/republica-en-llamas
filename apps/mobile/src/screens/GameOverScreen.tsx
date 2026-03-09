@@ -1,7 +1,9 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useMobileGameStore } from '../stores/gameStore.js';
+import { useRewardedAd } from '../hooks/useRewardedAd.js';
+import { trackGameOver } from '../lib/analytics.js';
 
 const HEADLINES: Record<string, string> = {
   hyperinflation: 'HIPERINFLACIÓN: La República Colapsa',
@@ -16,12 +18,34 @@ export default function GameOverScreen() {
   const router = useRouter();
   const gameState = useMobileGameStore((s) => s.gameState);
   const resetGame = useMobileGameStore((s) => s.resetGame);
+  const restoreFromTurn = useMobileGameStore((s) => s.restoreFromTurn);
 
   if (!gameState) { router.replace('/'); return null; }
 
   const reason = gameState.gameOverReason ?? 'hyperinflation';
   const isWin = reason === 'term_complete';
   const headline = HEADLINES[reason] ?? 'EL GOBIERNO HA CAÍDO';
+  const continueTurn = Math.max(1, gameState.turn - 3);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { isLoaded: adReady, isLoading: adLoading, showAd, adsDisabled } = useRewardedAd({
+    placement: 'game_over',
+    onRewarded: () => {
+      if (restoreFromTurn) restoreFromTurn(continueTurn);
+      router.replace('/game');
+    },
+  });
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    trackGameOver({
+      turns_survived: gameState.turn,
+      reason,
+      score: gameState.score,
+      difficulty: gameState.difficulty ?? 'normal',
+      president: gameState.presidentId ?? 'ingeniero',
+    });
+  }, []);
 
   const handlePlayAgain = () => {
     resetGame();
@@ -52,6 +76,24 @@ export default function GameOverScreen() {
           </Text>
         </View>
       </View>
+
+      {/* Rewarded ad continue */}
+      {!isWin && !adsDisabled && (
+        <TouchableOpacity
+          onPress={showAd}
+          style={[styles.continueButton, !adReady && styles.disabledButton]}
+          disabled={!adReady || adLoading}
+          activeOpacity={0.85}
+        >
+          {adLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.continueText}>
+              📺 Ver anuncio → Continuar desde T{continueTurn}
+            </Text>
+          )}
+        </TouchableOpacity>
+      )}
 
       {/* Actions */}
       <TouchableOpacity onPress={handlePlayAgain} style={styles.playAgainButton} activeOpacity={0.9}>
@@ -131,4 +173,15 @@ const styles = StyleSheet.create({
   playAgainText: { color: '#f0f0f0', fontSize: 16, fontWeight: '900', letterSpacing: 2 },
   homeButton: { padding: 14, alignItems: 'center' },
   homeText: { color: '#606060', fontSize: 14, fontFamily: 'monospace' },
+  continueButton: {
+    backgroundColor: '#1a5276',
+    borderRadius: 10,
+    padding: 16,
+    alignItems: 'center',
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#2e86c1',
+  },
+  disabledButton: { opacity: 0.5 },
+  continueText: { color: '#aed6f1', fontSize: 14, fontWeight: '700', fontFamily: 'monospace' },
 });

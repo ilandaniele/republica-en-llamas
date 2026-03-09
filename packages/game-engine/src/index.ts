@@ -38,6 +38,8 @@ export { checkGameOver } from './gameOver.js';
 export { rollInternationalShock } from './shocks.js';
 export { initGame, applyChoice, advanceTurn, drawNextCard, getSafestChoiceIndex, applyChoiceEffects } from './gameLoop.js';
 export { ALL_CARDS, CARD_REGISTRY, getCard, drawCard } from './events/index.js';
+export type { EntitlementId, EntitlementProduct } from './entitlements.js';
+export { ENTITLEMENT_PRODUCTS, FREE_TIER, isFree, entitlementsForFeature } from './entitlements.js';
 export { es } from './i18n/es.js';
 export { en } from './i18n/en.js';
 export { clamp, createRng } from './utils.js';

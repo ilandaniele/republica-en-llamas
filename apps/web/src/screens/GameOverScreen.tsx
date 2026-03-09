@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth.js';
 import { useSaveRun } from '../hooks/useSupabase.js';
 import { getFatalDecision, getCounterfactual, getBestMomentTurn, getAnibalLine } from '@republica/game-engine';
 import { GameOverNewspaper } from '../components/illustrations/GameOverNewspaper.js';
+import { trackGameOver, trackShareClicked } from '../lib/analytics.js';
 
 const HEADLINES: Record<string, string> = {
   hyperinflation: 'LA HIPERINFLACIÓN DERRUMBA LA REPÚBLICA',
@@ -51,6 +52,18 @@ export default function GameOverScreen() {
 
   useEffect(() => {
     updatePersonalBest();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (gameState) {
+      trackGameOver({
+        turns_survived: gameState.turn,
+        reason: gameState.gameOverReason ?? 'hyperinflation',
+        score: gameState.score,
+        difficulty: gameState.difficulty,
+        president: presidentId,
+      });
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!gameState) { navigate('/'); return null; }
@@ -102,16 +115,19 @@ export default function GameOverScreen() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+    trackShareClicked({ share_type: 'game_over' });
   };
 
   const handleShareX = () => {
     const encoded = encodeURIComponent(viralText.substring(0, 280));
     window.open(`https://twitter.com/intent/tweet?text=${encoded}`, '_blank');
+    trackShareClicked({ share_type: 'score' });
   };
 
   const handleShareWhatsApp = () => {
     const encoded = encodeURIComponent(viralText);
     window.open(`https://wa.me/?text=${encoded}`, '_blank');
+    trackShareClicked({ share_type: 'game_over' });
   };
 
   const handlePlayAgain = () => {
