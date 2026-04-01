@@ -8,12 +8,28 @@
     --color-crimson: #cc2222;
     --color-gold: #d4af37;
     --color-smoke: #f0f0f0;
+    /* ── Argentine Pixel Design System ── */
+    --celeste:        #74ACDF;
+    --celeste-dark:   #2E6DA4;
+    --celeste-light:  #B8D9F0;
+    --white:          #F4F4F0;
+    --gold:           #F6B40E;
+    --gold-dark:      #C8960C;
+    --crisis-red:     #CC2200;
+    --crisis-dark:    #8B0000;
+    --asado-brown:    #8B4513;
+    --mate-green:     #4A7C3F;
+    --peso-grey:      #888888;
+    --night-blue:     #0D1B2A;
+    --concrete:       #2A2A2A;
   }
 
   * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    image-rendering: pixelated;
+    border-radius: 0 !important;
   }
 
   html {
@@ -23,9 +39,10 @@
 
   body {
     @apply bg-navy-900 text-smoke-100 font-sans antialiased;
+    background-color: var(--night-blue);
     background-image:
-      radial-gradient(ellipse at 20% 80%, rgba(204, 34, 34, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(30, 58, 95, 0.3) 0%, transparent 50%);
+      radial-gradient(ellipse at 20% 80%, rgba(204, 34, 34, 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(46, 109, 164, 0.15) 0%, transparent 50%);
     min-height: 100dvh;
     overflow-x: hidden;
   }
@@ -80,19 +97,132 @@
 
   /* ─── Card styles ─────────────────────────── */
   .event-card {
-    @apply bg-navy-800 border border-navy-600 rounded-lg p-6 shadow-2xl;
+    @apply bg-navy-800 border border-navy-600 p-6 shadow-2xl;
     background-image: linear-gradient(135deg, rgba(30,58,95,0.9), rgba(9,21,37,0.95));
   }
 
   .choice-card {
-    @apply bg-navy-700 border border-navy-500 rounded-md p-4 cursor-pointer;
-    transition: all 0.2s ease;
+    @apply bg-navy-700 border border-navy-500 p-4 cursor-pointer;
+    transition: all 0.15s ease;
   }
 
   .choice-card:hover {
     @apply border-gold-400;
     transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+  }
+
+  /* ─── Pixel border (Argentine flag colors) ─── */
+  .pixel-border {
+    border: 3px solid var(--celeste);
+    box-shadow:
+      4px 0 0 var(--celeste-dark),
+      -4px 0 0 var(--celeste-dark),
+      0 4px 0 var(--celeste-dark),
+      0 -4px 0 var(--celeste-dark);
+  }
+
+  .pixel-border-gold {
+    border: 3px solid var(--gold);
+    box-shadow:
+      4px 0 0 var(--gold-dark),
+      -4px 0 0 var(--gold-dark),
+      0 4px 0 var(--gold-dark),
+      0 -4px 0 var(--gold-dark);
+  }
+
+  .pixel-border-crisis {
+    border: 3px solid var(--crisis-red);
+    box-shadow:
+      4px 0 0 var(--crisis-dark),
+      -4px 0 0 var(--crisis-dark),
+      0 4px 0 var(--crisis-dark),
+      0 -4px 0 var(--crisis-dark);
+  }
+
+  /* ─── Pixel stat bars ─────────────────────── */
+  .pixel-bar-container {
+    height: 12px;
+    background: var(--concrete);
+    border: 2px solid #444;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pixel-bar-fill {
+    height: 100%;
+    background: repeating-linear-gradient(
+      90deg,
+      currentColor 0px,
+      currentColor 10px,
+      transparent 10px,
+      transparent 12px
+    );
+    transition: width 0.5s steps(10);
+  }
+
+  .pixel-bar-fill.bar-critical {
+    color: var(--crisis-red);
+    animation: pulse-red 1.5s ease-in-out infinite;
+  }
+  .pixel-bar-fill.bar-warning { color: var(--gold); }
+  .pixel-bar-fill.bar-good    { color: var(--mate-green); }
+
+  /* ─── Pixel choice cards ─────────────────── */
+  .pixel-choice-card {
+    background: #1a1a2e;
+    border: 2px solid #444;
+    padding: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  }
+
+  .pixel-choice-card:hover {
+    border-color: var(--celeste);
+    background: #0d2137;
+    transform: scale(1.02);
+  }
+
+  .pixel-choice-card.selected {
+    border-color: var(--gold);
+    background: #1a1500;
+    box-shadow: 0 0 12px rgba(246, 180, 14, 0.4), 0 0 24px rgba(246, 180, 14, 0.2);
+  }
+
+  /* Pixel corner ornaments */
+  .pixel-choice-card::before,
+  .pixel-choice-card::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--celeste);
+  }
+
+  .pixel-choice-card.selected::before,
+  .pixel-choice-card.selected::after {
+    background: var(--gold);
+  }
+
+  .pixel-choice-card::before {
+    top: 0;
+    left: 0;
+    box-shadow: 8px 0 0 var(--celeste-dark), 0 8px 0 var(--celeste-dark);
+  }
+
+  .pixel-choice-card::after {
+    bottom: 0;
+    right: 0;
+    box-shadow: -8px 0 0 var(--celeste-dark), 0 -8px 0 var(--celeste-dark);
+  }
+
+  .pixel-choice-card.selected::before {
+    box-shadow: 8px 0 0 var(--gold-dark), 0 8px 0 var(--gold-dark);
+  }
+
+  .pixel-choice-card.selected::after {
+    box-shadow: -8px 0 0 var(--gold-dark), 0 -8px 0 var(--gold-dark);
   }
 
   /* ─── Choice ripple effect ────────────────── */
@@ -132,11 +262,11 @@
   }
 
   .meter-bar {
-    @apply h-2 rounded-full bg-navy-600 overflow-hidden;
+    @apply h-2 bg-navy-600 overflow-hidden;
   }
 
   .meter-fill {
-    @apply h-full rounded-full transition-all duration-700 ease-out;
+    @apply h-full transition-all duration-700 ease-out;
   }
 
   /* ─── Crisis vignette overlay ─────────────── */
@@ -161,28 +291,63 @@
     );
   }
 
+  /* ─── Pixel ticker ─────────────────────────── */
+  .ticker-container {
+    background: var(--crisis-red);
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .ticker-container.crisis-flash {
+    animation: crisis-ticker-flash 1s ease-in-out infinite;
+  }
+
+  .ticker-text {
+    display: inline-block;
+    animation: ticker-scroll 18s linear infinite;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: white;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  /* ─── Pixel confetti ───────────────────────── */
+  .pixel-confetti-piece {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    animation: pixel-confetti 1.5s ease-out forwards;
+  }
+
+  /* ─── Crowd torches ────────────────────────── */
+  .pixel-crowd-torches {
+    animation: crowd-enter 2s ease-in-out forwards;
+    pointer-events: none;
+  }
+
   /* ─── Scrollbar styling ───────────────────── */
   ::-webkit-scrollbar {
     width: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #091525;
+    background: var(--night-blue);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #1e3a5f;
-    border-radius: 3px;
+    background: var(--celeste-dark);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #d4af37;
+    background: var(--gold);
   }
 }
 
 @layer utilities {
   .text-shadow-gold {
-    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    text-shadow: 0 0 20px rgba(246, 180, 14, 0.6);
   }
 
   .text-shadow-crimson {
@@ -190,10 +355,23 @@
   }
 
   .glow-gold {
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 20px rgba(246, 180, 14, 0.4);
   }
 
   .glow-crimson {
     box-shadow: 0 0 20px rgba(204, 34, 34, 0.4);
+  }
+
+  .glow-celeste {
+    box-shadow: 0 0 16px rgba(116, 172, 223, 0.5);
+  }
+
+  .font-pixel {
+    font-family: 'Press Start 2P', monospace;
+    image-rendering: pixelated;
+  }
+
+  .font-vt323 {
+    font-family: 'VT323', monospace;
   }
 }

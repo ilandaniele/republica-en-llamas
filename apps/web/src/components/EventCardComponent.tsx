@@ -97,7 +97,10 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       </div>
 
       {/* Title */}
-      <h2 className={`font-serif text-2xl font-bold mb-3 ${isCrisis ? 'text-crimson-400 text-shadow-crimson' : 'text-smoke-100'}`}>
+      <h2
+        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: isCrisis ? '9px' : '10px', lineHeight: '1.6' }}
+        className={`mb-3 uppercase ${isCrisis ? 'text-crimson-400 text-shadow-crimson' : 'text-smoke-100'}`}
+      >
         {t(card.titleKey)}
       </h2>
 
@@ -125,7 +128,7 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       </div>
 
       {/* Body */}
-      <p className="text-smoke-300 text-sm leading-relaxed mb-6">
+      <p className="text-smoke-300 leading-relaxed mb-6" style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }}>
         {t(card.bodyKey)}
       </p>
 
@@ -133,6 +136,7 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
         {card.choices.map((choice, index) => {
           const isSelected = selectedIndex === index;
+          const letter = String.fromCharCode(65 + index);
 
           return (
             <motion.button
@@ -140,31 +144,43 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0, scale: isSelected ? 1.02 : 1 }}
               transition={{ duration: 0.2, delay: index * 0.05 }}
-              whileHover={!disabled ? { y: -2, boxShadow: '0 6px 20px rgba(212, 175, 55, 0.25)' } : {}}
               whileTap={!disabled ? { scale: 0.97 } : {}}
               onClick={() => handleChoiceClick(index)}
-              className={`choice-card w-full text-left transition-colors duration-150 ${
-                isSelected
-                  ? 'border-gold-400 bg-navy-600 glow-gold'
-                  : 'border-navy-500 hover:border-navy-400'
-              }`}
+              className={`pixel-choice-card w-full text-left ${isSelected ? 'selected' : ''}`}
             >
               {ripplingChoice === index && <span className="choice-ripple" />}
-              <div className="flex items-start gap-3">
-                <span className={`font-mono font-bold text-sm mt-0.5 shrink-0 ${isSelected ? 'text-gold-300' : 'text-smoke-500'}`}>
-                  {String.fromCharCode(65 + index)}.
+              {/* Letter badge */}
+              <div className="flex items-start gap-2 mb-2">
+                <span
+                  style={{
+                    background: isSelected ? 'var(--gold)' : 'var(--celeste-dark)',
+                    color: isSelected ? '#0D1B2A' : 'white',
+                    fontFamily: "'Press Start 2P', monospace",
+                    fontSize: '8px',
+                    padding: '3px 5px',
+                    display: 'inline-block',
+                    flexShrink: 0,
+                  }}
+                >
+                  {letter}
                 </span>
-                <span className={`text-sm leading-relaxed ${isSelected ? 'text-smoke-100' : 'text-smoke-300'}`}>
+                <span
+                  style={{ fontFamily: "'VT323', monospace", fontSize: '16px', lineHeight: '1.3' }}
+                  className={isSelected ? 'text-smoke-100' : 'text-smoke-300'}
+                >
                   {t(choice.textKey)}
                 </span>
                 {isEasy && index === safestIndex && (
-                  <span className="ml-auto shrink-0 text-xs text-gold-400 font-mono" title="Opción más segura (consejero)">⭐</span>
+                  <span className="ml-auto shrink-0 text-xs text-gold-400" title="Opción más segura">⭐</span>
                 )}
               </div>
               {choice.requiresVote && (
-                <div className="mt-2 text-xs text-smoke-500 font-mono flex items-center gap-1">
+                <div
+                  style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+                  className="text-smoke-500 flex items-center gap-1 mt-1"
+                >
                   <span>🗳</span>
-                  <span>Requiere votación en el Congreso</span>
+                  <span>REQUIERE CONGRESO</span>
                 </div>
               )}
             </motion.button>
@@ -182,11 +198,15 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
           <button
             onClick={onConfirm}
             disabled={disabled}
-            className="w-full bg-gold-500 hover:bg-gold-400 text-navy-900 font-serif font-bold py-3 px-6 rounded-md transition-colors duration-200 uppercase tracking-wider disabled:opacity-50"
+            className="w-full pixel-border-gold bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold py-3 px-6 transition-colors duration-200 disabled:opacity-50"
+            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px' }}
           >
-            Confirmar Decisión →
+            CONFIRMAR TURNO ▶
           </button>
-          <p className="text-smoke-600 font-mono text-xs text-center mt-1">
+          <p
+            style={{ fontFamily: "'VT323', monospace", fontSize: '14px' }}
+            className="text-smoke-600 text-center mt-1"
+          >
             Podés cambiar tu opción antes de confirmar
           </p>
         </motion.div>

@@ -5,6 +5,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        celeste: {
+          DEFAULT: '#74ACDF',
+          dark: '#2E6DA4',
+          light: '#B8D9F0',
+        },
+        asado: '#8B4513',
+        mate: '#4A7C3F',
+        peso: '#888888',
+        nightBlue: '#0D1B2A',
+        concrete: '#2A2A2A',
         navy: {
           50: '#eef2ff',
           100: '#e0e7ff',
@@ -31,6 +41,7 @@ const config: Config = {
           400: '#f5d020',
           500: '#d4af37',
           600: '#b8960a',
+          dark: '#C8960C',
         },
         smoke: {
           50: '#f8f8f8',
@@ -43,9 +54,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Georgia', 'serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        serif: ['Press Start 2P', 'monospace'],
+        mono: ['VT323', 'monospace'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        classic: ['Playfair Display', 'Georgia', 'serif'],
+        code: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       keyframes: {
         'fire-flicker': {
@@ -85,6 +98,56 @@ const config: Config = {
           '0%, 100%': { filter: 'brightness(1)' },
           '30%': { filter: 'brightness(1.8) saturate(1.5)', backgroundColor: '#ef4444' },
         },
+        'ticker-scroll': {
+          '0%':   { transform: 'translateX(100vw)' },
+          '100%': { transform: 'translateX(-200%)' },
+        },
+        'pixel-float': {
+          '0%, 100%': { transform: 'translateY(0px)', opacity: '1' },
+          '50%':  { transform: 'translateY(-12px)', opacity: '0.7' },
+          '100%': { transform: 'translateY(-24px)', opacity: '0' },
+        },
+        'pixel-rise': {
+          '0%':   { transform: 'translateY(0)', opacity: '0.8' },
+          '100%': { transform: 'translateY(-30px)', opacity: '0' },
+        },
+        'pixel-confetti': {
+          '0%':   { transform: 'translateY(-20px) rotate(0deg)', opacity: '1' },
+          '100%': { transform: 'translateY(80px) rotate(360deg)', opacity: '0' },
+        },
+        'blink-star': {
+          '0%, 100%': { opacity: '0.2' },
+          '50%': { opacity: '1' },
+        },
+        'pixel-fire': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '33%':  { transform: 'translateY(-3px)' },
+          '66%':  { transform: 'translateY(-6px)' },
+        },
+        'crisis-ticker-flash': {
+          '0%, 100%': { backgroundColor: '#CC2200' },
+          '50%': { backgroundColor: '#8B0000' },
+        },
+        'crowd-enter': {
+          '0%':   { transform: 'translateY(100%)', opacity: '0' },
+          '20%':  { transform: 'translateY(0)', opacity: '1' },
+          '80%':  { transform: 'translateY(0)', opacity: '1' },
+          '100%': { transform: 'translateY(0)', opacity: '0' },
+        },
+        'colectivo-move': {
+          '0%':   { transform: 'translateX(-120px)' },
+          '100%': { transform: 'translateX(900px)' },
+        },
+        'idle-look': {
+          '0%':   { transform: 'translateX(0)' },
+          '25%':  { transform: 'translateX(2px)' },
+          '75%':  { transform: 'translateX(-2px)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        'dolar-float-up': {
+          '0%':   { transform: 'translateY(0)', opacity: '1' },
+          '100%': { transform: 'translateY(-60px)', opacity: '0' },
+        },
       },
       animation: {
         'fire-flicker': 'fire-flicker 0.8s ease-in-out infinite',
@@ -95,6 +158,17 @@ const config: Config = {
         'ripple': 'ripple 0.4s ease-out',
         'bar-flash-up': 'bar-flash-up 0.6s ease-out',
         'bar-flash-down': 'bar-flash-down 0.6s ease-out',
+        'ticker-scroll': 'ticker-scroll 18s linear infinite',
+        'pixel-float': 'pixel-float 1.5s ease-out forwards',
+        'pixel-rise': 'pixel-rise 1.2s ease-out forwards',
+        'pixel-confetti': 'pixel-confetti 1.5s ease-out forwards',
+        'blink-star': 'blink-star 2s ease-in-out infinite',
+        'pixel-fire': 'pixel-fire 0.5s ease-in-out infinite',
+        'crisis-ticker-flash': 'crisis-ticker-flash 1s ease-in-out infinite',
+        'crowd-enter': 'crowd-enter 2s ease-in-out forwards',
+        'colectivo-move': 'colectivo-move 30s linear infinite',
+        'idle-look': 'idle-look 0.8s ease-in-out',
+        'dolar-float-up': 'dolar-float-up 1.5s ease-out forwards',
       },
       backgroundImage: {
         'noise': "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E\")",

@@ -53,14 +53,18 @@ export function TutorialOverlay() {
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
         onClick={(e) => e.target === e.currentTarget && completeTutorialStep()}
       >
-        <div className="bg-navy-800 border border-gold-500 rounded-xl p-8 max-w-md mx-4 shadow-2xl glow-gold">
-          <div className="text-gold-400 font-mono text-xs uppercase tracking-widest mb-3">
-            Tutorial {tutorialStep + 1}/{TUTORIAL_STEPS.length}
-          </div>
-          <h2 className="font-serif text-2xl font-bold text-smoke-100 mb-3">
+        <div className="pixel-border bg-navy-800 p-8 max-w-md mx-4 shadow-2xl glow-celeste">
+          <div
+            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+            className="text-gold-400 uppercase mb-3"
+          >TUTORIAL {tutorialStep + 1}/{TUTORIAL_STEPS.length}</div>
+          <h2
+            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', lineHeight: '1.8' }}
+            className="text-smoke-100 mb-3"
+          >
             {step.title}
           </h2>
-          <p className="text-smoke-300 leading-relaxed mb-6">{step.body}</p>
+          <p style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }} className="text-smoke-300 leading-relaxed mb-6">{step.body}</p>
           <div className="flex justify-between items-center">
             <div className="flex gap-1">
               {TUTORIAL_STEPS.map((_, i) => (
@@ -72,9 +76,10 @@ export function TutorialOverlay() {
             </div>
             <button
               onClick={isLast ? completeTutorial : completeTutorialStep}
-              className="bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold py-2 px-6 rounded-md transition-colors font-serif"
+              className="pixel-border-gold bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold py-2 px-6 transition-colors"
+              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
             >
-              {isLast ? 'Comenzar' : 'Siguiente →'}
+              {isLast ? 'COMENZAR' : 'SIGUIENTE ▶'}
             </button>
           </div>
         </div>

@@ -14,14 +14,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.republica.enflamas"
+      "bundleIdentifier": "com.republicaenllamas"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#040c17"
       },
-      "package": "com.republica.enflamas"
+      "package": "com.republicaenllamas"
     },
     "plugins": [
       "expo-router",

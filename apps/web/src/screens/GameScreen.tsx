@@ -13,10 +13,11 @@ import { DecisionDiary } from '../components/DecisionDiary.js';
 import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
 import { CongressSession } from '../components/CongressSession.js';
 import type { PortraitMood } from '../components/illustrations/PixelPortrait.js';
-import { ArgentinaMapSVG } from '../components/illustrations/ArgentinaMapSVG.js';
-import { getAnibalLine } from '@republica/game-engine';
 import { UserMenu } from '../components/UserMenu.js';
 import { trackCongressSession, trackTurnCompleted } from '../lib/analytics.js';
+import { BuenosAiresBackground } from '../components/illustrations/BuenosAiresBackground.js';
+import { AnibalTicker } from '../components/AnibalTicker.js';
+import { PixelDolar } from '../components/illustrations/PixelDolar.js';
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   easy: 'Fácil',
@@ -54,6 +55,15 @@ export default function GameScreen() {
   const [crisisTimeLeft, setCrisisTimeLeft] = useState(45);
   const [cardShaking, setCardShaking] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Easter egg states
+  const [idlePresidentMood, setIdlePresidentMood] = useState<PortraitMood | null>(null);
+  const [showDolarFloat, setShowDolarFloat] = useState(false);
+  const [showCrowd, setShowCrowd] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevInflationRef = useRef<number | null>(null);
+  const prevLawsPassedRef = useRef<number>(0);
 
   // Reset countdown when a new card appears
   useEffect(() => {
@@ -94,10 +104,60 @@ export default function GameScreen() {
     }
   }, [currentCard?.id]);
 
+  // Easter egg: idle 10s → president panics
+  useEffect(() => {
+    const resetIdle = () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      setIdlePresidentMood(null);
+      idleTimerRef.current = setTimeout(() => {
+        setIdlePresidentMood('panic');
+        setTimeout(() => setIdlePresidentMood(null), 2000);
+      }, 10000);
+    };
+    resetIdle();
+    window.addEventListener('mousemove', resetIdle);
+    window.addEventListener('keydown', resetIdle);
+    return () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      window.removeEventListener('mousemove', resetIdle);
+      window.removeEventListener('keydown', resetIdle);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Easter egg: inflation ≥50 → floating dollar
+  useEffect(() => {
+    if (!gameState) return;
+    const curr = gameState.economic.inflation;
+    if (prevInflationRef.current !== null && prevInflationRef.current < 50 && curr >= 50) {
+      setShowDolarFloat(true);
+      setTimeout(() => setShowDolarFloat(false), 2000);
+    }
+    prevInflationRef.current = curr;
+  }, [gameState?.economic.inflation]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Easter egg: popularity = 0 → crowd torches
+  useEffect(() => {
+    if (!gameState) return;
+    if (gameState.political.popularity <= 0) {
+      setShowCrowd(true);
+      setTimeout(() => setShowCrowd(false), 2000);
+    }
+  }, [gameState?.political.popularity]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Easter egg: law passed → confetti
+  useEffect(() => {
+    if (!gameState) return;
+    const curr = gameState.congress.lawsPassedThisRun ?? 0;
+    if (curr > prevLawsPassedRef.current) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 1500);
+    }
+    prevLawsPassedRef.current = curr;
+  }, [gameState?.congress.lawsPassedThisRun]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!gameState || !currentCard) return null;
 
   const hasCrisis = gameState.activeCrises.length > 0;
-  const anibalLine = getAnibalLine(gameState);
   const redZoneVars = getRedZoneVars(gameState);
   const inRedZone = redZoneVars.length > 0;
   const anyBelowTen = [
@@ -114,9 +174,9 @@ export default function GameScreen() {
       : 'neutral';
 
   return (
-    <div className={`min-h-screen relative transition-colors duration-500 ${hasCrisis ? 'bg-crimson-900/15' : inRedZone ? 'bg-crimson-900/5' : ''} ${anyBelowTen ? 'animate-pulse' : ''}`}>
-      {/* Argentina map background */}
-      <ArgentinaMapSVG />
+    <div className={`min-h-screen relative transition-colors duration-500 bg-[var(--night-blue)] ${anyBelowTen ? 'animate-pulse' : ''}`}>
+      {/* Buenos Aires pixel background */}
+      <BuenosAiresBackground />
 
       <OfflineBanner />
 
@@ -145,18 +205,18 @@ export default function GameScreen() {
           className={`flex items-center justify-between mb-4 pb-4 border-b ${hasCrisis ? 'border-crimson-800' : 'border-navy-700'}`}
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 overflow-hidden rounded-full border border-navy-600">
+            <div className="w-12 h-12 overflow-hidden pixel-border">
               <PixelPortrait
                 id={presidentId as import('../components/illustrations/PixelPortrait.js').PortraitId}
-                mood={presidentMood}
+                mood={idlePresidentMood ?? presidentMood}
                 px={48}
               />
             </div>
             <div>
-              <h1 className="font-serif text-xl text-gold-400 font-bold leading-tight">
+              <h1 className="font-serif text-base text-gold-400 font-bold leading-tight uppercase">
                 República en Llamas
               </h1>
-              <span className="font-mono text-xs text-smoke-500 bg-navy-800 px-2 py-0.5 rounded">
+              <span className="font-mono text-sm text-smoke-400 bg-navy-800 px-2 py-0.5">
                 {DIFFICULTY_LABELS[gameState.difficulty] ?? gameState.difficulty}
               </span>
             </div>
@@ -172,10 +232,10 @@ export default function GameScreen() {
               📋 Diario
             </button>
             {isCrisisExpress && (
-              <div className={`flex flex-col items-center px-3 py-1 rounded-lg border font-mono ${
+              <div className={`pixel-border flex flex-col items-center px-3 py-1 font-mono ${
                 crisisTimeLeft <= 10
-                  ? 'bg-crimson-900/70 border-crimson-500 text-crimson-300 animate-pulse'
-                  : 'bg-navy-800 border-navy-600 text-smoke-300'
+                  ? 'bg-crimson-900/70 text-crimson-300 animate-pulse'
+                  : 'bg-navy-800 text-smoke-300'
               }`}>
                 <p className="text-xs">⚡ EXPRESS</p>
                 <p className="font-bold text-lg leading-none">{crisisTimeLeft}s</p>
@@ -198,15 +258,6 @@ export default function GameScreen() {
           </div>
         </motion.header>
 
-        {/* Aníbal quote */}
-        {anibalLine && (
-          <div className="mb-3 bg-navy-800/60 border border-navy-600 rounded px-4 py-2 flex items-start gap-2">
-            <span className="text-gold-500 font-mono text-xs shrink-0 mt-0.5">📻</span>
-            <p className="text-smoke-400 font-mono text-xs italic">
-              "{anibalLine}" — <span className="text-smoke-500">El Gordo Aníbal, Radio AM 1010</span>
-            </p>
-          </div>
-        )}
 
         {/* Tension meter */}
         <div className="mb-4">
@@ -259,7 +310,7 @@ export default function GameScreen() {
                 animate={{ opacity: 1 }}
                 className="flex items-center justify-center h-64"
               >
-                <p className="font-serif text-gold-400 text-xl animate-pulse">
+                <p className="font-mono text-gold-400 text-2xl animate-pulse">
                   Aplicando decisión...
                 </p>
               </motion.div>
@@ -280,7 +331,7 @@ export default function GameScreen() {
             {gameState.activeShocks.map((shock) => (
               <span
                 key={shock.id}
-                className="bg-orange-900/50 border border-orange-700 text-orange-300 font-mono text-xs px-3 py-1 rounded-full"
+                className="pixel-border bg-orange-900/50 text-orange-300 font-mono text-xs px-3 py-1"
               >
                 ⚡ {shock.name} ({shock.turnsRemaining} turnos)
               </span>
@@ -288,6 +339,36 @@ export default function GameScreen() {
           </div>
         )}
       </div>
+      {/* Fixed overlays */}
+      <AnibalTicker isCrisis={hasCrisis} />
+      {showDolarFloat && (
+        <div className="fixed inset-0 pointer-events-none z-40 flex items-center justify-center">
+          <PixelDolar floating />
+        </div>
+      )}
+      {showCrowd && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 pointer-events-none flex justify-around items-end pb-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="pixel-crowd-torches w-2 h-8 bg-orange-500" style={{ animationDelay: `${i * 0.12}s` }} />
+          ))}
+        </div>
+      )}
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-40">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
+              key={i}
+              className="pixel-confetti-piece absolute"
+              style={{
+                left: `${5 + i * 9}%`,
+                top: `${15 + (i % 4) * 8}%`,
+                background: i % 2 === 0 ? 'var(--celeste)' : 'white',
+                animationDelay: `${i * 0.08}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

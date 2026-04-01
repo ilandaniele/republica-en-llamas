@@ -30,14 +30,12 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
       <div className="max-w-xl w-full mx-4">
         {/* Turn counter */}
         <div className="text-center mb-4">
-          <span className="font-mono text-xs text-smoke-500 uppercase tracking-widest">
-            Turno {data.fromTurn} → {data.toTurn}
-          </span>
+          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }} className="text-smoke-500 uppercase">TURNO {data.fromTurn} ▶ {data.toTurn}</span>
         </div>
 
         {/* Stat deltas */}
         {data.statDeltas.length > 0 && (
-          <div className="bg-navy-800 border border-navy-600 rounded-lg p-4 mb-4 grid grid-cols-2 gap-2">
+          <div className="pixel-border bg-navy-800 p-4 mb-4 grid grid-cols-2 gap-2">
             {data.statDeltas.map((d) => (
               <div key={d.label} className="flex items-center justify-between bg-navy-900/60 rounded px-3 py-2">
                 <span className="font-mono text-xs text-smoke-400">{d.emoji} {d.label}</span>
@@ -54,10 +52,9 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="bg-smoke-50 text-smoke-900 rounded-lg p-4 mb-4 border-t-4 border-smoke-800"
-        >
-          <div className="text-xs font-mono text-smoke-500 mb-1">LA GACETA DE LA REPÚBLICA</div>
-          <div className="font-serif font-black text-lg leading-tight text-smoke-900">{data.headline}</div>
+          className="bg-[#f4f4f0] text-smoke-900 p-4 mb-4 pixel-border" style={{ borderColor: '#888' }}>
+          <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }} className="text-smoke-500 mb-2 uppercase">LA GACETA DE LA REPUBLICA</div>
+          <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', lineHeight: '1.8' }} className="font-black text-smoke-900 leading-tight">{data.headline}</div>
         </motion.div>
 
         {/* Inflation breakdown (shown when delta > 0.5) */}
@@ -77,7 +74,8 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="text-center text-smoke-400 font-mono text-xs italic mb-6"
+          className="text-center text-smoke-400 italic mb-6"
+          style={{ fontFamily: "'VT323', monospace", fontSize: '16px' }}
         >
           {data.hookText}
         </motion.p>
@@ -91,9 +89,10 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
         >
           <button
             onClick={handleContinue}
-            className="w-full min-h-[56px] bg-gold-500 hover:bg-gold-400 active:bg-gold-600 text-navy-900 font-serif font-bold py-4 px-8 rounded-md transition-colors uppercase tracking-wider text-lg shadow-lg"
+            className="w-full min-h-[56px] pixel-border-gold bg-gold-500 hover:bg-gold-400 active:bg-gold-600 text-navy-900 font-bold py-4 px-8 transition-colors shadow-lg"
+            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px' }}
           >
-            Continuar →
+            CONTINUAR ▶
           </button>
           {!clicked && (
             <p className="text-smoke-500 font-mono text-xs mt-2 text-center animate-pulse">

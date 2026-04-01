@@ -572,6 +572,22 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
           <text x={CX} y={CY + 16} textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="monospace">
             {REQUIRED_REAL} votos para mayoría
           </text>
+
+          {/* Pixel CHORI vendor — Argentine congress culture */}
+          <g transform="translate(510,285)">
+            {/* Body */}
+            <rect x="2" y="8" width="12" height="14" fill="#8B4513" />
+            {/* Head */}
+            <rect x="4" y="2" width="8" height="8" fill="#F5C8A0" />
+            {/* Hat */}
+            <rect x="2" y="0" width="12" height="4" fill="#4A3728" />
+            {/* Wheelbarrow */}
+            <rect x="-4" y="16" width="20" height="6" fill="#888" />
+            <rect x="6" y="22" width="4" height="4" fill="#555" />
+            {/* Sausages on barrow */}
+            <rect x="0" y="14" width="6" height="3" fill="#CC6633" />
+            <rect x="7" y="14" width="6" height="3" fill="#CC5522" />
+          </g>
         </svg>
       </div>
 
