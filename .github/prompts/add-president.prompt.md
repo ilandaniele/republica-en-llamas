@@ -1,5 +1,5 @@
 ---
-mode: ask
+agent: ask
 description: "Add a new playable president character. Use when: adding a new PortraitId, creating a new pixel portrait SVG, registering the president in entitlements, and wiring their name into GameOverScreen/GameScreen."
 ---
 

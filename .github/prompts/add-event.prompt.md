@@ -1,5 +1,5 @@
 ---
-mode: ask
+agent: ask
 description: "Add a new EventCard to the game engine. Use when: creating new political/economic/social/crisis/law events, adding character-driven cards, or adding lifeline cards."
 ---
 
