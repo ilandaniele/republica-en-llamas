@@ -14,6 +14,12 @@ COPY apps/web/ ./apps/web/
 # Install all deps (workspaces)
 RUN npm install --legacy-peer-deps
 
+# Vite bakes env vars into the bundle at build time — pass them as ARGs
+ARG VITE_SUPABASE_URL=""
+ARG VITE_SUPABASE_ANON_KEY=""
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+
 # Build the web app
 RUN npm run build --workspace=apps/web
 
