@@ -4,6 +4,7 @@ import { useGameStore } from './stores/gameStore.js';
 import { SoundProvider } from './components/SoundManager.js';
 import { initAnalytics } from './lib/analytics.js';
 import { useEntitlements } from './hooks/useEntitlements.js';
+import { PixelMate } from './components/illustrations/PixelMate.js';
 
 const HomeScreen = lazy(() => import('./screens/HomeScreen.js'));
 const GameScreen = lazy(() => import('./screens/GameScreen.js'));
@@ -19,9 +20,13 @@ const ProfileScreen = lazy(() => import('./screens/ProfileScreen.js'));
 
 function LoadingSpinner() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-navy-900">
-      <div className="text-gold-400 font-serif text-2xl animate-pulse">
-        Cargando República...
+    <div
+      className="flex flex-col items-center justify-center gap-6 min-h-screen"
+      style={{ background: 'var(--night-blue)' }}
+    >
+      <PixelMate steaming width={80} height={100} />
+      <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--gold)', lineHeight: 2 }}>
+        Cargando...
       </div>
     </div>
   );
