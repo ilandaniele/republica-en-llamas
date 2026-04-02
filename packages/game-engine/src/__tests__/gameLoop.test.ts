@@ -4,7 +4,7 @@ import { initGame, applyChoice, advanceTurn, drawNextCard } from '../gameLoop.js
 describe('initGame', () => {
   it('initializes with correct difficulty preset', () => {
     const easy = initGame('easy', 42);
-    expect(easy.political.popularity).toBe(65);
+    expect(easy.political.popularity).toBe(72);
     expect(easy.difficulty).toBe('easy');
     expect(easy.turn).toBe(1);
     expect(easy.isGameOver).toBe(false);

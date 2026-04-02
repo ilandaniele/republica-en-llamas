@@ -32,7 +32,7 @@ export function trackTurnCompleted(p: { turn_number: number; event_category: str
   posthog.capture('turn_completed', p);
 }
 
-export function trackPaywallShown(p: { entitlement: string; trigger_point: string }) {
+export function trackPaywallShown(p: { entitlement: string; trigger_point: string; ab_variant?: string }) {
   posthog.capture('paywall_shown', p);
 }
 
@@ -60,6 +60,6 @@ export function trackCrisisTriggered(p: { crisis_type: string; turn: number }) {
   posthog.capture('crisis_triggered', p);
 }
 
-export function trackShareClicked(p: { share_type: 'game_over' | 'score' }) {
+export function trackShareClicked(p: { share_type: 'game_over' | 'score' | 'image' }) {
   posthog.capture('share_clicked', p);
 }

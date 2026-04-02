@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameStore } from '../stores/gameStore.js';
@@ -7,6 +7,7 @@ import { useSaveRun } from '../hooks/useSupabase.js';
 import { getFatalDecision, getCounterfactual, getBestMomentTurn, getAnibalLine } from '@republica/game-engine';
 import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
 import { trackGameOver, trackShareClicked } from '../lib/analytics.js';
+import { ShareImageCard } from '../components/ShareImageCard.js';
 
 const HEADLINES: Record<string, string> = {
   hyperinflation: 'LA HIPERINFLACIÓN DERRUMBA LA REPÚBLICA',
@@ -49,6 +50,8 @@ export default function GameOverScreen() {
   const { user } = useAuth();
   const { mutate: saveRun, isPending: isSaving } = useSaveRun();
   const [copied, setCopied] = useState(false);
+  const shareCardRef = useRef<HTMLDivElement>(null);
+  const [sharingImage, setSharingImage] = useState(false);
 
   useEffect(() => {
     updatePersonalBest();
@@ -130,13 +133,40 @@ export default function GameOverScreen() {
     trackShareClicked({ share_type: 'game_over' });
   };
 
+  const handleShareImage = async () => {
+    if (!shareCardRef.current) return;
+    setSharingImage(true);
+    try {
+      const { default: html2canvas } = await import('html2canvas');
+      const canvas = await html2canvas(shareCardRef.current, { useCORS: true, scale: 2 });
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        const file = new File([blob], 'republica-en-llamas.png', { type: 'image/png' });
+        if (navigator.canShare?.({ files: [file] })) {
+          await navigator.share({ files: [file], title: 'República en Llamas', text: '¿Podés hacerlo mejor?' });
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'republica-en-llamas.png';
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+        trackShareClicked({ share_type: 'image' });
+      }, 'image/png');
+    } finally {
+      setSharingImage(false);
+    }
+  };
+
   const handlePlayAgain = () => {
     resetGame();
     navigate('/');
   };
 
   return (
-    <motion.div
+    <>
+      <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="min-h-screen p-6 flex items-center justify-center"
@@ -286,6 +316,14 @@ export default function GameOverScreen() {
             >
               📱 WHATSAPP
             </button>
+            <button
+              onClick={() => void handleShareImage()}
+              disabled={sharingImage}
+              className="pixel-border py-2 px-4 transition-colors disabled:opacity-50"
+              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', background: 'var(--celeste-dark)', color: 'white' }}
+            >
+              {sharingImage ? '...' : '🖼 IMAGEN'}
+            </button>
           </div>
         </div>
 
@@ -318,5 +356,13 @@ export default function GameOverScreen() {
         </div>
       </div>
     </motion.div>
+
+      <ShareImageCard
+        ref={shareCardRef}
+        gameState={gameState}
+        presidentId={presidentId}
+        score={gameState.score}
+      />
+    </>
   );
 }

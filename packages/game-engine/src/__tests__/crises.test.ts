@@ -7,6 +7,7 @@ function makeState(overrides: Partial<GameState['political']> = {}, economicOver
   const base = initGame('normal', 42);
   return {
     ...base,
+    turn: 15, // past crisisMinTurn (5) and impeachmentMinTurn (10)
     political: { ...base.political, ...overrides },
     economic: { ...base.economic, ...economicOverrides },
     congress: { ...base.congress, ...congressOverrides },

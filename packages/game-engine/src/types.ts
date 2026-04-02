@@ -2,6 +2,33 @@
 
 export type Difficulty = 'easy' | 'normal' | 'hard' | 'crisis';
 
+export type ScenarioId =
+  | 'hiperinflacion_1989'
+  | 'corralito_2001'
+  | 'convertibilidad'
+  | 'rodrigazo_1975'
+  | 'malvinas_1982'
+  | 'kirchnerismo_boom';
+
+export interface HistoricalScenarioConfig {
+  labelKey: string;
+  periodKey: string;
+  descriptionKey: string;
+  entitlementRequired: 'mode_historical' | 'full_access';
+  // Starting stat overrides (merged over difficulty preset)
+  popularity: number;
+  socialStability: number;
+  mediaCredibility: number;
+  inflation: number;
+  publicDeficit: number;
+  marketConfidence: number;
+  currencyStrength: number;
+  foreignReserves: number;
+  gdpGrowth: number;
+  governmentSeats: number;
+  oppositionSeats: number;
+}
+
 export type Language = 'es' | 'en';
 
 export type CardCategory = 'political' | 'economic' | 'social' | 'international' | 'crisis';
@@ -164,6 +191,7 @@ export interface GameState {
   id: string;
   seed: number;
   difficulty: Difficulty;
+  activeScenario?: ScenarioId;
   turn: number;                 // 1-50
   language: Language;
   political: PoliticalVars;

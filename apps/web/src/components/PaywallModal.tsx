@@ -1,5 +1,6 @@
 ﻿import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import posthog from 'posthog-js';
 import { ENTITLEMENT_PRODUCTS } from '@republica/game-engine';
 import type { EntitlementId } from '@republica/game-engine';
 import { BuyButton } from './BuyButton.js';
@@ -14,9 +15,21 @@ interface Props {
 export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
   const product = ENTITLEMENT_PRODUCTS[entitlement];
 
+  const ctaCopyVariant = (posthog.getFeatureFlag('paywall_cta_copy') ?? 'comprar') as string;
+  const pricingVariant = (posthog.getFeatureFlag('paywall_pricing_order') ?? 'anchor_first') as string;
+
+  const ctaLabel = ctaCopyVariant === 'seguir_gobernando'
+    ? `SEGUIR GOBERNANDO — ${product.priceLabel}`
+    : `Comprar — ${product.priceLabel}`;
+
+  const fullAccessProduct = ENTITLEMENT_PRODUCTS['full_access'];
+  const showUpsell = entitlement !== 'full_access' && pricingVariant === 'anchor_first';
+
   useEffect(() => {
-    trackPaywallShown({ entitlement, trigger_point: triggerPoint });
-  }, [entitlement, triggerPoint]);
+    posthog.capture('$experiment_started', { experiment: 'paywall_cta_copy', variant: ctaCopyVariant });
+    posthog.capture('$experiment_started', { experiment: 'paywall_pricing_order', variant: pricingVariant });
+    trackPaywallShown({ entitlement, trigger_point: triggerPoint, ab_variant: `${ctaCopyVariant}__${pricingVariant}` });
+  }, [entitlement, triggerPoint, ctaCopyVariant, pricingVariant]);
 
   return (
     <AnimatePresence>
@@ -52,7 +65,14 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
             </ul>
           </div>
 
-          <BuyButton entitlement={entitlement} className="w-full text-center" label={`Comprar — ${product.priceLabel}`} />
+          <BuyButton entitlement={entitlement} className="w-full text-center" label={ctaLabel} />
+
+          {showUpsell && (
+            <div className="mt-3 border border-gold-700 bg-navy-900 p-3 text-center">
+              <p className="font-mono text-[10px] text-smoke-400 mb-1">O desbloqueá TODO por</p>
+              <BuyButton entitlement="full_access" className="w-full text-center" label={`ACCESO TOTAL — ${fullAccessProduct.priceLabel}`} />
+            </div>
+          )}
 
           <button
             onClick={onClose}

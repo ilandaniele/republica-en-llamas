@@ -5,6 +5,8 @@ import { useGameStore } from '../stores/gameStore.js';
 import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
 import { useEntitlements } from '../hooks/useEntitlements.js';
 import { PaywallModal } from '../components/PaywallModal.js';
+import { HISTORICAL_SCENARIOS } from '@republica/game-engine';
+import { useTranslation } from 'react-i18next';
 
 interface Archetype {
   id: string;
@@ -118,9 +120,12 @@ function ArchetypeCard({ archetype, selected, onSelect }: { archetype: Archetype
 
 export default function PresidentSelectScreen() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const setPresidentId = useGameStore((s) => s.setPresidentId);
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
   const setCrisisExpress = useGameStore((s) => s.setCrisisExpress);
+  const scenarioId = useGameStore((s) => s.scenarioId);
+  const setScenario = useGameStore((s) => s.setScenario);
   const [selected, setSelected] = useState<string>('populista');
   const [paywall, setPaywall] = useState<{ entitlement: import('@republica/game-engine').EntitlementId; trigger: string } | null>(null);
   const { hasEntitlement } = useEntitlements();
@@ -156,6 +161,13 @@ export default function PresidentSelectScreen() {
       className="min-h-screen flex flex-col items-center justify-center p-6"
     >
       <div className="max-w-4xl w-full">
+        {/* Historical scenario badge */}
+        {scenarioId && (
+          <div className="pixel-border-gold font-serif text-[8px] text-gold-400 bg-navy-800 px-3 py-2 mb-6 text-center tracking-wide">
+            MODO HISTÓRICO: {t(HISTORICAL_SCENARIOS[scenarioId].labelKey)}
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-10">
           <p className="font-mono text-xs text-smoke-500 uppercase tracking-widest mb-2">Elecciones presidenciales</p>
@@ -237,7 +249,7 @@ export default function PresidentSelectScreen() {
         </motion.div>
 
         <button
-          onClick={() => navigate('/')}
+          onClick={() => { setScenario(null); navigate('/'); }}
           className="w-full mt-3 text-smoke-500 font-mono text-xs hover:text-smoke-300 py-2"
         >
           ← Volver al inicio

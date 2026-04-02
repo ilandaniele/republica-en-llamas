@@ -24,9 +24,11 @@ export type {
   RecurringCharacter,
   CharacterId,
   InflationBreakdown,
+  ScenarioId,
+  HistoricalScenarioConfig,
 } from './types.js';
 
-export { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, CRISIS_THRESHOLDS, GAME_OVER, SCORE_CONFIG } from './constants.js';
+export { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, CRISIS_THRESHOLDS, GAME_OVER, SCORE_CONFIG, HISTORICAL_SCENARIOS } from './constants.js';
 export type { DifficultyModifiers } from './constants.js';
 
 export { calculateInflation, calculateInflationBreakdown } from './inflation.js';

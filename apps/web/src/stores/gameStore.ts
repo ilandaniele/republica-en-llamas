@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { GameState, Difficulty, Language, NegotiationType, GameOverReason } from '@republica/game-engine';
+import type { GameState, Difficulty, Language, NegotiationType, GameOverReason, ScenarioId } from '@republica/game-engine';
 import { isOfflineMode } from '../lib/supabase.js';
 import {
   initGame,
@@ -93,6 +93,7 @@ interface GameStore {
   crisisCountdown: number | null;
   userId: string | null;
   isCrisisExpress: boolean;
+  scenarioId: ScenarioId | null;
 
   // Actions
   resolveCongressSession: (choiceIndex: number, cardId: string, negEffects: import('@republica/game-engine').ChoiceEffect) => void;
@@ -114,6 +115,7 @@ interface GameStore {
   completeTutorial: () => void;
   updatePersonalBest: () => void;
   setPresidentId: (id: string) => void;
+  setScenario: (id: ScenarioId | null) => void;
 }
 
 function buildTransitionData(
@@ -181,6 +183,7 @@ export const useGameStore = create<GameStore>()(
       crisisCountdown: null,
       userId: null,
       isCrisisExpress: false,
+      scenarioId: null,
 
       resolveCongressSession: (choiceIndex, cardId, negEffects) => {
         const { gameState, isCrisisExpress } = get();
@@ -208,7 +211,7 @@ export const useGameStore = create<GameStore>()(
 
       startNewGame: (difficulty, seed) => {
         const s = seed ?? Math.floor(Math.random() * 1_000_000);
-        const state = initGame(difficulty, s, get().language);
+        const state = initGame(difficulty, s, get().language, get().scenarioId ?? undefined);
         const card = drawNextCard(state);
         set({
           gameState: state,
@@ -352,6 +355,8 @@ export const useGameStore = create<GameStore>()(
       },
 
       setPresidentId: (id: string) => set({ presidentId: id }),
+
+      setScenario: (id: ScenarioId | null) => set({ scenarioId: id }),
 
       setUserId: (id: string | null) => set({ userId: id }),
 

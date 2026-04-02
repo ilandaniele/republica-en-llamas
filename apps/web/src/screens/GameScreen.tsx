@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import posthog from 'posthog-js';
 import { useGameStore } from '../stores/gameStore.js';
 import { VariablesPanel } from '../components/VariablesPanel.js';
 import { EventCardComponent } from '../components/EventCardComponent.js';
@@ -18,6 +19,8 @@ import { trackCongressSession, trackTurnCompleted } from '../lib/analytics.js';
 import { BuenosAiresBackground } from '../components/illustrations/BuenosAiresBackground.js';
 import { AnibalTicker } from '../components/AnibalTicker.js';
 import { PixelDolar } from '../components/illustrations/PixelDolar.js';
+import { PaywallModal } from '../components/PaywallModal.js';
+import { useEntitlements } from '../hooks/useEntitlements.js';
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   easy: 'Fácil',
@@ -58,6 +61,9 @@ export default function GameScreen() {
 
   // Easter egg states
   const [idlePresidentMood, setIdlePresidentMood] = useState<PortraitMood | null>(null);
+  const [showMidGamePaywall, setShowMidGamePaywall] = useState(false);
+  const { hasEntitlement } = useEntitlements();
+  const paywallTimingVariant = (posthog.getFeatureFlag('paywall_timing') ?? 'after_game_over') as string;
   const [showDolarFloat, setShowDolarFloat] = useState(false);
   const [showCrowd, setShowCrowd] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -95,6 +101,16 @@ export default function GameScreen() {
     if (!gameState) { navigate('/'); return; }
     if (gameState.isGameOver) { navigate('/gameover'); return; }
   }, [gameState, navigate]);
+
+  useEffect(() => {
+    posthog.capture('$experiment_started', { experiment: 'paywall_timing', variant: paywallTimingVariant });
+  }, [paywallTimingVariant]);
+
+  useEffect(() => {
+    if (paywallTimingVariant === 'at_turn_5' && gameState?.turn === 5 && !hasEntitlement('full_access')) {
+      setShowMidGamePaywall(true);
+    }
+  }, [gameState?.turn, paywallTimingVariant, hasEntitlement]);
 
   React.useEffect(() => {
     if (currentCard?.category === 'crisis') {
@@ -368,6 +384,13 @@ export default function GameScreen() {
             />
           ))}
         </div>
+      )}
+      {showMidGamePaywall && (
+        <PaywallModal
+          entitlement="full_access"
+          triggerPoint="mid_game_turn_5"
+          onClose={() => setShowMidGamePaywall(false)}
+        />
       )}
     </div>
   );
