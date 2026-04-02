@@ -38,14 +38,20 @@ This project uses a **pixel-art aesthetic**. Follow these rules strictly:
 - Legacy JetBrains Mono: `font-code`
 
 ### Colors (Tailwind tokens)
-| Token | Use |
-|---|---|
-| `nightBlue` / `var(--night-blue)` | Page backgrounds |
-| `celeste` / `var(--celeste)` | Argentine flag accent, government seats |
-| `gold-400` / `var(--gold)` | Scores, turn counter, CTA borders |
-| `crimson-*` | Politics, crises, danger |
-| `smoke-*` | Text on dark backgrounds |
-| `navy-*` | Card/panel backgrounds |
+| Token | Hex | Use |
+|---|---|---|
+| `nightBlue` / `var(--night-blue)` | `#0D1B2A` | Page backgrounds — BA de noche |
+| `celeste` / `var(--celeste)` | `#74ACDF` | Argentine identity, government seats |
+| `gold-400` / `var(--gold)` | `#F6B40E` | Scores, achievements — Sol de Mayo |
+| `crimson-*` | `#CC2200` | **Crisis only — never decorative** |
+| `smoke-*` | — | Text on dark backgrounds |
+| `navy-*` | — | Card/panel backgrounds |
+
+**Color discipline rules:**
+- Maximum 5–6 base colors + luminosity variants — never add new base colors
+- `crimson`/`var(--crisis-red)` is reserved **only** for crisis states
+- Celeste = identity/government; Gold = achievement/success
+- Always pair color with shape or icon for accessibility (never color alone)
 
 ### CSS Classes
 Apply these instead of inline styles:
@@ -77,6 +83,30 @@ Available pixel components: `PixelMate`, `PixelAsado`, `PixelFuego`, `PixelDolar
 - Framer Motion is used for enter/exit animations. Use `<AnimatePresence mode="wait">` around card transitions.
 - Screen components live in `apps/web/src/screens/`. Route-level lazy loading via `React.lazy` is configured in `App.tsx`.
 - `useAuth` → Supabase session. `useEntitlements` → IAP unlock status. Both are in `apps/web/src/hooks/`.
+
+## Narrative Arc
+
+Each run has a 4-phase arc. Use `gameState.turn` and `minTurn`/`maxTurn` on cards to enforce this pacing:
+
+| Turns | Phase | Design intent |
+|---|---|---|
+| 1–5 | Establishment | Meet characters, easy decisions, build habits |
+| 6–12 | Complication | Consequences of early decisions surface |
+| 13–20 | Crisis | Betrayed characters return, compounding pressure |
+| 20+ | Survival | Pure endurance — no mercy |
+
+Lifelines are guaranteed every N turns per `DIFFICULTY_MODIFIERS.lifelineGuaranteeEvery` (easy=3, normal=6, hard=10, crisis=99).
+
+## Analytics
+
+PostHog is wired in `apps/web/src/lib/analytics.ts`. Every user action that changes state must fire a typed `track*()` function from that file — never call `posthog.capture()` directly in components.
+
+Key funnels already instrumented:
+- `game_started` → `turn_completed` (×N) → `game_over`
+- `game_over` → `paywall_shown` → `purchase_started` → `purchase_completed`
+- `game_over` → `share_clicked`
+
+For A/B tests: use `posthog.getFeatureFlag('flag_name')` — never branch on raw `Math.random()` for UX experiments. Always fire `$experiment_started` on component mount when a flag is read.
 
 ## i18n
 

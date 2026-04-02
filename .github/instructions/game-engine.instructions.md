@@ -91,6 +91,27 @@ CRISIS_THRESHOLDS = {
 ```
 Do not trigger crises programmatically from card effects. They auto-trigger from threshold checks.
 
+## Narrative Arc — Turn Pacing
+
+Use `minTurn`/`maxTurn` to place cards in the right phase:
+
+| Turns | Phase | Card design intent |
+|---|---|---|
+| 1–5 | Establishment | Low stakes, introduce characters, no crisis |
+| 6–12 | Complication | Consequences arrive, character arcs progress |
+| 13–20 | Crisis | High pressure, compounding effects, character betrayals |
+| 20+ | Survival | Brutal — no easy lifelines |
+
+Cards without `minTurn`/`maxTurn` are drawn throughout the run. Character cards use `requiredFlags` + `forbiddenFlags` to advance their arc regardless of turn.
+
+## Flow State & Variable Rewards
+
+**Never guarantee outcomes.** The draw system uses weighted random with weight decay (`CARD_WEIGHT_DECAY_WINDOW`), so the same card won't appear twice in a short window — but the player can't predict what's coming. This is intentional.
+
+**Difficulty scaling is automatic** via `negativeEffectMultiplier` in `DIFFICULTY_MODIFIERS` — don't hardcode difficulty adjustments in card effects. Write cards balanced for `normal`; the runtime multiplier handles the rest.
+
+**Lifeline guarantee** is already built into `drawCard()` (`forceLifeline` param). Don't add emergency lifeline logic to cards — the engine handles it.
+
 ## Difficulty Modifiers
 
 `DIFFICULTY_MODIFIERS` in `constants.ts` scales negative effects at runtime. Cards should be balanced for `normal` difficulty — the multipliers handle the rest:
