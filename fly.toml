@@ -1,4 +1,4 @@
-app = "republica-llamas"
+app = "republica-en-llamas"
 primary_region = "gru"
 
 [build]
