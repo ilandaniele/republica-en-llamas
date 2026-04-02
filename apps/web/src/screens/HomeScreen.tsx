@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import type { Difficulty } from '@republica/game-engine';
+import type { Difficulty, ScenarioId } from '@republica/game-engine';
+import { HISTORICAL_SCENARIOS } from '@republica/game-engine';
 import { useGameStore } from '../stores/gameStore.js';
 import { useAuth } from '../hooks/useAuth.js';
 import { isOfflineMode } from '../lib/supabase.js';
 import { UserMenu } from '../components/UserMenu.js';
 import { useEntitlements, getDailyRunsRemaining, consumeDailyRun } from '../hooks/useEntitlements.js';
 import { BuyButton } from '../components/BuyButton.js';
+import { PaywallModal } from '../components/PaywallModal.js';
 import { trackGameStarted } from '../lib/analytics.js';
 
 type AuthMode = 'menu' | 'login' | 'register';
@@ -127,10 +129,13 @@ export default function HomeScreen() {
   const startNewGame = useGameStore((s) => s.startNewGame);
   const gameState = useGameStore((s) => s.gameState);
   const presidentId = useGameStore((s) => s.presidentId);
+  const setScenario = useGameStore((s) => s.setScenario);
   const { user, loading: authLoading, signOut } = useAuth();
   const { hasEntitlement, hasPremium } = useEntitlements();
   const [authMode, setAuthMode] = useState<AuthMode>('menu');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('normal');
+  const [homeMode, setHomeMode] = useState<'clasico' | 'historico'>('clasico');
+  const [paywallScenario, setPaywallScenario] = useState<ScenarioId | null>(null);
 
   const dailyRemaining = getDailyRunsRemaining();
   const dailyLimitReached = !hasPremium && dailyRemaining <= 0;
@@ -139,6 +144,19 @@ export default function HomeScreen() {
     consumeDailyRun();
     startNewGame(difficulty);
     trackGameStarted({ difficulty, president: presidentId, mode: 'normal' });
+    navigate('/president');
+  };
+
+  const startHistoricalScenario = (scenarioId: ScenarioId) => {
+    const config = HISTORICAL_SCENARIOS[scenarioId];
+    if (!hasEntitlement(config.entitlementRequired)) {
+      setPaywallScenario(scenarioId);
+      return;
+    }
+    setScenario(scenarioId);
+    consumeDailyRun();
+    startNewGame('hard');
+    trackGameStarted({ difficulty: 'hard', president: presidentId, mode: 'historical' });
     navigate('/president');
   };
 
@@ -211,19 +229,33 @@ export default function HomeScreen() {
                 </div>
               )}
 
-              {/* Difficulty selector */}
-              <div className="mb-8">
-                <h2 className="text-smoke-400 font-mono text-xs uppercase tracking-widest mb-4 text-center">
-                  Selecciona la Dificultad
-                </h2>
-                <div className="grid grid-cols-2 gap-3">
+              {/* Mode tab switcher */}
+              <div className="flex mb-4" style={{ borderBottom: '2px solid var(--night-blue)' }}>
+                <button
+                  onClick={() => setHomeMode('clasico')}
+                  className={`font-serif text-[8px] px-4 py-2 transition-colors ${homeMode === 'clasico' ? 'text-gold-400' : 'text-smoke-500'}`}
+                  style={{ borderBottom: homeMode === 'clasico' ? '2px solid var(--gold)' : '2px solid transparent' }}
+                >
+                  CLÁSICO
+                </button>
+                <button
+                  onClick={() => setHomeMode('historico')}
+                  className={`font-serif text-[8px] px-4 py-2 transition-colors ${homeMode === 'historico' ? 'text-gold-400' : 'text-smoke-500'}`}
+                  style={{ borderBottom: homeMode === 'historico' ? '2px solid var(--gold)' : '2px solid transparent' }}
+                >
+                  HISTÓRICO
+                </button>
+              </div>
+
+              {homeMode === 'clasico' ? (
+                <div className="grid grid-cols-2 gap-3 mb-8">
                   {DIFFICULTIES.map((d) => (
                     <motion.button
                       key={d.id}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setSelectedDifficulty(d.id)}
-                      className={`p-4 border-2 rounded-lg text-left transition-colors duration-200 ${d.color} ${
+                      className={`p-4 border-2 text-left transition-colors duration-200 ${d.color} ${
                         selectedDifficulty === d.id
                           ? 'bg-navy-700 ring-2 ring-gold-400'
                           : 'border-navy-600 bg-navy-800'
@@ -234,7 +266,31 @@ export default function HomeScreen() {
                     </motion.button>
                   ))}
                 </div>
-              </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3 mb-8">
+                  {(Object.entries(HISTORICAL_SCENARIOS) as [ScenarioId, typeof HISTORICAL_SCENARIOS[ScenarioId]][]).map(([id, cfg]) => {
+                    const locked = !hasEntitlement(cfg.entitlementRequired);
+                    return (
+                      <motion.button
+                        key={id}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => startHistoricalScenario(id)}
+                        className="p-4 border-2 border-navy-600 bg-navy-800 hover:bg-navy-700 text-left relative overflow-hidden transition-colors"
+                      >
+                        {locked && (
+                          <div className="absolute inset-0 bg-navy-900/70 flex items-center justify-center z-10">
+                            <span className="text-gold-400 font-serif text-[8px]">🔒 PRO</span>
+                          </div>
+                        )}
+                        <div className="text-gold-400 font-mono text-xs mb-1">{t(cfg.periodKey)}</div>
+                        <div className="font-serif text-smoke-100 text-[8px] font-bold mb-1">{t(cfg.labelKey)}</div>
+                        <div className="text-smoke-400 font-mono text-xs leading-tight">{t(cfg.descriptionKey)}</div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Auth / Start buttons */}
               {/* Daily run limit banner */}
@@ -318,6 +374,14 @@ export default function HomeScreen() {
           v0.3.0 — República en Llamas
         </p>
       </motion.div>
+
+      {paywallScenario && (
+        <PaywallModal
+          entitlement="mode_historical"
+          triggerPoint="scenario_select"
+          onClose={() => setPaywallScenario(null)}
+        />
+      )}
     </div>
   );
 }

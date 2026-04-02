@@ -1119,4 +1119,159 @@ export const es: Record<string, string> = {
   'event.new_010.choice_b': 'Coordinar con provincias un plan de obras de contención',
   'event.new_010.choice_c': 'Solicitar asistencia humanitaria internacional',
   'event.new_010.choice_d': 'Respuesta tardía — priorizar el ajuste fiscal',
+
+  // ─── Historical Scenarios ─────────────────────────────────────────────────
+  'scenario.hiperinflacion_1989.label': 'La Hiperinflación',
+  'scenario.hiperinflacion_1989.period': '1989',
+  'scenario.hiperinflacion_1989.description': 'Inflación del 3.000% anual. Los supermercados se saquearon. Alfonsín entregó el poder antes de tiempo.',
+
+  'scenario.corralito_2001.label': 'El Corralito',
+  'scenario.corralito_2001.period': '2001',
+  'scenario.corralito_2001.description': 'Los bancos cerraron sus puertas. El pueblo no podía retirar sus ahorros. Argentina declaró el default más grande de la historia.',
+
+  'scenario.convertibilidad.label': 'La Convertibilidad',
+  'scenario.convertibilidad.period': '1991–2001',
+  'scenario.convertibilidad.description': 'Un peso, un dólar. La receta mágica que frenó la inflación pero vació las reservas y terminó en colapso.',
+
+  'scenario.rodrigazo_1975.label': 'El Rodrigazo',
+  'scenario.rodrigazo_1975.period': '1975',
+  'scenario.rodrigazo_1975.description': 'El ministro Rodrigo subió las tarifas un 100% de un día para el otro. El pueblo y los sindicatos lo hicieron renunciar en 48 horas.',
+
+  'scenario.malvinas_1982.label': 'Malvinas',
+  'scenario.malvinas_1982.period': '1982',
+  'scenario.malvinas_1982.description': 'La junta militar apostó a la guerra para sobrevivir políticamente. El fervor duró semanas. La derrota, para siempre.',
+
+  'scenario.kirchnerismo_boom.label': 'El Viento de Cola',
+  'scenario.kirchnerismo_boom.period': '2003–2007',
+  'scenario.kirchnerismo_boom.description': 'Commodities en las nubes, deuda reestructurada y crecimiento del 8%. La trampa llegó cuando el viento paró.',
+
+  // Shock names (historical)
+  'shock.hiper.saqueos': 'Saqueos Generalizados',
+  'shock.hiper.alfonsinexit': 'Renuncia anticipada del presidente',
+  'shock.corralito.freeze': 'Congelamiento Bancario',
+  'shock.corralito.default': 'Default Soberano',
+  'shock.convertib.overvalued': 'Peso Sobrevaluado',
+  'shock.convertib.recession': 'Recesión por Tipo de Cambio Fijo',
+  'shock.rodrigazo.huelga': 'Huelga General',
+  'shock.rodrigazo.tarifazo': 'Tarifazo del 100%',
+  'shock.malvinas.guerra': 'Guerra del Atlántico Sur',
+  'shock.malvinas.derrota': 'Derrota Militar',
+  'shock.kirchner.vientocola': 'Viento de Cola Internacional',
+  'shock.kirchner.inflsubestimada': 'Inflación Real vs INDEC',
+
+  // ── Hiperinflación 1989 cards ─────────────────────────────────────────────
+  'event.hist_hiper_001.title': 'LOS PRECIOS SE ESCAPAN',
+  'event.hist_hiper_001.body': 'En una semana los precios duplicaron. La gente compra lo que puede antes de que suban otra vez. El ministro de Economía ya renunció dos veces este mes.',
+  'event.hist_hiper_001.choice_a': 'Convocar a jefes de supermercados y acordar precios máximos',
+  'event.hist_hiper_001.choice_b': 'Dejar que el mercado se regule solo — control de precios no sirve',
+  'event.hist_hiper_001.choice_c': 'Lanzar un plan de estabilización de shock con el FMI',
+  'event.hist_hiper_001.choice_d': 'Emitir para paliar el hambre y ganar tiempo',
+
+  'event.hist_hiper_002.title': 'ALFONSÍN LLAMA A MENEM',
+  'event.hist_hiper_002.body': 'El presidente electo asume en cinco meses pero la situación no aguanta. Alfonsín evalúa entregar el poder antes. Es la primera vez en democracia.',
+  'event.hist_hiper_002.choice_a': 'Adelantar la entrega: el país no puede esperar',
+  'event.hist_hiper_002.choice_b': 'Resistir hasta el final — ceder es traición constitucional',
+  'event.hist_hiper_002.choice_c': 'Negociar un gobierno de transición de concordia',
+
+  'event.hist_hiper_003.title': 'PLAN BÓNEX: CONFISCAR O ESTABILIZAR',
+  'event.hist_hiper_003.body': 'El nuevo gobierno evalúa convertir los depósitos a plazo fijo en bonos a 10 años. Frenarías la inflación de golpe, pero la gente pierde sus ahorros.',
+  'event.hist_hiper_003.choice_a': 'Implementar el Plan Bónex — estabilidad a cualquier costo',
+  'event.hist_hiper_003.choice_b': 'Respetar los depósitos y aguantar la tormenta',
+  'event.hist_hiper_003.choice_c': 'Convertir sólo los depósitos mayores a $1 millón',
+
+  // ── El Corralito 2001 cards ───────────────────────────────────────────────
+  'event.hist_corral_001.title': 'LOS DÓLARES SE VAN',
+  'event.hist_corral_001.body': 'La fuga de capitales es récord. U$S 2.000 millones salieron del sistema en la última semana. Los bancos no tienen reservas para afrontar retiros masivos.',
+  'event.hist_corral_001.choice_a': 'Declarar el corralito: limitar extracciones a $250 por semana',
+  'event.hist_corral_001.choice_b': 'Devaluar y salir de la convertibilidad ya',
+  'event.hist_corral_001.choice_c': 'Pedir un préstamo de salvataje al FMI',
+  'event.hist_corral_001.choice_d': 'Emitir patriotismo — campaña de confianza en el peso',
+
+  'event.hist_corral_002.title': 'EL CACEROLAZO: PUEBLO EN LA CALLE',
+  'event.hist_corral_002.body': '¡Que se vayan todos! La Plaza de Mayo desborda. El presidente declara el estado de sitio. La represión deja 38 muertos. Nadie en el gobierno sabe qué hacer.',
+  'event.hist_corral_002.choice_a': 'Renunciar — el país necesita una salida democrática',
+  'event.hist_corral_002.choice_b': 'Mantener el estado de sitio y la convertibilidad',
+  'event.hist_corral_002.choice_c': 'Levantar el estado de sitio y negociar con la oposición',
+
+  'event.hist_corral_003.title': 'EL DEFAULT',
+  'event.hist_corral_003.body': 'Argentina no puede pagar los vencimientos de su deuda. El FMI cortó los fondos. Cuatro presidentes en una semana. El congreso te designó como salvador.',
+  'event.hist_corral_003.choice_a': 'Declarar el default — suspender pagos de la deuda externa',
+  'event.hist_corral_003.choice_b': 'Pagar a costa de recorte total del gasto social',
+  'event.hist_corral_003.choice_c': 'Reestructurar la deuda sin pagar intereses de inmediato',
+
+  // ── La Convertibilidad cards ──────────────────────────────────────────────
+  'event.hist_conv_001.title': 'UN PESO, UN DÓLAR',
+  'event.hist_conv_001.body': 'El ministro Cavallo propone atar el peso al dólar con una caja de conversión. Frena la inflación de golpe, pero Argentina pierde toda flexibilidad cambiaria para siempre.',
+  'event.hist_conv_001.choice_a': 'Aprobar la Ley de Convertibilidad',
+  'event.hist_conv_001.choice_b': 'Rechazarla — el tipo de cambio fijo es una trampa',
+  'event.hist_conv_001.choice_c': 'Negociar una banda cambiaria en lugar del tipo fijo',
+
+  'event.hist_conv_002.title': 'LAS RESERVAS SE AGOTAN',
+  'event.hist_conv_002.body': 'El Banco Central perdió U$S 8.000 millones en tres meses. Para mantener el uno a uno hay que seguir vendiendo reservas o endeudarse. El reloj corre.',
+  'event.hist_conv_002.choice_a': 'Mantener la convertibilidad y tomar más deuda',
+  'event.hist_conv_002.choice_b': 'Abandonar el tipo de cambio fijo antes de que sea tarde',
+  'event.hist_conv_002.choice_c': 'Negociar con el FMI un blindaje financiero',
+
+  'event.hist_conv_003.title': 'EL BLINDAJE O LA DEVALUACIÓN',
+  'event.hist_conv_003.body': 'El plan Blindaje del FMI llega tarde y con condiciones duras. La recesión lleva tres años. El desempleo supera el 17%. Nadie cree que el uno a uno aguante más.',
+  'event.hist_conv_003.choice_a': 'Devaluar — el peso vale 1,40 por dólar',
+  'event.hist_conv_003.choice_b': 'Aceptar el Blindaje del FMI con más ajuste',
+  'event.hist_conv_003.choice_c': 'La dolarización total — el peso desaparece',
+
+  // ── El Rodrigazo 1975 cards ───────────────────────────────────────────────
+  'event.hist_rod_001.title': 'EL TARIFAZO DE RODRIGO',
+  'event.hist_rod_001.body': 'El ministro Celestino Rodrigo anuncia: nafta +172%, electricidad +75%, transporte +75%. Todo de un día para el otro. Los sindicatos están en guerra.',
+  'event.hist_rod_001.choice_a': 'Defender el tarifazo — es la única medicina antiinflacionaria',
+  'event.hist_rod_001.choice_b': 'Revertir el tarifazo: el costo político es insostenible',
+  'event.hist_rod_001.choice_c': 'Segmentar: subir sólo el transporte de carga y la nafta premium',
+
+  'event.hist_rod_002.title': 'MOYANO LLAMA A LA HUELGA GENERAL',
+  'event.hist_rod_002.body': 'La CGT convoca a paro por 48 horas. Las fábricas paran, los colectivos no salen, los bancos cierran. Isabel Perón tiene que decidir entre Rodrigo y los sindicatos.',
+  'event.hist_rod_002.choice_a': 'Despedir a Rodrigo y ceder a los sindicatos',
+  'event.hist_rod_002.choice_b': 'Apoyar al ministro — los sindicatos no gobiernan',
+  'event.hist_rod_002.choice_c': 'Negociar: reducir las tarifas un 30% y pedir tregua',
+
+  'event.hist_rod_003.title': 'ISABEL PERÓN EN LA ENCRUCIJADA',
+  'event.hist_rod_003.body': 'Sin Rodrigo, sin plan económico y con la guerrilla activa, el gobierno de Isabel se cae a pedazos. Las Fuerzas Armadas ya están monitoreando la situación.',
+  'event.hist_rod_003.choice_a': 'Resistir hasta el final como constitucionalista',
+  'event.hist_rod_003.choice_b': 'Pedir licencia — que el vicepresidente tome el mando',
+  'event.hist_rod_003.choice_c': 'Intentar un gobierno de coalición nacional sin el ejército',
+
+  // ── Malvinas 1982 cards ───────────────────────────────────────────────────
+  'event.hist_mal_001.title': 'DESEMBARCO EN MALVINAS',
+  'event.hist_mal_001.body': 'La junta decide recuperar las islas por la fuerza. La Plaza de Mayo estalla de fervor patriótico. El mundo mira atónito. Thatcher moviliza la flota.',
+  'event.hist_mal_001.choice_a': 'Adelante — las islas son argentinas, cueste lo que cueste',
+  'event.hist_mal_001.choice_b': 'Detener la operación antes de que Gran Bretaña declare la guerra',
+  'event.hist_mal_001.choice_c': 'Negociar en la ONU una salida diplomática antes del enfrentamiento',
+
+  'event.hist_mal_002.title': 'LA FLOTA BRITÁNICA SE ACERCA',
+  'event.hist_mal_002.body': 'Los buques de guerra zarparon de Portsmouth. Reagan ofrece mediar, Haig hace una gira de paz. El tiempo se acaba: hay que decidir si reforzar las islas o buscar la salida.',
+  'event.hist_mal_002.choice_a': 'Reforzar las islas con más tropas y armamento',
+  'event.hist_mal_002.choice_b': 'Resistir y convocar a la solidaridad latinoamericana',
+  'event.hist_mal_002.choice_c': 'Aceptar la mediación — retirar el grueso de las tropas',
+
+  'event.hist_mal_003.title': 'DERROTA EN PORT STANLEY',
+  'event.hist_mal_003.body': 'General Menéndez rinde la guarnición argentina. La guerra terminó en 74 días. 649 soldados argentinos muertos. El fervor patriótico se convirtió en furia contra la junta.',
+  'event.hist_mal_003.choice_a': 'Convocar a elecciones democráticas inmediatas',
+  'event.hist_mal_003.choice_b': 'Intentar sobrevivir políticamente con otro golpe interno',
+  'event.hist_mal_003.choice_c': 'Negociar la transición ordenada con los partidos políticos',
+
+  // ── Kirchnerismo Boom 2003–2007 cards ─────────────────────────────────────
+  'event.hist_kirch_001.title': 'VIENTO DE COLA: SOJA A 300 DÓLARES',
+  'event.hist_kirch_001.body': 'China demanda soja a precios récord. Las exportaciones agroindustriales explotan. El superávit fiscal permite recuperar el tejido social destruído por la crisis del 2001.',
+  'event.hist_kirch_001.choice_a': 'Invertir en obra pública y reducción de la pobreza',
+  'event.hist_kirch_001.choice_b': 'Usar el superávit para reconstruir las reservas del BCRA',
+  'event.hist_kirch_001.choice_c': 'Bajar impuestos para fortalecer la competitividad',
+
+  'event.hist_kirch_002.title': 'PAGO AL FMI: INDEPENDENCIA O TRAMPA',
+  'event.hist_kirch_002.body': 'Kirchner anuncia el pago total de la deuda al FMI: U$S 9.810 millones de una sola vez. Argentina se libera de las condicionalidades. Pero vacía las reservas.',
+  'event.hist_kirch_002.choice_a': 'Pagar todo de golpe — soberanía económica plena',
+  'event.hist_kirch_002.choice_b': 'Refinanciar en cuotas para preservar las reservas',
+  'event.hist_kirch_002.choice_c': 'Pagar y negociar un acuerdo nuevo con el Fondo',
+
+  'event.hist_kirch_003.title': 'INDEC: LA INFLACIÓN REAL',
+  'event.hist_kirch_003.body': 'El crecimiento al 8% convive con una inflación real del 20%. El gobierno interviene el INDEC para bajar artificialmente los índices. Los economistas privados publican sus propias mediciones.',
+  'event.hist_kirch_003.choice_a': 'Dejar que el INDEC subestime — la mentira sirve a corto plazo',
+  'event.hist_kirch_003.choice_b': 'Reconocer la inflación real y lanzar un plan de estabilización',
+  'event.hist_kirch_003.choice_c': 'Crear un índice alternativo "consensuado" con provincias',
 };

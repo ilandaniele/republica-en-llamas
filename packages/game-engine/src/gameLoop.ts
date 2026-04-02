@@ -1,5 +1,5 @@
-import type { GameState, Difficulty, Language, ChoiceEffect, TurnEvent, RecurringCharacter } from './types.js';
-import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS, CONGRESS_SESSION_INTERVAL } from './constants.js';
+import type { GameState, Difficulty, Language, ChoiceEffect, TurnEvent, RecurringCharacter, ScenarioId } from './types.js';
+import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS, CONGRESS_SESSION_INTERVAL, HISTORICAL_SCENARIOS } from './constants.js';
 import { calculateInflationBreakdown } from './inflation.js';
 import { calculateScore } from './scoring.js';
 import { detectCrises, tickCrises } from './crises.js';
@@ -12,39 +12,62 @@ import { createRng, clamp, generateId } from './utils.js';
 export function initGame(
   difficulty: Difficulty,
   seed: number,
-  language: Language = 'es'
+  language: Language = 'es',
+  scenarioId?: ScenarioId
 ): GameState {
   const preset = DIFFICULTY_PRESETS[difficulty];
   if (!preset) throw new Error(`Unknown difficulty: ${difficulty}`);
 
-  const governmentSeats = preset.governmentSeats;
-  const oppositionSeats = preset.oppositionSeats;
-  const independentSeats = TOTAL_SEATS - governmentSeats - oppositionSeats;
+  const scenario = scenarioId ? HISTORICAL_SCENARIOS[scenarioId] : undefined;
+
+  // Merge scenario stat overrides on top of difficulty preset
+  const pop = scenario?.popularity ?? preset.popularity;
+  const stability = scenario?.socialStability ?? preset.socialStability;
+  const credibility = scenario?.mediaCredibility ?? preset.mediaCredibility;
+  const inflation = scenario?.inflation ?? preset.inflation;
+  const deficit = scenario?.publicDeficit ?? preset.publicDeficit;
+  const confidence = scenario?.marketConfidence ?? preset.marketConfidence;
+  const currency = scenario?.currencyStrength ?? preset.currencyStrength;
+  const reserves = scenario?.foreignReserves ?? preset.foreignReserves;
+  const gdp = scenario?.gdpGrowth ?? preset.gdpGrowth;
+  const govSeats = scenario?.governmentSeats ?? preset.governmentSeats;
+  const oppSeats = scenario?.oppositionSeats ?? preset.oppositionSeats;
+  const independentSeats = TOTAL_SEATS - govSeats - oppSeats;
+
+  // Scenario flag pushed to first character so requiredFlags cards can filter
+  const scenarioFlag = scenarioId ? `scenario_${scenarioId}` : null;
+  const initialCharacters: RecurringCharacter[] = INITIAL_CHARACTERS.map((c, i) =>
+    i === 0 && scenarioFlag ? { ...c, memoryFlags: [scenarioFlag] } : c
+  );
+
+  // Historical scenario opening shocks
+  const openingShocks = scenarioId ? getScenarioOpeningShocks(scenarioId) : [];
 
   return {
     id: generateId('run', createRng(seed)),
     seed,
     difficulty,
+    ...(scenarioId !== undefined ? { activeScenario: scenarioId } : {}),
     turn: 1,
     language,
     political: {
-      popularity: preset.popularity,
-      socialStability: preset.socialStability,
-      mediaCredibility: preset.mediaCredibility,
+      popularity: pop,
+      socialStability: stability,
+      mediaCredibility: credibility,
       emergencyDecreesUsed: 0,
       popularityLowStreak: 0,
     },
     economic: {
-      inflation: preset.inflation,
-      publicDeficit: preset.publicDeficit,
-      marketConfidence: preset.marketConfidence,
-      currencyStrength: preset.currencyStrength,
-      foreignReserves: preset.foreignReserves,
-      gdpGrowth: preset.gdpGrowth,
+      inflation,
+      publicDeficit: deficit,
+      marketConfidence: confidence,
+      currencyStrength: currency,
+      foreignReserves: reserves,
+      gdpGrowth: gdp,
     },
     congress: {
-      governmentSeats,
-      oppositionSeats,
+      governmentSeats: govSeats,
+      oppositionSeats: oppSeats,
       independentSeats,
       coalitionTurnsRemaining: 0,
       independentSupportBonus: 0,
@@ -57,13 +80,13 @@ export function initGame(
       activeSpins: [],
     },
     activeCrises: [],
-    activeShocks: [],
+    activeShocks: openingShocks,
     drawnCardIds: [],
     history: [],
     isGameOver: false,
     gameOverReason: null,
     score: 0,
-    characters: INITIAL_CHARACTERS,
+    characters: initialCharacters,
     cardCooldowns: {},
   };
 }
@@ -75,6 +98,121 @@ const INITIAL_CHARACTERS: RecurringCharacter[] = [
   { id: 'embajador',   name: 'Kristalina Georgieva',role: 'Directora del FMI',             avatar: '🌐', relationship: 0, memoryFlags: [] },
   { id: 'gobernadora', name: 'Axel Kicillof',       role: 'Gobernador de Buenos Aires',    avatar: '🏛', relationship: 0, memoryFlags: [] },
 ];
+
+function getScenarioOpeningShocks(scenarioId: ScenarioId): import('./types.js').Shock[] {
+  const shockMap: Record<ScenarioId, import('./types.js').Shock[]> = {
+    hiperinflacion_1989: [
+      { id: 'shock_hiper_saqueos', name: 'shock.hiper.saqueos', turnsRemaining: 3, inflationMod: 8, marketConfidenceMod: -20, deficitMod: 5, popularityMod: -25 },
+      { id: 'shock_hiper_alfonsinexit', name: 'shock.hiper.alfonsinexit', turnsRemaining: 2, inflationMod: 5, marketConfidenceMod: -25, deficitMod: 5, popularityMod: -30 },
+    ],
+    corralito_2001: [
+      { id: 'shock_corralito_freeze', name: 'shock.corralito.freeze', turnsRemaining: 4, inflationMod: 3, marketConfidenceMod: -30, deficitMod: 5, popularityMod: -20 },
+      { id: 'shock_corralito_default', name: 'shock.corralito.default', turnsRemaining: 3, inflationMod: 2, marketConfidenceMod: -35, deficitMod: 0, popularityMod: -25 },
+    ],
+    convertibilidad: [
+      { id: 'shock_convertib_overvalued', name: 'shock.convertib.overvalued', turnsRemaining: 3, inflationMod: -5, marketConfidenceMod: 10, deficitMod: 8, popularityMod: 0 },
+      { id: 'shock_convertib_recession', name: 'shock.convertib.recession', turnsRemaining: 3, inflationMod: 0, marketConfidenceMod: -10, deficitMod: 10, popularityMod: -15 },
+    ],
+    rodrigazo_1975: [
+      { id: 'shock_rodrigazo_huelga', name: 'shock.rodrigazo.huelga', turnsRemaining: 2, inflationMod: 0, marketConfidenceMod: -10, deficitMod: 5, popularityMod: -20 },
+      { id: 'shock_rodrigazo_tarifazo', name: 'shock.rodrigazo.tarifazo', turnsRemaining: 1, inflationMod: 30, marketConfidenceMod: -20, deficitMod: 0, popularityMod: -25 },
+    ],
+    malvinas_1982: [
+      { id: 'shock_malvinas_guerra', name: 'shock.malvinas.guerra', turnsRemaining: 5, inflationMod: 5, marketConfidenceMod: -15, deficitMod: 10, popularityMod: 10 },
+      { id: 'shock_malvinas_derrota', name: 'shock.malvinas.derrota', turnsRemaining: 3, inflationMod: 10, marketConfidenceMod: -25, deficitMod: 8, popularityMod: -40 },
+    ],
+    kirchnerismo_boom: [
+      { id: 'shock_kirchner_vientocola', name: 'shock.kirchner.vientocola', turnsRemaining: 8, inflationMod: 3, marketConfidenceMod: 20, deficitMod: -5, popularityMod: 15 },
+      { id: 'shock_kirchner_inflsubestimada', name: 'shock.kirchner.inflsubestimada', turnsRemaining: 4, inflationMod: 25, marketConfidenceMod: -20, deficitMod: 5, popularityMod: 0 },
+    ],
+  };
+  return shockMap[scenarioId] ?? [];
+}
+
+function applyScenarioMechanics(state: GameState): GameState {
+  if (!state.activeScenario) return state;
+  let s = state;
+
+  switch (s.activeScenario) {
+    case 'hiperinflacion_1989':
+      // Inflation compounds every turn
+      s = {
+        ...s,
+        economic: {
+          ...s.economic,
+          inflation: clamp(s.economic.inflation + Math.floor(s.economic.inflation * 0.02), 0, 200),
+        },
+      };
+      break;
+
+    case 'corralito_2001':
+      // Reserves permanently capped
+      s = {
+        ...s,
+        economic: {
+          ...s.economic,
+          foreignReserves: Math.min(s.economic.foreignReserves, 5),
+        },
+      };
+      break;
+
+    case 'convertibilidad':
+      // Inflation frozen at 0, but reserves drain
+      s = {
+        ...s,
+        economic: {
+          ...s.economic,
+          inflation: 0,
+          foreignReserves: clamp(s.economic.foreignReserves - 3, 0, 100),
+        },
+      };
+      break;
+
+    case 'rodrigazo_1975':
+      // One-time tarifazo on turn 1
+      if (s.turn === 1) {
+        s = {
+          ...s,
+          economic: {
+            ...s.economic,
+            publicDeficit: clamp(s.economic.publicDeficit + 40, 0, 100),
+          },
+          political: {
+            ...s.political,
+            popularity: clamp(s.political.popularity - 40, 0, 100),
+          },
+        };
+      }
+      break;
+
+    case 'malvinas_1982':
+      // Popularity surge while war continues, then collapse
+      if (s.turn <= 3) {
+        s = {
+          ...s,
+          political: {
+            ...s.political,
+            popularity: clamp(s.political.popularity + 20, 0, 100),
+          },
+        };
+      } else {
+        s = {
+          ...s,
+          political: {
+            ...s.political,
+            popularity: clamp(s.political.popularity - 15, 0, 100),
+          },
+        };
+      }
+      break;
+
+    case 'kirchnerismo_boom':
+      // Kirchner positive boom handled at effect-application level — no per-turn override here
+      break;
+  }
+
+  return s;
+}
 
 export function applyChoice(
   state: GameState,
@@ -172,6 +310,9 @@ export function advanceTurn(state: GameState): GameState {
     },
     lastInflationBreakdown: breakdown,
   };
+
+  // Apply scenario-specific per-turn mechanics
+  s = applyScenarioMechanics(s);
 
   // Apply shock effects to economic vars
   for (const shock of s.activeShocks) {
@@ -290,6 +431,17 @@ function applyEffects(state: GameState, effects: ChoiceEffect): GameState {
   // Scale bad outcomes: negative deltas on "higher is better" vars, positive on "lower is better" vars
   const scaleNeg = (v: number | undefined) => !v ? 0 : v < 0 ? v * m : v;
   const scalePos = (v: number | undefined) => !v ? 0 : v > 0 ? v * m : v;
+
+  // Kirchnerismo Boom: multiply positive economic effects by 1.5 for turns 1-8
+  const kirchBoost =
+    state.activeScenario === 'kirchnerismo_boom' && state.turn <= 8
+      ? 1.5
+      : 1.0;
+  const kirchPos = (v: number | undefined): number => {
+    if (!v) return 0;
+    return v > 0 ? v * kirchBoost : v;
+  };
+
   return {
     ...state,
     political: {
@@ -303,10 +455,10 @@ function applyEffects(state: GameState, effects: ChoiceEffect): GameState {
       ...state.economic,
       inflation: clamp(state.economic.inflation + scalePos(effects.inflationDelta), 0, 200),
       publicDeficit: clamp(state.economic.publicDeficit + scalePos(effects.deficitDelta), 0, 100),
-      marketConfidence: clamp(state.economic.marketConfidence + scaleNeg(effects.marketConfidenceDelta), 0, 100),
-      currencyStrength: clamp(state.economic.currencyStrength + scaleNeg(effects.currencyStrengthDelta), 0, 100),
-      foreignReserves: clamp(state.economic.foreignReserves + scaleNeg(effects.foreignReservesDelta), 0, 100),
-      gdpGrowth: clamp(state.economic.gdpGrowth + scaleNeg(effects.gdpGrowthDelta), -10, 10),
+      marketConfidence: clamp(state.economic.marketConfidence + kirchPos(scaleNeg(effects.marketConfidenceDelta)), 0, 100),
+      currencyStrength: clamp(state.economic.currencyStrength + kirchPos(scaleNeg(effects.currencyStrengthDelta)), 0, 100),
+      foreignReserves: clamp(state.economic.foreignReserves + kirchPos(scaleNeg(effects.foreignReservesDelta)), 0, 100),
+      gdpGrowth: clamp(state.economic.gdpGrowth + kirchPos(scaleNeg(effects.gdpGrowthDelta)), -10, 10),
     },
     congress: {
       ...state.congress,

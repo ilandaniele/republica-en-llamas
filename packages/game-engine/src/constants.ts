@@ -1,4 +1,4 @@
-import type { DifficultyPreset, CrisisType } from './types.js';
+import type { DifficultyPreset, CrisisType, HistoricalScenarioConfig, ScenarioId } from './types.js';
 
 // ─── Difficulty presets ───────────────────────────────────────────────────────
 
@@ -120,6 +120,113 @@ export const GAME_OVER = {
 // ─── Congress seat totals ─────────────────────────────────────────────────────
 
 export const TOTAL_SEATS = 538;
+
+// ─── Historical scenarios ─────────────────────────────────────────────────────
+
+export const HISTORICAL_SCENARIOS: Record<ScenarioId, HistoricalScenarioConfig> = {
+  hiperinflacion_1989: {
+    labelKey: 'scenario.hiperinflacion_1989.label',
+    periodKey: 'scenario.hiperinflacion_1989.period',
+    descriptionKey: 'scenario.hiperinflacion_1989.description',
+    entitlementRequired: 'mode_historical',
+    popularity: 30,
+    socialStability: 25,
+    mediaCredibility: 20,
+    inflation: 120,
+    publicDeficit: 70,
+    marketConfidence: 15,
+    currencyStrength: 10,
+    foreignReserves: 10,
+    gdpGrowth: -5.0,
+    governmentSeats: 180,
+    oppositionSeats: 280,
+  },
+  corralito_2001: {
+    labelKey: 'scenario.corralito_2001.label',
+    periodKey: 'scenario.corralito_2001.period',
+    descriptionKey: 'scenario.corralito_2001.description',
+    entitlementRequired: 'mode_historical',
+    popularity: 25,
+    socialStability: 20,
+    mediaCredibility: 30,
+    inflation: 35,
+    publicDeficit: 65,
+    marketConfidence: 10,
+    currencyStrength: 50,
+    foreignReserves: 5,
+    gdpGrowth: -4.4,
+    governmentSeats: 170,
+    oppositionSeats: 290,
+  },
+  convertibilidad: {
+    labelKey: 'scenario.convertibilidad.label',
+    periodKey: 'scenario.convertibilidad.period',
+    descriptionKey: 'scenario.convertibilidad.description',
+    entitlementRequired: 'mode_historical',
+    popularity: 45,
+    socialStability: 55,
+    mediaCredibility: 40,
+    inflation: 0,
+    publicDeficit: 50,
+    marketConfidence: 60,
+    currencyStrength: 100,
+    foreignReserves: 40,
+    gdpGrowth: 6.0,
+    governmentSeats: 230,
+    oppositionSeats: 220,
+  },
+  rodrigazo_1975: {
+    labelKey: 'scenario.rodrigazo_1975.label',
+    periodKey: 'scenario.rodrigazo_1975.period',
+    descriptionKey: 'scenario.rodrigazo_1975.description',
+    entitlementRequired: 'mode_historical',
+    popularity: 40,
+    socialStability: 35,
+    mediaCredibility: 30,
+    inflation: 50,
+    publicDeficit: 60,
+    marketConfidence: 25,
+    currencyStrength: 35,
+    foreignReserves: 25,
+    gdpGrowth: 0.5,
+    governmentSeats: 260,
+    oppositionSeats: 200,
+  },
+  malvinas_1982: {
+    labelKey: 'scenario.malvinas_1982.label',
+    periodKey: 'scenario.malvinas_1982.period',
+    descriptionKey: 'scenario.malvinas_1982.description',
+    entitlementRequired: 'mode_historical',
+    popularity: 70,
+    socialStability: 60,
+    mediaCredibility: 40,
+    inflation: 80,
+    publicDeficit: 65,
+    marketConfidence: 20,
+    currencyStrength: 25,
+    foreignReserves: 15,
+    gdpGrowth: -3.0,
+    governmentSeats: 190,
+    oppositionSeats: 270,
+  },
+  kirchnerismo_boom: {
+    labelKey: 'scenario.kirchnerismo_boom.label',
+    periodKey: 'scenario.kirchnerismo_boom.period',
+    descriptionKey: 'scenario.kirchnerismo_boom.description',
+    entitlementRequired: 'mode_historical',
+    popularity: 55,
+    socialStability: 60,
+    mediaCredibility: 50,
+    inflation: 8,
+    publicDeficit: 35,
+    marketConfidence: 55,
+    currencyStrength: 65,
+    foreignReserves: 50,
+    gdpGrowth: 8.8,
+    governmentSeats: 290,
+    oppositionSeats: 170,
+  },
+};
 
 // ─── Negotiation costs & effects ─────────────────────────────────────────────
 

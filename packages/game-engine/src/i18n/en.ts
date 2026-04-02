@@ -508,4 +508,159 @@ export const en: Record<string, string> = {
   'event.new_010.choice_b': 'Coordinate with provinces on a containment works plan',
   'event.new_010.choice_c': 'Request international humanitarian assistance',
   'event.new_010.choice_d': 'Delayed response — prioritize fiscal adjustment',
+
+  // ─── Historical Scenarios ─────────────────────────────────────────────────
+  'scenario.hiperinflacion_1989.label': 'The Hyperinflation',
+  'scenario.hiperinflacion_1989.period': '1989',
+  'scenario.hiperinflacion_1989.description': '3,000% annual inflation. Supermarkets were looted. Alfonsín resigned before his term ended.',
+
+  'scenario.corralito_2001.label': 'The Corralito',
+  'scenario.corralito_2001.period': '2001',
+  'scenario.corralito_2001.description': 'Banks shut their doors. Argentines could not access their savings. The country defaulted on its debt — the largest in history at the time.',
+
+  'scenario.convertibilidad.label': 'The Convertibility',
+  'scenario.convertibilidad.period': '1991–2001',
+  'scenario.convertibilidad.description': 'One peso, one dollar. The cure that stopped inflation but drained reserves and ended in collapse.',
+
+  'scenario.rodrigazo_1975.label': 'The Rodrigazo',
+  'scenario.rodrigazo_1975.period': '1975',
+  'scenario.rodrigazo_1975.description': 'Minister Rodrigo raised utility tariffs 100% overnight. Unions and the public forced his resignation within 48 hours.',
+
+  'scenario.malvinas_1982.label': 'The Falklands',
+  'scenario.malvinas_1982.period': '1982',
+  'scenario.malvinas_1982.description': 'The military junta gambled on war to survive politically. The patriotic fervour lasted weeks. The defeat, forever.',
+
+  'scenario.kirchnerismo_boom.label': 'The Tailwind Years',
+  'scenario.kirchnerismo_boom.period': '2003–2007',
+  'scenario.kirchnerismo_boom.description': 'Soaring commodities, restructured debt and 8% growth. The trap came when the tailwind stopped.',
+
+  // Shock names (historical)
+  'shock.hiper.saqueos': 'Widespread Supermarket Looting',
+  'shock.hiper.alfonsinexit': 'Early Presidential Resignation',
+  'shock.corralito.freeze': 'Banking System Freeze',
+  'shock.corralito.default': 'Sovereign Default',
+  'shock.convertib.overvalued': 'Overvalued Peso',
+  'shock.convertib.recession': 'Recession Under Fixed Exchange Rate',
+  'shock.rodrigazo.huelga': 'General Strike',
+  'shock.rodrigazo.tarifazo': '100% Tariff Hike',
+  'shock.malvinas.guerra': 'South Atlantic War',
+  'shock.malvinas.derrota': 'Military Defeat',
+  'shock.kirchner.vientocola': 'International Commodity Tailwind',
+  'shock.kirchner.inflsubestimada': 'Real Inflation vs. INDEC Data',
+
+  // ── Hyperinflation 1989 cards ─────────────────────────────────────────────
+  'event.hist_hiper_001.title': 'PRICES SPIRAL OUT OF CONTROL',
+  'event.hist_hiper_001.body': 'Prices doubled in a single week. Shoppers are buying whatever they can before the next rise. The economy minister has resigned twice this month.',
+  'event.hist_hiper_001.choice_a': 'Summon supermarket executives and impose price caps',
+  'event.hist_hiper_001.choice_b': 'Let the market self-correct — price controls never work',
+  'event.hist_hiper_001.choice_c': 'Launch an IMF-backed shock stabilisation plan',
+  'event.hist_hiper_001.choice_d': 'Print money to ease hunger and buy time',
+
+  'event.hist_hiper_002.title': 'ALFONSÍN CALLS MENEM',
+  'event.hist_hiper_002.body': 'The president-elect takes office in five months, but the situation cannot hold. Alfonsín is weighing an early transfer of power — unprecedented in Argentine democracy.',
+  'event.hist_hiper_002.choice_a': 'Hand over power early — the country cannot wait',
+  'event.hist_hiper_002.choice_b': 'Serve out the full term — conceding is unconstitutional',
+  'event.hist_hiper_002.choice_c': 'Negotiate a transitional unity government',
+
+  'event.hist_hiper_003.title': 'PLAN BÓNEX: CONFISCATE OR STABILISE',
+  'event.hist_hiper_003.body': 'The incoming government is considering converting fixed-term deposits into ten-year bonds overnight. It would stop inflation cold — but Argentines would lose access to their savings.',
+  'event.hist_hiper_003.choice_a': 'Implement Plan Bónex — stability at any cost',
+  'event.hist_hiper_003.choice_b': 'Protect deposits and weather the storm',
+  'event.hist_hiper_003.choice_c': 'Convert only deposits over $1 million',
+
+  // ── El Corralito 2001 cards ───────────────────────────────────────────────
+  'event.hist_corral_001.title': 'THE DOLLARS ARE FLEEING',
+  'event.hist_corral_001.body': 'Capital flight is at a record high. $2bn left the banking system last week alone. Banks no longer have reserves to honour mass withdrawals.',
+  'event.hist_corral_001.choice_a': 'Declare the corralito: cap withdrawals at $250 per week',
+  'event.hist_corral_001.choice_b': 'Devalue and abandon convertibility immediately',
+  'event.hist_corral_001.choice_c': 'Request an IMF rescue package',
+  'event.hist_corral_001.choice_d': 'Launch a national confidence campaign in the peso',
+
+  'event.hist_corral_002.title': 'THE CACEROLAZO: CITIZENS IN THE STREETS',
+  'event.hist_corral_002.body': '"¡Que se vayan todos!" Plaza de Mayo is overflowing. The president declares a state of siege. The crackdown leaves 38 dead. No one in government knows what to do next.',
+  'event.hist_corral_002.choice_a': 'Resign — the country needs a democratic way out',
+  'event.hist_corral_002.choice_b': 'Maintain the state of siege and convertibility',
+  'event.hist_corral_002.choice_c': 'Lift the state of siege and negotiate with the opposition',
+
+  'event.hist_corral_003.title': 'THE DEFAULT',
+  'event.hist_corral_003.body': 'Argentina cannot meet its debt repayments. The IMF cut funding. Four presidents in one week. Congress has appointed you as a last resort.',
+  'event.hist_corral_003.choice_a': 'Declare the default — suspend foreign debt payments',
+  'event.hist_corral_003.choice_b': 'Pay at the cost of total social spending cuts',
+  'event.hist_corral_003.choice_c': 'Restructure debt, suspending interest payments',
+
+  // ── La Convertibilidad cards ──────────────────────────────────────────────
+  'event.hist_conv_001.title': 'ONE PESO, ONE DOLLAR',
+  'event.hist_conv_001.body': 'Minister Cavallo proposes pegging the peso to the dollar with a currency board. It would kill inflation overnight — but Argentina would permanently surrender its monetary flexibility.',
+  'event.hist_conv_001.choice_a': 'Pass the Convertibility Law',
+  'event.hist_conv_001.choice_b': 'Reject it — a fixed exchange rate is a trap',
+  'event.hist_conv_001.choice_c': 'Negotiate a managed float band instead',
+
+  'event.hist_conv_002.title': 'RESERVES RUNNING DRY',
+  'event.hist_conv_002.body': 'The central bank has lost $8bn in reserves over three months. To maintain parity, Argentina must keep borrowing or keep selling. The clock is ticking.',
+  'event.hist_conv_002.choice_a': 'Hold the peg and take on more debt',
+  'event.hist_conv_002.choice_b': 'Abandon the fixed exchange rate before it is too late',
+  'event.hist_conv_002.choice_c': 'Negotiate an IMF financial shield ("Blindaje")',
+
+  'event.hist_conv_003.title': 'THE BLINDAJE OR THE DEVALUATION',
+  'event.hist_conv_003.body': 'The IMF\'s Blindaje package arrives late and with harsh conditions. Recession has dragged on for three years. Unemployment tops 17%. Nobody believes one-to-one can survive.',
+  'event.hist_conv_003.choice_a': 'Devalue — the peso becomes 1.40 to the dollar',
+  'event.hist_conv_003.choice_b': 'Accept the IMF Blindaje with deeper austerity',
+  'event.hist_conv_003.choice_c': 'Full dollarisation — abolish the peso entirely',
+
+  // ── El Rodrigazo 1975 cards ───────────────────────────────────────────────
+  'event.hist_rod_001.title': 'RODRIGO\'S TARIFF SHOCK',
+  'event.hist_rod_001.body': 'Minister Celestino Rodrigo announces: fuel up 172%, electricity up 75%, transport up 75%. Effective immediately. The unions have declared war.',
+  'event.hist_rod_001.choice_a': 'Defend the hikes — they are the only anti-inflation medicine',
+  'event.hist_rod_001.choice_b': 'Reverse them — the political cost is unsustainable',
+  'event.hist_rod_001.choice_c': 'Segment: raise only freight and premium fuel',
+
+  'event.hist_rod_002.title': 'THE CGT CALLS A GENERAL STRIKE',
+  'event.hist_rod_002.body': 'The CGT calls a 48-hour stoppage. Factories halt, buses sit idle, banks close. Isabel Perón must choose between her minister and the unions.',
+  'event.hist_rod_002.choice_a': 'Fire Rodrigo and yield to the unions',
+  'event.hist_rod_002.choice_b': 'Back the minister — unions do not govern',
+  'event.hist_rod_002.choice_c': 'Negotiate: cut tariffs 30% and ask for a truce',
+
+  'event.hist_rod_003.title': 'ISABEL PERÓN AT THE CROSSROADS',
+  'event.hist_rod_003.body': 'Without Rodrigo, without an economic plan, and with guerrilla activity intensifying, Isabel\'s government is unravelling. The armed forces are watching closely.',
+  'event.hist_rod_003.choice_a': 'Resist to the end as a constitutionalist',
+  'event.hist_rod_003.choice_b': 'Take leave — let the vice-president assume command',
+  'event.hist_rod_003.choice_c': 'Attempt a national coalition government without the army',
+
+  // ── Malvinas 1982 cards ───────────────────────────────────────────────────
+  'event.hist_mal_001.title': 'LANDING ON THE FALKLANDS',
+  'event.hist_mal_001.body': 'The junta orders the forceful recovery of the islands. Plaza de Mayo erupts in patriotic fervour. The world watches in disbelief. Thatcher mobilises the Task Force.',
+  'event.hist_mal_001.choice_a': 'Press on — the islands are Argentine, whatever the cost',
+  'event.hist_mal_001.choice_b': 'Halt the operation before Britain declares war',
+  'event.hist_mal_001.choice_c': 'Pursue a UN diplomatic solution before any fighting',
+
+  'event.hist_mal_002.title': 'THE BRITISH FLEET APPROACHES',
+  'event.hist_mal_002.body': 'Warships have left Portsmouth. Reagan offers mediation; Haig is on a peace tour. Time is running out: reinforce the islands or seek an exit.',
+  'event.hist_mal_002.choice_a': 'Reinforce with more troops and weapons',
+  'event.hist_mal_002.choice_b': 'Resist and rally Latin American solidarity',
+  'event.hist_mal_002.choice_c': 'Accept mediation — withdraw the bulk of the forces',
+
+  'event.hist_mal_003.title': 'DEFEAT AT PORT STANLEY',
+  'event.hist_mal_003.body': 'General Menéndez surrenders the Argentine garrison. The war lasted 74 days. 649 Argentine soldiers are dead. Patriotic fervour has turned to fury at the junta.',
+  'event.hist_mal_003.choice_a': 'Call immediate democratic elections',
+  'event.hist_mal_003.choice_b': 'Attempt political survival through an internal coup',
+  'event.hist_mal_003.choice_c': 'Negotiate an orderly transition with political parties',
+
+  // ── Kirchnerismo Boom 2003–2007 cards ─────────────────────────────────────
+  'event.hist_kirch_001.title': 'SOYA AT $300: THE TAILWIND ARRIVES',
+  'event.hist_kirch_001.body': 'China\'s demand for soya is driving prices to record highs. Agri-export revenues are exploding. The fiscal surplus lets the government rebuild the social fabric destroyed in 2001.',
+  'event.hist_kirch_001.choice_a': 'Invest in public works and poverty reduction',
+  'event.hist_kirch_001.choice_b': 'Use the surplus to rebuild central bank reserves',
+  'event.hist_kirch_001.choice_c': 'Cut taxes to strengthen competitiveness',
+
+  'event.hist_kirch_002.title': 'IMF PAYMENT: INDEPENDENCE OR TRAP',
+  'event.hist_kirch_002.body': 'Kirchner announces the full repayment of IMF debt in a single payment: $9.81bn. Argentina breaks free of Fund conditionality — but empties its reserves.',
+  'event.hist_kirch_002.choice_a': 'Pay it all at once — full economic sovereignty',
+  'event.hist_kirch_002.choice_b': 'Refinance in instalments to preserve reserves',
+  'event.hist_kirch_002.choice_c': 'Pay and negotiate a new standby arrangement',
+
+  'event.hist_kirch_003.title': 'INDEC: THE REAL INFLATION',
+  'event.hist_kirch_003.body': '8% growth alongside 20% real inflation. The government intervenes in the statistics agency to suppress the numbers. Private economists publish their own alternative figures.',
+  'event.hist_kirch_003.choice_a': 'Let INDEC under-report — the lie serves short-term interests',
+  'event.hist_kirch_003.choice_b': 'Acknowledge real inflation and launch a stabilisation plan',
+  'event.hist_kirch_003.choice_c': 'Create a "consensus" alternative index with the provinces',
 };
