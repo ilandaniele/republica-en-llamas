@@ -12,7 +12,11 @@ export function calculateInflation(state: GameState): number {
   const confidence = ((100 - marketConfidence) / 100) * 6;
   const currency = ((100 - currencyStrength) / 100) * 5;
   const shock = getActiveShockMultiplier(state);
-  const raw = base + monetary + confidence + currency + shock;
+  // Natural decay: healthy markets + low deficit can lower inflation
+  const naturalDecay = Math.max(0,
+    ((marketConfidence - 55) / 50) * 2.5 + ((30 - publicDeficit) / 30) * 1.5
+  );
+  const raw = base + monetary + confidence + currency + shock - naturalDecay;
   const mod = DIFFICULTY_MODIFIERS[state.difficulty] ?? DIFFICULTY_MODIFIERS['normal']!;
   const accelBlocked = state.turn < mod.inflationAccelerationTurn;
   const accel = (!accelBlocked && raw > 15) ? raw * 0.25 : 0;
@@ -26,7 +30,11 @@ export function calculateInflationBreakdown(state: GameState): InflationBreakdow
   const marketDistrust = ((100 - marketConfidence) / 100) * 6;
   const currencyWeakness = ((100 - currencyStrength) / 100) * 5;
   const shockEffect = getActiveShockMultiplier(state);
-  const raw = previousInflation + deficitPressure + marketDistrust + currencyWeakness + shockEffect;
+  // Natural decay: healthy markets + low deficit can lower inflation
+  const naturalDecay = Math.max(0,
+    ((marketConfidence - 55) / 50) * 2.5 + ((30 - publicDeficit) / 30) * 1.5
+  );
+  const raw = previousInflation + deficitPressure + marketDistrust + currencyWeakness + shockEffect - naturalDecay;
   const mod = DIFFICULTY_MODIFIERS[state.difficulty] ?? DIFFICULTY_MODIFIERS['normal']!;
   const accelBlocked = state.turn < mod.inflationAccelerationTurn;
   const accelerationEffect = (!accelBlocked && raw > 15) ? raw * 0.25 : 0;
@@ -36,6 +44,7 @@ export function calculateInflationBreakdown(state: GameState): InflationBreakdow
     marketDistrust,
     currencyWeakness,
     shockEffect,
+    naturalDecay: -naturalDecay,
     accelerationEffect,
     previousInflation,
     newInflation,

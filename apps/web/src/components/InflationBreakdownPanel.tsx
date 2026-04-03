@@ -22,6 +22,7 @@ export function InflationBreakdownPanel({ breakdown }: Props) {
     { label: 'Moneda Débil', value: breakdown.currencyWeakness, emoji: '💵' },
     { label: 'Shocks Externos', value: breakdown.shockEffect, emoji: '⚡' },
     { label: 'Efecto Inercia', value: breakdown.accelerationEffect, emoji: '🔥' },
+    { label: 'Estabilidad Económica', value: breakdown.naturalDecay ?? 0, emoji: '📈' },
   ].filter((f) => Math.abs(f.value) >= 0.1);
 
   return (

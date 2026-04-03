@@ -52,7 +52,8 @@ export type GameOverReason =
   | 'socialCollapse'
   | 'bankrupt'
   | 'impeachment'
-  | 'term_complete';
+  | 'term_complete'
+  | 'election_loss';
 
 export interface PoliticalVars {
   popularity: number;           // 0-100
@@ -237,6 +238,7 @@ export interface InflationBreakdown {
   marketDistrust: number;
   currencyWeakness: number;
   shockEffect: number;
+  naturalDecay: number;
   accelerationEffect: number;
   previousInflation: number;
   newInflation: number;

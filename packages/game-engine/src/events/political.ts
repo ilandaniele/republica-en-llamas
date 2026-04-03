@@ -447,4 +447,55 @@ export const POLITICAL_CARDS: EventCard[] = [
       },
     ],
   },
+  // ─── Presidential election arc ───────────────────────────────────────────
+  {
+    id: 'pol_election_campaign',
+    category: 'political',
+    titleKey: 'event.pol_election_campaign.title',
+    bodyKey: 'event.pol_election_campaign.body',
+    weight: 15,
+    minTurn: 36,
+    maxTurn: 39,
+    choices: [
+      {
+        id: 'pol_ecampaign_a',
+        textKey: 'event.pol_election_campaign.choice_a',
+        effects: { popularityDelta: 14, deficitDelta: 5 },
+      },
+      {
+        id: 'pol_ecampaign_b',
+        textKey: 'event.pol_election_campaign.choice_b',
+        effects: { popularityDelta: 7, stabilityDelta: 6 },
+      },
+      {
+        id: 'pol_ecampaign_c',
+        textKey: 'event.pol_election_campaign.choice_c',
+        effects: { popularityDelta: 5, mediaCredibilityDelta: 12 },
+      },
+      {
+        id: 'pol_ecampaign_d',
+        textKey: 'event.pol_election_campaign.choice_d',
+        effects: { popularityDelta: 9, marketConfidenceDelta: 6 },
+      },
+    ],
+  },
+  {
+    id: 'pol_election_result',
+    category: 'political',
+    titleKey: 'event.pol_election_result.title',
+    bodyKey: 'event.pol_election_result.body',
+    weight: 0, // forced draw only — injected by drawNextCard at turn 40
+    choices: [
+      {
+        id: 'pol_eresult_win',
+        textKey: 'event.pol_election_result.choice_win',
+        effects: { popularityDelta: 16, stabilityDelta: 10, marketConfidenceDelta: 8 },
+      },
+      {
+        id: 'pol_eresult_lose',
+        textKey: 'event.pol_election_result.choice_lose',
+        effects: { popularityDelta: -18, stabilityDelta: -12, marketConfidenceDelta: -10 },
+      },
+    ],
+  },
 ];

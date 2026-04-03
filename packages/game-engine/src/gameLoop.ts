@@ -1,5 +1,5 @@
 import type { GameState, Difficulty, Language, ChoiceEffect, TurnEvent, RecurringCharacter, ScenarioId } from './types.js';
-import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS, CONGRESS_SESSION_INTERVAL, HISTORICAL_SCENARIOS } from './constants.js';
+import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS, CONGRESS_SESSION_INTERVAL, PRESIDENTIAL_ELECTION_TURN, HISTORICAL_SCENARIOS } from './constants.js';
 import { calculateInflationBreakdown } from './inflation.js';
 import { calculateScore } from './scoring.js';
 import { detectCrises, tickCrises } from './crises.js';
@@ -375,6 +375,12 @@ export function advanceTurn(state: GameState): GameState {
 export function drawNextCard(state: GameState): ReturnType<typeof drawCard> {
   const mod = DIFFICULTY_MODIFIERS[state.difficulty] ?? DIFFICULTY_MODIFIERS['normal']!;
   const rng = createRng(state.seed + state.turn * 777);
+
+  // Force presidential election card at turn 40
+  if (state.turn === PRESIDENTIAL_ELECTION_TURN) {
+    const elCard = CARD_REGISTRY.get('pol_election_result');
+    if (elCard) return elCard;
+  }
 
   // Every CONGRESS_SESSION_INTERVAL turns, force a rotating session law card
   if (state.turn > 1 && state.turn % CONGRESS_SESSION_INTERVAL === 0) {

@@ -736,6 +736,19 @@ export const es: Record<string, string> = {
   'event.pol_015.choice_c': 'Presentar plan de acción ante el Consejo de DDHH de la ONU',
   'event.pol_015.choice_d': 'Contratar relator especial internacional para revisar el sistema',
 
+  // ─── Presidential election arc ───────────────────────────────────────────
+  'event.pol_election_campaign.title': 'CAMPAÑA ELECTORAL',
+  'event.pol_election_campaign.body': 'La elección presidencial se acerca. Las encuestas están apretadas. ¿Cómo va a disputar la reelección?',
+  'event.pol_election_campaign.choice_a': 'Campaña de gasto masivo: actos, publicidad y promesas populares',
+  'event.pol_election_campaign.choice_b': 'Movilizar la coalición de base con militancia territorial',
+  'event.pol_election_campaign.choice_c': 'Campaña mediática: debates televisivos y redes sociales',
+  'event.pol_election_campaign.choice_d': 'Plan económico para la reelección: promesas a sectores clave',
+
+  'event.pol_election_result.title': 'DÍA DE LA ELECCIÓN',
+  'event.pol_election_result.body': 'Los argentinos fueron a las urnas. Los resultados llegan de todo el país. El futuro del gobierno se define esta noche.',
+  'event.pol_election_result.choice_win': 'El gobierno triunfa: el pueblo renueva el mandato',
+  'event.pol_election_result.choice_lose': 'Derrota histórica: la oposición gana las elecciones',
+
   // ─── NEW: choice_c / choice_d for Economic cards ──────────────────────────
   'event.eco_001.choice_d': 'Pacto social de precios con cámaras empresariales',
   'event.eco_002.choice_c': 'Negociar condiciones más favorables en 30 días',
