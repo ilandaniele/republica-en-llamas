@@ -105,10 +105,10 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       </h2>
 
       {/* Character portrait or large scene illustration */}
-      <div className="mb-4 overflow-hidden h-[360px] md:h-[480px]">
+      <div className="mb-4 overflow-hidden h-[220px] md:h-[280px]">
         {card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
           <div className="flex items-center justify-center bg-navy-800/60 border border-navy-700 h-full">
-            <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={220} />
+            <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
           </div>
         ) : card.characterId ? (
           <div className="flex items-center gap-3 bg-navy-800/60 border border-navy-600 rounded-lg px-3 py-2">

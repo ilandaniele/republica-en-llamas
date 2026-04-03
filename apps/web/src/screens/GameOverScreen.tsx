@@ -86,9 +86,12 @@ export default function GameOverScreen() {
   const isNewRecord = !isWin && (!personalBest || gameState.score > personalBest.score);
 
   const PRESIDENT_NAMES: Record<string, string> = {
-    ingeniero: 'Hernán Botta',
-    populista: 'Néstor "Neco" Paz',
-    tecnocrata: 'Dra. Clara Vidal',
+    ingeniero: 'Javier Milei',
+    populista: 'Sergio Massa',
+    tecnocrata: 'Patricia Bullrich',
+    izquierda: 'Myriam Bregman',
+    federal: 'Juan Schiaretti',
+    corporativo: 'Horacio Larreta',
   };
   const presidentName = PRESIDENT_NAMES[presidentId] ?? 'El Presidente';
 

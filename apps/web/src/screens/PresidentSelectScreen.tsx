@@ -62,6 +62,45 @@ const ARCHETYPES: Archetype[] = [
     color: 'border-yellow-500',
     emoji: '🦅',
   },
+  {
+    id: 'izquierda',
+    name: 'Myriam',
+    lastName: 'Bregman',
+    title: 'La Tribuna',
+    description: '"Que paguen los que más tienen." FIT-Unidad, abogada, trotskista convencida. Las plazas la aclaman, los mercados la odian.',
+    bonus: '+15 Estabilidad Social inicial',
+    weakness: '-15 Confianza de Mercados inicial',
+    bonusStat: 'socialStability',
+    weaknessStat: 'marketConfidence',
+    color: 'border-red-600',
+    emoji: '✊',
+  },
+  {
+    id: 'federal',
+    name: 'Juan',
+    lastName: 'Schiaretti',
+    title: 'El Federal',
+    description: '"Córdoba primero." Tres veces gobernador, peronista disfrazado de independiente. Pragmático, cordobés hasta los huesos, distante de Buenos Aires.',
+    bonus: '+10 Credibilidad Mediática, +5 Estabilidad',
+    weakness: '-10 Popularidad nacional inicial',
+    bonusStat: 'mediaCredibility',
+    weaknessStat: 'popularity',
+    color: 'border-blue-400',
+    emoji: '🌾',
+  },
+  {
+    id: 'corporativo',
+    name: 'Horacio',
+    lastName: 'Larreta',
+    title: 'El Gestor',
+    description: '"Trabajar, trabajar y trabajar." Ex jefe de Gobierno porteño, tecnócrata del PRO, amante del PowerPoint. Gestión sin carisma, resultados sin pasión.',
+    bonus: '+10 Confianza de Mercados, +5 Credibilidad Mediática',
+    weakness: '-15 Popularidad inicial',
+    bonusStat: 'marketConfidence',
+    weaknessStat: 'popularity',
+    color: 'border-sky-400',
+    emoji: '📊',
+  },
 ];
 
 function ArchetypeCard({ archetype, selected, onSelect }: { archetype: Archetype; selected: boolean; onSelect: () => void }) {
@@ -180,7 +219,7 @@ export default function PresidentSelectScreen() {
         </div>
 
         {/* Archetype grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
           {ARCHETYPES.map((a) => {
             const locked = !canPlay(a.id);
             return (
