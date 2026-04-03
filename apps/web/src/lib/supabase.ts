@@ -21,10 +21,13 @@ if (isOfflineMode) {
   );
 }
 
-export const supabase = createClient(
-  supabaseUrl ?? 'https://placeholder.supabase.co',
-  supabaseAnonKey ?? 'placeholder_key'
-);
+// Use a valid-format fallback so @supabase/supabase-js v2 never throws on init
+const OFFLINE_URL = 'https://offline-mode.supabase.co';
+const OFFLINE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.ZM1234567890000000000000000000000000000000';
+
+export const supabase = isOfflineMode
+  ? createClient(OFFLINE_URL, OFFLINE_KEY)
+  : createClient(supabaseUrl!, supabaseAnonKey!);
 
 /** Translate Supabase error messages to Spanish */
 export function translateAuthError(message: string): string {
