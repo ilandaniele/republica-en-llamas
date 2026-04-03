@@ -15,6 +15,7 @@ const HEADLINES: Record<string, string> = {
   socialCollapse: 'COLAPSO TOTAL: LA REPÚBLICA EN ANARQUÍA',
   bankrupt: 'BANCARROTA SOBERANA: SIN RESERVAS',
   impeachment: 'EL CONGRESO DESTITUYE AL PRESIDENTE',
+  election_loss: 'DERROTA ELECTORAL: EL PUEBLO HA DECIDIDO',
   term_complete: '¡MANDATO CUMPLIDO! LA REPÚBLICA SOBREVIVE',
 };
 
@@ -24,6 +25,7 @@ const SUB_HEADLINES: Record<string, string> = {
   socialCollapse: 'El orden institucional se disuelve. La anarquía reemplaza al estado.',
   bankrupt: 'Sin divisas ni crédito, el país no puede importar ni pagar deudas.',
   impeachment: 'El Congreso ejerció su poder constitucional. Un capítulo oscuro cierra.',
+  election_loss: 'Las urnas hablaron. La oposición festeja. El mandato termina sin renovarse.',
   term_complete: 'Contra todo pronóstico, la república sobrevivió. La historia te recordará.',
 };
 
@@ -96,6 +98,7 @@ export default function GameOverScreen() {
     socialCollapse: 'colapso social',
     bankrupt: 'bancarrota',
     impeachment: 'juicio político',
+    election_loss: 'derrota electoral',
     term_complete: 'mandato completo',
   };
   const reasonLabel = REASON_LABELS[reason] ?? reason;

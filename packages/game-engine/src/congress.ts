@@ -1,6 +1,6 @@
 import type { GameState, VoteResult, NegotiationType } from './types.js';
-import { NEGOTIATION_CONFIG, TOTAL_SEATS } from './constants.js';
-import { clamp } from './utils.js';
+import { NEGOTIATION_CONFIG } from './constants.js';
+import { clamp, createRng } from './utils.js';
 
 export function calculateVote(
   state: GameState,
@@ -8,6 +8,10 @@ export function calculateVote(
 ): VoteResult {
   const { congress, political } = state;
   const requiredVotes = 128;
+
+  // Seeded variance: each session has different independent turnout (±4 votes)
+  const rng = createRng(state.seed + state.turn * 13);
+  const variance = Math.floor((rng() - 0.5) * 8);
 
   // Coalition bonus (same as before)
   const effectiveGovSeats =
@@ -31,7 +35,7 @@ export function calculateVote(
   if (political.emergencyDecreesUsed > 2) independentSupport -= 0.2;
   independentSupport = Math.max(0, Math.min(1, independentSupport));
 
-  const independentVotes = Math.round(35 * independentSupport);
+  const independentVotes = clamp(Math.round(35 * independentSupport) + variance, 0, 35);
   const totalGovVotes = effectiveGovSeats + independentVotes;
 
   return {

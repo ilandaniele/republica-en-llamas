@@ -93,6 +93,19 @@ export const en: Record<string, string> = {
   'event.pol_015.choice_a': 'Accept the observations and commit to improvement',
   'event.pol_015.choice_b': 'Reject the report as foreign interference',
 
+  // ─── Presidential election arc ───────────────────────────────────────────
+  'event.pol_election_campaign.title': 'ELECTION CAMPAIGN',
+  'event.pol_election_campaign.body': 'The presidential election is approaching. Polls are tight. How will you fight for re-election?',
+  'event.pol_election_campaign.choice_a': 'Massive spending campaign: rallies, ads, and popular promises',
+  'event.pol_election_campaign.choice_b': 'Mobilize the grassroots coalition with territorial activism',
+  'event.pol_election_campaign.choice_c': 'Media campaign: TV debates and social media',
+  'event.pol_election_campaign.choice_d': 'Re-election economic plan: promises to key sectors',
+
+  'event.pol_election_result.title': 'ELECTION DAY',
+  'event.pol_election_result.body': 'Argentines went to the polls. Results are coming in from across the country. Tonight the fate of the government is decided.',
+  'event.pol_election_result.choice_win': 'The government wins: the people renew the mandate',
+  'event.pol_election_result.choice_lose': 'Historic defeat: the opposition wins the election',
+
   // ─── Economic cards ────────────────────────────────────────────────────────
   'event.eco_001.title': 'Inflationary Pressure',
   'event.eco_001.body': 'Consumer prices rise for the third consecutive month. The central bank debates whether to intervene.',

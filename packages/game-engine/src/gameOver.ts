@@ -1,5 +1,5 @@
 import type { GameState, GameOverResult } from './types.js';
-import { GAME_OVER } from './constants.js';
+import { GAME_OVER, PRESIDENTIAL_ELECTION_TURN } from './constants.js';
 import { calculateScore } from './scoring.js';
 
 export function checkGameOver(state: GameState): GameOverResult | null {
@@ -66,6 +66,16 @@ export function checkGameOver(state: GameState): GameOverResult | null {
   if (impeachment && impeachment.turnsActive >= GAME_OVER.IMPEACHMENT_RESOLVE_TURNS) {
     return {
       reason: 'impeachment',
+      score: calculateScore(state),
+      turn,
+      isWin: false,
+    };
+  }
+
+  // Presidential election loss: popularity below threshold on election day
+  if (turn === PRESIDENTIAL_ELECTION_TURN && political.popularity < 40) {
+    return {
+      reason: 'election_loss',
       score: calculateScore(state),
       turn,
       isWin: false,

@@ -14,6 +14,7 @@ const GAME_OVER_TO_VARIABLE: Record<GameOverReason, keyof import('./types.js').C
   bankrupt: 'deficitDelta',
   impeachment: 'popularityDelta',
   term_complete: null,
+  election_loss: 'popularityDelta',
 };
 
 export function getFatalDecision(

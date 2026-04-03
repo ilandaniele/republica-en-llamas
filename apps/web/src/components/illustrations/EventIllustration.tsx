@@ -691,12 +691,10 @@ export function EventIllustration({
     return (
       <div
         style={{
-          width,
-          height,
+          width: '100%',
+          height: '100%',
           overflow: 'hidden',
-          borderRadius: 8,
           background: '#1a1a2e',
-          flexShrink: 0,
         }}
       >
         <img
@@ -714,7 +712,7 @@ export function EventIllustration({
     <svg width={width} height={height} viewBox="0 0 320 180"
       xmlns="http://www.w3.org/2000/svg"
       style={{ width: '100%', height: '100%', display: 'block' }}
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio="xMidYMid slice"
       role="img" aria-label={`Ilustración: ${eventCategory}`}>
       {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} />}
       {(scene === 'pol_scandal' || scene === 'arg_fmi_negocio')   && <ScenePolScandal presidentId={presidentId} />}

@@ -121,6 +121,10 @@ export const GAME_OVER = {
 
 export const TOTAL_SEATS = 538;
 
+// ─── Presidential election ────────────────────────────────────────────────────
+
+export const PRESIDENTIAL_ELECTION_TURN = 40;
+
 // ─── Historical scenarios ─────────────────────────────────────────────────────
 
 export const HISTORICAL_SCENARIOS: Record<ScenarioId, HistoricalScenarioConfig> = {
