@@ -635,7 +635,7 @@ function SceneCrisis({ presidentId }: { presidentId: string }) {
 
 // ── Scene selector ────────────────────────────────────────────────────────────
 function selectScene(category: string, eventId: string, gameState: GameState | null | undefined): string {
-  // Specific event IDs
+  // Specific event IDs — keyword overrides
   if (eventId === 'arg_015' || eventId?.includes('mundial') || eventId?.includes('campeon')) return 'arg_mundial';
   if (eventId === 'arg_002' || eventId?.includes('corralito')) return 'arg_corralito';
   if (eventId === 'arg_003' || eventId?.includes('campo')) return 'arg_campo';
@@ -646,23 +646,30 @@ function selectScene(category: string, eventId: string, gameState: GameState | n
 
   if (category === 'crisis') return 'crisis';
 
+  // Extract trailing number from event ID (e.g. "eco_007" → 7) for deterministic variety
+  const numMatch = eventId?.match(/(\d+)/);
+  const n = numMatch ? parseInt(numMatch[1] ?? '0', 10) : 0;
+
   if (category === 'international') {
     if (eventId?.includes('fmi') || eventId?.includes('emb') || eventId?.includes('imf')) return 'int_imf';
     if (eventId?.includes('war') || eventId?.includes('guerra') || eventId?.includes('conflict')) return 'int_war';
     if (eventId?.includes('trade') || eventId?.includes('export') || eventId?.includes('comercio')) return 'int_trade';
-    return 'int_imf';
+    const intScenes = ['int_imf', 'int_trade', 'int_war'];
+    return intScenes[n % intScenes.length]!;
   }
 
   if (category === 'economic') {
     if (eventId?.includes('reserv')) return 'eco_reserves';
     if (eventId?.includes('growth') || eventId?.includes('pib') || eventId?.includes('gdp') || eventId?.includes('crecim')) return 'eco_growth';
-    return 'eco_inflation';
+    const ecoScenes = ['eco_inflation', 'eco_reserves', 'eco_growth'];
+    return ecoScenes[n % ecoScenes.length]!;
   }
 
   if (category === 'social') {
     if (eventId?.includes('huelga') || eventId?.includes('strike') || eventId?.includes('sind')) return 'soc_strike';
     if (eventId?.includes('health') || eventId?.includes('salud') || eventId?.includes('hospital')) return 'soc_health';
-    return 'soc_unrest';
+    const socScenes = ['soc_unrest', 'soc_strike', 'soc_health'];
+    return socScenes[n % socScenes.length]!;
   }
 
   if (category === 'political') {
@@ -671,7 +678,8 @@ function selectScene(category: string, eventId: string, gameState: GameState | n
     if (eventId?.startsWith('arg_') && eventId !== 'arg_015') return 'pol_scandal';
     const popularity = gameState?.political.popularity ?? 50;
     if (popularity < 25) return 'crisis';
-    return 'pol_congress';
+    const polScenes = ['pol_congress', 'pol_scandal', 'pol_protest'];
+    return polScenes[n % polScenes.length]!;
   }
 
   return 'pol_congress';
