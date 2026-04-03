@@ -34,23 +34,23 @@ function MileiPortrait({ mood }: { mood: PortraitMood }) {
       {/* neck */}
       <rect x={46} y={78} width={28} height={20} fill={skin} />
       {/* HEAD – narrow long */}
-      <rect x={30} y={32} width={60} height={64} fill={skin} rx={6} />
-      {/* ── HAIR: 7 upward spikes ── */}
-      <rect x={28} y={8}  width={10} height={34} fill={hair} />
-      <rect x={38} y={2}  width={9}  height={36} fill={hair} />
-      <rect x={47} y={-4} width={8}  height={38} fill={hair} />
-      <rect x={55} y={-6} width={10} height={40} fill={hair} />
-      <rect x={65} y={-2} width={9}  height={36} fill={hair} />
-      <rect x={74} y={4}  width={8}  height={34} fill={hair} />
-      <rect x={82} y={10} width={10} height={32} fill={hair} />
+      <rect x={30} y={32} width={60} height={64} fill={skin} />
+      {/* ── HAIR: 7 upward spikes (taller) ── */}
+      <rect x={28} y={4}  width={10} height={38} fill={hair} />
+      <rect x={38} y={-2} width={9}  height={40} fill={hair} />
+      <rect x={47} y={-8} width={8}  height={42} fill={hair} />
+      <rect x={55} y={-10} width={10} height={44} fill={hair} />
+      <rect x={65} y={-6} width={9}  height={40} fill={hair} />
+      <rect x={74} y={0}  width={8}  height={38} fill={hair} />
+      <rect x={82} y={6}  width={10} height={36} fill={hair} />
       {/* hair base block */}
       <rect x={28} y={30} width={64} height={12} fill={hair} />
       {/* side volume */}
       <rect x={14} y={36} width={18} height={36} fill={hair} />
       <rect x={88} y={36} width={18} height={36} fill={hair} />
-      {/* MUTTON-CHOP sideburns – tall rects */}
-      <rect x={18} y={52} width={14} height={36} fill={hair} />
-      <rect x={88} y={52} width={14} height={36} fill={hair} />
+      {/* MUTTON-CHOP sideburns – tall wide rects */}
+      <rect x={16} y={52} width={18} height={36} fill={hair} />
+      <rect x={86} y={52} width={18} height={36} fill={hair} />
       {/* ears */}
       <rect x={26} y={58} width={8}  height={14} fill={skin} />
       <rect x={86} y={58} width={8}  height={14} fill={skin} />
@@ -70,8 +70,8 @@ function MileiPortrait({ mood }: { mood: PortraitMood }) {
       <rect x={62} y={76} width={8}  height={6}  fill="#a05c30" />
       {/* mouth */}
       {win
-        ? <rect x={40} y={87} width={40} height={5} fill="#cc2020" rx={2} />
-        : <rect x={42} y={87} width={36} height={4} fill="#8a3a20" rx={1} />}
+        ? <rect x={40} y={87} width={40} height={5} fill="#cc2020" />
+        : <rect x={42} y={87} width={36} height={4} fill="#8a3a20" />}
       {win && <rect x={42} y={87} width={36} height={3} fill="white" />}
       {/* CHAINSAW – bottom right */}
       <rect x={80} y={108} width={36} height={10} fill="#c07020" />
@@ -79,8 +79,8 @@ function MileiPortrait({ mood }: { mood: PortraitMood }) {
       <rect x={90} y={110} width={24} height={20} fill="#e0be10" />
       {[0,4,8,12,16].map(dy => <rect key={dy} x={90} y={112+dy} width={24} height={2} fill="#1a1a1a" opacity={0.3} />)}
       {/* panic sweat drops */}
-      {panic && <rect x={92} y={54} width={5} height={8} fill="#88c8f0" rx={2} />}
-      {panic && <rect x={22} y={66} width={4} height={7} fill="#88c8f0" rx={2} />}
+      {panic && <rect x={92} y={54} width={5} height={8} fill="#88c8f0" />}
+      {panic && <rect x={22} y={66} width={4} height={7} fill="#88c8f0" />}
     </g>
   );
 }
@@ -153,8 +153,8 @@ function MassaPortrait({ mood }: { mood: PortraitMood }) {
       <rect x={64} y={78} width={10} height={5}  fill="#a06030" />
       {/* politician smirk – asymmetric */}
       {win
-        ? <rect x={36} y={86} width={48} height={5} fill="#cc2020" rx={2} />
-        : <rect x={38} y={86} width={40} height={4} fill="#8a3a20" rx={1} />}
+        ? <rect x={36} y={86} width={48} height={5} fill="#cc2020" />
+        : <rect x={38} y={86} width={40} height={4} fill="#8a3a20" />}
       {win && <rect x={38} y={86} width={46} height={3} fill="white" />}
       {/* NEWSPAPER prop – bottom left */}
       <rect x={2}  y={104} width={30} height={22} fill="#f0e8c8" />
@@ -162,7 +162,7 @@ function MassaPortrait({ mood }: { mood: PortraitMood }) {
       <rect x={4}  y={112} width={26} height={2}  fill="#c0b890" />
       <rect x={4}  y={116} width={18} height={2}  fill="#c0b890" />
       <rect x={4}  y={120} width={22} height={2}  fill="#c0b890" />
-      {panic && <rect x={96} y={52} width={5} height={8} fill="#88c8f0" rx={2} />}
+      {panic && <rect x={96} y={52} width={5} height={8} fill="#88c8f0" />}
     </g>
   );
 }
@@ -210,9 +210,11 @@ function BullrichPortrait({ mood }: { mood: PortraitMood }) {
       {/* pearl earring – white rect at ear */}
       <rect x={28} y={68} width={8}  height={6}  fill="#f8f8f0" />
       <rect x={84} y={68} width={8}  height={6}  fill="#f8f8f0" />
-      {/* STERN brows – thin angled down toward center */}
-      <rect x={34} y={44} width={22} height={4}  fill="#4a3818" transform="rotate(-2,45,46)" />
-      <rect x={64} y={42} width={22} height={4}  fill="#4a3818" transform="rotate(2,75,44)" />
+      {/* STERN brows – pixel staircase (outer end 2px lower = inward anger) */}
+      <rect x={34} y={46} width={10} height={4}  fill="#4a3818" />
+      <rect x={44} y={44} width={12} height={4}  fill="#4a3818" />
+      <rect x={66} y={44} width={12} height={4}  fill="#4a3818" />
+      <rect x={78} y={46} width={10} height={4}  fill="#4a3818" />
       {/* eye whites */}
       <rect x={36} y={50} width={20} height={12} fill="white" />
       <rect x={64} y={50} width={20} height={12} fill="white" />
@@ -231,10 +233,10 @@ function BullrichPortrait({ mood }: { mood: PortraitMood }) {
       <rect x={61} y={72} width={7}  height={4}  fill="#a87048" />
       {/* THIN pressed lips */}
       {win
-        ? <rect x={42} y={82} width={36} height={5} fill="#903040" rx={1} />
+        ? <rect x={42} y={82} width={36} height={5} fill="#903040" />
         : <rect x={44} y={82} width={32} height={3} fill="#903040" />}
       <rect x={44} y={79} width={32} height={3} fill="#cc7080" />
-      {panic && <rect x={88} y={48} width={5} height={8} fill="#88c8f0" rx={2} />}
+      {panic && <rect x={88} y={48} width={5} height={8} fill="#88c8f0" />}
     </g>
   );
 }
@@ -295,9 +297,9 @@ function BregmanPortrait({ mood }: { mood: PortraitMood }) {
       {/* ROUND GLASSES – outer border rects + lens area */}
       <rect x={28} y={50} width={28} height={20} fill="#1e0e04" />
       <rect x={64} y={50} width={28} height={20} fill="#1e0e04" />
-      {/* lens interior */}
-      <rect x={30} y={52} width={24} height={16} fill="white" opacity={0.18} />
-      <rect x={66} y={52} width={24} height={16} fill="white" opacity={0.18} />
+      {/* lens interior – tinted so glasses read clearly */}
+      <rect x={30} y={52} width={24} height={16} fill="#c8e8c0" opacity={0.42} />
+      <rect x={66} y={52} width={24} height={16} fill="#c8e8c0" opacity={0.42} />
       {/* nose bridge */}
       <rect x={56} y={56} width={8}  height={4}  fill="#1e0e04" />
       {/* glasses temples */}
@@ -314,10 +316,10 @@ function BregmanPortrait({ mood }: { mood: PortraitMood }) {
       <rect x={62} y={75} width={8}  height={4}  fill="#a06030" />
       {/* determined smile */}
       {win
-        ? <rect x={38} y={84} width={44} height={5} fill="#cc4020" rx={2} />
-        : <rect x={40} y={84} width={40} height={4} fill="#883020" rx={1} />}
+        ? <rect x={38} y={84} width={44} height={5} fill="#cc4020" />
+        : <rect x={40} y={84} width={40} height={4} fill="#883020" />}
       {win && <rect x={40} y={84} width={42} height={3} fill="white" />}
-      {panic && <rect x={96} y={50} width={5} height={8} fill="#88c8f0" rx={2} />}
+      {panic && <rect x={96} y={50} width={5} height={8} fill="#88c8f0" />}
     </g>
   );
 }
@@ -353,7 +355,9 @@ function SchiarettiPortrait({ mood }: { mood: PortraitMood }) {
       {/* jowl definition */}
       <rect x={10} y={82} width={20} height={10} fill="#b07848" opacity={0.4} />
       <rect x={90} y={82} width={20} height={10} fill="#b07848" opacity={0.4} />
-      {/* BALD HEAD – just skin color on top, no hair rect */}
+      {/* BALD HEAD – dome + shine highlight */}
+      <rect x={30} y={14} width={60} height={20} fill={skin} />
+      <rect x={40} y={16} width={16} height={8}  fill="#d4a878" />
       {/* thin grey fringe – low on sides only */}
       <rect x={14} y={48} width={10} height={6}  fill={fringe} />
       <rect x={96} y={48} width={10} height={6}  fill={fringe} />
@@ -378,10 +382,10 @@ function SchiarettiPortrait({ mood }: { mood: PortraitMood }) {
       <rect x={64} y={76} width={12} height={5}  fill="#906030" />
       {/* calm expression */}
       {win
-        ? <rect x={32} y={86} width={56} height={5} fill="#cc4020" rx={2} />
-        : <rect x={34} y={86} width={52} height={4} fill="#6a2818" rx={1} />}
+        ? <rect x={32} y={86} width={56} height={5} fill="#cc4020" />
+        : <rect x={34} y={86} width={52} height={4} fill="#6a2818" />}
       {win && <rect x={34} y={86} width={52} height={3} fill="white" />}
-      {panic && <rect x={104} y={52} width={5} height={8} fill="#88c8f0" rx={2} />}
+      {panic && <rect x={104} y={52} width={5} height={8} fill="#88c8f0" />}
     </g>
   );
 }
@@ -444,10 +448,10 @@ function LarretaPortrait({ mood }: { mood: PortraitMood }) {
       <rect x={61} y={75} width={6}  height={4}  fill="#a87040" />
       {/* neutral professional expression */}
       {win
-        ? <rect x={42} y={84} width={36} height={5} fill="#cc4020" rx={2} />
-        : <rect x={44} y={84} width={32} height={4} fill="#6a2818" rx={1} />}
+        ? <rect x={42} y={84} width={36} height={5} fill="#cc4020" />
+        : <rect x={44} y={84} width={32} height={4} fill="#6a2818" />}
       {win && <rect x={42} y={84} width={36} height={3} fill="white" />}
-      {panic && <rect x={84} y={50} width={5} height={8} fill="#88c8f0" rx={2} />}
+      {panic && <rect x={84} y={50} width={5} height={8} fill="#88c8f0" />}
     </g>
   );
 }
