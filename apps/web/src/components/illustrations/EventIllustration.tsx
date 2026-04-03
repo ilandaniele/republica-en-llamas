@@ -689,8 +689,8 @@ export function EventIllustration({
     return (
       <div
         style={{
-          width: '100%',
-          height: '100%',
+          position: 'absolute',
+          inset: 0,
           overflow: 'hidden',
           background: '#1a1a2e',
         }}
@@ -709,7 +709,7 @@ export function EventIllustration({
   return (
     <svg viewBox="0 0 320 180"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ width: '100%', height: '100%', display: 'block' }}
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
       preserveAspectRatio="xMidYMid slice"
       role="img" aria-label={`Ilustración: ${eventCategory}`}>
       {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} />}

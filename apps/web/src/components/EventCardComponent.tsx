@@ -118,12 +118,14 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
             </div>
           </div>
         ) : (
-          <EventIllustration
-            eventCategory={card.category}
-            presidentId={presidentId}
-            eventId={card.id}
-            gameState={gameState}
-          />
+          <div className="absolute inset-0">
+            <EventIllustration
+              eventCategory={card.category}
+              presidentId={presidentId}
+              eventId={card.id}
+              gameState={gameState}
+            />
+          </div>
         )}
       </div>
 
