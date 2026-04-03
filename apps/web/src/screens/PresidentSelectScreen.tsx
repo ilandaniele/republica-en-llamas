@@ -171,6 +171,7 @@ export default function PresidentSelectScreen() {
 
   const canPlay = (archetypeId: string) => {
     if (archetypeId === 'ingeniero') return true;
+    if (archetypeId === 'populista') return true;
     return hasEntitlement('presidents_pack') || hasEntitlement('full_access');
   };
 
