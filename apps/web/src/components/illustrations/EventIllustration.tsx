@@ -7,8 +7,6 @@ interface Props {
   presidentId: string;
   eventId?: string;
   gameState?: GameState | null | undefined;
-  width?: number;
-  height?: number;
 }
 
 // ── Flat editorial cartoon palette ──────────────────────────────────────────
@@ -681,7 +679,7 @@ function selectScene(category: string, eventId: string, gameState: GameState | n
 
 // ── Export ─────────────────────────────────────────────────────────────────────
 export function EventIllustration({
-  eventCategory, presidentId, eventId = '', gameState, width = 320, height = 180,
+  eventCategory, presidentId, eventId = '', gameState,
 }: Props) {
   const scene = selectScene(eventCategory, eventId, gameState);
   const imageUrl = useGameImage(scene);
@@ -709,7 +707,7 @@ export function EventIllustration({
 
   // Fallback: inline SVG scenes
   return (
-    <svg width={width} height={height} viewBox="0 0 320 180"
+    <svg viewBox="0 0 320 180"
       xmlns="http://www.w3.org/2000/svg"
       style={{ width: '100%', height: '100%', display: 'block' }}
       preserveAspectRatio="xMidYMid slice"
