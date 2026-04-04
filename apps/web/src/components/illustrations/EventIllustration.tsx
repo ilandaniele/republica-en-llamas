@@ -181,6 +181,8 @@ function ScenePolCongress({ presidentId }: { presidentId: string }) {
         suitColor={C.suitDk} mouthOpen={true} armL={10} armR={-10} />
       {R(0, 20, 14, 160, '#475a6e', 0, OL, 2)} {R(306, 20, 14, 160, '#475a6e', 0, OL, 2)}
       {R(-4, 16, 22, 7, '#5e7080', 2)} {R(302, 16, 22, 7, '#5e7080', 2)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🏛 CONGRESO NACIONAL</text>
     </g>
   );
 }
@@ -213,6 +215,8 @@ function ScenePolScandal({ presidentId }: { presidentId: string }) {
       {R(210, 108, 8, 18, '#546e7a', 2, OL, 2)}
       {Circ(214, 105, 7, '#455a64', OL, 2)}
       <path d="M 214 123 Q 198 138 193 158" stroke="#546e7a" strokeWidth={2} fill="none" />
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>📰 ESCÁNDALO POLÍTICO</text>
     </g>
   );
 }
@@ -242,6 +246,8 @@ function ScenePolProtest() {
       <Protester cx={40} baseY={178} shirtColor="#e65100" signColor="#e65100" />
       {R(0, 158, 320, 22, '#5d4037')}
       {[8, 40, 72, 104, 136, 168, 200, 232, 264, 296].map((x, i) => R(x, 161 + (i % 2) * 4, 24, 8, '#4e342e', 2))}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>✊ PROTESTA POPULAR</text>
     </g>
   );
 }
@@ -274,6 +280,8 @@ function SceneEcoInflation() {
         suitColor="#7e57c2" shirtColor="#ede7f6" mouthOpen={true} armR={-20} />
       {R(213, 118, 18, 12, '#8d6e63', 2, OL, 2)}
       {R(213, 118, 18, 4, '#6d4c41', 2)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>💰 INFLACIÓN</text>
     </g>
   );
 }
@@ -306,6 +314,8 @@ function SceneEcoReserves() {
       <Person cx={138} baseY={178} skinColor={C.skin} hairColor={C.hairBlk}
         suitColor="#1a237e" shirtColor={C.shirtWh} mouthOpen={true}
         armL={-100} armR={100} />
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🏦 RESERVAS DEL BCRA</text>
     </g>
   );
 }
@@ -340,6 +350,8 @@ function SceneEcoGrowth() {
       ))}
       <polyline points="223,126 243,102 263,88 283,66" stroke="#4caf50" strokeWidth={3} fill="none" strokeDasharray="4,2" />
       <Worker cx={176} baseY={178} armUp={true} />
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>📈 CRECIMIENTO ECONÓMICO</text>
     </g>
   );
 }
@@ -363,6 +375,8 @@ function SceneSocStrike() {
       <Protester cx={88} baseY={178} shirtColor="#37474f" signColor="#f9a825" />
       <Worker cx={238} baseY={178} armUp={false} />
       <Worker cx={273} baseY={178} armUp={true} />
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>⚡ HUELGA GENERAL</text>
     </g>
   );
 }
@@ -388,6 +402,8 @@ function SceneSocUnrest() {
           {R(x + 14, 126, 14, 24, '#1565c0', 2, OL, 2)}
         </g>
       ))}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🔥 DISTURBIOS SOCIALES</text>
     </g>
   );
 }
@@ -419,6 +435,8 @@ function SceneSocHealth() {
         mouthOpen={true} armL={-20} armR={20} />
       {R(181, 83, 24, 8, '#f8f8f8', 2, OL, 1.5)}
       {R(188, 81, 10, 4, '#ef5350', 1)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🏥 CRISIS SANITARIA</text>
     </g>
   );
 }
@@ -449,6 +467,8 @@ function SceneIntImf({ presidentId }: { presidentId: string }) {
         suitColor={C.suitDk} mouthOpen={false} armL={-20} />
       {R(190, 88, 20, 5, '#37474f', 2, OL, 1.5)} {R(206, 86, 6, 8, '#f9a825', 2)}
       {Circ(216, 103, 5, '#4a6fa5', OL, 1.5)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🌐 NEGOCIACIÓN FMI</text>
     </g>
   );
 }
@@ -478,6 +498,8 @@ function SceneIntWar() {
           hairColor={i === 0 ? C.hair : C.hairBlk} suitColor="#1a237e" mouthOpen={false} />
       ))}
       {R(118, 146, 182, 16, '#4e342e', 4, OL, 2)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>⚔ CONFLICTO INTERNACIONAL</text>
     </g>
   );
 }
@@ -511,6 +533,8 @@ function SceneIntTrade() {
         suitColor="#1b5e20" mouthOpen={false} armL={10} />
       {R(145, 128, 14, 8, C.skin, 3, OL, 2)}
       {Circ(139, 103, 5, '#4a6fa5', OL, 1.5)} {Circ(181, 103, 5, '#2e7d32', OL, 1.5)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>✈ COMERCIO EXTERIOR</text>
     </g>
   );
 }
@@ -551,6 +575,8 @@ function SceneArgMundial() {
         suitColor="#eeeeee" shirtColor="#4a6fa5" tieColor="#4a6fa5" armR={-60} mouthOpen={true} />
       <Person cx={218} baseY={178} skinColor={C.skin} hairColor={C.hairBlk}
         suitColor="#4a6fa5" shirtColor="#f8f8f8" tieColor="#f8f8f8" armL={60} mouthOpen={true} />
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#f9a825" fontSize={11} fontFamily="monospace" letterSpacing={1}>⚽ ARGENTINA CAMPEÓN</text>
     </g>
   );
 }
@@ -576,6 +602,8 @@ function SceneArgCorralito() {
           signColor={C.red} />
       ))}
       <path d="M 208 158 L 208 173 Q 208 178 203 178 L 48 178" stroke={C.red} strokeWidth={2} fill="none" strokeDasharray="6,3" />
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🏧 CORRALITO BANCARIO</text>
     </g>
   );
 }
@@ -607,6 +635,8 @@ function SceneArgCampo() {
       {R(173, 93, 4, 57, '#795548')}
       {R(160, 93, 30, 22, '#f8f8f8', 2, OL, 2)}
       {[99, 106].map((y) => R(164, y, 22, 4, C.red, 1))}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
+      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🌾 CONFLICTO AGROPECUARIO</text>
     </g>
   );
 }
@@ -629,6 +659,8 @@ function SceneCrisis({ presidentId }: { presidentId: string }) {
         hairColor={presidentId === 'tecnocrata' ? C.hairBlnd : presidentId === 'ingeniero' ? '#2c1208' : C.hairBlk}
         suitColor={C.suitDk} mouthOpen={true} armL={30} armR={-60} />
       {[78, 158, 238].map((x, i) => <ellipse key={i} cx={x} cy={28} rx={22} ry={12} fill="#37474f" opacity={0.5} />)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(30,0,0,0.85)" />
+      <text x={10} y={174} fill="#ef5350" fontSize={11} fontFamily="monospace" letterSpacing={1}>⚠ CRISIS DE GOBIERNO</text>
     </g>
   );
 }
