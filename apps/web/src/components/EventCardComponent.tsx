@@ -78,141 +78,143 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -40, opacity: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      className={`event-card border-l-4 ${style.border}`}
+      className={`event-card border-l-4 ${style.border} !p-0 overflow-hidden`}
       style={{
         backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,255,255,0.015) 24px)',
       }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Context prefix */}
-      {contextPrefix && (
-        <p className="text-smoke-500 font-mono text-xs italic mb-2">{contextPrefix}</p>
-      )}
-
-      {/* Category badge with icon */}
-      <div className={`flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest mb-3 ${style.badge}`}>
-        <span className="text-base">{style.icon}</span>
-        <span>{CATEGORY_LABELS[card.category] ?? card.category.toUpperCase()}</span>
+      {/* Header: context prefix + category badge + title */}
+      <div className="px-6 pt-5 pb-3">
+        {contextPrefix && (
+          <p className="text-smoke-500 font-mono text-xs italic mb-2">{contextPrefix}</p>
+        )}
+        <div className={`flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest mb-3 ${style.badge}`}>
+          <span className="text-base">{style.icon}</span>
+          <span>{CATEGORY_LABELS[card.category] ?? card.category.toUpperCase()}</span>
+        </div>
+        <h2
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: isCrisis ? '9px' : '10px', lineHeight: '1.6' }}
+          className={`uppercase ${isCrisis ? 'text-crimson-400 text-shadow-crimson' : 'text-smoke-100'}`}
+        >
+          {t(card.titleKey)}
+        </h2>
       </div>
 
-      {/* Title */}
-      <h2
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: isCrisis ? '9px' : '10px', lineHeight: '1.6' }}
-        className={`mb-3 uppercase ${isCrisis ? 'text-crimson-400 text-shadow-crimson' : 'text-smoke-100'}`}
-      >
-        {t(card.titleKey)}
-      </h2>
-
-      {/* Character portrait or large scene illustration */}
-      <div className="mb-4 relative w-full overflow-hidden h-[220px] md:h-[280px]">
+      {/* Full-bleed illustration — no horizontal padding */}
+      <div className="relative w-full h-[200px] md:h-[260px] overflow-hidden">
         {card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
-          <div className="flex items-center justify-center bg-navy-800/60 border border-navy-700 h-full">
+          <div className="absolute inset-0 flex items-center justify-center bg-navy-800/60 border-y border-navy-700">
             <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
           </div>
         ) : card.characterId ? (
-          <div className="flex items-center gap-3 bg-navy-800/60 border border-navy-600 rounded-lg px-3 py-2">
+          <div className="absolute inset-0 flex items-center gap-3 bg-navy-800/60 border-y border-navy-600 px-4">
             <CharacterPortrait characterId={card.characterId} size={72} />
             <div className="text-smoke-400 font-mono text-xs italic opacity-70">
               Personaje recurrente
             </div>
           </div>
         ) : (
-          <div className="absolute inset-0">
-            <EventIllustration
-              eventCategory={card.category}
-              presidentId={presidentId}
-              eventId={card.id}
-              gameState={gameState}
-            />
-          </div>
+          <EventIllustration
+            eventCategory={card.category}
+            presidentId={presidentId}
+            eventId={card.id}
+            gameState={gameState}
+          />
+        )}
+        {/* Bottom gradient overlay for legibility on AI images */}
+        {!card.characterId && (
+          <div
+            className="absolute bottom-0 inset-x-0 h-10 pointer-events-none"
+            style={{ background: 'linear-gradient(to top, rgba(9,21,37,0.85) 0%, transparent 100%)' }}
+          />
         )}
       </div>
 
-      {/* Body */}
-      <p className="text-smoke-300 leading-relaxed mb-6" style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }}>
-        {t(card.bodyKey)}
-      </p>
+      {/* Body + choices + confirm */}
+      <div className="px-6 pt-4 pb-6">
+        <p className="text-smoke-300 leading-relaxed mb-5" style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }}>
+          {t(card.bodyKey)}
+        </p>
 
-      {/* Choices — all remain visible; can switch until Confirmar is pressed */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
-        {card.choices.map((choice, index) => {
-          const isSelected = selectedIndex === index;
-          const letter = String.fromCharCode(65 + index);
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
+          {card.choices.map((choice, index) => {
+            const isSelected = selectedIndex === index;
+            const letter = String.fromCharCode(65 + index);
 
-          return (
-            <motion.button
-              key={choice.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0, scale: isSelected ? 1.02 : 1 }}
-              transition={{ duration: 0.2, delay: index * 0.05 }}
-              whileTap={!disabled ? { scale: 0.97 } : {}}
-              onClick={() => handleChoiceClick(index)}
-              className={`pixel-choice-card w-full text-left ${isSelected ? 'selected' : ''}`}
-            >
-              {ripplingChoice === index && <span className="choice-ripple" />}
-              {/* Letter badge */}
-              <div className="flex items-start gap-2 mb-2">
-                <span
-                  style={{
-                    background: isSelected ? 'var(--gold)' : 'var(--celeste-dark)',
-                    color: isSelected ? '#0D1B2A' : 'white',
-                    fontFamily: "'Press Start 2P', monospace",
-                    fontSize: '8px',
-                    padding: '3px 5px',
-                    display: 'inline-block',
-                    flexShrink: 0,
-                  }}
-                >
-                  {letter}
-                </span>
-                <span
-                  style={{ fontFamily: "'VT323', monospace", fontSize: '16px', lineHeight: '1.3' }}
-                  className={isSelected ? 'text-smoke-100' : 'text-smoke-300'}
-                >
-                  {t(choice.textKey)}
-                </span>
-                {isEasy && index === safestIndex && (
-                  <span className="ml-auto shrink-0 text-xs text-gold-400" title="Opción más segura">⭐</span>
-                )}
-              </div>
-              {choice.requiresVote && (
-                <div
-                  style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-                  className="text-smoke-500 flex items-center gap-1 mt-1"
-                >
-                  <span>🗳</span>
-                  <span>REQUIERE CONGRESO</span>
+            return (
+              <motion.button
+                key={choice.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0, scale: isSelected ? 1.02 : 1 }}
+                transition={{ duration: 0.2, delay: index * 0.05 }}
+                whileTap={!disabled ? { scale: 0.97 } : {}}
+                onClick={() => handleChoiceClick(index)}
+                className={`pixel-choice-card w-full text-left ${isSelected ? 'selected' : ''}`}
+              >
+                {ripplingChoice === index && <span className="choice-ripple" />}
+                <div className="flex items-start gap-2 mb-2">
+                  <span
+                    style={{
+                      background: isSelected ? 'var(--gold)' : 'var(--celeste-dark)',
+                      color: isSelected ? '#0D1B2A' : 'white',
+                      fontFamily: "'Press Start 2P', monospace",
+                      fontSize: '8px',
+                      padding: '3px 5px',
+                      display: 'inline-block',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {letter}
+                  </span>
+                  <span
+                    style={{ fontFamily: "'VT323', monospace", fontSize: '16px', lineHeight: '1.3' }}
+                    className={isSelected ? 'text-smoke-100' : 'text-smoke-300'}
+                  >
+                    {t(choice.textKey)}
+                  </span>
+                  {isEasy && index === safestIndex && (
+                    <span className="ml-auto shrink-0 text-xs text-gold-400" title="Opción más segura">⭐</span>
+                  )}
                 </div>
-              )}
-            </motion.button>
-          );
-        })}
-      </div>
+                {choice.requiresVote && (
+                  <div
+                    style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+                    className="text-smoke-500 flex items-center gap-1 mt-1"
+                  >
+                    <span>🗳</span>
+                    <span>REQUIERE CONGRESO</span>
+                  </div>
+                )}
+              </motion.button>
+            );
+          })}
+        </div>
 
-      {/* Confirm button */}
-      {selectedIndex !== null && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6"
-        >
-          <button
-            onClick={onConfirm}
-            disabled={disabled}
-            className="w-full pixel-border-gold bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold py-3 px-6 transition-colors duration-200 disabled:opacity-50"
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px' }}
+        {selectedIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-5"
           >
-            CONFIRMAR TURNO ▶
-          </button>
-          <p
-            style={{ fontFamily: "'VT323', monospace", fontSize: '14px' }}
-            className="text-smoke-600 text-center mt-1"
-          >
-            Podés cambiar tu opción antes de confirmar
-          </p>
-        </motion.div>
-      )}
+            <button
+              onClick={onConfirm}
+              disabled={disabled}
+              className="w-full pixel-border-gold bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold py-3 px-6 transition-colors duration-200 disabled:opacity-50"
+              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px' }}
+            >
+              CONFIRMAR TURNO ▶
+            </button>
+            <p
+              style={{ fontFamily: "'VT323', monospace", fontSize: '14px' }}
+              className="text-smoke-600 text-center mt-1"
+            >
+              Podés cambiar tu opción antes de confirmar
+            </p>
+          </motion.div>
+        )}
+      </div>
     </motion.div>
   );
 }
