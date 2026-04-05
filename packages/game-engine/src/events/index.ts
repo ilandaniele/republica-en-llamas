@@ -11,6 +11,7 @@ import { ARGENTINA_CARDS } from './argentina.js';
 import { SCANDAL_CARDS } from './scandals.js';
 import { LAW_CARDS } from './laws.js';
 import { NEW_CARDS } from './new.js';
+import { CONSPIRACION_CARDS } from './conspiraciones.js';
 
 const DIFFICULTY_ORDER: Difficulty[] = ['easy', 'normal', 'hard', 'crisis'];
 
@@ -30,6 +31,7 @@ export const ALL_CARDS: EventCard[] = [
   ...SCANDAL_CARDS,
   ...LAW_CARDS,
   ...NEW_CARDS,
+  ...CONSPIRACION_CARDS,
 ];
 
 export const CARD_REGISTRY = new Map<string, EventCard>(

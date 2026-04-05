@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import posthog from 'posthog-js';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../stores/gameStore.js';
 import { VariablesPanel } from '../components/VariablesPanel.js';
 import { EventCardComponent } from '../components/EventCardComponent.js';
@@ -40,6 +41,7 @@ function getRedZoneVars(state: import('@republica/game-engine').GameState): stri
 }
 
 export default function GameScreen() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const gameState = useGameStore((s) => s.gameState);
   const currentCard = useGameStore((s) => s.currentCard);
@@ -261,6 +263,12 @@ export default function GameScreen() {
               <p className="text-xs text-smoke-500 font-mono">Turno</p>
               <p className="font-mono font-bold text-gold-400">{gameState.turn}/{isCrisisExpress ? 15 : 50}</p>
             </div>
+            {(gameState.currentMonth != null && gameState.currentYear != null) && (
+              <div className="text-right">
+                <p className="text-xs text-smoke-500 font-mono">{t(`month.${gameState.currentMonth}`)}</p>
+                <p className="font-mono font-bold text-celeste">{gameState.currentYear}</p>
+              </div>
+            )}
             <div className="text-right">
               <p className="text-xs text-smoke-500 font-mono">Puntaje</p>
               <p className="font-mono font-bold text-gold-400">{gameState.score.toLocaleString()}</p>

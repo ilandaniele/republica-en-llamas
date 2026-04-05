@@ -1,4 +1,4 @@
-import type { DifficultyPreset, CrisisType, HistoricalScenarioConfig, ScenarioId } from './types.js';
+import type { DifficultyPreset, CrisisType, HistoricalScenarioConfig, ScenarioId, ScenarioCalendar } from './types.js';
 
 // ─── Difficulty presets ───────────────────────────────────────────────────────
 
@@ -230,6 +230,35 @@ export const HISTORICAL_SCENARIOS: Record<ScenarioId, HistoricalScenarioConfig> 
     governmentSeats: 290,
     oppositionSeats: 170,
   },
+  libertad_avanza_2023: {
+    labelKey: 'scenario.libertad_avanza_2023.label',
+    periodKey: 'scenario.libertad_avanza_2023.period',
+    descriptionKey: 'scenario.libertad_avanza_2023.description',
+    entitlementRequired: 'full_access',
+    popularity: 30,
+    socialStability: 25,
+    mediaCredibility: 20,
+    inflation: 142,
+    publicDeficit: 68,
+    marketConfidence: 15,
+    currencyStrength: 10,
+    foreignReserves: 5,
+    gdpGrowth: -2.7,
+    governmentSeats: 70,
+    oppositionSeats: 330,
+  },
+};
+
+// ─── Scenario calendars (start date + turn pacing) ────────────────────────────
+
+export const SCENARIO_CALENDARS: Record<ScenarioId, ScenarioCalendar> = {
+  hiperinflacion_1989:  { startMonth: 1,  startYear: 1989, turnsPerMonth: 2 },
+  corralito_2001:       { startMonth: 12, startYear: 2001, turnsPerMonth: 2 },
+  convertibilidad:      { startMonth: 4,  startYear: 1991, turnsPerMonth: 3 },
+  rodrigazo_1975:       { startMonth: 6,  startYear: 1975, turnsPerMonth: 2 },
+  malvinas_1982:        { startMonth: 4,  startYear: 1982, turnsPerMonth: 2 },
+  kirchnerismo_boom:    { startMonth: 12, startYear: 2003, turnsPerMonth: 3 },
+  libertad_avanza_2023: { startMonth: 12, startYear: 2023, turnsPerMonth: 2 },
 };
 
 // ─── Negotiation costs & effects ─────────────────────────────────────────────
