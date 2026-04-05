@@ -103,7 +103,7 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       </div>
 
       {/* Full-bleed illustration — no horizontal padding */}
-      <div className="relative w-full h-[200px] md:h-[260px] overflow-hidden">
+      <div className="relative w-full h-[160px] md:h-[180px] overflow-hidden">
         {card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
           <div className="absolute inset-0 flex items-center justify-center bg-navy-800/60 border-y border-navy-700">
             <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
