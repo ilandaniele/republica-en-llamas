@@ -115,3 +115,25 @@ Event card text is stored in `packages/game-engine/src/i18n/es.ts` and `en.ts` a
 ## Deployment (Fly.io)
 
 `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` must be passed as Docker build args — they are baked into the bundle at Vite build time. Set them via `fly deploy --build-arg VITE_SUPABASE_URL=... --build-arg VITE_SUPABASE_ANON_KEY=...` or as Fly secrets mapped to build args.
+
+## GSAP Animations
+
+This project uses **framer-motion** for most transitions (card enter/exit, AnimatePresence). When the user requests advanced scroll-linked animation, timeline sequencing, or complex multi-step effects, prefer **GSAP** over raw CSS or chained framer delays.
+
+**Imports and registration — always do this once, at the top of the file:**
+```ts
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
+```
+
+**Key rules:**
+- **Sequencing:** prefer `gsap.timeline()` over chained `delay` values. Use position parameter (`"+=0.2"`, `"<"`, label) to place tweens.
+- **Transforms:** use GSAP aliases `x`, `y`, `scale`, `rotation`, `xPercent`, `yPercent` — never animate raw `transform` or layout properties (`top`, `left`, `width`, `height`) for movement/scale.
+- **Opacity:** use `autoAlpha` instead of `opacity` so elements get `visibility: hidden` at 0 and don't block clicks.
+- **Multiple from() on same element:** set `immediateRender: false` on later tweens to avoid overwriting end state.
+- **React:** use `useGSAP()` from `@gsap/react` (register once: `gsap.registerPlugin(useGSAP)`). Pass `{ scope: containerRef }` so selectors are scoped. Do NOT call `gsap.to()` inside plain `useEffect` without context cleanup.
+- **Cleanup:** on unmount, `useGSAP` handles it automatically. If using `gsap.context()`, return `() => ctx.revert()` from `useEffect`.
+- **ScrollTrigger:** attach to timeline or top-level tween, never to a child tween inside a timeline. Use `scrub` for scroll-linked progress OR `toggleActions` for discrete — not both. Call `ScrollTrigger.refresh()` after DOM layout changes.
+- **clearProps:** use when CSS classes should take over after a tween completes (e.g. `gsap.to(el, { x: 100, clearProps: "x" })`).
+- Path-specific detail in `.github/instructions/gsap-react.instructions.md` and `gsap-scrolltrigger.instructions.md`.
