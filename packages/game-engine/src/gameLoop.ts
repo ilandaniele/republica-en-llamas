@@ -1,5 +1,5 @@
 import type { GameState, Difficulty, Language, ChoiceEffect, TurnEvent, RecurringCharacter, ScenarioId } from './types.js';
-import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS, CONGRESS_SESSION_INTERVAL, PRESIDENTIAL_ELECTION_TURN, HISTORICAL_SCENARIOS } from './constants.js';
+import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS, CONGRESS_SESSION_INTERVAL, PRESIDENTIAL_ELECTION_TURN, HISTORICAL_SCENARIOS, SCENARIO_CALENDARS } from './constants.js';
 import { calculateInflationBreakdown } from './inflation.js';
 import { calculateScore } from './scoring.js';
 import { detectCrises, tickCrises } from './crises.js';
@@ -42,6 +42,9 @@ export function initGame(
 
   // Historical scenario opening shocks
   const openingShocks = scenarioId ? getScenarioOpeningShocks(scenarioId) : [];
+
+  // Calendar: start date derived from scenario or default
+  const calendar = scenarioId ? SCENARIO_CALENDARS[scenarioId] : { startMonth: 1, startYear: 2024, turnsPerMonth: 3 };
 
   return {
     id: generateId('run', createRng(seed)),
@@ -86,6 +89,8 @@ export function initGame(
     isGameOver: false,
     gameOverReason: null,
     score: 0,
+    currentMonth: calendar.startMonth,
+    currentYear: calendar.startYear,
     characters: initialCharacters,
     cardCooldowns: {},
   };
@@ -124,6 +129,10 @@ function getScenarioOpeningShocks(scenarioId: ScenarioId): import('./types.js').
     kirchnerismo_boom: [
       { id: 'shock_kirchner_vientocola', name: 'shock.kirchner.vientocola', turnsRemaining: 8, inflationMod: 3, marketConfidenceMod: 20, deficitMod: -5, popularityMod: 15 },
       { id: 'shock_kirchner_inflsubestimada', name: 'shock.kirchner.inflsubestimada', turnsRemaining: 4, inflationMod: 25, marketConfidenceMod: -20, deficitMod: 5, popularityMod: 0 },
+    ],
+    libertad_avanza_2023: [
+      { id: 'shock_lla_herencia', name: 'shock.lla.herencia', turnsRemaining: 4, inflationMod: 15, marketConfidenceMod: -15, deficitMod: 5, popularityMod: -10 },
+      { id: 'shock_lla_devaluacion', name: 'shock.lla.devaluacion', turnsRemaining: 3, inflationMod: 20, marketConfidenceMod: 10, deficitMod: -5, popularityMod: -20 },
     ],
   };
   return shockMap[scenarioId] ?? [];
@@ -208,6 +217,21 @@ function applyScenarioMechanics(state: GameState): GameState {
 
     case 'kirchnerismo_boom':
       // Kirchner positive boom handled at effect-application level — no per-turn override here
+      break;
+
+    case 'libertad_avanza_2023':
+      // Motosierra: each turn cuts deficit but hits popularity
+      s = {
+        ...s,
+        economic: {
+          ...s.economic,
+          publicDeficit: clamp(s.economic.publicDeficit - 1.5, 0, 100),
+        },
+        political: {
+          ...s.political,
+          popularity: clamp(s.political.popularity - 1, 0, 100),
+        },
+      };
       break;
   }
 
@@ -353,8 +377,24 @@ export function advanceTurn(state: GameState): GameState {
     s = { ...s, activeCrises: [...s.activeCrises, ...newCrises] };
   }
 
-  // Advance turn counter
-  s = { ...s, turn: s.turn + 1 };
+  // Advance turn counter and calendar
+  const scenarioCalendar = s.activeScenario
+    ? SCENARIO_CALENDARS[s.activeScenario]
+    : { startMonth: 1, startYear: 2024, turnsPerMonth: 3 };
+  const nextTurn = s.turn + 1;
+  const turnsElapsed = nextTurn - 1; // turns completed
+  const monthsElapsed = Math.floor(turnsElapsed / scenarioCalendar.turnsPerMonth);
+  const baseMonth = s.activeScenario
+    ? SCENARIO_CALENDARS[s.activeScenario].startMonth
+    : 1;
+  const baseYear = s.activeScenario
+    ? SCENARIO_CALENDARS[s.activeScenario].startYear
+    : 2024;
+  const totalMonths = baseMonth - 1 + monthsElapsed;
+  const newMonth = (totalMonths % 12) + 1;
+  const newYear = baseYear + Math.floor(totalMonths / 12);
+
+  s = { ...s, turn: nextTurn, currentMonth: newMonth, currentYear: newYear };
 
   // Check game over
   const gameOverResult = checkGameOver(s);

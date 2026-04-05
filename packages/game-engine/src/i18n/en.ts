@@ -560,6 +560,115 @@ export const en: Record<string, string> = {
   'shock.malvinas.derrota': 'Military Defeat',
   'shock.kirchner.vientocola': 'International Commodity Tailwind',
   'shock.kirchner.inflsubestimada': 'Real Inflation vs. INDEC Data',
+  'shock.lla.herencia': 'Inherited Economic Disaster',
+  'shock.lla.devaluacion': 'Peso Devaluation',
+
+  // ── Months ────────────────────────────────────────────────────────────────
+  'month.1': 'January',
+  'month.2': 'February',
+  'month.3': 'March',
+  'month.4': 'April',
+  'month.5': 'May',
+  'month.6': 'June',
+  'month.7': 'July',
+  'month.8': 'August',
+  'month.9': 'September',
+  'month.10': 'October',
+  'month.11': 'November',
+  'month.12': 'December',
+
+  // ── Scenario: Libertad Avanza 2023 ────────────────────────────────────────
+  'scenario.libertad_avanza_2023.label': 'The Chainsaw',
+  'scenario.libertad_avanza_2023.period': '2023–2027',
+  'scenario.libertad_avanza_2023.description': 'You inherited 142% inflation, negative reserves and an opposition with two-thirds of Congress. Adjustment is unavoidable. Can you survive politically?',
+
+  // ── Conspiraciones & Operetas ─────────────────────────────────────────────
+  'event.con_001.title': 'THE BOSS PULLS STRINGS',
+  'event.con_001.body': 'Intermediaries linked to CFK are operating in Congress. Loyal legislators vote in bloc against every government initiative. The anti-K plaza fills, but the legislative numbers don\'t add up.',
+  'event.con_001.choice_a': 'Denounce the operation in a national address',
+  'event.con_001.choice_b': 'Negotiate quietly with Peronist blocs',
+  'event.con_001.choice_c': 'Appeal to the Judiciary to block the manoeuvre',
+
+  'event.con_002.title': 'JUDICIAL SMEAR CAMPAIGN',
+  'event.con_002.body': 'Kirchner-aligned judges block key Executive decrees. The government cries "reverse lawfare". The judiciary claims it acts within the law.',
+  'event.con_002.choice_a': 'Attack the judges on social media',
+  'event.con_002.choice_b': 'Comply with the ruling and find another legal path',
+
+  'event.con_003.title': 'CFK DECLARES HERSELF OUTLAWED',
+  'event.con_003.body': 'With a firm conviction, CFK appears on the Patria Institute balcony. Thousands of supporters block the 9 de Julio Avenue. Media split: fair trial or political persecution?',
+  'event.con_003.choice_a': 'Defend judicial independence and say nothing more',
+  'event.con_003.choice_b': 'Amplify the news to delegitimise Kirchnerism',
+  'event.con_003.choice_c': 'Offer institutional dialogue to ease tensions',
+
+  'event.con_004.title': 'PERONISM REORGANISES',
+  'event.con_004.body': 'A PJ congress elects new authorities and vows to govern from opposition in Congress. Control of quorum is their weapon.',
+  'event.con_004.choice_a': 'Challenge opposition quorum with emergency decrees',
+  'event.con_004.choice_b': 'Open a dialogue table before it escalates',
+  'event.con_004.choice_c': 'Lure moderate PJ legislators with public works',
+
+  'event.con_005.title': 'SPEECH AT THE PATRIA INSTITUTE',
+  'event.con_005.body': 'CFK accuses the government of "austerity for the poor and a party for the IMF". The blue dollar jumps 4 points in hours. Nervous markets watch the legislative floor.',
+  'event.con_005.choice_a': 'Ignore the speech publicly',
+  'event.con_005.choice_b': 'Rebut with macroeconomic data',
+  'event.con_005.choice_c': 'Hold a press conference with the Economy Minister',
+
+  'event.con_006.title': 'CRYPTO SCANDAL: $LIBRA CRASHES',
+  'event.con_006.body': 'A token launched with presidential backing collapsed 95% in 24 hours. Thousands of Argentine savers lost their savings. Justice investigates possible market manipulation.',
+  'event.con_006.choice_a': 'Defend yourself: "I never promoted investing in it"',
+  'event.con_006.choice_b': 'Announce a Congressional investigative commission',
+  'event.con_006.choice_c': 'Blame external operators and disinformation networks',
+
+  'event.con_007.title': 'THE SPOKESMAN FLIES ON ARG-01',
+  'event.con_007.body': 'Leaked tickets: the presidential spokesman used the official aircraft for a private trip. "Airlines closed for the people, plane open for friends," trending on X.',
+  'event.con_007.choice_a': 'Ask for the spokesman\'s immediate resignation',
+  'event.con_007.choice_b': 'Defend the decision: "the presidential plane is for the State"',
+  'event.con_007.choice_c': 'Issue a technical statement and wait for it to blow over',
+
+  'event.con_008.title': 'THE GOVERNOR DECLARES FISCAL WAR',
+  'event.con_008.body': 'Kicillof withholds federal revenue sharing funds and accuses the Executive of "strangling the most populous province". The Supreme Court could intervene, but it\'s slow.',
+  'event.con_008.choice_a': 'Cut more funds: full pressure game',
+  'event.con_008.choice_b': 'Reach a bilateral agreement off-camera',
+  'event.con_008.choice_c': 'Take the case to the Supreme Court and wait',
+
+  'event.con_009.title': 'OFFICIALS GET NACIÓN MORTGAGES',
+  'event.con_009.body': 'A report reveals senior officials accessed subsidised mortgage loans from Banco Nación while public credit was frozen for ordinary Argentines.',
+  'event.con_009.choice_a': 'Cancel the programme and demand explanations',
+  'event.con_009.choice_b': 'Defend its legality and provide no further information',
+
+  'event.con_010.title': 'BRIBERY AUDIOS FROM ANDIS',
+  'event.con_010.body': 'Leaked audio of ANDIS disability agency officials negotiating overpriced contracts. Opposition demands intervention; families march in protest.',
+  'event.con_010.choice_a': 'Intervene ANDIS and pursue arrests',
+  'event.con_010.choice_b': 'Create a bicameral investigative commission',
+  'event.con_010.choice_c': 'Remove authorities without a public process',
+
+  'event.con_011.title': 'IRAN: TERRORIST STATE?',
+  'event.con_011.body': 'The government weighs designating Iran a terrorist state on the AMIA bombing anniversary. Israel and the US push for it; China warns it would jeopardise trade deals.',
+  'event.con_011.choice_a': 'Proceed with designation: "principles over trade"',
+  'event.con_011.choice_b': 'Abstain to preserve trade ties',
+  'event.con_011.choice_c': 'Request a technical study before deciding',
+
+  'event.con_012.title': 'ANTI-PICKET PROTOCOL',
+  'event.con_012.body': 'The government activates a protocol to disperse pickets using federal forces. Unions threaten a general strike. Businesses applaud.',
+  'event.con_012.choice_a': 'Apply the protocol firmly',
+  'event.con_012.choice_b': 'Suspend it and negotiate with unions',
+  'event.con_012.choice_c': 'Apply it only in extreme cases with prior notice',
+
+  'event.con_013.title': 'ATHENA REACHES ORBIT',
+  'event.con_013.body': 'Argentina successfully launches its first earth-observation nanosatellite. International media pick it up, generating national pride in a difficult moment.',
+  'event.con_013.choice_a': 'Capitalise on the news with a Casa Rosada ceremony',
+  'event.con_013.choice_b': 'Announce additional investment in space technology',
+
+  'event.con_014.title': 'FORMER PRESIDENT CONVICTED',
+  'event.con_014.body': 'The Federal Court confirms CFK\'s conviction. Social media explodes. Supporters block motorways. Kirchnerism calls for active resistance.',
+  'event.con_014.choice_a': 'Stay silent: "it is an independent judicial ruling"',
+  'event.con_014.choice_b': 'Celebrate it politically before your base',
+  'event.con_014.choice_c': 'Call for calm and institutional dialogue',
+
+  'event.con_015.title': 'CRACK IN THE RULING COALITION',
+  'event.con_015.body': 'A hardline faction of La Libertad Avanza wants to radicalise the austerity drive. The moderate wing threatens to vote with the opposition if the course isn\'t moderated.',
+  'event.con_015.choice_a': 'Give the hardliners free rein',
+  'event.con_015.choice_b': 'Moderate the rhetoric to calm the moderate wing',
+  'event.con_015.choice_c': 'Call for an internal agreement with mutual concessions',
 
   // ── Hyperinflation 1989 cards ─────────────────────────────────────────────
   'event.hist_hiper_001.title': 'PRICES SPIRAL OUT OF CONTROL',

@@ -8,7 +8,14 @@ export type ScenarioId =
   | 'convertibilidad'
   | 'rodrigazo_1975'
   | 'malvinas_1982'
-  | 'kirchnerismo_boom';
+  | 'kirchnerismo_boom'
+  | 'libertad_avanza_2023';
+
+export interface ScenarioCalendar {
+  startMonth: number;    // 1-12
+  startYear: number;
+  turnsPerMonth: number; // how many game turns equal one calendar month
+}
 
 export interface HistoricalScenarioConfig {
   labelKey: string;
@@ -206,6 +213,8 @@ export interface GameState {
   isGameOver: boolean;
   gameOverReason: GameOverReason | null;
   score: number;
+  currentMonth: number;         // 1-12
+  currentYear: number;
   characters: RecurringCharacter[];
   lastInflationBreakdown?: InflationBreakdown;
   /** Maps cardId → turn it was last played; used for cooldown enforcement */

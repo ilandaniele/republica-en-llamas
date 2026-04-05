@@ -1171,6 +1171,115 @@ export const es: Record<string, string> = {
   'shock.malvinas.derrota': 'Derrota Militar',
   'shock.kirchner.vientocola': 'Viento de Cola Internacional',
   'shock.kirchner.inflsubestimada': 'Inflación Real vs INDEC',
+  'shock.lla.herencia': 'Herencia Maldita',
+  'shock.lla.devaluacion': 'Devaluación del Peso',
+
+  // ── Months ────────────────────────────────────────────────────────────────
+  'month.1': 'Enero',
+  'month.2': 'Febrero',
+  'month.3': 'Marzo',
+  'month.4': 'Abril',
+  'month.5': 'Mayo',
+  'month.6': 'Junio',
+  'month.7': 'Julio',
+  'month.8': 'Agosto',
+  'month.9': 'Septiembre',
+  'month.10': 'Octubre',
+  'month.11': 'Noviembre',
+  'month.12': 'Diciembre',
+
+  // ── Scenario: Libertad Avanza 2023 ────────────────────────────────────────
+  'scenario.libertad_avanza_2023.label': 'La Motosierra',
+  'scenario.libertad_avanza_2023.period': '2023–2027',
+  'scenario.libertad_avanza_2023.description': 'Heredaste inflación del 142%, reservas negativas y una oposición con dos tercios del Congreso. El ajuste es inevitable. ¿Sobrevivirás políticamente?',
+
+  // ── Conspiraciones & Operetas ─────────────────────────────────────────────
+  'event.con_001.title': 'LA JEFA MUEVE HILOS',
+  'event.con_001.body': 'Intermediarios vinculados a CFK operan en el Congreso. Legisladores afines votan en bloque contra cada iniciativa del oficialismo. La prisa antiK llena las plazas, pero los números legislativos no cierran.',
+  'event.con_001.choice_a': 'Denunciar la operación en cadena nacional',
+  'event.con_001.choice_b': 'Negociar en silencio con los bloques peronistas',
+  'event.con_001.choice_c': 'Apelar al Poder Judicial para bloquear la maniobra',
+
+  'event.con_002.title': 'OPERETA JUDICIAL',
+  'event.con_002.body': 'Jueces cercanos al kirchnerismo frenan decretos clave del Ejecutivo. El gobierno grita "lawfare al revés". La justicia dice actuar conforme derecho.',
+  'event.con_002.choice_a': 'Atacar a los jueces en redes sociales',
+  'event.con_002.choice_b': 'Acatar el fallo y buscar otra vía legal',
+
+  'event.con_003.title': 'CFK SE PROCLAMA PROSCRIPTA',
+  'event.con_003.body': 'Con sentencia firme, CFK sale al balcón del Instituto Patria. Miles de militantes cortan la 9 de Julio. Los medios dividen: ¿condena justa o persecución política?',
+  'event.con_003.choice_a': 'Defender la independencia judicial y no decir nada más',
+  'event.con_003.choice_b': 'Amplificar la noticia para restar legitimidad al kirchnerismo',
+  'event.con_003.choice_c': 'Ofrecer diálogo institucional para bajar la tensión',
+
+  'event.con_004.title': 'EL PERONISMO SE REORGANIZA',
+  'event.con_004.body': 'Un congreso partidario del PJ elige nuevas autoridades y proclama que gobernará en la oposición desde el Congreso. El quórum propio es su arma.',
+  'event.con_004.choice_a': 'Desafiar el quórum opositor con decretos de necesidad',
+  'event.con_004.choice_b': 'Abrir mesa de diálogo antes de que escale',
+  'event.con_004.choice_c': 'Seducir legisladores moderados del PJ con obras públicas',
+
+  'event.con_005.title': 'DISCURSO EN EL INSTITUTO PATRIA',
+  'event.con_005.body': 'CFK acusa al gobierno de "ajuste para los de abajo y fiesta para el FMI". El dólar blue sube 4 puntos en horas. Los mercados nerviosos miran el piso legislativo.',
+  'event.con_005.choice_a': 'Ignorar el discurso públicamente',
+  'event.con_005.choice_b': 'Salir a rebatir con datos macroeconómicos',
+  'event.con_005.choice_c': 'Convocar rueda de prensa con el ministro de Economía',
+
+  'event.con_006.title': 'CRIPTO-ESCANDALO: $LIBRA COLAPSA',
+  'event.con_006.body': 'Un token lanzado con apoyo presidencial cayó 95% en 24 horas. Miles de ahorristas argentinos perdieron sus ahorros. La Justicia investiga posible manipulación de mercado.',
+  'event.con_006.choice_a': 'Defenderse: "yo no promoví la inversión"',
+  'event.con_006.choice_b': 'Anunciar comisión investigadora en el Congreso',
+  'event.con_006.choice_c': 'Culpar a operadores externos y redes de desinformación',
+
+  'event.con_007.title': 'EL VOCERO VIAJA EN EL ARG-01',
+  'event.con_007.body': 'Filtraron pasajes: el vocero presidencial usó el avión oficial para un viaje privado. "Aerolíneas cerradas para el pueblo, avión abierto para los amigos", trending en X.',
+  'event.con_007.choice_a': 'Pedir la renuncia del vocero inmediatamente',
+  'event.con_007.choice_b': 'Defender la decisión: "el avión presidencial se usa para el Estado"',
+  'event.con_007.choice_c': 'Emitir comunicado técnico y esperar que pase',
+
+  'event.con_008.title': 'EL GOBERNADOR DECLARA GUERRA FISCAL',
+  'event.con_008.body': 'Kicillof retiene fondos de coparticipación y acusa al Ejecutivo de "asfixiar a la provincia más poblada del país". La Corte podría intervenir, pero tarda.',
+  'event.con_008.choice_a': 'Cortar más fondos: juego de presión total',
+  'event.con_008.choice_b': 'Llegar a un acuerdo bilateral fuera de las cámaras',
+  'event.con_008.choice_c': 'Llevar el caso a la Corte Suprema y esperar',
+
+  'event.con_009.title': 'FUNCIONARIOS CON HIPOTECA DEL NACIÓN',
+  'event.con_009.body': 'Reportaje revela que altos funcionarios accedieron a créditos hipotecarios blandos del Banco Nación mientras el crédito para particulares estaba congelado.',
+  'event.con_009.choice_a': 'Cancelar el programa y pedir explicaciones',
+  'event.con_009.choice_b': 'Defender la legalidad y no dar más información',
+
+  'event.con_010.title': 'AUDIOS DE COIMAS EN ANDIS',
+  'event.con_010.body': 'Se filtraron audios de funcionarios de la agencia de discapacidad negociando sobreprecios. La oposición pide intervención y hay marchas de familiares.',
+  'event.con_010.choice_a': 'Intervenir ANDIS y pedir detenciones',
+  'event.con_010.choice_b': 'Crear comisión bicameral de investigación',
+  'event.con_010.choice_c': 'Destituir a las autoridades sin proceso público',
+
+  'event.con_011.title': 'IRÁN: ¿ESTADO TERRORISTA?',
+  'event.con_011.body': 'El gobierno analiza designar a Irán como Estado terrorista en el aniversario del atentado a la AMIA. Hay presión de Israel y EEUU, pero China advierte que complica negocios.',
+  'event.con_011.choice_a': 'Proceder con la designación: "principios sobre comercio"',
+  'event.con_011.choice_b': 'Abstenerse para preservar lazos comerciales',
+  'event.con_011.choice_c': 'Solicitar estudio técnico antes de decidir',
+
+  'event.con_012.title': 'PROTOCOLO ANTIPIQUETES',
+  'event.con_012.body': 'El gobierno activa un protocolo para disolver piquetes con fuerzas federales. Los sindicatos amenazan con huelga general. Los comercios aplauden.',
+  'event.con_012.choice_a': 'Aplicar el protocolo con firmeza',
+  'event.con_012.choice_b': 'Suspenderlo y negociar con los sindicatos',
+  'event.con_012.choice_c': 'Aplicarlo sólo en casos extremos con aviso previo',
+
+  'event.con_013.title': 'ATENEA LLEGA AL ESPACIO',
+  'event.con_013.body': 'Argentina lanza con éxito su primer nanosatélite de observación terrestre. La noticia corre por medios internacionales y genera orgullo nacional en un momento difícil.',
+  'event.con_013.choice_a': 'Capitalizar la noticia con acto en la Casa Rosada',
+  'event.con_013.choice_b': 'Anunciar inversión adicional en tecnología espacial',
+
+  'event.con_014.title': 'CONDENAN A LA EX-PRESIDENTA',
+  'event.con_014.body': 'La Cámara Federal confirma la condena a CFK. Las redes estallan. Sus seguidores cortan autopistas. El kirchnerismo llama a resistencia activa.',
+  'event.con_014.choice_a': 'No opinar: "es un fallo del Poder Judicial independiente"',
+  'event.con_014.choice_b': 'Celebrarlo políticamente ante tu base',
+  'event.con_014.choice_c': 'Llamar a la calma y al diálogo institucional',
+
+  'event.con_015.title': 'CRACK EN LA COALICIÓN OFICIALISTA',
+  'event.con_015.body': 'Un sector de La Libertad Avanza quiere radicalizar el ajuste. El ala más moderada amenaza con votar con la oposición si no se modera el rumbo. El partido se fisura.',
+  'event.con_015.choice_a': 'Darle rienda suelta al ala dura',
+  'event.con_015.choice_b': 'Moderar el discurso para calmar a los moderados',
+  'event.con_015.choice_c': 'Llamar a un acuerdo interno con concesiones mutuas',
 
   // ── Hiperinflación 1989 cards ─────────────────────────────────────────────
   'event.hist_hiper_001.title': 'LOS PRECIOS SE ESCAPAN',
