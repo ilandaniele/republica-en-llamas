@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import type { GameState } from '@republica/game-engine';
 import { useGameImage } from '../../hooks/useGameImage.js';
+
+gsap.registerPlugin(useGSAP);
 
 interface Props {
   eventCategory: string;
@@ -665,6 +669,32 @@ function SceneCrisis({ presidentId }: { presidentId: string }) {
   );
 }
 
+// ── GSAP Particle specs per category ─────────────────────────────────────────
+interface ParticleSpec { x: number; y: number; color: string; w: number; h: number; text?: string }
+
+const PARTICLES: Record<string, ParticleSpec[]> = {
+  crisis: [
+    { x: 14, y: 0, color: '#ff5722', w: 5, h: 8 },
+    { x: 34, y: 0, color: '#ffcc02', w: 4, h: 6 },
+    { x: 56, y: 0, color: '#ff7043', w: 6, h: 9 },
+    { x: 78, y: 0, color: '#ff5722', w: 4, h: 7 },
+    { x: 98, y: 0, color: '#ffcc02', w: 5, h: 8 },
+    { x: 118, y: 0, color: '#ff7043', w: 4, h: 6 },
+  ],
+  economic: [
+    { x: 8,  y: 0, color: '#2e7d32', w: 10, h: 10, text: '$' },
+    { x: 32, y: 0, color: '#f9a825', w: 10, h: 10, text: '$' },
+    { x: 58, y: 0, color: '#2e7d32', w: 10, h: 10, text: '$' },
+    { x: 82, y: 0, color: '#f9a825', w: 10, h: 10, text: '$' },
+    { x: 106, y: 0, color: '#2e7d32', w: 10, h: 10, text: '$' },
+  ],
+  social: [
+    { x: 20,  y: 0, color: '#78909c', w: 14, h: 14 },
+    { x: 60,  y: 0, color: '#90a4ae', w: 10, h: 10 },
+    { x: 100, y: 0, color: '#78909c', w: 12, h: 12 },
+  ],
+};
+
 // ── Scene selector ────────────────────────────────────────────────────────────
 function selectScene(category: string, eventId: string, gameState: GameState | null | undefined): string {
   // Specific event IDs — keyword overrides
@@ -723,51 +753,137 @@ export function EventIllustration({
 }: Props) {
   const scene = selectScene(eventCategory, eventId, gameState);
   const imageUrl = useGameImage(scene);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // If we have a real AI-generated image, show it
-  if (imageUrl) {
-    return (
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          overflow: 'hidden',
-          background: '#1a1a2e',
-        }}
-      >
+  const isCrisis = eventCategory === 'crisis';
+  const particleGroup = isCrisis ? 'crisis' : (eventCategory === 'economic' ? 'economic' : eventCategory === 'social' ? 'social' : null);
+  const particles: ParticleSpec[] = particleGroup ? (PARTICLES[particleGroup] ?? []) : [];
+
+  // ── GSAP: wipe-reveal entry + category-specific looping particles ──────────
+  useGSAP(() => {
+    if (!containerRef.current) return;
+
+    // 1. Left-to-right reveal wipe on every new scene
+    gsap.fromTo(
+      containerRef.current,
+      { clipPath: 'inset(0% 100% 0% 0%)' },
+      { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.4, ease: 'power2.out', immediateRender: false },
+    );
+
+    // 2. Category-specific looping particle animations
+    if (isCrisis) {
+      // Fire particles rise from bottom, fade out; overlay pulses
+      gsap.fromTo(
+        '.gsap-particle',
+        { y: 0, autoAlpha: 1 },
+        { y: -72, autoAlpha: 0, duration: 1.1, ease: 'power1.in',
+          stagger: { each: 0.22, repeat: -1, from: 'random' } },
+      );
+      gsap.fromTo(
+        '.gsap-overlay',
+        { autoAlpha: 0 },
+        { autoAlpha: 0.18, duration: 0.7, yoyo: true, repeat: -1, ease: 'sine.inOut' },
+      );
+    } else if (eventCategory === 'economic') {
+      // Dollar symbols rain from top, fade out at bottom
+      gsap.fromTo(
+        '.gsap-particle',
+        { y: 0, autoAlpha: 0.9 },
+        { y: 160, autoAlpha: 0, duration: 1.6, ease: 'power1.in',
+          stagger: { each: 0.4, repeat: -1, from: 'start' } },
+      );
+    } else if (eventCategory === 'social') {
+      // Smoke drifts upward and slightly right, expanding and fading
+      gsap.fromTo(
+        '.gsap-particle',
+        { y: 0, x: 0, scale: 1, autoAlpha: 0.6 },
+        { y: -55, x: 14, scale: 2.2, autoAlpha: 0, duration: 2.0, ease: 'power1.out',
+          stagger: { each: 0.85, repeat: -1 } },
+      );
+    }
+  }, { scope: containerRef, dependencies: [scene, eventCategory] });
+
+  // Particle anchor position per category
+  const particleAnchorStyle: React.CSSProperties = isCrisis
+    ? { position: 'absolute', bottom: '5%', left: 0, pointerEvents: 'none', zIndex: 3 }
+    : eventCategory === 'economic'
+      ? { position: 'absolute', top: 0, left: '10%', pointerEvents: 'none', zIndex: 3 }
+      : { position: 'absolute', bottom: '20%', left: '5%', pointerEvents: 'none', zIndex: 3 };
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ position: 'absolute', inset: 0, overflow: 'hidden', background: '#1a1a2e' }}
+    >
+      {/* Crisis red-pulse overlay */}
+      {isCrisis && (
+        <div
+          className="gsap-overlay"
+          style={{
+            position: 'absolute', inset: 0, background: '#c62828',
+            pointerEvents: 'none', zIndex: 2, opacity: 0,
+          }}
+        />
+      )}
+
+      {imageUrl ? (
         <img
           src={imageUrl}
           alt={eventCategory}
           style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
           loading="lazy"
         />
-      </div>
-    );
-  }
+      ) : (
+        <svg viewBox="0 0 320 180"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
+          preserveAspectRatio="xMidYMid meet"
+          role="img" aria-label={`Ilustración: ${eventCategory}`}>
+          {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} />}
+          {(scene === 'pol_scandal' || scene === 'arg_fmi_negocio')   && <ScenePolScandal presidentId={presidentId} />}
+          {scene === 'pol_protest'   && <ScenePolProtest />}
+          {scene === 'eco_inflation' && <SceneEcoInflation />}
+          {scene === 'eco_reserves'  && <SceneEcoReserves />}
+          {scene === 'eco_growth'    && <SceneEcoGrowth />}
+          {scene === 'soc_strike'    && <SceneSocStrike />}
+          {scene === 'soc_unrest'    && <SceneSocUnrest />}
+          {scene === 'soc_health'    && <SceneSocHealth />}
+          {scene === 'int_imf'       && <SceneIntImf presidentId={presidentId} />}
+          {scene === 'int_war'       && <SceneIntWar />}
+          {scene === 'int_trade'     && <SceneIntTrade />}
+          {scene === 'arg_mundial'   && <SceneArgMundial />}
+          {scene === 'arg_corralito' && <SceneArgCorralito />}
+          {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}
+          {(scene === 'crisis' || scene === 'crisis_impeachment') && <SceneCrisis presidentId={presidentId} />}
+        </svg>
+      )}
 
-  // Fallback: inline SVG scenes
-  return (
-    <svg viewBox="0 0 320 180"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
-      preserveAspectRatio="xMidYMid meet"
-      role="img" aria-label={`Ilustración: ${eventCategory}`}>
-      {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} />}
-      {(scene === 'pol_scandal' || scene === 'arg_fmi_negocio')   && <ScenePolScandal presidentId={presidentId} />}
-      {scene === 'pol_protest'   && <ScenePolProtest />}
-      {scene === 'eco_inflation' && <SceneEcoInflation />}
-      {scene === 'eco_reserves'  && <SceneEcoReserves />}
-      {scene === 'eco_growth'    && <SceneEcoGrowth />}
-      {scene === 'soc_strike'    && <SceneSocStrike />}
-      {scene === 'soc_unrest'    && <SceneSocUnrest />}
-      {scene === 'soc_health'    && <SceneSocHealth />}
-      {scene === 'int_imf'       && <SceneIntImf presidentId={presidentId} />}
-      {scene === 'int_war'       && <SceneIntWar />}
-      {scene === 'int_trade'     && <SceneIntTrade />}
-      {scene === 'arg_mundial'   && <SceneArgMundial />}
-      {scene === 'arg_corralito' && <SceneArgCorralito />}
-      {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}
-      {(scene === 'crisis' || scene === 'crisis_impeachment') && <SceneCrisis presidentId={presidentId} />}
-    </svg>
+      {/* Looping particle layer */}
+      {particles.length > 0 && (
+        <div style={particleAnchorStyle}>
+          {particles.map((p, i) => (
+            <div
+              key={i}
+              className="gsap-particle"
+              style={{
+                position: 'absolute',
+                left: p.x,
+                top: p.y,
+                width: p.w,
+                height: p.h,
+                background: p.text ? 'transparent' : p.color,
+                color: p.color,
+                fontSize: p.text ? '11px' : undefined,
+                fontFamily: p.text ? "'Press Start 2P', monospace" : undefined,
+                lineHeight: p.text ? '1' : undefined,
+                imageRendering: 'pixelated',
+              }}
+            >
+              {p.text ?? ''}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
