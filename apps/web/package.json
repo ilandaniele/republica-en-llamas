@@ -12,10 +12,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@republica/game-engine": "*",
     "@supabase/supabase-js": "^2.43.0",
     "@tanstack/react-query": "^5.40.0",
     "framer-motion": "^11.2.0",
+    "gsap": "^3.12.7",
     "html2canvas": "^1.4.1",
     "i18next": "^23.11.5",
     "posthog-js": "^1.130.0",
