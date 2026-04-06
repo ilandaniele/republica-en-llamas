@@ -1,5 +1,5 @@
 ---
-applyTo: ["**/*scroll*", "**/*ScrollTrigger*", "**/scroll*"]
+applyTo: "**/*scroll*"
 ---
 
 # ScrollTrigger — path-specific instructions
