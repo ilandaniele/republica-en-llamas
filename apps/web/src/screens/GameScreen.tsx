@@ -101,7 +101,6 @@ export default function GameScreen() {
 
   React.useEffect(() => {
     if (!gameState) { navigate('/'); return; }
-    if (gameState.isGameOver) { navigate('/gameover'); return; }
   }, [gameState, navigate]);
 
   useEffect(() => {

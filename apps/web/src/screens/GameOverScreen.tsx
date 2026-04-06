@@ -71,7 +71,12 @@ export default function GameOverScreen() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!gameState) { navigate('/'); return null; }
+  // Guard: if no game state, navigate away (must be in useEffect, not in render)
+  useEffect(() => {
+    if (!gameState) navigate('/');
+  }, [gameState, navigate]);
+
+  if (!gameState) return null;
 
   const reason = gameState.gameOverReason ?? 'hyperinflation';
   const isWin = reason === 'term_complete';
