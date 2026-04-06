@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { ScenarioId } from '@republica/game-engine';
+import { ScenarioIllustration } from './illustrations/ScenarioIllustration.js';
 
 gsap.registerPlugin(useGSAP);
 
@@ -101,6 +102,8 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
       duration: 0.2,
       ease: 'power2.out',
     });
+    // Parallax lift on illustration
+    gsap.to('.scenario-illus', { scale: 1.04, duration: 0.35, ease: 'power2.out', overwrite: true });
   });
 
   const handleMouseLeave = contextSafe(() => {
@@ -109,6 +112,7 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
       duration: 0.3,
       ease: 'power2.out',
     });
+    gsap.to('.scenario-illus', { scale: 1, duration: 0.3, ease: 'power2.out', overwrite: true });
   });
 
   return (
@@ -117,7 +121,7 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="p-4 border-2 border-navy-600 bg-navy-800 text-left relative overflow-hidden"
+      className="border-2 border-navy-600 bg-navy-800 text-left relative overflow-hidden"
       style={{ willChange: 'transform, opacity', display: 'block', width: '100%' }}
     >
       {/* Scanline sweep overlay */}
@@ -140,26 +144,37 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
         </div>
       )}
 
-      {/* Year badge */}
-      <div className="font-mono text-xs mb-1" style={{ color: accent }}>
-        <span ref={yearRef}>{yearDisplay}</span>
+      {/* Full-bleed illustration */}
+      <div
+        className="scenario-illus w-full overflow-hidden"
+        style={{ height: '96px', borderBottom: `1px solid ${accent}44` }}
+      >
+        <ScenarioIllustration id={id} />
       </div>
 
-      {/* Label */}
-      <div
-        ref={labelRef}
-        className="font-serif text-smoke-100 font-bold mb-1"
-        style={{ fontSize: '8px' }}
-      >
-        {label}
-      </div>
+      {/* Text content */}
+      <div className="p-3">
+        {/* Year badge */}
+        <div className="font-mono text-xs mb-1" style={{ color: accent }}>
+          <span ref={yearRef}>{yearDisplay}</span>
+        </div>
 
-      {/* Description */}
-      <div
-        ref={descRef}
-        className="text-smoke-400 font-mono text-xs leading-tight"
-      >
-        {description}
+        {/* Label */}
+        <div
+          ref={labelRef}
+          className="font-serif text-smoke-100 font-bold mb-1"
+          style={{ fontSize: '8px' }}
+        >
+          {label}
+        </div>
+
+        {/* Description */}
+        <div
+          ref={descRef}
+          className="text-smoke-400 font-mono text-xs leading-tight"
+        >
+          {description}
+        </div>
       </div>
 
       {/* Bottom accent stripe */}
