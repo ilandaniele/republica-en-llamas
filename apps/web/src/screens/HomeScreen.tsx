@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import type { Difficulty, ScenarioId } from '@republica/game-engine';
 import { HISTORICAL_SCENARIOS } from '@republica/game-engine';
 import { useGameStore } from '../stores/gameStore.js';
@@ -11,7 +13,10 @@ import { UserMenu } from '../components/UserMenu.js';
 import { useEntitlements, getDailyRunsRemaining, consumeDailyRun } from '../hooks/useEntitlements.js';
 import { BuyButton } from '../components/BuyButton.js';
 import { PaywallModal } from '../components/PaywallModal.js';
+import { ScenarioCard } from '../components/ScenarioCard.js';
 import { trackGameStarted } from '../lib/analytics.js';
+
+gsap.registerPlugin(useGSAP);
 
 type AuthMode = 'menu' | 'login' | 'register';
 
@@ -136,6 +141,7 @@ export default function HomeScreen() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('normal');
   const [homeMode, setHomeMode] = useState<'clasico' | 'historico'>('clasico');
   const [paywallScenario, setPaywallScenario] = useState<ScenarioId | null>(null);
+  const scenarioGridRef = useRef<HTMLDivElement>(null);
 
   const dailyRemaining = getDailyRunsRemaining();
   const dailyLimitReached = !hasPremium && dailyRemaining <= 0;
@@ -267,26 +273,20 @@ export default function HomeScreen() {
                   ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-3 mb-8">
-                  {(Object.entries(HISTORICAL_SCENARIOS) as [ScenarioId, typeof HISTORICAL_SCENARIOS[ScenarioId]][]).map(([id, cfg]) => {
+                <div ref={scenarioGridRef} className="grid grid-cols-2 gap-3 mb-8">
+                  {(Object.entries(HISTORICAL_SCENARIOS) as [ScenarioId, typeof HISTORICAL_SCENARIOS[ScenarioId]][]).map(([id, cfg], i) => {
                     const locked = !hasEntitlement(cfg.entitlementRequired);
                     return (
-                      <motion.button
+                      <ScenarioCard
                         key={id}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        id={id}
+                        label={t(cfg.labelKey)}
+                        period={t(cfg.periodKey)}
+                        description={t(cfg.descriptionKey)}
+                        locked={locked}
+                        index={i}
                         onClick={() => startHistoricalScenario(id)}
-                        className="p-4 border-2 border-navy-600 bg-navy-800 hover:bg-navy-700 text-left relative overflow-hidden transition-colors"
-                      >
-                        {locked && (
-                          <div className="absolute inset-0 bg-navy-900/70 flex items-center justify-center z-10">
-                            <span className="text-gold-400 font-serif text-[8px]">🔒 PRO</span>
-                          </div>
-                        )}
-                        <div className="text-gold-400 font-mono text-xs mb-1">{t(cfg.periodKey)}</div>
-                        <div className="font-serif text-smoke-100 text-[8px] font-bold mb-1">{t(cfg.labelKey)}</div>
-                        <div className="text-smoke-400 font-mono text-xs leading-tight">{t(cfg.descriptionKey)}</div>
-                      </motion.button>
+                      />
                     );
                   })}
                 </div>
