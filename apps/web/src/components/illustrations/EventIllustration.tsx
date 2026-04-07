@@ -696,8 +696,23 @@ const PARTICLES: Record<string, ParticleSpec[]> = {
 };
 
 // ── Scene selector ────────────────────────────────────────────────────────────
+
+// Maps active scenario → preferred event illustration scene.
+// Activates AFTER event-specific keyword checks so individual event context wins.
+const SCENARIO_SCENE_OVERRIDE: Partial<Record<string, string>> = {
+  hiperinflacion_1989:  'eco_inflation',
+  corralito_2001:       'arg_corralito',
+  convertibilidad:      'eco_growth',
+  rodrigazo_1975:       'soc_unrest',
+  malvinas_1982:        'int_war',
+  kirchnerismo_boom:    'eco_growth',
+  libertad_avanza_2023: 'crisis',
+  guerra_ucrania_2022:  'int_guerra_ucrania',
+  conflicto_iran_2024:  'int_conflicto_iran',
+};
+
 function selectScene(category: string, eventId: string, gameState: GameState | null | undefined): string {
-  // Specific event IDs — keyword overrides
+  // Specific event IDs — keyword overrides (highest priority)
   if (eventId === 'arg_015' || eventId?.includes('mundial') || eventId?.includes('campeon')) return 'arg_mundial';
   if (eventId === 'arg_002' || eventId?.includes('corralito')) return 'arg_corralito';
   if (eventId === 'arg_003' || eventId?.includes('campo')) return 'arg_campo';
@@ -707,6 +722,12 @@ function selectScene(category: string, eventId: string, gameState: GameState | n
   if (eventId?.startsWith('session_law_') || eventId?.startsWith('law_')) return 'arg_congreso_ley';
 
   if (category === 'crisis') return 'crisis';
+
+  // Active scenario override — scenario context drives illustration for non-keyword events
+  if (gameState?.activeScenario) {
+    const scenarioScene = SCENARIO_SCENE_OVERRIDE[gameState.activeScenario];
+    if (scenarioScene) return scenarioScene;
+  }
 
   // Extract trailing number from event ID (e.g. "eco_007" → 7) for deterministic variety
   const numMatch = eventId?.match(/(\d+)/);
@@ -830,7 +851,7 @@ export function EventIllustration({
         <img
           src={imageUrl}
           alt={eventCategory}
-          style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           loading="lazy"
         />
       ) : (
@@ -851,6 +872,8 @@ export function EventIllustration({
           {scene === 'int_imf'       && <SceneIntImf presidentId={presidentId} />}
           {scene === 'int_war'       && <SceneIntWar />}
           {scene === 'int_trade'     && <SceneIntTrade />}
+          {scene === 'int_guerra_ucrania' && <SceneIntWar />}
+          {scene === 'int_conflicto_iran' && <SceneIntTrade />}
           {scene === 'arg_mundial'   && <SceneArgMundial />}
           {scene === 'arg_corralito' && <SceneArgCorralito />}
           {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}
