@@ -669,6 +669,82 @@ function SceneCrisis({ presidentId }: { presidentId: string }) {
   );
 }
 
+// ── SCENE: guerra ucrania (fallback when PNG not loaded) ──────────────────────
+function SceneIntGuerraUcrania() {
+  return (
+    <g>
+      {R(0, 0, 320, 44, '#005bbb')}
+      {R(0, 44, 320, 46, '#ffd500')}
+      {R(0, 90, 320, 90, '#1a0f00')}
+      {R(0, 0, 320, 180, 'rgba(0,0,40,0.35)')}
+      {/* Skyline L */}
+      {R(0,50,42,110,'#0a0a0a')}{R(42,60,28,100,'#0a0a0a')}{R(70,45,22,115,'#0a0a0a')}{R(92,55,36,105,'#0a0a0a')}
+      {/* Skyline R */}
+      {R(230,42,32,118,'#0a0a0a')}{R(262,52,24,108,'#0a0a0a')}{R(286,38,34,122,'#0a0a0a')}
+      {/* Explosion glow — animated */}
+      <g className="gsap-explosion">
+        {R(128,50,62,44,'rgba(255,100,0,0.45)')}
+        {R(142,40,34,22,'rgba(255,180,0,0.55)')}
+        {R(154,32,22,16,'#fffde7')}
+      </g>
+      {/* Smoke — animated */}
+      <g className="gsap-secondary">
+        {[132,152,170,144,166].map((x,i)=>(
+          <circle key={i} cx={x} cy={50-i*3} r={10+i*3} fill="#546e7a" opacity={0.7}/>
+        ))}
+      </g>
+      {/* Tank — animated */}
+      <g className="gsap-primary">
+        {R(58,116,95,30,'#374000',2,'#263000',2)}
+        {R(52,127,108,17,'#2e3800',1)}
+        {R(70,108,54,14,'#374000',2,'#263000',2)}
+        {Circ(80,148,13,'#1a2000','#374000',2)}
+        {Circ(110,148,13,'#1a2000','#374000',2)}
+        {Circ(134,148,13,'#1a2000','#374000',2)}
+        <line x1={122} y1={112} x2={175} y2={100} stroke="#374000" strokeWidth={8}/>
+        <line x1={122} y1={112} x2={177} y2={99}  stroke="#2e3800" strokeWidth={5}/>
+      </g>
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
+      <text x={10} y={174} fill="#ffd500" fontSize={9} fontFamily="monospace" letterSpacing={1}>🌻 GUERRA UCRANIA 2022</text>
+    </g>
+  );
+}
+
+// ── SCENE: conflicto iran (fallback when PNG not loaded) ──────────────────────
+function SceneIntConflictoIran() {
+  return (
+    <g>
+      {R(0,0,320,180,'#1a0d00')}
+      {R(0,0,320,50,'#7b2f00')}{R(0,20,320,40,'#a83200')}{R(0,38,320,30,'#cc4400')}
+      {R(0,112,320,68,'#3d2200')}{R(0,108,320,10,'#5a3300')}
+      {/* Oil derrick */}
+      {R(226,36,10,86,'#1a1a1a')}{R(208,30,46,16,'#1a1a1a')}
+      <polygon points="226,26 262,26 244,10" fill="#1a1a1a"/>
+      <polygon points="226,26 190,26 208,10" fill="#252525"/>
+      {/* Flame — animated (stagger per layer) */}
+      <g className="gsap-secondary">
+        {R(229,16,14,24,'#ff6600')}{R(232,8,8,14,'#ffaa00')}{R(234,4,6,8,'#ffdd00')}
+      </g>
+      {/* Crescent + star */}
+      {Circ(58,35,22,'#004d00')}{Circ(65,35,15,'#1a0d00')}
+      <text x={46} y={58} fill="#ffffff" fontSize={13} fontFamily="monospace">☪</text>
+      <text x={78} y={56} fill="#0055cc" fontSize={13} fontFamily="monospace">✡</text>
+      {/* Mosque dome */}
+      {R(100,66,90,58,'#1a0d00')}{R(105,58,80,16,'#1a0d00')}
+      <ellipse cx={145} cy={58} rx={40} ry={16} fill="#1a0d00"/>
+      {R(130,34,30,28,'#1a0d00')}
+      {/* Missile — animated */}
+      <g className="gsap-primary">
+        {R(176,78,24,10,'#909090',1,'#606060',1)}
+        {R(178,76,10,14,'#c0c0c0',1)}
+        {R(188,83,36,5,'#ff6600',1)}{R(205,84,24,4,'#ff9900')}{R(218,86,16,3,'#ffcc00')}
+      </g>
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
+      <text x={10} y={174} fill="#ff9900" fontSize={9} fontFamily="monospace" letterSpacing={1}>🛢 CONFLICTO IRÁN 2024</text>
+    </g>
+  );
+}
+
 // ── GSAP Particle specs per category ─────────────────────────────────────────
 interface ParticleSpec { x: number; y: number; color: string; w: number; h: number; text?: string }
 
@@ -822,6 +898,25 @@ export function EventIllustration({
           stagger: { each: 0.85, repeat: -1 } },
       );
     }
+
+    // 3. Scene-specific inline SVG animations (active when PNG hasn't loaded yet)
+    if (scene === 'int_guerra_ucrania') {
+      const tlUcr = gsap.timeline();
+      tlUcr
+        .to('.gsap-explosion', { autoAlpha: 0.5, yoyo: true, repeat: -1, duration: 0.28, ease: 'sine.inOut' })
+        .to('.gsap-secondary > circle', { y: -22, autoAlpha: 0, duration: 2, stagger: 0.35, repeat: -1, ease: 'power1.out' }, '<')
+        .to('.gsap-primary', { x: 20, yoyo: true, repeat: -1, duration: 5, ease: 'power1.inOut' }, '+=0');
+    } else if (scene === 'int_conflicto_iran') {
+      const tlFlame = gsap.timeline({ repeat: -1 });
+      tlFlame
+        .to('.gsap-secondary > rect:last-child', { scaleY: 1.35, transformOrigin: '50% 100%', yoyo: true, duration: 0.2, ease: 'sine.inOut' }, 0)
+        .to('.gsap-secondary > rect:nth-child(2)', { scaleY: 1.22, transformOrigin: '50% 100%', yoyo: true, duration: 0.32, ease: 'sine.inOut' }, 0)
+        .to('.gsap-secondary > rect:first-child', { scaleY: 1.12, transformOrigin: '50% 100%', yoyo: true, duration: 0.45, ease: 'sine.inOut' }, 0);
+      const tlMissile = gsap.timeline({ repeat: -1, repeatDelay: 1.2 });
+      tlMissile
+        .fromTo('.gsap-primary', { x: 0, y: 0, autoAlpha: 1 }, { x: 36, y: -15, autoAlpha: 0, duration: 1.3, ease: 'power2.in' })
+        .set('.gsap-primary', { x: 0, y: 0, autoAlpha: 1 });
+    }
   }, { scope: containerRef, dependencies: [scene, eventCategory] });
 
   // Particle anchor position per category
@@ -872,8 +967,8 @@ export function EventIllustration({
           {scene === 'int_imf'       && <SceneIntImf presidentId={presidentId} />}
           {scene === 'int_war'       && <SceneIntWar />}
           {scene === 'int_trade'     && <SceneIntTrade />}
-          {scene === 'int_guerra_ucrania' && <SceneIntWar />}
-          {scene === 'int_conflicto_iran' && <SceneIntTrade />}
+          {scene === 'int_guerra_ucrania' && <SceneIntGuerraUcrania />}
+          {scene === 'int_conflicto_iran' && <SceneIntConflictoIran />}
           {scene === 'arg_mundial'   && <SceneArgMundial />}
           {scene === 'arg_corralito' && <SceneArgCorralito />}
           {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}

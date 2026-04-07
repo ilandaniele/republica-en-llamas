@@ -84,6 +84,11 @@ const IMAGES: Array<{ id: string; prompt: string }> = [
   { id: 'char_kicillof',    prompt: 'Axel Kicillof caricature portrait, curly black hair, scruffy beard, leftist economics professor Argentina, white background' + STYLE_SUFFIX },
   { id: 'char_kirchner',    prompt: 'Cristina Kirchner caricature portrait, dark dyed hair, pantsuit, Peronist cross necklace, Argentina former president, white background' + STYLE_SUFFIX },
   { id: 'char_georgieva',   prompt: 'Kristalina Georgieva caricature portrait, short grey hair, IMF director badge, stern look, conference room, European diplomat, white background' + STYLE_SUFFIX },
+  { id: 'char_macri',       prompt: 'Mauricio Macri caricature portrait bust, neat dark hair side-parted, CEO smile wide teeth, navy suit gold tie, Boca Juniors pin on lapel, confident businessman posture, Argentina PRO party former president, plain white background' + STYLE_SUFFIX },
+  { id: 'char_anibal',      prompt: 'Anibal Fernandez caricature portrait bust, large thick walrus mustache dominating lower face, heavy jowls, squinting eyes menacing gaze, dark rumpled suit, Argentine Peronist security minister, imposing heavyset figure, plain white background' + STYLE_SUFFIX },
+  { id: 'char_berni',       prompt: 'Sergio Berni caricature portrait bust, black police beret tilted, police uniform with medals, aggressive jutting chin, short dark hair, fierce stare, Buenos Aires province security minister Argentina, plain white background' + STYLE_SUFFIX },
+  { id: 'char_grabois',     prompt: 'Juan Grabois caricature portrait bust, unkempt dark beard and hair, round face, casual rumpled plaid shirt no tie, raised fist gesture solidarity, Argentine social activist piquetero movement leader, plain white background' + STYLE_SUFFIX },
+  { id: 'char_milani',      prompt: 'Cesar Milani caricature portrait bust, full dress military uniform Argentina, general rank insignia gold stars on shoulders, rows of medal ribbons on chest, stern formal expression, grey hair short, plain white background' + STYLE_SUFFIX },
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
