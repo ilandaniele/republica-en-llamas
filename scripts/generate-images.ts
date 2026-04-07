@@ -57,6 +57,8 @@ const IMAGES: Array<{ id: string; prompt: string }> = [
   { id: 'int_imf',          prompt: 'Argentine minister shaking hands with IMF officials at conference table, flags, formal suits, pile of documents' + STYLE_SUFFIX },
   { id: 'int_war',          prompt: 'World map showing global conflict zones, red hotspots, concerned diplomats watching TV screen showing explosions' + STYLE_SUFFIX },
   { id: 'int_trade',        prompt: 'Argentine cargo ship at port loaded with soy soybeans, containers, export crane, sunrise, handshake in foreground' + STYLE_SUFFIX },
+  { id: 'int_guerra_ucrania', prompt: 'Ukraine crisis 2022, blue and yellow Ukrainian flag colors dominating sky, burning city silhouettes at night, military tank foreground, Argentine diplomat in suit watching a conflict map on TV screen, dark war atmosphere, explosion glow on horizon' + STYLE_SUFFIX },
+  { id: 'int_conflicto_iran', prompt: 'Iran conflict 2024, fiery orange oil-fire sky, oil derricks silhouette, crescent moon symbol, Argentine diplomat at desk with Middle-East maps, missile trail in sky, tense negotiation atmosphere, desert landscape' + STYLE_SUFFIX },
 
   // Argentina-specific
   { id: 'arg_mundial',      prompt: 'Argentina winning World Cup soccer celebration, blue white jersey player lifting golden trophy, confetti, Buenos Aires crowd' + STYLE_SUFFIX },
@@ -102,7 +104,7 @@ async function generateImage(prompt: string): Promise<ArrayBuffer> {
       },
       body: JSON.stringify({
         inputs: prompt,
-        parameters: { num_inference_steps: 30, guidance_scale: 7.5, width: 512, height: 512 },
+        parameters: { num_inference_steps: 30, guidance_scale: 7.5, width: 1024, height: 576 },
       }),
     });
 
@@ -156,9 +158,13 @@ async function main() {
   console.log(`\n🖼  REP EN LLAMAS — Generating ${IMAGES.length} images\n`);
 
   // Load existing manifest so we can skip already-generated images
+  // Pass --force to clear the manifest and regenerate everything
+  const forceRegen = process.argv.includes('--force');
   let manifest: Record<string, string> = {};
-  if (fs.existsSync(MANIFEST_PATH)) {
+  if (!forceRegen && fs.existsSync(MANIFEST_PATH)) {
     manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'));
+  } else if (forceRegen) {
+    console.log('⚡  --force flag detected — regenerating all images\n');
   }
 
   let done = 0;

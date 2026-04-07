@@ -294,9 +294,11 @@ function SceneGuerraUcrania({ pid }: { pid: string }) {
       {/* Skyline silhouettes */}
       {R(0,50,42,110,'#0a0a0a')}{R(42,60,28,100,'#0a0a0a')}{R(70,45,22,115,'#0a0a0a')}{R(92,55,36,105,'#0a0a0a')}
       {R(230,42,32,118,'#0a0a0a')}{R(262,52,24,108,'#0a0a0a')}{R(286,38,34,122,'#0a0a0a')}
-      {R(128,50,62,44,'rgba(255,100,0,0.45)')}
-      {R(142,40,34,22,'rgba(255,180,0,0.55)')}
-      {R(154,32,22,16,'#fffde7')}
+      <g className="gsap-explosion">
+        {R(128,50,62,44,'rgba(255,100,0,0.45)')}
+        {R(142,40,34,22,'rgba(255,180,0,0.55)')}
+        {R(154,32,22,16,'#fffde7')}
+      </g>
       <g className="gsap-secondary">
         {[132,152,170,144,166].map((x,i)=><circle key={i} cx={x} cy={50-i*3} r={10+i*3} fill="#546e7a" opacity={0.7}/>)}
       </g>
@@ -389,14 +391,29 @@ export function ScenarioIllustration({ id, presidentId = 'ingeniero' }: Props) {
         gsap.to('.gsap-primary', { rotation: 7, transformOrigin: '116px 98px', yoyo: true, repeat: -1, duration: 0.4, ease: 'power1.inOut' });
         gsap.fromTo('.gsap-secondary > text', { y: 0, autoAlpha: 1 }, { y: 32, autoAlpha: 0, duration: 1.3, stagger: { each: 0.22, repeat: -1 }, ease: 'power1.in' });
         break;
-      case 'guerra_ucrania_2022':
-        gsap.to('.gsap-primary', { x: 20, yoyo: true, repeat: -1, duration: 5, ease: 'power1.inOut' });
-        gsap.to('.gsap-secondary > circle', { y: -22, autoAlpha: 0, duration: 2, stagger: 0.35, repeat: -1, ease: 'power1.out' });
+      case 'guerra_ucrania_2022': {
+        // Explosion glow flickers (fast) while smoke rises and tank rolls in parallel
+        const tlUcrania = gsap.timeline();
+        tlUcrania
+          .to('.gsap-explosion', { autoAlpha: 0.5, yoyo: true, repeat: -1, duration: 0.28, ease: 'sine.inOut' })
+          .to('.gsap-secondary > circle', { y: -22, autoAlpha: 0, duration: 2, stagger: 0.35, repeat: -1, ease: 'power1.out' }, '<')
+          .to('.gsap-primary', { x: 20, yoyo: true, repeat: -1, duration: 5, ease: 'power1.inOut' }, '+=0');
         break;
-      case 'conflicto_iran_2024':
-        gsap.to('.gsap-secondary > rect', { scaleY: 1.22, transformOrigin: '50% 100%', yoyo: true, repeat: -1, duration: 0.45, ease: 'power1.inOut' });
-        gsap.fromTo('.gsap-primary', { x: 0, y: 0, autoAlpha: 1 }, { x: 36, y: -15, autoAlpha: 0, duration: 1.3, repeat: -1, ease: 'power2.in', onRepeat() { gsap.set('.gsap-primary', { x: 0, y: 0, autoAlpha: 1 }); } });
+      }
+      case 'conflicto_iran_2024': {
+        // Derrick flame flickers with stagger per rect layer (brightest tip fastest)
+        const tlFlame = gsap.timeline({ repeat: -1 });
+        tlFlame
+          .to('.gsap-secondary > rect:last-child', { scaleY: 1.35, transformOrigin: '50% 100%', yoyo: true, duration: 0.2, ease: 'sine.inOut' }, 0)
+          .to('.gsap-secondary > rect:nth-child(2)', { scaleY: 1.22, transformOrigin: '50% 100%', yoyo: true, duration: 0.32, ease: 'sine.inOut' }, 0)
+          .to('.gsap-secondary > rect:first-child', { scaleY: 1.12, transformOrigin: '50% 100%', yoyo: true, duration: 0.45, ease: 'sine.inOut' }, 0);
+        // Missile launches and resets atomically inside timeline — no onRepeat needed
+        const tlMissile = gsap.timeline({ repeat: -1, repeatDelay: 1.2 });
+        tlMissile
+          .fromTo('.gsap-primary', { x: 0, y: 0, autoAlpha: 1 }, { x: 36, y: -15, autoAlpha: 0, duration: 1.3, ease: 'power2.in' })
+          .set('.gsap-primary', { x: 0, y: 0, autoAlpha: 1 });
         break;
+      }
     }
   }, { scope: containerRef, dependencies: [id, presidentId] });
 
