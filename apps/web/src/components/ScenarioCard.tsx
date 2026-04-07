@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { ScenarioId } from '@republica/game-engine';
 import { ScenarioIllustration } from './illustrations/ScenarioIllustration.js';
+import { useGameStore } from '../stores/gameStore.js';
 
 gsap.registerPlugin(useGSAP);
 
@@ -25,9 +26,12 @@ const ERA_ACCENT: Record<string, string> = {
   malvinas_1982:        '#74ACDF',
   kirchnerismo_boom:    '#2e7d32',  // green — boom
   libertad_avanza_2023: '#CC2200',
+  guerra_ucrania_2022:  '#ffd500',  // Ukrainian yellow
+  conflicto_iran_2024:  '#ff9900',  // orange — oil/conflict
 };
 
 export function ScenarioCard({ id, label, period, description, locked, index, onClick }: Props) {
+  const presidentId = useGameStore((s) => s.presidentId);
   const cardRef = useRef<HTMLButtonElement>(null);
   const scanRef = useRef<HTMLDivElement>(null);
   const yearRef = useRef<HTMLSpanElement>(null);
@@ -147,9 +151,9 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
       {/* Full-bleed illustration */}
       <div
         className="scenario-illus w-full overflow-hidden"
-        style={{ height: '96px', borderBottom: `1px solid ${accent}44` }}
+        style={{ height: '180px', borderBottom: `1px solid ${accent}44` }}
       >
-        <ScenarioIllustration id={id} />
+        <ScenarioIllustration id={id} presidentId={presidentId} />
       </div>
 
       {/* Text content */}

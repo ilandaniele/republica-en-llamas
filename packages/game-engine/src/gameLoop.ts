@@ -1,5 +1,5 @@
 import type { GameState, Difficulty, Language, ChoiceEffect, TurnEvent, RecurringCharacter, ScenarioId } from './types.js';
-import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS, CONGRESS_SESSION_INTERVAL, PRESIDENTIAL_ELECTION_TURN, HISTORICAL_SCENARIOS, SCENARIO_CALENDARS } from './constants.js';
+import { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, TOTAL_SEATS, CONGRESS_SESSION_INTERVAL, PRESIDENTIAL_ELECTION_TURN, HISTORICAL_SCENARIOS, SCENARIO_CALENDARS, SCENARIO_ARCS } from './constants.js';
 import { calculateInflationBreakdown } from './inflation.js';
 import { calculateScore } from './scoring.js';
 import { detectCrises, tickCrises } from './crises.js';
@@ -93,6 +93,8 @@ export function initGame(
     currentYear: calendar.startYear,
     characters: initialCharacters,
     cardCooldowns: {},
+    scenarioArcPhase: 0,
+    deflationStreakTurns: 0,
   };
 }
 
@@ -133,6 +135,14 @@ function getScenarioOpeningShocks(scenarioId: ScenarioId): import('./types.js').
     libertad_avanza_2023: [
       { id: 'shock_lla_herencia', name: 'shock.lla.herencia', turnsRemaining: 4, inflationMod: 15, marketConfidenceMod: -15, deficitMod: 5, popularityMod: -10 },
       { id: 'shock_lla_devaluacion', name: 'shock.lla.devaluacion', turnsRemaining: 3, inflationMod: 20, marketConfidenceMod: 10, deficitMod: -5, popularityMod: -20 },
+    ],
+    guerra_ucrania_2022: [
+      { id: 'shock_ucrania_invasion', name: 'shock.ucrania.invasion', turnsRemaining: 5, inflationMod: 8, marketConfidenceMod: -25, deficitMod: 8, popularityMod: -5 },
+      { id: 'shock_ucrania_energia', name: 'shock.ucrania.energia', turnsRemaining: 4, inflationMod: 6, marketConfidenceMod: -15, deficitMod: 5, popularityMod: -10 },
+    ],
+    conflicto_iran_2024: [
+      { id: 'shock_iran_petroleo', name: 'shock.iran.petroleo', turnsRemaining: 4, inflationMod: 10, marketConfidenceMod: -20, deficitMod: 6, popularityMod: -8 },
+      { id: 'shock_iran_misiles', name: 'shock.iran.misiles', turnsRemaining: 3, inflationMod: 5, marketConfidenceMod: -30, deficitMod: 4, popularityMod: -15 },
     ],
   };
   return shockMap[scenarioId] ?? [];
@@ -230,6 +240,30 @@ function applyScenarioMechanics(state: GameState): GameState {
         political: {
           ...s.political,
           popularity: clamp(s.political.popularity - 1, 0, 100),
+        },
+      };
+      break;
+
+    case 'guerra_ucrania_2022':
+      // Energy import cost drains reserves every turn
+      s = {
+        ...s,
+        economic: {
+          ...s.economic,
+          foreignReserves: clamp(s.economic.foreignReserves - 2, 0, 100),
+          inflation: clamp(s.economic.inflation + 0.5, -20, 200),
+        },
+      };
+      break;
+
+    case 'conflicto_iran_2024':
+      // Oil price pressure adds inflation each turn
+      s = {
+        ...s,
+        economic: {
+          ...s.economic,
+          inflation: clamp(s.economic.inflation + 1.5, -20, 200),
+          marketConfidence: clamp(s.economic.marketConfidence - 0.5, 0, 100),
         },
       };
       break;
@@ -370,6 +404,21 @@ export function advanceTurn(state: GameState): GameState {
       popularityLowStreak: isLow ? s.political.popularityLowStreak + 1 : 0,
     },
   };
+
+  // Track deflationary spiral streak
+  const isDeflating = s.economic.inflation < -10;
+  s = { ...s, deflationStreakTurns: isDeflating ? (s.deflationStreakTurns ?? 0) + 1 : 0 };
+
+  // Advance narrative arc phase for scenario runs
+  if (s.activeScenario) {
+    const arcs = SCENARIO_ARCS[s.activeScenario];
+    if (arcs) {
+      const currentPhase = arcs[s.scenarioArcPhase ?? 0];
+      if (currentPhase && s.turn > currentPhase.maxTurn && (s.scenarioArcPhase ?? 0) < arcs.length - 1) {
+        s = { ...s, scenarioArcPhase: (s.scenarioArcPhase ?? 0) + 1 };
+      }
+    }
+  }
 
   // Detect new crises
   const newCrises = detectCrises(s);

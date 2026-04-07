@@ -25,6 +25,16 @@ export function checkGameOver(state: GameState): GameOverResult | null {
     };
   }
 
+  // Deflationary spiral (3+ consecutive turns below -10%)
+  if ((state.deflationStreakTurns ?? 0) >= 3 && economic.inflation < -10) {
+    return {
+      reason: 'deflation_spiral',
+      score: calculateScore(state),
+      turn,
+      isWin: false,
+    };
+  }
+
   // Popularity collapse (3 consecutive turns below 5)
   if (
     political.popularity < GAME_OVER.MIN_POPULARITY &&

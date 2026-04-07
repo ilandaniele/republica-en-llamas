@@ -287,8 +287,8 @@ export default function GameScreen() {
           <TensionMeter state={gameState} />
         </div>
 
-        {/* Main layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
+        {/* Main layout: mobile = card on top, indicators below; desktop = sidebar left */}
+        <div className="flex flex-col-reverse lg:grid lg:grid-cols-[320px_1fr] gap-6">
           {/* Left: Variables panel */}
           <aside>
             <VariablesPanel state={gameState} />
