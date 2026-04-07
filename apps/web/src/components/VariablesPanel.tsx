@@ -156,6 +156,7 @@ export function VariablesPanel({ state }: Props) {
   }, [prevSnapshot]);
 
   const temp = getTemperatura(state);
+  const isDeflation = economic.inflation < 0;
 
   const hasAnyCrisis = [political.popularity, political.socialStability, economic.marketConfidence, economic.currencyStrength, economic.foreignReserves].some((v) => v < 30);
   const isStable = political.socialStability > 50 && political.popularity > 50;
@@ -196,7 +197,16 @@ export function VariablesPanel({ state }: Props) {
           onClick={() => setShowInflationBreakdown((v) => !v)}
           title="Ver desglose de inflación"
         >
-          <Meter label={`INF${breakdown ? ' 🔍' : ''}`} value={economic.inflation} prevValue={prevSnapshot?.inflation} max={200} color="bg-orange-500" icon="💸" inverse flashDir={flashMap['inflation']} />
+          <Meter
+            label={isDeflation ? `DEFL${breakdown ? ' 🔍' : ''}` : `INF${breakdown ? ' 🔍' : ''}`}
+            value={isDeflation ? Math.abs(economic.inflation) : economic.inflation}
+            prevValue={prevSnapshot?.inflation !== undefined ? (isDeflation ? Math.abs(prevSnapshot.inflation) : prevSnapshot.inflation) : undefined}
+            max={isDeflation ? 20 : 200}
+            color={isDeflation ? 'bg-crimson-500' : 'bg-orange-500'}
+            icon={isDeflation ? '📉' : '💸'}
+            inverse
+            flashDir={isDeflation ? (flashMap['inflation'] === 'up' ? 'down' : flashMap['inflation'] === 'down' ? 'up' : null) : flashMap['inflation']}
+          />
         </button>
         <AnimatePresence>
           {showInflationBreakdown && breakdown && (

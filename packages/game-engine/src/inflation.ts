@@ -16,11 +16,15 @@ export function calculateInflation(state: GameState): number {
   const naturalDecay = Math.max(0,
     ((marketConfidence - 55) / 50) * 2.5 + ((30 - publicDeficit) / 30) * 1.5
   );
-  const raw = base + monetary + confidence + currency + shock - naturalDecay;
+  // Popularity buffer: strong political capital slightly relieves inflationary pressure
+  const popularityBuffer = state.political.popularity > 70
+    ? ((state.political.popularity - 70) / 100) * 1.5
+    : 0;
+  const raw = base + monetary + confidence + currency + shock - naturalDecay - popularityBuffer;
   const mod = DIFFICULTY_MODIFIERS[state.difficulty] ?? DIFFICULTY_MODIFIERS['normal']!;
   const accelBlocked = state.turn < mod.inflationAccelerationTurn;
   const accel = (!accelBlocked && raw > 15) ? raw * 0.25 : 0;
-  return Math.max(0, Math.min(200, raw + accel));
+  return Math.max(-20, Math.min(200, raw + accel));
 }
 
 export function calculateInflationBreakdown(state: GameState): InflationBreakdown {
@@ -34,17 +38,21 @@ export function calculateInflationBreakdown(state: GameState): InflationBreakdow
   const naturalDecay = Math.max(0,
     ((marketConfidence - 55) / 50) * 2.5 + ((30 - publicDeficit) / 30) * 1.5
   );
-  const raw = previousInflation + deficitPressure + marketDistrust + currencyWeakness + shockEffect - naturalDecay;
+  // Popularity buffer: strong political capital slightly relieves inflationary pressure
+  const popularityBuffer = state.political.popularity > 70
+    ? ((state.political.popularity - 70) / 100) * 1.5
+    : 0;
+  const raw = previousInflation + deficitPressure + marketDistrust + currencyWeakness + shockEffect - naturalDecay - popularityBuffer;
   const mod = DIFFICULTY_MODIFIERS[state.difficulty] ?? DIFFICULTY_MODIFIERS['normal']!;
   const accelBlocked = state.turn < mod.inflationAccelerationTurn;
   const accelerationEffect = (!accelBlocked && raw > 15) ? raw * 0.25 : 0;
-  const newInflation = Math.max(0, Math.min(200, raw + accelerationEffect));
+  const newInflation = Math.max(-20, Math.min(200, raw + accelerationEffect));
   return {
     deficitPressure,
     marketDistrust,
     currencyWeakness,
     shockEffect,
-    naturalDecay: -naturalDecay,
+    naturalDecay: -naturalDecay - popularityBuffer,
     accelerationEffect,
     previousInflation,
     newInflation,

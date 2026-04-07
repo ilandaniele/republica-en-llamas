@@ -1,5 +1,5 @@
 import type { EventCard, GameState, CrisisType, Difficulty } from '../types.js';
-import { CARD_COOLDOWN_TURNS, CARD_WEIGHT_DECAY_WINDOW } from '../constants.js';
+import { CARD_COOLDOWN_TURNS, CARD_WEIGHT_DECAY_WINDOW, SCENARIO_ARCS } from '../constants.js';
 import { POLITICAL_CARDS } from './political.js';
 import { ECONOMIC_CARDS } from './economic.js';
 import { SOCIAL_CARDS } from './social.js';
@@ -12,6 +12,7 @@ import { SCANDAL_CARDS } from './scandals.js';
 import { LAW_CARDS } from './laws.js';
 import { NEW_CARDS } from './new.js';
 import { CONSPIRACION_CARDS } from './conspiraciones.js';
+import { GEOPOLITICAL_CARDS } from './geopolitical.js';
 
 const DIFFICULTY_ORDER: Difficulty[] = ['easy', 'normal', 'hard', 'crisis'];
 
@@ -32,6 +33,7 @@ export const ALL_CARDS: EventCard[] = [
   ...LAW_CARDS,
   ...NEW_CARDS,
   ...CONSPIRACION_CARDS,
+  ...GEOPOLITICAL_CARDS,
 ];
 
 export const CARD_REGISTRY = new Map<string, EventCard>(
@@ -109,10 +111,21 @@ export function drawCard(state: GameState, rng: () => number, forceLifeline = fa
   // Apply weight decay for recently-played cards (within CARD_WEIGHT_DECAY_WINDOW turns)
   const effectiveWeight = (card: EventCard): number => {
     const lastFiredTurn = cooldowns[card.id];
+    let w = card.weight;
     if (lastFiredTurn !== undefined && (state.turn - lastFiredTurn) < CARD_WEIGHT_DECAY_WINDOW) {
-      return card.weight * 0.3;
+      w *= 0.3;
     }
-    return card.weight;
+    // Narrative arc boost: 3× weight for categories matching current scenario phase
+    if (state.activeScenario) {
+      const arcs = SCENARIO_ARCS[state.activeScenario];
+      if (arcs) {
+        const phase = arcs[state.scenarioArcPhase ?? 0];
+        if (phase?.weightedCategories.includes(card.category)) {
+          w *= 3;
+        }
+      }
+    }
+    return w;
   };
 
   const totalWeight = eligible.reduce((s, c) => s + effectiveWeight(c), 0);

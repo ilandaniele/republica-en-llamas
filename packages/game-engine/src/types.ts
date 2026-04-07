@@ -9,7 +9,16 @@ export type ScenarioId =
   | 'rodrigazo_1975'
   | 'malvinas_1982'
   | 'kirchnerismo_boom'
-  | 'libertad_avanza_2023';
+  | 'libertad_avanza_2023'
+  | 'guerra_ucrania_2022'
+  | 'conflicto_iran_2024';
+
+/** One phase in a scenario's narrative arc. Cards whose category matches
+ *  weightedCategories receive a 3× draw-weight bonus during this phase. */
+export interface ScenarioArcPhase {
+  maxTurn: number;
+  weightedCategories: CardCategory[];
+}
 
 export interface ScenarioCalendar {
   startMonth: number;    // 1-12
@@ -60,7 +69,8 @@ export type GameOverReason =
   | 'bankrupt'
   | 'impeachment'
   | 'term_complete'
-  | 'election_loss';
+  | 'election_loss'
+  | 'deflation_spiral';
 
 export interface PoliticalVars {
   popularity: number;           // 0-100
@@ -71,7 +81,7 @@ export interface PoliticalVars {
 }
 
 export interface EconomicVars {
-  inflation: number;            // 0-200
+  inflation: number;            // -20 to 200 (negative = deflation)
   publicDeficit: number;        // 0-100 (% of GDP)
   marketConfidence: number;     // 0-100
   currencyStrength: number;     // 0-100
@@ -219,6 +229,10 @@ export interface GameState {
   lastInflationBreakdown?: InflationBreakdown;
   /** Maps cardId → turn it was last played; used for cooldown enforcement */
   cardCooldowns: Record<string, number>;
+  /** Current phase index in the scenario's narrative arc (0 = start). */
+  scenarioArcPhase: number;
+  /** Consecutive turns with inflation below -10 (deflationary spiral tracker). */
+  deflationStreakTurns: number;
 }
 
 export interface VoteResult {

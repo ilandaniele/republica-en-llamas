@@ -1,4 +1,4 @@
-import type { DifficultyPreset, CrisisType, HistoricalScenarioConfig, ScenarioId, ScenarioCalendar } from './types.js';
+import type { DifficultyPreset, CrisisType, HistoricalScenarioConfig, ScenarioId, ScenarioCalendar, ScenarioArcPhase, CardCategory } from './types.js';
 
 // ─── Difficulty presets ───────────────────────────────────────────────────────
 
@@ -247,6 +247,40 @@ export const HISTORICAL_SCENARIOS: Record<ScenarioId, HistoricalScenarioConfig> 
     governmentSeats: 70,
     oppositionSeats: 330,
   },
+  guerra_ucrania_2022: {
+    labelKey: 'scenario.guerra_ucrania_2022.label',
+    periodKey: 'scenario.guerra_ucrania_2022.period',
+    descriptionKey: 'scenario.guerra_ucrania_2022.description',
+    entitlementRequired: 'full_access',
+    popularity: 45,
+    socialStability: 50,
+    mediaCredibility: 40,
+    inflation: 28,
+    publicDeficit: 50,
+    marketConfidence: 35,
+    currencyStrength: 30,
+    foreignReserves: 20,
+    gdpGrowth: -1.5,
+    governmentSeats: 210,
+    oppositionSeats: 230,
+  },
+  conflicto_iran_2024: {
+    labelKey: 'scenario.conflicto_iran_2024.label',
+    periodKey: 'scenario.conflicto_iran_2024.period',
+    descriptionKey: 'scenario.conflicto_iran_2024.description',
+    entitlementRequired: 'full_access',
+    popularity: 40,
+    socialStability: 45,
+    mediaCredibility: 35,
+    inflation: 32,
+    publicDeficit: 55,
+    marketConfidence: 30,
+    currencyStrength: 25,
+    foreignReserves: 15,
+    gdpGrowth: -2.0,
+    governmentSeats: 200,
+    oppositionSeats: 240,
+  },
 };
 
 // ─── Scenario calendars (start date + turn pacing) ────────────────────────────
@@ -259,6 +293,60 @@ export const SCENARIO_CALENDARS: Record<ScenarioId, ScenarioCalendar> = {
   malvinas_1982:        { startMonth: 4,  startYear: 1982, turnsPerMonth: 2 },
   kirchnerismo_boom:    { startMonth: 12, startYear: 2003, turnsPerMonth: 3 },
   libertad_avanza_2023: { startMonth: 12, startYear: 2023, turnsPerMonth: 2 },
+  guerra_ucrania_2022:  { startMonth: 2,  startYear: 2022, turnsPerMonth: 2 },
+  conflicto_iran_2024:  { startMonth: 4,  startYear: 2024, turnsPerMonth: 2 },
+};
+
+// ─── Scenario narrative arcs ──────────────────────────────────────────────────
+// Each scenario has phases. Cards whose category matches weightedCategories
+// receive 3× draw weight during that phase, creating cause-effect narrative flow.
+
+export const SCENARIO_ARCS: Partial<Record<ScenarioId, ScenarioArcPhase[]>> = {
+  hiperinflacion_1989: [
+    { maxTurn: 6,  weightedCategories: ['economic' as CardCategory] },
+    { maxTurn: 14, weightedCategories: ['crisis' as CardCategory, 'economic' as CardCategory] },
+    { maxTurn: 50, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
+  ],
+  corralito_2001: [
+    { maxTurn: 5,  weightedCategories: ['economic' as CardCategory, 'international' as CardCategory] },
+    { maxTurn: 12, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
+    { maxTurn: 50, weightedCategories: ['political' as CardCategory, 'crisis' as CardCategory] },
+  ],
+  convertibilidad: [
+    { maxTurn: 8,  weightedCategories: ['economic' as CardCategory, 'international' as CardCategory] },
+    { maxTurn: 18, weightedCategories: ['political' as CardCategory, 'economic' as CardCategory] },
+    { maxTurn: 50, weightedCategories: ['crisis' as CardCategory, 'economic' as CardCategory] },
+  ],
+  rodrigazo_1975: [
+    { maxTurn: 4,  weightedCategories: ['social' as CardCategory, 'economic' as CardCategory] },
+    { maxTurn: 12, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
+    { maxTurn: 50, weightedCategories: ['political' as CardCategory, 'crisis' as CardCategory] },
+  ],
+  malvinas_1982: [
+    { maxTurn: 5,  weightedCategories: ['international' as CardCategory, 'political' as CardCategory] },
+    { maxTurn: 15, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
+    { maxTurn: 50, weightedCategories: ['economic' as CardCategory, 'political' as CardCategory] },
+  ],
+  kirchnerismo_boom: [
+    { maxTurn: 8,  weightedCategories: ['economic' as CardCategory, 'social' as CardCategory] },
+    { maxTurn: 18, weightedCategories: ['political' as CardCategory, 'international' as CardCategory] },
+    { maxTurn: 50, weightedCategories: ['crisis' as CardCategory, 'economic' as CardCategory] },
+  ],
+  libertad_avanza_2023: [
+    { maxTurn: 5,  weightedCategories: ['economic' as CardCategory, 'political' as CardCategory] },
+    { maxTurn: 14, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
+    { maxTurn: 50, weightedCategories: ['crisis' as CardCategory, 'political' as CardCategory] },
+  ],
+  guerra_ucrania_2022: [
+    { maxTurn: 5,  weightedCategories: ['international' as CardCategory, 'economic' as CardCategory] },
+    { maxTurn: 15, weightedCategories: ['international' as CardCategory, 'crisis' as CardCategory] },
+    { maxTurn: 50, weightedCategories: ['political' as CardCategory, 'economic' as CardCategory] },
+  ],
+  conflicto_iran_2024: [
+    { maxTurn: 5,  weightedCategories: ['international' as CardCategory, 'economic' as CardCategory] },
+    { maxTurn: 14, weightedCategories: ['crisis' as CardCategory, 'international' as CardCategory] },
+    { maxTurn: 50, weightedCategories: ['political' as CardCategory, 'economic' as CardCategory] },
+  ],
 };
 
 // ─── Negotiation costs & effects ─────────────────────────────────────────────

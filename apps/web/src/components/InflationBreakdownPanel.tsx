@@ -14,7 +14,8 @@ const CAPUTO_QUOTES = [
 ];
 
 export function InflationBreakdownPanel({ breakdown }: Props) {
-  const quote = CAPUTO_QUOTES[Math.floor(breakdown.newInflation) % CAPUTO_QUOTES.length]!;
+  const quote = CAPUTO_QUOTES[Math.floor(Math.abs(breakdown.newInflation)) % CAPUTO_QUOTES.length]!;
+  const isDeflation = breakdown.newInflation < 0;
 
   const factors: { label: string; value: number; emoji: string; inverse?: boolean }[] = [
     { label: 'Déficit Público', value: breakdown.deficitPressure, emoji: '📊' },
@@ -27,6 +28,11 @@ export function InflationBreakdownPanel({ breakdown }: Props) {
 
   return (
     <div className="bg-navy-900 border border-navy-600 rounded-lg p-4 text-xs font-mono">
+      {isDeflation && (
+        <p className="text-crimson-400 font-bold uppercase tracking-widest mb-2 text-[9px] animate-pulse">
+          ⚠️ DEFLACIÓN PELIGROSA
+        </p>
+      )}
       <p className="text-smoke-500 uppercase tracking-widest mb-3 text-[10px]">
         Desglose Inflacionario — Turno
       </p>

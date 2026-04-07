@@ -1,4 +1,4 @@
-export const es: Record<string, string> = {
+﻿export const es: Record<string, string> = {
   // ─── Difficulty ────────────────────────────────────────────────────────────
   'difficulty.easy.flavor': 'El viento sopla a tu favor. Por ahora.',
   'difficulty.normal.flavor': 'La república tiembla. Tú decides si cae.',
@@ -1396,4 +1396,66 @@ export const es: Record<string, string> = {
   'event.hist_kirch_003.choice_a': 'Dejar que el INDEC subestime — la mentira sirve a corto plazo',
   'event.hist_kirch_003.choice_b': 'Reconocer la inflación real y lanzar un plan de estabilización',
   'event.hist_kirch_003.choice_c': 'Crear un índice alternativo "consensuado" con provincias',
+  // ── Game over: Deflation Spiral ───────────────────────────────────────────
+  'gameover.deflation_spiral.headline': 'ESPIRAL DEFLACIONARIA: La Economía Se Congela',
+  'gameover.deflation_spiral.body': 'La caída de precios sostenida destruyó el tejido productivo. Empresas cerraron, el desempleo trepó y el consumo colapsó. Nadie invierte cuando espera que todo sea más barato mañana. El modelo falló.',
+
+  // ── Scenario: Guerra en Ucrania 2022 ──────────────────────────────────────
+  'scenario.guerra_ucrania_2022.label': 'Guerra en Ucrania',
+  'scenario.guerra_ucrania_2022.period': '2022',
+  'scenario.guerra_ucrania_2022.description': 'Rusia invade Ucrania y el mundo se divide. El precio de la energía explota, las cadenas de suministro se rompen y Argentina debe elegir bando en un nuevo orden mundial.',
+
+  // ── Scenario: Conflicto Irán 2024 ─────────────────────────────────────────
+  'scenario.conflicto_iran_2024.label': 'Conflicto Irán 2024',
+  'scenario.conflicto_iran_2024.period': '2024',
+  'scenario.conflicto_iran_2024.description': 'Irán, Israel y Estados Unidos al borde del abismo. El petróleo se dispara y la crisis energética global sacude a la Argentina justo cuando intentaba estabilizarse.',
+
+  // ── Geopolitical event cards ──────────────────────────────────────────────
+  'event.geo_001.title': 'CRISIS ENERGÉTICA GLOBAL',
+  'event.geo_001.body': 'El conflicto internacional disparó el precio del petróleo al doble. Las tarifas de electricidad y gas presionan al extremo el presupuesto público y el bolsillo de los argentinos.',
+  'event.geo_001.choice_a': 'Subsidiar tarifas para proteger al consumidor',
+  'event.geo_001.choice_b': 'Trasladar el precio al usuario: transparencia y ajuste',
+  'event.geo_001.choice_c': 'Negociar compras conjuntas con países vecinos',
+  'event.geo_001.choice_d': 'Acelerar la producción de Vaca Muerta como alternativa local',
+
+  'event.geo_002.title': 'REFUGIADOS UCRANIANOS LLEGAN',
+  'event.geo_002.body': 'Argentina activó un corredor humanitario. Miles de ucranianos piden asilo. La solidaridad pública es alta, pero los recursos para integrarlos son escasos.',
+  'event.geo_002.choice_a': 'Abrir puertas ampliamente: Argentina fue tierra de inmigrantes',
+  'event.geo_002.choice_b': 'Limitar el cupo y priorizar la capacidad del Estado',
+
+  'event.geo_003.title': 'RUSIA OFRECE TRIGO A PRECIO PREFERENCIAL',
+  'event.geo_003.body': 'Moscú ofrece trigo barato a cambio de no votar sanciones en la ONU. Occidente observa. Los productores argentinos de granos ven con recelo la competencia rusa.',
+  'event.geo_003.choice_a': 'Aceptar el trigo: prioridad es el abastecimiento interno',
+  'event.geo_003.choice_b': 'Rechazar: la soberanía no se vende por grano barato',
+  'event.geo_003.choice_c': 'Abstenerte en la ONU y guardar silencio diplomático',
+
+  'event.geo_004.title': 'UCRANIA PIDE ARMAMENTO RECICLADO',
+  'event.geo_004.body': 'Kiev solicita equipamiento militar obsoleto de las FFAA argentinas. EEUU presiona para que colabores. Rusia advierte que cualquier envío tendrá consecuencias comerciales.',
+  'event.geo_004.choice_a': 'Enviar materiales no letales — posición humanitaria',
+  'event.geo_004.choice_b': 'Rechazar cualquier envío: Argentina no es parte del conflicto',
+  'event.geo_004.choice_c': 'Derivar la decisión al Congreso para evitar el costo político',
+
+  'event.geo_005.title': 'ATAQUE A INSTALACIÓN PETROLÍFERA',
+  'event.geo_005.body': 'Un misil impacta una refinería regional aliada. El precio del barril sube 18% en 48 horas. YPF alerta que los costos de importación superarán al presupuesto previsto.',
+  'event.geo_005.choice_a': 'Acelerar la producción de Vaca Muerta con inversión de emergencia',
+  'event.geo_005.choice_b': 'Negociar con Qatar un contrato de largo plazo de GNL',
+  'event.geo_005.choice_c': 'Subir tarifas de inmediato para equilibrar el balance energético',
+
+  'event.geo_006.title': 'IRÁN BLOQUEA EL ESTRECHO DE ORMUZ',
+  'event.geo_006.body': 'El estrecho está cerrado. El comercio marítimo se desvía y los seguros de carga se multiplican. Las exportaciones argentinas hacia Asia enfrentan sobrecostos inéditos.',
+  'event.geo_006.choice_a': 'Buscar rutas alternativas con armadores europeos',
+  'event.geo_006.choice_b': 'Presionar diplomáticamente para reapertura del estrecho',
+  'event.geo_006.choice_c': 'Aceptar las pérdidas y priorizar mercados americanos',
+
+  'event.geo_007.title': 'EEUU PIDE ALINEAMIENTO GEOPOLÍTICO',
+  'event.geo_007.body': 'Washington exige que Argentina se posicione públicamente con el bloque occidental. A cambio: acceso preferencial al mercado y apoyo del FMI. Rechazo implicaría sanciones indirectas.',
+  'event.geo_007.choice_a': 'Alinearse abiertamente con el bloque occidental',
+  'event.geo_007.choice_b': 'Declararse neutral: "Argentina no tiene alianzas militares"',
+  'event.geo_007.choice_c': 'Negociar bilateralmente sin declaración pública',
+
+  'event.geo_008.title': 'FMI CONDICIONA EL DESEMBOLSO',
+  'event.geo_008.body': 'El Fondo advierte que el contexto geopolítico eleva el riesgo-país y congela el próximo desembolso hasta que el gobierno demuestre disciplina fiscal adicional.',
+  'event.geo_008.choice_a': 'Aceptar nuevas condiciones y ajustar más para desbloquear fondos',
+  'event.geo_008.choice_b': 'Rechazar las condiciones y buscar financiamiento alternativo',
+  'event.geo_008.choice_c': 'Abrir renegociación técnica sin comprometerse públicamente',
 };

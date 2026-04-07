@@ -1,4 +1,4 @@
-export const en: Record<string, string> = {
+﻿export const en: Record<string, string> = {
   // ─── Difficulty ────────────────────────────────────────────────────────────
   'difficulty.easy.flavor': 'The wind is at your back. For now.',
   'difficulty.normal.flavor': 'The republic trembles. You decide if it falls.',
@@ -785,4 +785,66 @@ export const en: Record<string, string> = {
   'event.hist_kirch_003.choice_a': 'Let INDEC under-report — the lie serves short-term interests',
   'event.hist_kirch_003.choice_b': 'Acknowledge real inflation and launch a stabilisation plan',
   'event.hist_kirch_003.choice_c': 'Create a "consensus" alternative index with the provinces',
+  // ── Game over: Deflation Spiral ───────────────────────────────────────────
+  'gameover.deflation_spiral.headline': 'DEFLATIONARY SPIRAL: The Economy Freezes',
+  'gameover.deflation_spiral.body': 'Sustained price drops destroyed the productive fabric. Companies closed, unemployment soared and consumption collapsed. Nobody invests when they expect everything to be cheaper tomorrow. The model failed.',
+
+  // ── Scenario: Ukraine War 2022 ────────────────────────────────────────────
+  'scenario.guerra_ucrania_2022.label': 'Ukraine War',
+  'scenario.guerra_ucrania_2022.period': '2022',
+  'scenario.guerra_ucrania_2022.description': 'Russia invades Ukraine and the world splits. Energy prices explode, supply chains break and Argentina must choose sides in a new world order.',
+
+  // ── Scenario: Iran Conflict 2024 ──────────────────────────────────────────
+  'scenario.conflicto_iran_2024.label': 'Iran Conflict 2024',
+  'scenario.conflicto_iran_2024.period': '2024',
+  'scenario.conflicto_iran_2024.description': 'Iran, Israel and the US on the brink. Oil prices surge and the global energy crisis hits Argentina just as it was trying to stabilize.',
+
+  // ── Geopolitical event cards ──────────────────────────────────────────────
+  'event.geo_001.title': 'GLOBAL ENERGY CRISIS',
+  'event.geo_001.body': 'The international conflict doubled oil prices. Electricity and gas bills are pushing the public budget and household finances to the limit.',
+  'event.geo_001.choice_a': 'Subsidize tariffs to protect consumers',
+  'event.geo_001.choice_b': 'Pass the price to users: transparency and adjustment',
+  'event.geo_001.choice_c': 'Negotiate joint purchases with neighboring countries',
+  'event.geo_001.choice_d': 'Accelerate Vaca Muerta production as a local alternative',
+
+  'event.geo_002.title': 'UKRAINIAN REFUGEES ARRIVE',
+  'event.geo_002.body': 'Argentina opened a humanitarian corridor. Thousands of Ukrainians seek asylum. Public solidarity is high, but resources to integrate them are scarce.',
+  'event.geo_002.choice_a': 'Open the doors wide: Argentina was built by immigrants',
+  'event.geo_002.choice_b': 'Limit intake and prioritize state capacity',
+
+  'event.geo_003.title': 'RUSSIA OFFERS CHEAP WHEAT',
+  'event.geo_003.body': 'Moscow offers discounted wheat in exchange for not voting UN sanctions. The West watches. Argentine grain producers eye Russian competition warily.',
+  'event.geo_003.choice_a': 'Accept the wheat: domestic supply is the priority',
+  'event.geo_003.choice_b': 'Refuse: sovereignty is not for sale for cheap grain',
+  'event.geo_003.choice_c': 'Abstain at the UN and maintain diplomatic silence',
+
+  'event.geo_004.title': 'UKRAINE REQUESTS SURPLUS MILITARY GEAR',
+  'event.geo_004.body': 'Kyiv requests obsolete equipment from Argentine armed forces. The US is pushing. Russia warns any shipment will have commercial consequences.',
+  'event.geo_004.choice_a': 'Send non-lethal materials — humanitarian position',
+  'event.geo_004.choice_b': 'Refuse any shipment: Argentina is not part of the conflict',
+  'event.geo_004.choice_c': 'Refer the decision to Congress to avoid the political cost',
+
+  'event.geo_005.title': 'ATTACK ON OIL FACILITY',
+  'event.geo_005.body': 'A missile hits an allied regional refinery. Barrel price jumps 18% in 48 hours. YPF warns import costs will exceed the budgeted forecast.',
+  'event.geo_005.choice_a': 'Accelerate Vaca Muerta production with emergency investment',
+  'event.geo_005.choice_b': 'Negotiate a long-term LNG contract with Qatar',
+  'event.geo_005.choice_c': 'Raise tariffs immediately to balance the energy budget',
+
+  'event.geo_006.title': 'IRAN BLOCKS STRAIT OF HORMUZ',
+  'event.geo_006.body': 'The strait is closed. Maritime trade is diverted and cargo insurance multiplies. Argentine exports to Asia face unprecedented cost overruns.',
+  'event.geo_006.choice_a': 'Find alternative routes with European shippers',
+  'event.geo_006.choice_b': 'Push diplomatically for reopening the strait',
+  'event.geo_006.choice_c': 'Accept the losses and prioritize American markets',
+
+  'event.geo_007.title': 'US DEMANDS GEOPOLITICAL ALIGNMENT',
+  'event.geo_007.body': 'Washington demands Argentina publicly side with the Western bloc. In exchange: preferential market access and IMF support. Refusal would bring indirect sanctions.',
+  'event.geo_007.choice_a': 'Align openly with the Western bloc',
+  'event.geo_007.choice_b': 'Declare neutrality: "Argentina has no military alliances"',
+  'event.geo_007.choice_c': 'Negotiate bilaterally without a public statement',
+
+  'event.geo_008.title': 'IMF FREEZES DISBURSEMENT',
+  'event.geo_008.body': 'The Fund warns that the geopolitical context raises country risk and freezes the next disbursement until the government demonstrates additional fiscal discipline.',
+  'event.geo_008.choice_a': 'Accept new conditions and cut further to unlock funds',
+  'event.geo_008.choice_b': 'Reject the conditions and seek alternative financing',
+  'event.geo_008.choice_c': 'Open technical renegotiation without public commitment',
 };
