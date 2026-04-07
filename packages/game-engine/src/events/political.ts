@@ -479,22 +479,105 @@ export const POLITICAL_CARDS: EventCard[] = [
       },
     ],
   },
+];
+// ─── Chained consequence cards ────────────────────────────────────────────────
+// These cards only surface after specific prior decisions add memory flags.
+export const POLITICAL_CHAINED_CARDS: EventCard[] = [
   {
-    id: 'pol_election_result',
+    id: 'pol_chain_001',
     category: 'political',
-    titleKey: 'event.pol_election_result.title',
-    bodyKey: 'event.pol_election_result.body',
-    weight: 0, // forced draw only — injected by drawNextCard at turn 40
+    titleKey: 'event.pol_chain_001.title',
+    bodyKey: 'event.pol_chain_001.body',
+    weight: 6,
+    minTurn: 3,
+    requiredFlags: ['sind_confronted'],
     choices: [
       {
-        id: 'pol_eresult_win',
-        textKey: 'event.pol_election_result.choice_win',
-        effects: { popularityDelta: 16, stabilityDelta: 10, marketConfidenceDelta: 8 },
+        id: 'pol_chain_001_a',
+        textKey: 'event.pol_chain_001.choice_a',
+        effects: { stabilityDelta: 12, popularityDelta: -5, mediaCredibilityDelta: 6 },
       },
       {
-        id: 'pol_eresult_lose',
-        textKey: 'event.pol_election_result.choice_lose',
-        effects: { popularityDelta: -18, stabilityDelta: -12, marketConfidenceDelta: -10 },
+        id: 'pol_chain_001_b',
+        textKey: 'event.pol_chain_001.choice_b',
+        effects: { stabilityDelta: -8, popularityDelta: 14, deficitDelta: 4 },
+      },
+      {
+        id: 'pol_chain_001_c',
+        textKey: 'event.pol_chain_001.choice_c',
+        effects: { stabilityDelta: 4, popularityDelta: 5, mediaCredibilityDelta: 8 },
+        requiresVote: true,
+        voteChance: 0.55,
+      },
+      {
+        id: 'pol_chain_001_d',
+        textKey: 'event.pol_chain_001.choice_d',
+        effects: { stabilityDelta: 8, popularityDelta: 2, mediaCredibilityDelta: -4 },
+      },
+    ],
+  },
+  {
+    id: 'pol_chain_002',
+    category: 'political',
+    titleKey: 'event.pol_chain_002.title',
+    bodyKey: 'event.pol_chain_002.body',
+    weight: 5,
+    minTurn: 5,
+    requiredFlags: ['per_investigated'],
+    memoryFlagAdded: 'media_crisis',
+    choices: [
+      {
+        id: 'pol_chain_002_a',
+        textKey: 'event.pol_chain_002.choice_a',
+        effects: { mediaCredibilityDelta: -18, popularityDelta: 8, stabilityDelta: -3 },
+      },
+      {
+        id: 'pol_chain_002_b',
+        textKey: 'event.pol_chain_002.choice_b',
+        effects: { mediaCredibilityDelta: 12, popularityDelta: -10, stabilityDelta: 5 },
+      },
+      {
+        id: 'pol_chain_002_c',
+        textKey: 'event.pol_chain_002.choice_c',
+        effects: { mediaCredibilityDelta: 5, popularityDelta: -2, stabilityDelta: 3 },
+      },
+      {
+        id: 'pol_chain_002_d',
+        textKey: 'event.pol_chain_002.choice_d',
+        effects: { mediaCredibilityDelta: -6, popularityDelta: 15, stabilityDelta: -6 },
+      },
+    ],
+  },
+  {
+    id: 'pol_chain_003',
+    category: 'political',
+    titleKey: 'event.pol_chain_003.title',
+    bodyKey: 'event.pol_chain_003.body',
+    weight: 5,
+    minTurn: 8,
+    requiredFlags: ['emb_negotiated'],
+    choices: [
+      {
+        id: 'pol_chain_003_a',
+        textKey: 'event.pol_chain_003.choice_a',
+        effects: { foreignReservesDelta: 8, marketConfidenceDelta: 12, stabilityDelta: 4 },
+      },
+      {
+        id: 'pol_chain_003_b',
+        textKey: 'event.pol_chain_003.choice_b',
+        effects: { foreignReservesDelta: -6, popularityDelta: 10, deficitDelta: 5 },
+      },
+      {
+        id: 'pol_chain_003_c',
+        textKey: 'event.pol_chain_003.choice_c',
+        effects: { foreignReservesDelta: 4, marketConfidenceDelta: 5, mediaCredibilityDelta: 6 },
+      },
+      {
+        id: 'pol_chain_003_d',
+        textKey: 'event.pol_chain_003.choice_d',
+        effects: { foreignReservesDelta: 2, stabilityDelta: 5, popularityDelta: 5 },
+        requiresVote: true,
+        voteChance: 0.6,
       },
     ],
   },

@@ -1458,4 +1458,85 @@
   'event.geo_008.choice_a': 'Aceptar nuevas condiciones y ajustar más para desbloquear fondos',
   'event.geo_008.choice_b': 'Rechazar las condiciones y buscar financiamiento alternativo',
   'event.geo_008.choice_c': 'Abrir renegociación técnica sin comprometerse públicamente',
+
+  // ─── Chained consequence cards ────────────────────────────────────────────────
+  // pol_chain_001: sindicalista confrontado retaliates
+  'event.pol_chain_001.title': 'LOS GREMIOS CONTRAATACAN',
+  'event.pol_chain_001.body': 'Tras la confrontación, la CTA y la CGT se unificaron. Ramírez llama a un paro nacional de 48 horas. El gobierno debe definir si negocia, resiste, legisla o dialoga.',
+  'event.pol_chain_001.choice_a': 'Declarar el paro ilegal por decreto — tolerancia cero',
+  'event.pol_chain_001.choice_b': 'Abrir mesa de negociación urgente con aumentos en cuotas',
+  'event.pol_chain_001.choice_c': 'Presentar un proyecto de ley de reforma laboral al Congreso',
+  'event.pol_chain_001.choice_d': 'Convocar a Ramírez a Casa Rosada y negociar en privado',
+
+  // pol_chain_002: periodista investigada escala a crisis mediática
+  'event.pol_chain_002.title': 'LA INVESTIGACIÓN SE PUBLICA',
+  'event.pol_chain_002.body': 'Sofía Guerrero publicó el informe. Los medios opositores amplifican el escándalo. El oficialismo exige réplica. El Presidente debe elegir cómo responder ante la opinión pública.',
+  'event.pol_chain_002.choice_a': 'Atacar públicamente a Guerrero: campaña de desprestigio',
+  'event.pol_chain_002.choice_b': 'Convocar conferencia de prensa y admitir errores menores',
+  'event.pol_chain_002.choice_c': 'No responder — "El gobierno no debate con periodismo militante"',
+  'event.pol_chain_002.choice_d': 'Filtrar información que contradice el informe (off the record)',
+
+  // pol_chain_003: embajador negociado presenta resultado
+  'event.pol_chain_003.title': 'EL ACUERDO CON EL EMBAJADOR ESTÁ LISTO',
+  'event.pol_chain_003.body': 'Harrison presenta el borrador del acuerdo bilateral. Incluye créditos por USD 2.000M, pero exige contraprestaciones en política exterior. El Congreso debe refrendarlo.',
+  'event.pol_chain_003.choice_a': 'Firmar el acuerdo sin modificaciones — prioridad económica',
+  'event.pol_chain_003.choice_b': 'Renegociar cláusulas de política exterior — soberanía primero',
+  'event.pol_chain_003.choice_c': 'Aceptar los créditos pero rechazar las cláusulas políticas',
+  'event.pol_chain_003.choice_d': 'Someter el acuerdo a ratificación del Congreso',
+
+  // eco_chain_001: plan del ministro llega a ejecución
+  'event.eco_chain_001.title': 'EL PLAN DEL MINISTRO SE EJECUTA',
+  'event.eco_chain_001.body': 'Carrizo presenta los primeros resultados del plan fiscal: superávit primario, pero el costo social es visible. Los sindicatos y la oposición presionan para ablandar las medidas.',
+  'event.eco_chain_001.choice_a': 'Mantener el ajuste sin cambios — el plan funciona',
+  'event.eco_chain_001.choice_b': 'Moderar el ajuste con transferencias focalizadas',
+  'event.eco_chain_001.choice_c': 'Acelerar el ajuste aprovechando el momento político',
+  'event.eco_chain_001.choice_d': 'Llevar el debate al Congreso para blindar políticamente el plan',
+
+  // eco_chain_002: gobernadora confrontada inicia guerra fiscal
+  'event.eco_chain_002.title': 'GUERRA FISCAL CON LA PROVINCIA',
+  'event.eco_chain_002.body': 'La Gobernadora Vidal retiene fondos de coparticipación en represalia. Tres provincias aliadas la siguen. La Nación enfrenta una crisis de ingresos y presiones políticas cruzadas.',
+  'event.eco_chain_002.choice_a': 'Activar retención de fondos nacionales en contramedida',
+  'event.eco_chain_002.choice_b': 'Negociar en privado con Vidal y ceder en algunos puntos',
+  'event.eco_chain_002.choice_c': 'Llevar el conflicto a la Corte Suprema',
+  'event.eco_chain_002.choice_d': 'Proponer reforma del sistema de coparticipación al Congreso',
+
+  // eco_chain_003: guerra fiscal escala a crisis de reservas
+  'event.eco_chain_003.title': 'LAS RESERVAS CAEN EN PICADA',
+  'event.eco_chain_003.body': 'La tensión fiscal-provincial dispara la fuga de capitales. El BCRA pierde USD 800M en una semana. Los mercados empiezan a descontar una devaluación inminente.',
+  'event.eco_chain_003.choice_a': 'Subir tasas de interés para frenar la fuga — costo recesivo',
+  'event.eco_chain_003.choice_b': 'Aplicar cepo cambiario de emergencia',
+  'event.eco_chain_003.choice_c': 'Pedir asistencia técnica al FMI de urgencia',
+  'event.eco_chain_003.choice_d': 'Anunciar plan de estabilización integral con ancla fiscal y cambiaria',
+
+  // soc_chain_001: primer encuentro con sindicalista deriva en huelga
+  'event.soc_chain_001.title': 'RAMÍREZ DECLARA HUELGA GENERAL',
+  'event.soc_chain_001.body': 'Tras el primer encuentro, Ramírez interpreta la postura del gobierno como débil y declara huelga general. Los servicios esenciales están paralizados. El gobierno tiene 48 horas.',
+  'event.soc_chain_001.choice_a': 'Ceder: convocar a Ramírez y firmar acuerdo de emergencia',
+  'event.soc_chain_001.choice_b': 'Resistir: declarar servicios esenciales e ignorar el paro',
+  'event.soc_chain_001.choice_c': 'Mediar: proponer árbitro neutral y tregua de 5 días',
+  'event.soc_chain_001.choice_d': 'Desviar: anunciar bono compensatorio mediático — sin negociar',
+
+  // soc_chain_002: consecuencia de haber cedido a la huelga
+  'event.soc_chain_002.title': 'RAMÍREZ PIDE MÁS TRAS LA VICTORIA',
+  'event.soc_chain_002.body': 'Después de la cesión, Ramírez convoca a todos los gremios: "El gobierno demostró que cede bajo presión." Nueva lista de demandas llega a Casa Rosada.',
+  'event.soc_chain_002.choice_a': 'Volver a ceder parcialmente para evitar otro paro',
+  'event.soc_chain_002.choice_b': 'Negarse y endurecer la posición — no más concesiones',
+  'event.soc_chain_002.choice_c': 'Intentar dividir a los gremios con acuerdos sectoriales',
+  'event.soc_chain_002.choice_d': 'Proponer mesa tripartita gobierno-sindicatos-empresarios al Congreso',
+
+  // soc_chain_003: gobernadora conocida propone programa social
+  'event.soc_chain_003.title': 'VIDAL PROPONE PROGRAMA SOCIAL PROVINCIAL',
+  'event.soc_chain_003.body': 'Tras el primer contacto, la Gobernadora Vidal presenta un programa de empleo provincial que requiere cofinanciamiento nacional. Es una oportunidad de alianza — o una trampa política.',
+  'event.soc_chain_003.choice_a': 'Cofinanciar el programa: gesto de cooperación federal',
+  'event.soc_chain_003.choice_b': 'Rechazarlo: "El gobierno nacional tiene sus propios programas"',
+  'event.soc_chain_003.choice_c': 'Negociar: apoyar si Vidal adhiere a reformas estructurales',
+  'event.soc_chain_003.choice_d': 'Federalizar el programa: extenderlo a todas las provincias',
+
+  // soc_chain_004: crisis mediática genera protestas sociales
+  'event.soc_chain_004.title': 'PROTESTAS POR LA CRISIS PERIODÍSTICA',
+  'event.soc_chain_004.body': 'La crisis mediática derramó hacia las calles. Organizaciones de derechos humanos y grupos universitarios marchan. Las redes sociales amplifican la imagen de un gobierno autoritario.',
+  'event.soc_chain_004.choice_a': 'Ignorar las protestas — no legitimar a los manifestantes',
+  'event.soc_chain_004.choice_b': 'Recibir a representantes y comprometerse a revisar la política de prensa',
+  'event.soc_chain_004.choice_c': 'Anunciar una comisión de libertad de expresión independiente',
+  'event.soc_chain_004.choice_d': 'Proponer ley de medios al Congreso que regule pero proteja',
 };

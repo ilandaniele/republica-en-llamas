@@ -1,10 +1,694 @@
-import React, { useRef } from 'react';
+﻿import React, { useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { GameState } from '@republica/game-engine';
 
-
 gsap.registerPlugin(useGSAP);
+
+// â”€â”€ Pixel grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ViewBox: 320Ã—180. Each "pixel" = 8 SVG units â†’ 40Ã—22 grid.
+const P = 8;
+// px(col, row, wCols, hRows, fill) â†’ single rect on the 8px grid
+function px(col: number, row: number, wCols: number, hRows: number, fill: string): React.ReactElement {
+  return <rect x={col * P} y={row * P} width={wCols * P} height={hRows * P} fill={fill} />;
+}
+// Pixel-art label bar (y=160, height=20)
+function lbl(text: string, col = '#ECE8E0'): React.ReactElement {
+  return (
+    <>
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.92)" />
+      <text x={8} y={174} fill={col} fontSize={8} fontFamily="'Press Start 2P'" style={{ imageRendering: 'pixelated' as const }}>{text}</text>
+    </>
+  );
+}
+
+// â”€â”€ Pixel palette (design-token aligned) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const P_BG  = '#0D1B2A'; // night-blue (background)
+const P_NAV = '#162032'; // deep navy
+const P_SLT = '#2A3D52'; // slate panel
+const P_GR  = '#3D5468'; // medium gray-blue
+const P_CB  = '#74ACDF'; // celeste (Argentine flag)
+const P_GD  = '#F6B40E'; // gold-400
+const P_CR  = '#CC2200'; // crisis crimson (only for crisis)
+const P_WH  = '#ECE8E0'; // warm white
+const P_SK  = '#D4956A'; // skin tone
+const P_YL  = '#FFD84D'; // yellow
+const P_RD  = '#EF3030'; // bright red
+const P_GN  = '#3AA858'; // green
+const P_LB  = '#B3D4F0'; // light blue sky
+const P_OR  = '#FF7B2A'; // orange / fire
+const P_DG  = '#1E3A1E'; // dark green
+const P_BR  = '#7A5530'; // brown
+const P_GR2 = '#8A9BAA'; // light gray
+const P_BK  = '#080C12'; // near black
+
+// â”€â”€ Reusable pixel-person (2 wide Ã— 5 tall, col/row top-left of head) â”€â”€â”€â”€â”€â”€â”€
+function PixPerson({ c, r, suit = P_NAV, skin = P_SK, hair = P_BK }: {
+  c: number; r: number; suit?: string; skin?: string; hair?: string;
+}): React.ReactElement {
+  return (
+    <g>
+      {px(c,   r,   2, 1, hair)} {/* hair */}
+      {px(c,   r+1, 2, 1, skin)} {/* face */}
+      {px(c,   r+2, 2, 2, suit)} {/* torso */}
+      {px(c,   r+4, 1, 1, suit)} {/* leg L */}
+      {px(c+1, r+4, 1, 1, suit)} {/* leg R */}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: pol_congress â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function ScenePolCongress({ presidentId }: { presidentId: string }) {
+  const hair = presidentId === 'tecnocrata' ? P_GD : presidentId === 'populista' ? P_RD : P_BK;
+  return (
+    <g>
+      {/* Sky */}
+      {px(0,0,40,2,P_NAV)}
+      {/* Ground */}
+      {px(0,19,40,1,P_BR)}
+      {/* Building body */}
+      {px(4,8,32,11,P_SLT)}
+      {/* Dome â€” stepped pyramid */}
+      {px(11,7,18,1,P_GR)}
+      {px(13,6,14,1,P_SLT)}
+      {px(14,5,12,1,P_SLT)}
+      {px(15,4,10,1,P_SLT)}
+      {px(17,3,6,2,P_SLT)}
+      {px(18,1,4,2,P_SLT)}
+      {px(19,0,2,1,P_GD)}
+      {/* Argentine flag pinned to top */}
+      {px(21,0,1,2,P_CB)}{px(22,0,1,1,P_CB)}{px(22,1,1,1,P_WH)}
+      {/* Pillars */}
+      {[5,8,11].map(c=><rect key={c} x={c*P} y={8*P} width={P} height={4*P} fill={P_GR}/>)}
+      {[29,32,35].map(c=><rect key={c} x={c*P} y={8*P} width={P} height={4*P} fill={P_GR}/>)}
+      {/* Windows â€” gold blocks (lit at night) */}
+      {[6,9,12].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={2*P} fill={P_GD}/>)}
+      {[26,29,32].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={2*P} fill={P_GD}/>)}
+      {/* Entrance door */}
+      {px(18,15,4,4,P_BG)}
+      {/* Deputy row (colored seats) */}
+      {[0,1,2,3,4,5,6,7,8].map(i=><rect key={i} x={(6+i*3)*P} y={13*P} width={2*P} height={P} fill={i%2===0?P_CB:P_RD}/>)}
+      {/* Podium level */}
+      {px(15,14,10,1,P_GD)}
+      {/* President (animated) */}
+      <g className="gsap-primary">
+        {px(18,15,4,1,P_SLT)}
+        {px(19,14,2,1,P_SK)}
+        {px(19,13,2,1,hair)}
+      </g>
+      {lbl('CONGRESO NACIONAL')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: pol_scandal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function ScenePolScandal({ presidentId: _p }: { presidentId: string }) {
+  return (
+    <g>
+      {/* Night background */}
+      {px(0,0,40,20,P_BK)}
+      {/* Spotlight beam (wide light column) â€” animated */}
+      <g className="gsap-primary">
+        {px(14,0,12,20,P_YL)}
+        {/* Gradient darkening via semi-transparent overlay strips */}
+        <rect x={14*P} y={0} width={2*P} height={20*P} fill="rgba(0,0,0,0.55)"/>
+        <rect x={24*P} y={0} width={2*P} height={20*P} fill="rgba(0,0,0,0.55)"/>
+      </g>
+      {/* Figure in spotlight (silhouette) */}
+      <PixPerson c={19} r={13} suit={P_SLT} skin={P_SK} hair={P_BK}/>
+      {/* Newspaper front page */}
+      {px(2,6,10,8,P_WH)}
+      {px(2,6,10,2,P_BK)}
+      {px(3,7,8,1,P_WH)}
+      {px(3,9,8,1,P_GR2)}
+      {px(3,10,6,1,P_GR2)}
+      {px(3,11,7,1,P_GR2)}
+      {px(3,12,5,1,P_GR2)}
+      {/* Camera at right â€” lens square + body */}
+      {px(28,5,4,3,P_GR)}
+      {px(29,4,2,1,P_GR2)}
+      {px(32,5,3,2,P_GR2)}
+      {px(28,6,1,1,P_WH)}
+      {/* Flash bursts */}
+      {[25,27].map(c=><rect key={c} x={c*P} y={4*P} width={P} height={P} fill={P_YL}/>)}
+      {lbl('ESCÃNDALO POLÃTICO')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: pol_protest â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function ScenePolProtest() {
+  return (
+    <g>
+      {/* Gray overcast sky */}
+      {px(0,0,40,5,P_GR2)}
+      {/* Pavement */}
+      {px(0,17,40,3,P_GR)}
+      {/* Pavement bricks */}
+      {[0,4,8,12,16,20,24,28,32,36].map(c=><rect key={c} x={c*P} y={17*P} width={3*P} height={P} fill={P_GR2}/>)}
+      {/* Barricade line */}
+      {px(0,16,40,1,P_BR)}
+      {/* Crowd â€” mix of pixel people with raised arms/signs */}
+      {[1,4,7,10,13,17,20,23,26,29,32,35].map((c,i)=>(
+        <PixPerson key={c} c={c} r={12} suit={[P_RD,P_SLT,P_GR,P_CB,P_DG,P_CR,P_RD,P_SLT,P_GN,P_CB,P_GR,P_RD][i]!} skin={P_SK} hair={P_BK}/>
+      ))}
+      {/* Signs held up (colored rects above some figures) */}
+      {[2,9,18,27,33].map(c=><rect key={c} x={c*P} y={10*P} width={2*P} height={2*P} fill={[P_RD,P_CB,P_YL,P_RD,P_GN][Math.floor(c/7)%5]!}/>)}
+      {/* Sign poles */}
+      {[3,10,19,28,34].map(c=><rect key={c} x={c*P} y={10*P} width={1} height={2*P} fill={P_GR}/>)}
+      {/* Banner across top */}
+      {px(5,2,30,3,P_RD)}
+      {px(6,3,28,1,P_WH)}
+      <text x={7*P} y={4*P+6} fill={P_RD} fontSize={7} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>BASTA!</text>
+      {lbl('PROTESTA POPULAR')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: eco_inflation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneEcoInflation() {
+  return (
+    <g>
+      {/* Cream background (supermarket) */}
+      {px(0,0,40,20,P_WH)}
+      {/* Shelf rows */}
+      {[4,9,14].map(r=><rect key={r} x={0} y={r*P} width={320} height={P} fill={P_BR}/>)}
+      {/* Products on shelf 1 (row 3) */}
+      {[[0,P_RD],[2,P_CB],[4,P_GN],[6,P_YL],[8,P_OR],[10,P_RD],[12,P_CB],[14,P_GN],[16,P_YL]].map(([c,f],i)=>
+        <rect key={i} x={(c as number)*P} y={3*P} width={2*P} height={P} fill={f as string}/>)}
+      {/* Products on shelf 2 (row 8) */}
+      {[[0,P_GN],[3,P_OR],[6,P_CB],[9,P_RD],[12,P_GD],[15,P_GN],[18,P_OR]].map(([c,f],i)=>
+        <rect key={i} x={(c as number)*P} y={8*P} width={2*P} height={P} fill={f as string}/>)}
+      {/* Products on shelf 3 (row 13) */}
+      {[[0,P_CB],[2,P_YL],[4,P_RD],[6,P_GN],[8,P_OR],[10,P_CB]].map(([c,f],i)=>
+        <rect key={i} x={(c as number)*P} y={13*P} width={2*P} height={P} fill={f as string}/>)}
+      {/* Inflation arrow (staircase going up-right) â€” animated */}
+      <g className="gsap-primary">
+        {[0,1,2,3,4,5,6].map(i=><rect key={i} x={(23+i)*P} y={(17-i*2)*P} width={2*P} height={2*P} fill={P_RD}/>)}
+        {/* Arrow head */}
+        {px(29,5,3,1,P_RD)}{px(30,4,2,1,P_RD)}{px(31,3,1,1,P_RD)}
+      </g>
+      {/* Price tag */}
+      {px(26,0,10,4,P_BK)}
+      <text x={27*P} y={3*P} fill={P_CR} fontSize={11} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>$$$</text>
+      {lbl('INFLACIÃ“N')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: eco_reserves â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneEcoReserves() {
+  return (
+    <g>
+      {/* Marble/stone background */}
+      {px(0,0,40,20,P_GR2)}
+      {px(0,0,40,20,P_WH)}
+      {/* Stone texture lines */}
+      {[3,7,11,15,19].map(r=><rect key={r} x={0} y={r*P} width={320} height={2} fill={P_GR2}/>)}
+      {/* Vault door â€” concentric square frames */}
+      {px(6,2,18,16,P_GR)}
+      {px(7,3,16,14,P_SLT)}
+      {px(8,4,14,12,P_GR)}
+      {px(9,5,12,10,P_SLT)}
+      {px(10,6,10,8,P_BK)}
+      {/* Lock wheel (cross shape in vault center) */}
+      {px(14,8,2,4,P_GR)}{px(12,9,6,2,P_GR)}
+      {/* Gold bars inside vault (partially visible) â€” animated */}
+      <g className="gsap-secondary">
+        {[11,13,15].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={P} fill={P_GD}/>)}
+        {[12,14].map(c=><rect key={c} x={c*P} y={12*P} width={2*P} height={P} fill={P_GD}/>)}
+      </g>
+      {/* Guard figure */}
+      <PixPerson c={28} r={13} suit={P_SLT} skin={P_SK} hair={P_BK}/>
+      {/* Bank pillars */}
+      {[26,28,30,32].map(c=><rect key={c} x={c*P} y={2*P} width={P} height={16*P} fill={P_WH}/>)}
+      {/* Classical cornice at top */}
+      {px(25,1,16,2,P_GR2)}
+      {px(24,0,18,1,P_GR)}
+      {/* BCRA sign */}
+      {px(26,3,8,3,P_BK)}
+      <text x={27*P} y={6*P} fill={P_GD} fontSize={7} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>BCRA</text>
+      {lbl('RESERVAS DEL BCRA')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: eco_growth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneEcoGrowth() {
+  return (
+    <g>
+      {/* Blue sky */}
+      {px(0,0,40,10,P_LB)}
+      {/* Ground / field */}
+      {px(0,10,40,10,P_GN)}
+      {px(0,10,40,1,P_DG)}
+      {/* Factory building */}
+      {px(2,5,10,15,P_SLT)}
+      {px(3,3,3,2,P_GR)}{/* chimney 1 */}
+      {px(7,4,2,1,P_GR)}{/* chimney 2 */}
+      {/* Factory windows */}
+      {[3,6].map(c=>[6,9].map(r=><rect key={`${c}${r}`} x={c*P} y={r*P} width={2*P} height={2*P} fill={P_GD}/>))}
+      {/* Smoke from chimneys â€” animated */}
+      <g className="gsap-secondary">
+        {[3,7].map(c=>[1,2,3].map(r=><rect key={`${c}${r}`} x={(c-1)*P} y={(3-r)*P} width={3*P} height={P} fill={'rgba(180,195,210,0.7)'}/>))}
+      </g>
+      {/* Bar chart (growth) â€” animated */}
+      <g className="gsap-primary">
+        {[{c:22,h:3,f:P_RD},{c:26,h:6,f:P_YL},{c:30,h:9,f:P_GN},{c:34,h:13,f:P_GD}].map(({c,h,f})=>(
+          <rect key={c} x={c*P} y={(20-h)*P} width={3*P} height={h*P} fill={f}/>
+        ))}
+        {/* Chart baseline */}
+        {px(21,19,18,1,P_BK)}
+        {/* Trend arrow staircase */}
+        {[0,1,2,3].map(i=><rect key={i} x={(23+i*3)*P} y={(16-i*2)*P} width={P} height={P} fill={P_GD}/>)}
+      </g>
+      {lbl('CRECIMIENTO ECONÃ“MICO')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: soc_strike â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneSocStrike() {
+  return (
+    <g>
+      {/* Overcast sky */}
+      {px(0,0,40,5,P_GR2)}
+      {/* Industrial backdrop */}
+      {px(0,5,10,15,P_GR)}{px(15,3,8,17,P_GR)}{px(27,6,13,14,P_GR)}
+      {/* Factory windows (lit) */}
+      {[2,4].map(c=>[6,10].map(r=><rect key={`${c}${r}`} x={c*P} y={r*P} width={2*P} height={2*P} fill={P_YL}/>))}
+      {/* Gate â€” vertical bars */}
+      {[12,13,14].map(c=><rect key={c} x={c*P} y={5*P} width={P} height={12*P} fill={P_BK}/>)}
+      {/* Barricade */}
+      {px(0,17,40,1,P_BR)}
+      {/* Worker crowd carrying signs */}
+      {[22,25,28,31,34,37].map((c,i)=>(
+        <PixPerson key={c} c={c} r={11} suit={i%2===0?P_CB:P_SLT} skin={P_SK} hair={P_BK}/>
+      ))}
+      {/* Strike signs above workers */}
+      {[22,28,34].map(c=>(
+        <g key={c}>
+          <rect x={c*P} y={8*P} width={3*P} height={3*P} fill={P_RD}/>
+          <rect x={(c+1)*P} y={7*P} width={P} height={P} fill={P_RD}/>
+          <rect x={(c+1)*P+4} y={8*P} width={1} height={3*P} fill={P_GR}/>
+        </g>
+      ))}
+      {/* Fist raised sign text */}
+      {px(20,8,5,3,P_RD)}
+      <text x={21*P} y={11*P} fill={P_WH} fontSize={6} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>HUELGA</text>
+      {lbl('HUELGA GENERAL')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: soc_unrest â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneSocUnrest() {
+  return (
+    <g>
+      {/* Night sky */}
+      {px(0,0,40,20,P_BK)}
+      {/* Building silhouettes */}
+      {px(0,4,5,16,P_NAV)}{px(5,6,4,14,P_NAV)}{px(9,3,6,17,P_NAV)}
+      {px(20,5,5,15,P_NAV)}{px(25,2,6,18,P_NAV)}{px(31,7,4,13,P_NAV)}
+      {px(35,4,5,16,P_NAV)}
+      {/* Lit windows in buildings */}
+      {([[1,8],[2,10],[3,7],[10,5],[11,9],[12,7],[21,7],[22,10],[26,4],[27,8],[32,10]] as [number,number][]).map(([c,r])=>
+        <rect key={`${c}${r}`} x={c*P} y={r*P} width={P} height={P} fill={P_YL}/>)}
+      {/* Ground */}
+      {px(0,18,40,2,P_GR)}
+      {/* 3 fire columns (fire scene!) */}
+      <g className="gsap-explosion">
+        {/* Fire col 1 */}
+        {px(12,14,4,4,P_OR)}{px(13,12,2,2,P_YL)}{px(13,11,2,1,P_WH)}
+        {/* Fire col 2 */}
+        {px(18,12,4,6,P_OR)}{px(19,10,2,2,P_YL)}{px(19,9,2,1,P_WH)}
+        {/* Fire col 3 */}
+        {px(24,15,4,3,P_OR)}{px(25,13,2,2,P_YL)}{px(25,12,2,1,P_WH)}
+      </g>
+      {/* Police barricade */}
+      {[0,2,4].map(c=><PixPerson key={c} c={c+35} r={13} suit={P_NAV} skin={P_SK} hair={P_BK}/>)}
+      {lbl('DISTURBIOS SOCIALES')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: soc_health â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneSocHealth() {
+  return (
+    <g>
+      {/* White hospital exterior */}
+      {px(0,0,40,20,P_WH)}
+      {/* Hospital building */}
+      {px(2,4,20,16,P_GR2)}
+      {/* Windows */}
+      {[3,7,11].map(c=>[5,9].map(r=><rect key={`${c}${r}`} x={c*P} y={r*P} width={3*P} height={3*P} fill={P_LB}/>))}
+      {/* Red cross (+ shape) centered on building */}
+      {px(9,2,4,1,P_CR)}{/* top arm */}
+      {px(8,3,6,1,P_CR)}{/* wide horizontal */}
+      {px(9,4,4,1,P_CR)}{/* bottom arm */}
+      {/* Hospital entrance */}
+      {px(9,14,6,6,P_SLT)}
+      {/* Beds in foreground */}
+      {[24,31].map(c=>(
+        <g key={c}>
+          {px(c,13,7,2,P_WH)}
+          {px(c,12,7,1,P_GR2)}
+          {px(c,12,2,2,P_SK)}{/* patient head */}
+        </g>
+      ))}
+      {/* Doctor figure */}
+      <PixPerson c={22} r={14} suit={P_WH} skin={P_SK} hair={P_BK}/>
+      {/* Ambulance */}
+      {px(30,15,9,4,P_WH)}
+      {px(30,15,9,1,P_WH)}
+      {px(31,14,3,1,P_CR)}{px(35,14,3,1,P_CR)}{/* lights */}
+      {px(32,16,2,2,P_GR)}{px(36,16,2,2,P_GR)}{/* wheels */}
+      {lbl('CRISIS SANITARIA', P_CR)}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: int_imf â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneIntImf({ presidentId }: { presidentId: string }) {
+  const hair = presidentId === 'tecnocrata' ? P_GD : P_BK;
+  return (
+    <g>
+      {/* Dark room */}
+      {px(0,0,40,20,P_NAV)}
+      {/* Conference table */}
+      {px(4,12,32,3,P_BR)}
+      {px(4,11,32,1,P_GD)}
+      {/* Globe (horizontal stripe pattern = latitude lines) â€” animated */}
+      <g className="gsap-primary">
+        {px(17,1,6,8,P_CB)}
+        {[2,3,4,5,6,7].map(r=><rect key={r} x={17*P} y={r*P} width={6*P} height={3} fill={P_GN}/>)}
+        {/* Continent block */}
+        {px(18,3,2,2,P_GN)}{px(20,4,2,1,P_GN)}{px(19,6,2,1,P_GN)}
+        {/* Globe border */}
+        <rect x={17*P} y={P} width={6*P} height={8*P} fill="none" stroke={P_WH} strokeWidth={2}/>
+      </g>
+      {/* IMF delegate (left) â€” dark suit, gray hair */}
+      <PixPerson c={6} r={6} suit={P_SLT} skin={P_GR2} hair={P_GR2}/>
+      {/* Argentine president (right) */}
+      <PixPerson c={31} r={6} suit={P_NAV} skin={P_SK} hair={hair}/>
+      {/* Documents on table */}
+      {px(11,11,8,1,P_WH)}{px(22,11,8,1,P_WH)}
+      {/* Handshake area (center briefcase) */}
+      {px(18,11,4,3,P_GR)}
+      {px(19,10,2,1,P_GR)}
+      {lbl('NEGOCIACIÃ“N FMI')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: int_war â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneIntWar() {
+  return (
+    <g>
+      {/* Radar room â€” dark */}
+      {px(0,0,40,20,P_BK)}
+      {/* Radar screen */}
+      {px(2,1,16,16,P_DG)}
+      {/* Grid lines on radar */}
+      {[4,8,12].map(c=><rect key={c} x={(2+c)*P} y={P} width={P/4} height={16*P} fill={P_GN}/>)}
+      {[4,8,12].map(r=><rect key={r} x={2*P} y={(1+r)*P} width={16*P} height={P/4} fill={P_GN}/>)}
+      {/* Radar sweep (bright line) â€” animated */}
+      <g className="gsap-primary">
+        {px(10,1,2,8,P_GN)}
+        {px(10,9,8,2,P_GN)}
+      </g>
+      {/* Blip (enemy position) â€” animated */}
+      <g className="gsap-explosion">
+        {px(14,5,2,2,P_RD)}{px(13,5,1,1,P_OR)}{px(15,4,1,1,P_OR)}
+      </g>
+      {/* Country outline (pixel map) */}
+      {px(5,3,4,2,P_GN)}{px(6,5,3,3,P_GN)}{px(5,8,2,2,P_GN)}{px(7,9,2,4,P_GN)}{px(8,6,2,3,P_GN)}
+      {/* Officer at console right side */}
+      <PixPerson c={24} r={13} suit={P_SLT} skin={P_SK} hair={P_BK}/>
+      <PixPerson c={29} r={13} suit={P_NAV} skin={P_SK} hair={P_BK}/>
+      {/* Screen status panels */}
+      {px(20,3,18,8,P_SLT)}
+      {[1,2,3,4,5].map(r=><rect key={r} x={21*P} y={(3+r)*P} width={16*P} height={P/2} fill={P_GR}/>)}
+      {px(21,4,4,1,P_RD)}{px(27,5,3,1,P_YL)}{px(33,6,2,1,P_GN)}
+      {lbl('CONFLICTO INTERNACIONAL')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: int_trade â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneIntTrade() {
+  return (
+    <g>
+      {/* Blue sky */}
+      {px(0,0,40,8,P_LB)}
+      {/* Sea */}
+      {px(0,8,40,12,P_CB)}
+      {/* Sea waves (darker rows alternating) */}
+      {[9,11,13].map(r=><rect key={r} x={0} y={r*P} width={320} height={3} fill={P_NAV}/>)}
+      {/* Container ship hull */}
+      <g className="gsap-primary">
+        {px(4,10,32,5,P_GR)}
+        {px(3,11,34,3,P_SLT)}
+        {/* Bow (pointed front) */}
+        {px(2,12,2,1,P_GR)}{px(1,13,2,1,P_GR)}
+        {/* Containers stacked */}
+        {[[5,P_RD],[8,P_CB],[11,P_GN],[14,P_YL],[17,P_OR],[20,P_RD],[23,P_CB],[26,P_GN]].map(([c,f])=>
+          <rect key={c as number} x={(c as number)*P} y={8*P} width={3*P} height={2*P} fill={f as string}/>)}
+        {[[6,P_GN],[9,P_OR],[12,P_CB],[15,P_RD],[18,P_GN],[21,P_YL],[24,P_RD]].map(([c,f])=>
+          <rect key={c as number} x={(c as number)*P} y={6*P} width={3*P} height={2*P} fill={f as string}/>)}
+        {/* Bridge/wheelhouse */}
+        {px(28,6,6,4,P_NAV)}
+        {px(29,5,4,2,P_GR)}
+        {[29,31].map(c=><rect key={c} x={c*P} y={6*P} width={2*P} height={2*P} fill={P_LB}/>)}
+      </g>
+      {/* Flags on dock */}
+      {[1,3].map(c=>(
+        <g key={c}>
+          <rect x={c*P} y={5*P} width={1} height={8*P} fill={P_GR}/>
+          <rect x={c*P+1} y={5*P} width={2*P} height={P} fill={c===1?P_CB:P_GN}/>
+          <rect x={c*P+1} y={6*P} width={2*P} height={P} fill={c===1?P_WH:P_YL}/>
+        </g>
+      ))}
+      {lbl('COMERCIO EXTERIOR')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: int_guerra_ucrania â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneIntGuerraUcrania() {
+  return (
+    <g>
+      {/* Ukrainian flag bands */}
+      {px(0,0,40,11,P_CB)}
+      {px(0,11,40,9,P_GD)}
+      {/* Night overlay */}
+      {px(0,0,40,20,'rgba(0,0,40,0.5)')}
+      {/* City silhouette â€”blocks only */}
+      {px(0,7,5,13,P_BK)}{px(5,9,4,11,P_BK)}{px(9,5,5,15,P_BK)}{px(14,8,4,12,P_BK)}
+      {px(28,6,4,14,P_BK)}{px(32,9,3,11,P_BK)}{px(35,5,5,15,P_BK)}
+      {/* City lit windows */}
+      {([[1,10],[3,9],[10,8],[11,12],[29,8],[36,9],[37,12]] as [number,number][]).map(([c,r])=>
+        <rect key={`${c}${r}`} x={c*P} y={r*P} width={P} height={P} fill={P_YL}/>)}
+      {/* Explosion glow â€” animated */}
+      <g className="gsap-explosion">
+        {px(16,6,8,5,P_OR)}{px(18,4,4,3,P_YL)}{px(19,2,2,2,P_WH)}
+      </g>
+      {/* Smoke column â€” animated */}
+      <g className="gsap-secondary">
+        {[16,18,20,16,19].map((c,i)=><rect key={i} x={c*P} y={(6-i)*P} width={3*P} height={P} fill="#546e7a"/>)}
+      </g>
+      {/* Tank (pixel art) â€” animated */}
+      <g className="gsap-primary">
+        {px(8,14,12,4,P_DG)}
+        {px(7,16,14,2,P_DG)}
+        {/* Treads */}
+        {[9,11,13,15,17].map(c=><rect key={c} x={c*P} y={18*P} width={P} height={P} fill={P_BK}/>)}
+        {/* Turret */}
+        {px(11,12,6,3,P_DG)}
+        {/* Barrel */}
+        {px(15,13,6,1,P_GR)}
+      </g>
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
+      <text x={8} y={174} fill={P_YL} fontSize={8} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>GUERRA UCRANIA 2022</text>
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: int_conflicto_iran â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneIntConflictoIran() {
+  return (
+    <g>
+      {/* Desert sunset â€” horizontal bands */}
+      {px(0,0,40,4,P_OR)}{px(0,4,40,4,P_RD)}{px(0,8,40,4,'#CC4400')}
+      {px(0,12,40,8,P_BR)}
+      {/* Sand/ground */}
+      {px(0,16,40,4,'#C8A060')}
+      {/* Oil derrick */}
+      {px(28,4,2,12,P_BK)}
+      {px(24,3,10,2,P_BK)}
+      {px(26,1,6,3,P_BK)}
+      {px(27,0,4,1,P_BK)}
+      {/* Flame atop derrick â€” animated */}
+      <g className="gsap-secondary">
+        {px(28,3,2,3,P_OR)}{px(29,1,1,2,P_YL)}{px(29,0,1,1,P_WH)}
+      </g>
+      {/* Mosque dome (pixel) */}
+      {px(4,10,10,8,P_SLT)}
+      {px(5,8,8,2,P_SLT)}
+      {px(7,6,4,2,P_SLT)}
+      {px(8,5,2,1,P_GD)}
+      {/* Dome windows */}
+      {px(5,11,2,2,P_GD)}{px(10,11,2,2,P_GD)}
+      {/* Crescent (approximated with rects) */}
+      {px(1,2,4,4,P_GN)}
+      {px(2,2,3,3,P_BK)}{/* cutout to make crescent shape */}
+      {px(2,3,2,2,P_GN)}
+      {/* Missile â€” animated */}
+      <g className="gsap-primary">
+        {px(16,10,4,2,P_GR2)}
+        {px(17,9,2,1,P_GR)}
+        {px(20,11,5,1,P_OR)}{px(22,11,3,1,P_YL)}{px(24,11,2,1,P_GD)}
+      </g>
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
+      <text x={8} y={174} fill={P_OR} fontSize={8} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>CONFLICTO IRÃN 2024</text>
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: arg_mundial â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneArgMundial() {
+  return (
+    <g>
+      {/* Stadium roof */}
+      {px(0,0,40,4,P_NAV)}
+      {/* Argentine flag stripes across top */}
+      {px(0,0,40,1,P_CB)}{px(0,1,40,1,P_WH)}{px(0,2,40,1,P_CB)}{px(0,3,40,1,P_WH)}
+      {/* Left stand (stepped terracing) */}
+      {[0,1,2,3,4].map(i=><rect key={i} x={0} y={(5+i)*P} width={(10-i)*P} height={P} fill={[P_CB,P_WH,P_CB,P_WH,P_CB][i]!}/>)}
+      {/* Right stand */}
+      {[0,1,2,3,4].map(i=><rect key={i} x={(30+i)*P} y={(5+i)*P} width={(10-i)*P} height={P} fill={[P_CB,P_WH,P_CB,P_WH,P_CB][i]!}/>)}
+      {/* Crowd dots in stands */}
+      {[1,3,5,7].map(c=>[5,6].map(r=><rect key={`${c}${r}`} x={c*P} y={r*P} width={P} height={P} fill={c%2===0?P_GD:P_RD}/>))}
+      {/* Field (green) */}
+      {px(0,10,40,10,P_GN)}
+      {px(10,9,20,1,P_DG)}{/* field edge */}
+      {/* Center circle rects */}
+      {px(18,12,4,1,P_WH)}{px(17,13,6,1,P_WH)}{px(18,14,4,1,P_WH)}
+      {px(17,11,1,5,P_WH)}{px(22,11,1,5,P_WH)}
+      {/* Trophy (gold) â€” center */}
+      {px(18,4,4,6,P_GD)}
+      {px(17,9,6,1,P_GD)}
+      {px(16,10,8,1,P_GD)}
+      {px(19,3,2,1,P_WH)}{/* star */}
+      {/* Confetti â€” animated */}
+      <g className="gsap-secondary">
+        {[[3,1,P_RD],[8,3,P_CB],[13,2,P_YL],[28,4,P_GN],[33,2,P_RD],[38,3,P_CB],[6,6,P_YL],[22,5,P_RD],[37,7,P_GN]].map(([c,r,f])=>
+          <rect key={`${c}${r}`} x={(c as number)*P} y={(r as number)*P} width={P} height={P} fill={f as string}/>)}
+      </g>
+      {lbl('ARGENTINA CAMPEÃ“N âš½', P_GD)}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: arg_corralito â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneArgCorralito() {
+  return (
+    <g>
+      {/* Overcast sky */}
+      {px(0,0,40,5,P_GR2)}
+      {/* Bank building facade */}
+      {px(2,2,20,18,P_WH)}
+      {/* Bank pillars */}
+      {[3,7,11,15].map(c=><rect key={c} x={c*P} y={2*P} width={2*P} height={16*P} fill={P_GR2}/>)}
+      {/* Cornice */}
+      {px(1,1,22,2,P_GR)}
+      {/* Bank sign */}
+      {px(5,3,12,2,P_NAV)}
+      <text x={6*P} y={5*P+4} fill={P_GD} fontSize={6} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>BANCO â–¡</text>
+      {/* Metal bars blocking entrance (vertical rects) */}
+      {[8,9,10,11,12,13,14,15].map(c=><rect key={c} x={c*P} y={13*P} width={P} height={7*P} fill={P_GR}/>)}
+      {/* Lock */}
+      {px(11,15,2,2,P_BK)}{px(11,14,2,1,P_GR2)}
+      {/* Queue of people outside (right side) */}
+      {[24,27,30,33,36].map((c,i)=>(
+        <PixPerson key={c} c={c} r={13} suit={[P_SLT,P_RD,P_CB,P_GR,P_SLT][i]!} skin={P_SK} hair={P_BK}/>
+      ))}
+      {/* Wait line on ground */}
+      {px(23,18,16,1,P_RD)}
+      {/* "CERRADO" sign */}
+      {px(6,12,10,2,P_CR)}
+      <text x={7*P} y={14*P} fill={P_WH} fontSize={6} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>CERRADO</text>
+      {lbl('CORRALITO BANCARIO')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: arg_campo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneArgCampo() {
+  return (
+    <g>
+      {/* Sky */}
+      {px(0,0,40,8,P_LB)}
+      {/* Horizon */}
+      {px(0,8,40,1,P_DG)}
+      {/* Pampas field */}
+      {px(0,9,40,11,P_GN)}
+      {px(0,11,40,1,P_DG)}{/* furrow row */}
+      {px(0,14,40,1,P_DG)}{/* furrow row */}
+      {/* Clouds */}
+      {([[3,2,6,2],[12,1,8,2],[24,2,7,2],[33,1,5,1]] as [number,number,number,number][]).map(([c,r,w,h])=>
+        <rect key={c} x={c*P} y={r*P} width={w*P} height={h*P} fill={P_WH}/>)}
+      {/* Silo */}
+      {px(33,4,4,16,P_GR2)}
+      {px(33,3,4,1,P_GR)}
+      {/* Farmhouse */}
+      {px(27,8,6,8,P_WH)}
+      {px(26,7,8,2,P_CR)}{/* red roof */}
+      {px(28,10,2,3,P_BR)}{/* door */}
+      {/* Tractor (animated â€” moves across field) */}
+      <g className="gsap-primary">
+        {px(3,12,8,4,P_RD)}
+        {px(2,13,2,2,P_BK)}{/* big rear wheel */}
+        {px(8,14,2,1,P_BK)}{/* front wheel */}
+        {px(3,10,4,2,P_GR)}{/* cab */}
+        {px(4,9,2,1,P_LB)}{/* windshield */}
+        {px(7,11,2,1,P_BK)}{/* exhaust */}
+      </g>
+      {lbl('CONFLICTO AGROPECUARIO')}
+    </g>
+  );
+}
+
+// â”€â”€ SCENE: crisis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function SceneCrisis({ presidentId }: { presidentId: string }) {
+  const hair = presidentId === 'tecnocrata' ? P_GD : P_BK;
+  return (
+    <g>
+      {/* Deep red-black background */}
+      {px(0,0,40,20,'#100000')}
+      {/* Darkened building wreckage silhouette */}
+      {px(0,8,6,12,P_NAV)}{px(6,10,5,10,P_NAV)}{px(30,6,5,14,P_NAV)}{px(35,9,5,11,P_NAV)}
+      {/* 3 tall fire columns â€” animated */}
+      <g className="gsap-explosion">
+        {/* Col 1 */}
+        {px(9,8,6,10,P_OR)}{px(10,5,4,3,P_YL)}{px(11,3,2,2,P_WH)}
+        {/* Col 2 (taller) */}
+        {px(17,5,6,13,P_OR)}{px(18,2,4,3,P_YL)}{px(19,0,2,2,P_WH)}
+        {/* Col 3 */}
+        {px(25,9,6,9,P_OR)}{px(26,6,4,3,P_YL)}{px(27,4,2,2,P_WH)}
+      </g>
+      {/* President silhouette (distressed) â€” center */}
+      <g className="gsap-primary">
+        <PixPerson c={19} r={13} suit={P_SLT} skin={P_SK} hair={hair}/>
+        {/* Arms raised in panic */}
+        {px(17,15,2,1,P_SLT)}{px(23,15,2,1,P_SLT)}
+      </g>
+      {/* Smoke overlay */}
+      {px(0,0,40,4,'rgba(30,0,0,0.6)')}
+      {lbl('âš  CRISIS DE GOBIERNO', P_CR)}
+    </g>
+  );
+}
 
 interface Props {
   eventCategory: string;
@@ -13,739 +697,8 @@ interface Props {
   gameState?: GameState | null | undefined;
 }
 
-// ── Flat editorial cartoon palette ──────────────────────────────────────────
-const C = {
-  skyDay:   '#b8d4f0',
-  skyNight: '#1a1a2e',
-  wallCrm:  '#f5e6c8',
-  wallGray: '#d0cfc8',
-  wallBlue: '#4a6fa5',
-  floorDk:  '#3d3228',
-  skin:     '#f4c08a',
-  skinDk:   '#c8855a',
-  hair:     '#2c1a08',
-  hairBlk:  '#111111',
-  hairBlnd: '#d4a017',
-  suitDk:   '#1a237e',
-  suitNvy:  '#283593',
-  shirtWh:  '#f0f0f0',
-  tieRed:   '#c62828',
-  tieBlue:  '#0d47a1',
-  gold:     '#f9a825',
-  goldDk:   '#e65100',
-  red:      '#c62828',
-  redLt:    '#ef5350',
-  green:    '#2e7d32',
-  greenLt:  '#66bb6a',
-  orange:   '#e65100',
-  white:    '#f8f8f8',
-  black:    '#1a1a1a',
-  smoke:    '#78909c',
-  smokeLt:  '#b0bec5',
-  brown:    '#5d4037',
-  brownLt:  '#8d6e63',
-  fire:     '#ff5722',
-  fireLt:   '#ffcc02',
-  dolar:    '#2e7d32',
-  bankWall: '#e8dcc8',
-};
 
-const OL = '#1a1a1a';
-
-// ── Primitive helpers ─────────────────────────────────────────────────────────
-function R(x: number, y: number, w: number, h: number, fill: string, rx = 0, stroke?: string, sw = 2) {
-  return stroke
-    ? <rect x={x} y={y} width={w} height={h} fill={fill} rx={rx} stroke={stroke} strokeWidth={sw} />
-    : <rect x={x} y={y} width={w} height={h} fill={fill} rx={rx} />;
-}
-function Circ(cx: number, cy: number, r: number, fill: string, stroke?: string, sw = 2) {
-  return stroke
-    ? <circle cx={cx} cy={cy} r={r} fill={fill} stroke={stroke} strokeWidth={sw} />
-    : <circle cx={cx} cy={cy} r={r} fill={fill} />;
-}
-
-// ── Person component ──────────────────────────────────────────────────────────
-interface PersonProps {
-  cx: number; baseY: number;
-  skinColor?: string; hairColor?: string; suitColor?: string;
-  shirtColor?: string; tieColor?: string; hatColor?: string;
-  mouthOpen?: boolean; armL?: number; armR?: number;
-}
-function Person({ cx, baseY, skinColor = C.skin, hairColor = C.hair, suitColor = C.suitDk,
-  shirtColor = C.shirtWh, tieColor = C.tieRed, hatColor, mouthOpen = false, armL = 0, armR = 0 }: PersonProps) {
-  const bx = cx - 14;
-  const by = baseY - 88;
-  return (
-    <g>
-      <rect x={bx + 6} y={by + 64} width={8} height={24} fill={suitColor} rx={2} />
-      <rect x={bx + 14} y={by + 64} width={8} height={24} fill={suitColor} rx={2} />
-      <rect x={bx + 4} y={by + 85} width={12} height={6} fill={C.black} rx={2} />
-      <rect x={bx + 12} y={by + 85} width={12} height={6} fill={C.black} rx={2} />
-      <rect x={bx + 2} y={by + 32} width={24} height={34} fill={suitColor} rx={3}
-        stroke={OL} strokeWidth={2} />
-      <rect x={bx + 11} y={by + 32} width={6} height={28} fill={shirtColor} />
-      <polygon points={`${bx + 13},${by + 34} ${bx + 15},${by + 34} ${bx + 14},${by + 55}`} fill={tieColor} />
-      <rect x={bx - 2} y={by + 33} width={6} height={22} fill={suitColor} rx={2}
-        stroke={OL} strokeWidth={1.5}
-        transform={armL !== 0 ? `rotate(${armL},${bx + 1},${by + 33})` : undefined} />
-      <rect x={bx + 24} y={by + 33} width={6} height={22} fill={suitColor} rx={2}
-        stroke={OL} strokeWidth={1.5}
-        transform={armR !== 0 ? `rotate(${armR},${bx + 27},${by + 33})` : undefined} />
-      <rect x={bx + 10} y={by + 26} width={8} height={8} fill={skinColor} />
-      <rect x={bx + 4} y={by + 8} width={20} height={20} fill={skinColor} rx={6}
-        stroke={OL} strokeWidth={2} />
-      {!hatColor
-        ? <rect x={bx + 4} y={by + 6} width={20} height={8} fill={hairColor} rx={4} />
-        : <rect x={bx + 2} y={by + 4} width={24} height={10} fill={hatColor} rx={3}
-            stroke={OL} strokeWidth={1.5} />}
-      <circle cx={bx + 10} cy={by + 16} r={2} fill={C.black} />
-      <circle cx={bx + 18} cy={by + 16} r={2} fill={C.black} />
-      {mouthOpen
-        ? <ellipse cx={bx + 14} cy={by + 22} rx={3} ry={2} fill={C.black} />
-        : <rect x={bx + 10} y={by + 22} width={8} height={2} fill={C.skinDk} rx={1} />}
-    </g>
-  );
-}
-
-// ── Worker component ──────────────────────────────────────────────────────────
-function Worker({ cx, baseY, armUp = false }: { cx: number; baseY: number; armUp?: boolean }) {
-  const bx = cx - 12;
-  const by = baseY - 80;
-  return (
-    <g>
-      <rect x={bx + 4} y={by + 56} width={8} height={24} fill="#1565c0" rx={2} />
-      <rect x={bx + 14} y={by + 56} width={8} height={24} fill="#1565c0" rx={2} />
-      <rect x={bx + 2} y={by + 26} width={22} height={32} fill="#1565c0" rx={3} stroke={OL} strokeWidth={2} />
-      <rect x={bx + 8} y={by + 26} width={10} height={18} fill="#1976d2" />
-      <rect x={bx - 2} y={by + 27} width={6} height={20} fill="#1565c0" rx={2} stroke={OL} strokeWidth={1.5} />
-      <rect x={bx + 22} y={by + 27} width={6} height={20} fill="#1565c0" rx={2} stroke={OL} strokeWidth={1.5}
-        transform={armUp ? `rotate(-90,${bx + 25},${by + 27})` : undefined} />
-      <rect x={bx + 6} y={by + 18} width={14} height={10} fill={C.skin} rx={4} stroke={OL} strokeWidth={1.5} />
-      <rect x={bx + 4} y={by + 10} width={18} height={9} fill="#f9a825" rx={3} stroke={OL} strokeWidth={2} />
-      <rect x={bx + 3} y={by + 17} width={20} height={4} fill="#e65100" rx={1} />
-      <circle cx={bx + 10} cy={by + 22} r={1.5} fill={C.black} />
-      <circle cx={bx + 16} cy={by + 22} r={1.5} fill={C.black} />
-    </g>
-  );
-}
-
-// ── Protester component ───────────────────────────────────────────────────────
-function Protester({ cx, baseY, shirtColor = C.red, signColor = C.red, hatColor }: {
-  cx: number; baseY: number; shirtColor?: string; signColor?: string; hatColor?: string;
-}) {
-  const bx = cx - 10;
-  const by = baseY - 80;
-  return (
-    <g>
-      <rect x={bx + 4} y={by + 56} width={7} height={24} fill="#37474f" rx={2} />
-      <rect x={bx + 12} y={by + 56} width={7} height={24} fill="#37474f" rx={2} />
-      <rect x={bx} y={by + 24} width={22} height={34} fill={shirtColor} rx={3} stroke={OL} strokeWidth={2} />
-      <rect x={bx + 18} y={by + 5} width={6} height={22} fill={shirtColor} rx={2} stroke={OL} strokeWidth={1.5} />
-      <rect x={bx + 12} y={by + 2} width={14} height={10} fill={signColor} rx={2} stroke={OL} strokeWidth={1.5} />
-      <rect x={bx - 4} y={by + 26} width={6} height={18} fill={shirtColor} rx={2} />
-      <rect x={bx + 6} y={by + 16} width={12} height={10} fill={C.skin} rx={3} stroke={OL} strokeWidth={1.5} />
-      {hatColor
-        ? <rect x={bx + 3} y={by + 9} width={18} height={8} fill={hatColor} rx={3} stroke={OL} strokeWidth={1.5} />
-        : <rect x={bx + 5} y={by + 10} width={14} height={7} fill={C.hair} rx={3} />}
-      <circle cx={bx + 10} cy={by + 20} r={1.5} fill={C.black} />
-      <circle cx={bx + 16} cy={by + 20} r={1.5} fill={C.black} />
-    </g>
-  );
-}
-
-// ── SCENE: pol_congress ───────────────────────────────────────────────────────
-function ScenePolCongress({ presidentId }: { presidentId: string }) {
-  const hairColor = presidentId === 'tecnocrata' ? C.hairBlnd : presidentId === 'ingeniero' ? '#2c1208' : C.hairBlk;
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#1a2535')}
-      {R(0, 20, 320, 130, '#2c3a50')}
-      {R(0, 150, 320, 30, '#3d3228')}
-      {R(218, 22, 60, 16, '#4a6fa5')} {R(218, 38, 60, 16, '#f8f8f8')} {R(218, 54, 60, 16, '#4a6fa5')}
-      {Circ(248, 46, 7, '#f9a825')}
-      {R(215, 18, 4, 90, '#b0bec5')}
-      {[0, 1, 2].map((row) => (
-        <rect key={row} x={12 + row * 4} y={80 + row * 22} width={180 - row * 8} height={10}
-          fill="#4a3f2f" rx={5} stroke={OL} strokeWidth={1.5} />
-      ))}
-      {[28, 58, 88, 118, 148].map((x, i) => (
-        <g key={i}>
-          {R(x - 4, 70, 12, 8, i % 2 === 0 ? C.suitDk : C.red, 2, OL, 1.5)}
-          {Circ(x + 2, 68, 5, C.skin, OL, 1.5)}
-          {R(x, 64, 8, 5, i % 2 === 0 ? C.hairBlk : C.hair, 2)}
-          {i === 2 && <rect x={x - 6} y={54} width={12} height={16} fill={C.red} rx={2} stroke={OL} strokeWidth={1.5} />}
-          {i === 2 && Circ(x + 0, 51, 5, C.skin, OL, 1.5)}
-        </g>
-      ))}
-      {R(238, 108, 62, 42, '#5d4037', 4, OL, 2)}
-      {R(246, 103, 46, 10, '#6d4c41', 3, OL, 1.5)}
-      {R(265, 98, 4, 13, '#90a4ae')}
-      {Circ(267, 97, 5, '#546e7a', OL, 1.5)}
-      <Person cx={267} baseY={148} skinColor={C.skin} hairColor={hairColor}
-        suitColor={C.suitDk} mouthOpen={true} armL={10} armR={-10} />
-      {R(0, 20, 14, 160, '#475a6e', 0, OL, 2)} {R(306, 20, 14, 160, '#475a6e', 0, OL, 2)}
-      {R(-4, 16, 22, 7, '#5e7080', 2)} {R(302, 16, 22, 7, '#5e7080', 2)}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🏛 CONGRESO NACIONAL</text>
-    </g>
-  );
-}
-
-// ── SCENE: pol_scandal ────────────────────────────────────────────────────────
-function ScenePolScandal({ presidentId }: { presidentId: string }) {
-  const hairColor = presidentId === 'tecnocrata' ? C.hairBlnd : C.hair;
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#1a0a0a')}
-      {Circ(210, 68, 48, '#fffde7')} {Circ(210, 68, 36, '#fff9c4')}
-      {[155, 195, 235, 265].map((x, i) => (
-        <g key={i}>
-          {Circ(x, 148 - i * 4, 10, '#f8f8f8', OL, 1.5)}
-          {R(x - 5, 138 - i * 4, 10, 20, '#37474f', 2, OL, 1.5)}
-          {R(x - 1, 128 - i * 4, 2, 8, '#ffeb3b')}
-        </g>
-      ))}
-      {[18, 50, 80, 118].map((x, i) => (
-        <g key={i}>
-          {R(x, 118 + (i % 2) * 8, 22, 62, '#222', 3)}
-          {Circ(x + 11, 115 + (i % 2) * 8, 11, '#333', OL, 1)}
-        </g>
-      ))}
-      <Person cx={118} baseY={175} skinColor={C.skin} hairColor={hairColor}
-        suitColor={C.suitDk} mouthOpen={true} />
-      {Circ(93, 93, 4, '#88b8f0')} {Circ(88, 104, 3, '#88b8f0')}
-      <Person cx={198} baseY={175} skinColor={C.skin} hairColor={C.hairBlk}
-        suitColor="#37474f" mouthOpen={false} armR={-30} />
-      {R(210, 108, 8, 18, '#546e7a', 2, OL, 2)}
-      {Circ(214, 105, 7, '#455a64', OL, 2)}
-      <path d="M 214 123 Q 198 138 193 158" stroke="#546e7a" strokeWidth={2} fill="none" />
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>📰 ESCÁNDALO POLÍTICO</text>
-    </g>
-  );
-}
-
-// ── SCENE: pol_protest ────────────────────────────────────────────────────────
-function ScenePolProtest() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#7d8b96')}
-      {Circ(60, 28, 22, '#b0bec5')} {Circ(82, 23, 26, '#cfd8dc')} {Circ(106, 30, 18, '#b0bec5')}
-      {Circ(198, 26, 24, '#b0bec5')} {Circ(222, 20, 20, '#cfd8dc')} {Circ(244, 28, 16, '#b0bec5')}
-      {R(148, 58, 132, 92, '#f48fb1', 4, OL, 2)}
-      {[172, 202, 232].map((x) => (
-        <path key={x} d={`M ${x} 78 Q ${x + 10} 62 ${x + 20} 78`} stroke={OL} strokeWidth={2} fill="#f06292" />
-      ))}
-      {[174, 202, 232].map((x) => [86, 114].map((y, j) => R(x, y, 14, 18, '#90caf9', 2, OL, 1.5)))}
-      {R(208, 33, 3, 33, '#90a4ae')}
-      {R(211, 33, 22, 13, '#4a6fa5')} {R(211, 46, 22, 7, '#f8f8f8')} {R(211, 53, 22, 7, '#4a6fa5')}
-      {[58, 103, 148].map((x) => (
-        <g key={x}>
-          <Person cx={x} baseY={178} suitColor="#1a237e" hairColor={C.hairBlk} hatColor="#0d47a1" armL={5} armR={5} />
-          {R(x + 14, 128, 14, 22, '#1565c0', 2, OL, 2)}
-          {R(x + 16, 131, 10, 6, '#90caf9', 1)}
-        </g>
-      ))}
-      <Protester cx={10} baseY={178} shirtColor={C.red} signColor={C.red} />
-      <Protester cx={40} baseY={178} shirtColor="#e65100" signColor="#e65100" />
-      {R(0, 158, 320, 22, '#5d4037')}
-      {[8, 40, 72, 104, 136, 168, 200, 232, 264, 296].map((x, i) => R(x, 161 + (i % 2) * 4, 24, 8, '#4e342e', 2))}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>✊ PROTESTA POPULAR</text>
-    </g>
-  );
-}
-
-// ── SCENE: eco_inflation ──────────────────────────────────────────────────────
-function SceneEcoInflation() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#e3f2fd')}
-      {R(0, 148, 320, 32, '#e0e0e0')}
-      {[0, 40, 80, 120, 160, 200, 240, 280].map((x, i) => R(x, 148, 38, 32, i % 2 === 0 ? '#eeeeee' : '#e0e0e0'))}
-      {R(0, 38, 100, 112, '#8d6e63', 2, OL, 2)}
-      {[48, 73, 98].map((y) => <rect key={y} x={0} y={y} width={100} height={5} fill="#a1887f" />)}
-      {[4, 28, 58, 68].map((x, i) => R(x, 39 + (i % 2) * 26, 18, 22, ['#ef5350','#42a5f5','#66bb6a','#ffa726'][i]!, 3, OL, 1))}
-      {R(220, 38, 100, 112, '#8d6e63', 2, OL, 2)}
-      {[48, 73, 98].map((y) => <rect key={y} x={220} y={y} width={100} height={5} fill="#a1887f" />)}
-      {R(222, 39, 18, 22, '#ab47bc', 3, OL, 1)} {R(248, 39, 18, 22, '#26a69a', 3, OL, 1)}
-      {R(128, 52, 82, 56, '#f8f8f8', 4, OL, 2.5)}
-      {R(128, 52, 82, 18, '#c62828', 4, OL, 2.5)}
-      {[0, 1, 2].map((i) => (
-        <g key={i}>
-          <rect x={141 + i * 16} y={57} width={4} height={11} fill="#ffeb3b" />
-          <rect x={138 + i * 16} y={61} width={10} height={2} fill="#ffeb3b" />
-          <rect x={138 + i * 16} y={66} width={10} height={2} fill="#ffeb3b" />
-        </g>
-      ))}
-      {R(138, 74, 62, 28, '#fff9c4', 2, C.red, 2)}
-      {R(146, 78, 46, 6, C.red, 1)} {R(146, 88, 46, 6, C.red, 1)} {R(146, 98, 32, 6, C.red, 1)}
-      <Person cx={198} baseY={175} skinColor={C.skin} hairColor="#4a148c"
-        suitColor="#7e57c2" shirtColor="#ede7f6" mouthOpen={true} armR={-20} />
-      {R(213, 118, 18, 12, '#8d6e63', 2, OL, 2)}
-      {R(213, 118, 18, 4, '#6d4c41', 2)}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>💰 INFLACIÓN</text>
-    </g>
-  );
-}
-
-// ── SCENE: eco_reserves ───────────────────────────────────────────────────────
-function SceneEcoReserves() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, C.bankWall)}
-      {R(0, 148, 320, 32, '#d7ccc8')}
-      {[0, 80, 160, 240].map((x, i) => R(x, 148, 78, 32, i % 2 === 0 ? '#d7ccc8' : '#bcaaa4'))}
-      {R(38, 28, 112, 122, '#546e7a', 6, OL, 3)}
-      {R(44, 34, 100, 110, '#455a64', 4)}
-      {Circ(58, 89, 16, '#90a4ae', OL, 2.5)} {Circ(58, 89, 10, '#78909c', OL, 2)}
-      {[0, 60, 120, 180, 240, 300].map((a) => (
-        <line key={a}
-          x1={58 + Math.cos(a * Math.PI / 180) * 14} y1={89 + Math.sin(a * Math.PI / 180) * 14}
-          x2={58 - Math.cos(a * Math.PI / 180) * 14} y2={89 - Math.sin(a * Math.PI / 180) * 14}
-          stroke="#37474f" strokeWidth={2.5} />
-      ))}
-      {R(154, 28, 102, 122, '#e8e0d0', 2, OL, 2)}
-      {Circ(193, 78, 3, '#d7ccc8')} {Circ(218, 98, 4, '#d7ccc8')} {Circ(228, 58, 2, '#d7ccc8')}
-      {[0, 1, 2].map((i) => (
-        <g key={i} opacity={0.4 - i * 0.1}>
-          <rect x={160 + i * 30} y={53} width={4} height={30} fill={C.dolar} rx={1} />
-          <rect x={156 + i * 30} y={60} width={12} height={3} fill={C.dolar} rx={1} />
-          <rect x={156 + i * 30} y={70} width={12} height={3} fill={C.dolar} rx={1} />
-        </g>
-      ))}
-      <Person cx={138} baseY={178} skinColor={C.skin} hairColor={C.hairBlk}
-        suitColor="#1a237e" shirtColor={C.shirtWh} mouthOpen={true}
-        armL={-100} armR={100} />
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🏦 RESERVAS DEL BCRA</text>
-    </g>
-  );
-}
-
-// ── SCENE: eco_growth ─────────────────────────────────────────────────────────
-function SceneEcoGrowth() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, C.skyDay)}
-      {R(0, 143, 320, 37, '#4caf50')}
-      {R(28, 58, 132, 87, '#8d6e63', 4, OL, 2.5)}
-      {[43, 83, 123].map((x) => (
-        <g key={x}>
-          {R(x, 70, 20, 24, '#90caf9', 3, OL, 1.5)}
-          <line x1={x + 10} y1={70} x2={x + 10} y2={94} stroke="#546e7a" strokeWidth={1.5} />
-          <line x1={x} y1={82} x2={x + 20} y2={82} stroke="#546e7a" strokeWidth={1.5} />
-        </g>
-      ))}
-      {R(78, 110, 30, 33, '#5d4037', 4, OL, 2)}
-      {[48, 98, 128].map((x) => (
-        <g key={x}>
-          {R(x, 28, 18, 34, '#546e7a', 2, OL, 2)}
-          {Circ(x + 9, 23, 10, '#cfd8dc', OL, 1)} {Circ(x + 15, 16, 8, '#eceff1', OL, 1)}
-          {Circ(x + 5, 12, 7, '#cfd8dc', OL, 1)}
-        </g>
-      ))}
-      {R(208, 48, 90, 90, '#f8f8f8', 4, OL, 2.5)}
-      {R(208, 48, 90, 12, '#1565c0', 4, OL, 2.5)}
-      {R(246, 138, 6, 42, '#78909c')}
-      {[{x:218,h:28,c:'#ef5350'},{x:238,h:44,c:'#ffa726'},{x:258,h:58,c:'#66bb6a'},{x:278,h:70,c:'#4caf50'}].map((b, i) => (
-        <rect key={i} x={b.x} y={128 - b.h} width={14} height={b.h} fill={b.c} rx={2} stroke={OL} strokeWidth={1} />
-      ))}
-      <polyline points="223,126 243,102 263,88 283,66" stroke="#4caf50" strokeWidth={3} fill="none" strokeDasharray="4,2" />
-      <Worker cx={176} baseY={178} armUp={true} />
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>📈 CRECIMIENTO ECONÓMICO</text>
-    </g>
-  );
-}
-
-// ── SCENE: soc_strike ─────────────────────────────────────────────────────────
-function SceneSocStrike() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#607d8b')}
-      {R(0, 0, 320, 38, '#78909c')}
-      {R(0, 38, 320, 112, '#5d4037', 0, OL, 2)}
-      {R(118, 58, 82, 92, '#37474f', 4, OL, 2)}
-      {R(148, 68, 22, 82, '#263238', 2, OL, 2)}
-      {R(118, 58, 82, 10, '#455a64', 2, OL, 2)}
-      {[0, 10, 20, 30].map((dy) => R(151, 102 + dy, 16, 7, '#b0bec5', 2, OL, 1.5))}
-      {Circ(159, 101, 9, '#90a4ae', OL, 2)}
-      {R(152, 122, 12, 14, '#b0bec5', 3, OL, 2)}
-      <path d="M 155 122 Q 155 114 159 114 Q 163 114 163 122" stroke="#546e7a" strokeWidth={3} fill="none" />
-      {R(0, 148, 320, 32, '#4e342e')}
-      <Protester cx={48} baseY={178} shirtColor="#1565c0" signColor="#ef5350" />
-      <Protester cx={88} baseY={178} shirtColor="#37474f" signColor="#f9a825" />
-      <Worker cx={238} baseY={178} armUp={false} />
-      <Worker cx={273} baseY={178} armUp={true} />
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>⚡ HUELGA GENERAL</text>
-    </g>
-  );
-}
-
-// ── SCENE: soc_unrest ─────────────────────────────────────────────────────────
-function SceneSocUnrest() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, C.skyNight)}
-      {[0, 68, 138, 208, 258].map((x, i) => R(x, 18 + (i % 3) * 14, 58 + (i % 2) * 20, 132 - (i % 3) * 10, '#0d1117', 0, OL, 1))}
-      {[14, 44, 84, 94, 154, 188, 224, 278].map((x, i) => R(x, 28 + (i % 4) * 18, 10, 8, '#ffd54f', 1))}
-      {R(0, 146, 320, 34, '#2c2218')} {R(0, 150, 320, 10, '#37302a')}
-      {Circ(160, 146, 22, '#1a1a1a', OL, 2)} {Circ(160, 146, 14, '#2c2218')}
-      <polygon points="148,146 152,118 158,143 162,116 168,146 172,123 174,146" fill={C.fire} opacity={0.9} />
-      <polygon points="152,146 155,126 160,143 165,122 168,146" fill={C.fireLt} opacity={0.8} />
-      {Circ(160, 138, 34, '#ff570022')}
-      {[38, 218, 268].map((x) => (
-        <g key={x}>{R(x, 116, 16, 34, '#111', 3)}{Circ(x + 8, 113, 9, '#1a1a1a', OL, 1)}</g>
-      ))}
-      {[58, 88].map((x) => (
-        <g key={x}>
-          <Person cx={x} baseY={178} suitColor="#1a237e" hairColor={C.hairBlk} hatColor="#0d47a1" armL={5} armR={-5} />
-          {R(x + 14, 126, 14, 24, '#1565c0', 2, OL, 2)}
-        </g>
-      ))}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🔥 DISTURBIOS SOCIALES</text>
-    </g>
-  );
-}
-
-// ── SCENE: soc_health ─────────────────────────────────────────────────────────
-function SceneSocHealth() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#fafafa')}
-      {R(0, 0, 14, 180, '#e8f5e9')} {R(306, 0, 14, 180, '#e8f5e9')}
-      {R(0, 148, 320, 32, '#e0e0e0')}
-      {[0, 80, 160, 240].map((x) => R(x, 148, 78, 32, x % 160 === 0 ? '#eeeeee' : '#e8e8e8'))}
-      {R(143, 8, 30, 8, '#ef5350', 2)} {R(154, 2, 8, 20, '#ef5350', 2)}
-      {R(238, 28, 72, 102, '#f8f8f8', 4, OL, 2.5)}
-      {R(238, 28, 72, 14, '#e8f5e9', 4, OL, 2.5)}
-      {[53, 78, 98].map((y) => R(242, y, 64, 4, '#e0e0e0'))}
-      {R(246, 58, 16, 18, '#ef5350', 3, OL, 1.5)}
-      {[38, 118].map((x) => (
-        <g key={x}>
-          {R(x, 128, 70, 18, '#b0bec5', 4, OL, 2)}
-          {R(x + 2, 120, 66, 12, '#e8eaf6', 3, OL, 2)}
-          {R(x + 8, 113, 50, 10, C.skin, 4, OL, 1.5)}
-          {Circ(x + 12, 112, 8, C.skin, OL, 1.5)}
-          {Circ(x + 12, 148, 6, '#78909c', OL, 1.5)} {Circ(x + 56, 148, 6, '#78909c', OL, 1.5)}
-        </g>
-      ))}
-      <Person cx={193} baseY={178} skinColor={C.skin} hairColor={C.hairBlk}
-        suitColor="#ffffff" shirtColor="#e3f2fd" tieColor="#e3f2fd"
-        mouthOpen={true} armL={-20} armR={20} />
-      {R(181, 83, 24, 8, '#f8f8f8', 2, OL, 1.5)}
-      {R(188, 81, 10, 4, '#ef5350', 1)}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🏥 CRISIS SANITARIA</text>
-    </g>
-  );
-}
-
-// ── SCENE: int_imf ────────────────────────────────────────────────────────────
-function SceneIntImf({ presidentId }: { presidentId: string }) {
-  const hairColor = presidentId === 'tecnocrata' ? C.hairBlnd : presidentId === 'ingeniero' ? '#2c1208' : C.hairBlk;
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#1a1a2e')}
-      {R(38, 98, 242, 30, '#5d4037', 6, OL, 2.5)}
-      {R(38, 98, 242, 8, '#8d6e63', 6)}
-      {R(46, 128, 8, 32, '#4e342e', 2)} {R(266, 128, 8, 32, '#4e342e', 2)}
-      {Circ(160, 34, 26, '#1565c0', OL, 2.5)} {Circ(160, 34, 20, '#0d47a1')}
-      {[0, 30, 60, 90, 120, 150].map((a) => (
-        <line key={a}
-          x1={160 + Math.cos(a * Math.PI / 180) * 20} y1={34 + Math.sin(a * Math.PI / 180) * 20}
-          x2={160 - Math.cos(a * Math.PI / 180) * 20} y2={34 - Math.sin(a * Math.PI / 180) * 20}
-          stroke="#1976d2" strokeWidth={1} />
-      ))}
-      {R(118, 90, 82, 16, '#f8f8f8', 3, OL, 2)}
-      {R(126, 95, 66, 3, '#ccc', 1)} {R(126, 100, 66, 3, '#ccc', 1)}
-      <Person cx={78} baseY={178} skinColor="#e8c09a" hairColor="#888888"
-        suitColor="#1a237e" shirtColor={C.shirtWh} tieColor="#1565c0"
-        mouthOpen={false} armR={-30} />
-      {Circ(88, 103, 5, '#1565c0', OL, 1.5)}
-      <Person cx={228} baseY={178} skinColor={C.skin} hairColor={hairColor}
-        suitColor={C.suitDk} mouthOpen={false} armL={-20} />
-      {R(190, 88, 20, 5, '#37474f', 2, OL, 1.5)} {R(206, 86, 6, 8, '#f9a825', 2)}
-      {Circ(216, 103, 5, '#4a6fa5', OL, 1.5)}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🌐 NEGOCIACIÓN FMI</text>
-    </g>
-  );
-}
-
-// ── SCENE: int_war ────────────────────────────────────────────────────────────
-function SceneIntWar() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#1a1a1a')}
-      {R(18, 8, 282, 132, '#0a1628', 4, OL, 2.5)} {R(18, 8, 282, 8, '#1565c0', 4)}
-      {[58, 98, 138, 178, 218, 258].map((x) => (
-        <line key={x} x1={x} y1={16} x2={x} y2={138} stroke="#1565c0" strokeWidth={0.5} opacity={0.4} />
-      ))}
-      {[38, 58, 78, 98, 118].map((y) => (
-        <line key={y} x1={18} y1={y} x2={300} y2={y} stroke="#1565c0" strokeWidth={0.5} opacity={0.4} />
-      ))}
-      <polygon points="48,48 78,38 88,63 68,78 43,68" fill="#2e7d32" opacity={0.7} />
-      <polygon points="98,33 138,28 153,53 143,73 108,68 93,48" fill="#2e7d32" opacity={0.7} />
-      <polygon points="163,38 188,33 198,58 183,73 163,63" fill="#1b5e20" opacity={0.7} />
-      <polygon points="218,43 253,38 263,53 256,68 223,66 213,56" fill="#2e7d32" opacity={0.7} />
-      {Circ(178, 53, 22, '#c6282833')} {Circ(178, 53, 14, '#c62828')}
-      <polygon points="170,46 186,46 178,36" fill="#ef5350" />
-      <Person cx={78} baseY={178} skinColor={C.skin} hairColor={C.hairBlk}
-        suitColor="#263238" shirtColor="#37474f" mouthOpen={false} armR={-40} />
-      {[178, 238].map((x, i) => (
-        <Person key={i} cx={x} baseY={178} skinColor={C.skin}
-          hairColor={i === 0 ? C.hair : C.hairBlk} suitColor="#1a237e" mouthOpen={false} />
-      ))}
-      {R(118, 146, 182, 16, '#4e342e', 4, OL, 2)}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>⚔ CONFLICTO INTERNACIONAL</text>
-    </g>
-  );
-}
-
-// ── SCENE: int_trade ──────────────────────────────────────────────────────────
-function SceneIntTrade() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#b3e5fc')}
-      {R(0, 118, 320, 62, '#0277bd', 0, OL, 1.5)}
-      {[0, 40, 80, 120, 160, 200, 240].map((x, i) => (
-        <path key={i} d={`M ${x} ${126 + (i % 2) * 4} Q ${x + 20} ${122 + (i % 2) * 4} ${x + 40} ${126 + (i % 2) * 4}`}
-          stroke="#01579b" strokeWidth={1.5} fill="none" />
-      ))}
-      <polygon points="38,116 282,116 292,133 28,133" fill="#546e7a" stroke={OL} strokeWidth={2} />
-      {R(48, 98, 222, 20, '#455a64', 2, OL, 2)}
-      {R(198, 68, 62, 32, '#37474f', 3, OL, 2)}
-      {[53, 98, 143, 183].map((x, i) => (
-        <g key={i}>
-          {R(x, 76, 38, 24, ['#ef5350','#42a5f5','#66bb6a','#ffa726'][i]!, 2, OL, 2)}
-          {[5,10,15,20,25,30].map((dx) => (
-            <line key={dx} x1={x + dx} y1={76} x2={x + dx} y2={100} stroke="rgba(0,0,0,0.2)" strokeWidth={1} />
-          ))}
-        </g>
-      ))}
-      {R(274, 38, 8, 102, '#78909c', 0, OL, 2)} {R(238, 38, 44, 8, '#78909c', 0, OL, 2)}
-      <line x1={254} y1={38} x2={282} y2={58} stroke="#546e7a" strokeWidth={2} />
-      <Person cx={128} baseY={178} skinColor={C.skin} hairColor={C.hairBlk}
-        suitColor="#1a237e" mouthOpen={false} armR={-10} />
-      <Person cx={173} baseY={178} skinColor="#c8855a" hairColor="#111"
-        suitColor="#1b5e20" mouthOpen={false} armL={10} />
-      {R(145, 128, 14, 8, C.skin, 3, OL, 2)}
-      {Circ(139, 103, 5, '#4a6fa5', OL, 1.5)} {Circ(181, 103, 5, '#2e7d32', OL, 1.5)}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>✈ COMERCIO EXTERIOR</text>
-    </g>
-  );
-}
-
-// ── SCENE: arg_mundial ────────────────────────────────────────────────────────
-function SceneArgMundial() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#1565c0')}
-      {[8, 28, 48, 68, 98, 128, 148, 178, 198, 228, 258, 288].map((x, i) => (
-        <rect key={i} x={x} y={(i * 17) % 78 + 8} width={8} height={14}
-          fill={['#f44336','#f9a825','#4caf50','#2196f3','#9c27b0','#ffffff'][i % 6]!}
-          rx={2} transform={`rotate(${(i * 25) % 60 - 30},${x + 4},${(i * 17) % 78 + 15})`} />
-      ))}
-      {R(0, 18, 320, 52, '#0d47a1', 0, OL, 1)}
-      {[23, 40, 56].map((y) =>
-        [0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 272, 288].map((x, i) => (
-          <circle key={`${y}-${i}`} cx={x + 8} cy={y} r={5}
-            fill={i % 3 === 0 ? '#f8f8f8' : i % 3 === 1 ? '#4a6fa5' : '#f9a825'} />
-        ))
-      )}
-      {[18, 78, 158, 238].map((x) => (
-        <g key={x}>
-          {R(x, 18, 3, 30, '#b0bec5')}
-          {R(x + 3, 20, 22, 7, '#4a6fa5')} {R(x + 3, 27, 22, 7, '#f8f8f8')} {R(x + 3, 34, 22, 7, '#4a6fa5')}
-          {Circ(x + 14, 30, 4, '#f9a825')}
-        </g>
-      ))}
-      {R(0, 108, 320, 72, '#2e7d32', 0, OL, 1)}
-      {[0, 40, 80, 120, 160, 200, 240, 280].map((x) => R(x, 108, 38, 72, x % 80 === 0 ? '#2e7d32' : '#388e3c'))}
-      {R(8, 118, 30, 30, 'none', 0, '#ffffff', 3)} {R(282, 118, 30, 30, 'none', 0, '#ffffff', 3)}
-      {R(146, 78, 26, 30, C.gold, 4, OL, 2.5)}
-      {R(138, 106, 42, 8, C.gold, 2, OL, 2)} {R(142, 114, 34, 6, '#e65100', 2, OL, 2)}
-      {Circ(142, 88, 8, C.gold, OL, 2)} {Circ(178, 88, 8, C.gold, OL, 2)}
-      <polygon points="159,68 161.5,74.5 168,74.5 162.5,78.5 164.5,85 159,81 153.5,85 155.5,78.5 150,74.5 156.5,74.5"
-        fill={C.gold} stroke={OL} strokeWidth={1.5} />
-      <Person cx={98} baseY={178} skinColor={C.skin} hairColor={C.hair}
-        suitColor="#eeeeee" shirtColor="#4a6fa5" tieColor="#4a6fa5" armR={-60} mouthOpen={true} />
-      <Person cx={218} baseY={178} skinColor={C.skin} hairColor={C.hairBlk}
-        suitColor="#4a6fa5" shirtColor="#f8f8f8" tieColor="#f8f8f8" armL={60} mouthOpen={true} />
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#f9a825" fontSize={11} fontFamily="monospace" letterSpacing={1}>⚽ ARGENTINA CAMPEÓN</text>
-    </g>
-  );
-}
-
-// ── SCENE: arg_corralito ──────────────────────────────────────────────────────
-function SceneArgCorralito() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#90a4ae')}
-      {R(0, 18, 202, 132, C.wallCrm, 0, OL, 2.5)}
-      {[14, 48, 98, 133].map((x) => R(x, 18, 14, 100, '#d7ccc8', 0, OL, 2))}
-      {R(0, 126, 202, 8, '#c8b898', 0, OL, 1)} {R(0, 134, 202, 6, '#bca888', 0, OL, 1)}
-      {R(63, 48, 62, 82, '#3e2723', 4, OL, 2.5)}
-      {R(58, 43, 72, 16, '#c62828', 4, OL, 2.5)}
-      {[68, 78, 88, 98, 108].map((x) => (
-        <line key={x} x1={x} y1={48} x2={x} y2={130} stroke="#546e7a" strokeWidth={4} />
-      ))}
-      {[0, 12, 24, 36, 48].map((dx) => R(64 + dx, 86, 14, 8, '#b0bec5', 2, OL, 1.5))}
-      {Circ(93, 90, 9, '#90a4ae', OL, 2)}
-      {R(0, 140, 320, 40, '#78909c')}
-      {[208, 238, 263, 283].map((x, i) => (
-        <Protester key={i} cx={x} baseY={178} shirtColor={['#ef5350','#37474f','#1565c0','#8d6e63'][i]!}
-          signColor={C.red} />
-      ))}
-      <path d="M 208 158 L 208 173 Q 208 178 203 178 L 48 178" stroke={C.red} strokeWidth={2} fill="none" strokeDasharray="6,3" />
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🏧 CORRALITO BANCARIO</text>
-    </g>
-  );
-}
-
-// ── SCENE: arg_campo ──────────────────────────────────────────────────────────
-function SceneArgCampo() {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#e3f2fd')}
-      {R(0, 93, 320, 87, '#8bc34a')}
-      {R(0, 108, 320, 72, '#7cb342')} {R(0, 128, 320, 52, '#689f38')}
-      {[28, 138, 238].map((x) => (
-        <g key={x}>
-          {Circ(x, 28, 18, '#ffffff', OL, 1)} {Circ(x + 18, 24, 22, '#f5f5f5', OL, 1)}
-          {Circ(x + 36, 30, 16, '#ffffff', OL, 1)}
-        </g>
-      ))}
-      {R(218, 48, 40, 92, '#9e9e9e', 4, OL, 2.5)}
-      <ellipse cx={238} cy={48} rx={20} ry={10} fill="#bdbdbd" stroke={OL} strokeWidth={2} />
-      {[58, 73, 88, 103].map((y) => <line key={y} x1={218} y1={y} x2={258} y2={y} stroke="#757575" strokeWidth={1.5} />)}
-      {R(58, 116, 80, 40, '#e65100', 6, OL, 2.5)}
-      {R(98, 98, 38, 20, '#bf360c', 4, OL, 2)}
-      {R(106, 101, 22, 12, '#b3e5fc', 3, OL, 1.5)}
-      {Circ(78, 158, 22, '#37474f', OL, 2.5)} {Circ(78, 158, 12, '#546e7a')}
-      {Circ(126, 154, 16, '#37474f', OL, 2.5)} {Circ(126, 154, 8, '#546e7a')}
-      {R(132, 93, 8, 14, '#546e7a', 2)}
-      <Person cx={112} baseY={128} skinColor={C.skin} hairColor={C.hair}
-        hatColor="#795548" suitColor="#4e342e" shirtColor="#ff8a65" tieColor="#4e342e" />
-      {R(173, 93, 4, 57, '#795548')}
-      {R(160, 93, 30, 22, '#f8f8f8', 2, OL, 2)}
-      {[99, 106].map((y) => R(164, y, 22, 4, C.red, 1))}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.75)" />
-      <text x={10} y={174} fill="#b0bec5" fontSize={11} fontFamily="monospace" letterSpacing={1}>🌾 CONFLICTO AGROPECUARIO</text>
-    </g>
-  );
-}
-
-// ── SCENE: crisis ─────────────────────────────────────────────────────────────
-function SceneCrisis({ presidentId }: { presidentId: string }) {
-  return (
-    <g>
-      {R(0, 0, 320, 180, '#1a0800')}
-      {R(78, 28, 162, 112, '#c62828', 4, OL, 2.5)}
-      {[98, 138, 178, 218].map((x, i) => (
-        <g key={i}>
-          {R(x, 48 + (i % 2) * 20, 20, 22, '#ff8f00', 3, OL, 1.5)}
-          {R(x + 3, 48 + (i % 2) * 20, 14, 22, C.fire)}
-        </g>
-      ))}
-      <polygon points="58,138 98,98 118,133 148,88 178,133 208,93 238,138 278,98 320,138 320,180 0,180 0,138" fill={C.fire} opacity={0.9} />
-      <polygon points="78,138 108,106 138,134 168,98 198,134 228,103 258,138" fill={C.fireLt} opacity={0.75} />
-      <Person cx={58} baseY={156} skinColor={C.skin}
-        hairColor={presidentId === 'tecnocrata' ? C.hairBlnd : presidentId === 'ingeniero' ? '#2c1208' : C.hairBlk}
-        suitColor={C.suitDk} mouthOpen={true} armL={30} armR={-60} />
-      {[78, 158, 238].map((x, i) => <ellipse key={i} cx={x} cy={28} rx={22} ry={12} fill="#37474f" opacity={0.5} />)}
-      <rect x={0} y={160} width={320} height={20} fill="rgba(30,0,0,0.85)" />
-      <text x={10} y={174} fill="#ef5350" fontSize={11} fontFamily="monospace" letterSpacing={1}>⚠ CRISIS DE GOBIERNO</text>
-    </g>
-  );
-}
-
-// ── SCENE: guerra ucrania (fallback when PNG not loaded) ──────────────────────
-function SceneIntGuerraUcrania() {
-  return (
-    <g>
-      {R(0, 0, 320, 44, '#005bbb')}
-      {R(0, 44, 320, 46, '#ffd500')}
-      {R(0, 90, 320, 90, '#1a0f00')}
-      {R(0, 0, 320, 180, 'rgba(0,0,40,0.35)')}
-      {/* Skyline L */}
-      {R(0,50,42,110,'#0a0a0a')}{R(42,60,28,100,'#0a0a0a')}{R(70,45,22,115,'#0a0a0a')}{R(92,55,36,105,'#0a0a0a')}
-      {/* Skyline R */}
-      {R(230,42,32,118,'#0a0a0a')}{R(262,52,24,108,'#0a0a0a')}{R(286,38,34,122,'#0a0a0a')}
-      {/* Explosion glow — animated */}
-      <g className="gsap-explosion">
-        {R(128,50,62,44,'rgba(255,100,0,0.45)')}
-        {R(142,40,34,22,'rgba(255,180,0,0.55)')}
-        {R(154,32,22,16,'#fffde7')}
-      </g>
-      {/* Smoke — animated */}
-      <g className="gsap-secondary">
-        {[132,152,170,144,166].map((x,i)=>(
-          <circle key={i} cx={x} cy={50-i*3} r={10+i*3} fill="#546e7a" opacity={0.7}/>
-        ))}
-      </g>
-      {/* Tank — animated */}
-      <g className="gsap-primary">
-        {R(58,116,95,30,'#374000',2,'#263000',2)}
-        {R(52,127,108,17,'#2e3800',1)}
-        {R(70,108,54,14,'#374000',2,'#263000',2)}
-        {Circ(80,148,13,'#1a2000','#374000',2)}
-        {Circ(110,148,13,'#1a2000','#374000',2)}
-        {Circ(134,148,13,'#1a2000','#374000',2)}
-        <line x1={122} y1={112} x2={175} y2={100} stroke="#374000" strokeWidth={8}/>
-        <line x1={122} y1={112} x2={177} y2={99}  stroke="#2e3800" strokeWidth={5}/>
-      </g>
-      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
-      <text x={10} y={174} fill="#ffd500" fontSize={9} fontFamily="monospace" letterSpacing={1}>🌻 GUERRA UCRANIA 2022</text>
-    </g>
-  );
-}
-
-// ── SCENE: conflicto iran (fallback when PNG not loaded) ──────────────────────
-function SceneIntConflictoIran() {
-  return (
-    <g>
-      {R(0,0,320,180,'#1a0d00')}
-      {R(0,0,320,50,'#7b2f00')}{R(0,20,320,40,'#a83200')}{R(0,38,320,30,'#cc4400')}
-      {R(0,112,320,68,'#3d2200')}{R(0,108,320,10,'#5a3300')}
-      {/* Oil derrick */}
-      {R(226,36,10,86,'#1a1a1a')}{R(208,30,46,16,'#1a1a1a')}
-      <polygon points="226,26 262,26 244,10" fill="#1a1a1a"/>
-      <polygon points="226,26 190,26 208,10" fill="#252525"/>
-      {/* Flame — animated (stagger per layer) */}
-      <g className="gsap-secondary">
-        {R(229,16,14,24,'#ff6600')}{R(232,8,8,14,'#ffaa00')}{R(234,4,6,8,'#ffdd00')}
-      </g>
-      {/* Crescent + star */}
-      {Circ(58,35,22,'#004d00')}{Circ(65,35,15,'#1a0d00')}
-      <text x={46} y={58} fill="#ffffff" fontSize={13} fontFamily="monospace">☪</text>
-      <text x={78} y={56} fill="#0055cc" fontSize={13} fontFamily="monospace">✡</text>
-      {/* Mosque dome */}
-      {R(100,66,90,58,'#1a0d00')}{R(105,58,80,16,'#1a0d00')}
-      <ellipse cx={145} cy={58} rx={40} ry={16} fill="#1a0d00"/>
-      {R(130,34,30,28,'#1a0d00')}
-      {/* Missile — animated */}
-      <g className="gsap-primary">
-        {R(176,78,24,10,'#909090',1,'#606060',1)}
-        {R(178,76,10,14,'#c0c0c0',1)}
-        {R(188,83,36,5,'#ff6600',1)}{R(205,84,24,4,'#ff9900')}{R(218,86,16,3,'#ffcc00')}
-      </g>
-      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
-      <text x={10} y={174} fill="#ff9900" fontSize={9} fontFamily="monospace" letterSpacing={1}>🛢 CONFLICTO IRÁN 2024</text>
-    </g>
-  );
-}
-
-// ── GSAP Particle specs per category ─────────────────────────────────────────
+// â”€â”€ GSAP Particle specs per category â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface ParticleSpec { x: number; y: number; color: string; w: number; h: number; text?: string }
 
 const PARTICLES: Record<string, ParticleSpec[]> = {
@@ -771,9 +724,9 @@ const PARTICLES: Record<string, ParticleSpec[]> = {
   ],
 };
 
-// ── Scene selector ────────────────────────────────────────────────────────────
+// â”€â”€ Scene selector â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-// Maps active scenario → preferred event illustration scene.
+// Maps active scenario â†’ preferred event illustration scene.
 // Activates AFTER event-specific keyword checks so individual event context wins.
 const SCENARIO_SCENE_OVERRIDE: Partial<Record<string, string>> = {
   hiperinflacion_1989:  'eco_inflation',
@@ -788,7 +741,7 @@ const SCENARIO_SCENE_OVERRIDE: Partial<Record<string, string>> = {
 };
 
 function selectScene(category: string, eventId: string, gameState: GameState | null | undefined): string {
-  // Specific event IDs — keyword overrides (highest priority)
+  // Specific event IDs â€” keyword overrides (highest priority)
   if (eventId === 'arg_015' || eventId?.includes('mundial') || eventId?.includes('campeon')) return 'arg_mundial';
   if (eventId === 'arg_002' || eventId?.includes('corralito')) return 'arg_corralito';
   if (eventId === 'arg_003' || eventId?.includes('campo')) return 'arg_campo';
@@ -799,13 +752,13 @@ function selectScene(category: string, eventId: string, gameState: GameState | n
 
   if (category === 'crisis') return 'crisis';
 
-  // Active scenario override — scenario context drives illustration for non-keyword events
+  // Active scenario override â€” scenario context drives illustration for non-keyword events
   if (gameState?.activeScenario) {
     const scenarioScene = SCENARIO_SCENE_OVERRIDE[gameState.activeScenario];
     if (scenarioScene) return scenarioScene;
   }
 
-  // Extract trailing number from event ID (e.g. "eco_007" → 7) for deterministic variety
+  // Extract trailing number from event ID (e.g. "eco_007" â†’ 7) for deterministic variety
   const numMatch = eventId?.match(/(\d+)/);
   const n = numMatch ? parseInt(numMatch[1] ?? '0', 10) : 0;
 
@@ -844,7 +797,7 @@ function selectScene(category: string, eventId: string, gameState: GameState | n
   return 'pol_congress';
 }
 
-// ── Export ─────────────────────────────────────────────────────────────────────
+// â”€â”€ Export â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export function EventIllustration({
   eventCategory, presidentId, eventId = '', gameState,
 }: Props) {
@@ -855,7 +808,7 @@ export function EventIllustration({
   const particleGroup = isCrisis ? 'crisis' : (eventCategory === 'economic' ? 'economic' : eventCategory === 'social' ? 'social' : null);
   const particles: ParticleSpec[] = particleGroup ? (PARTICLES[particleGroup] ?? []) : [];
 
-  // ── GSAP: wipe-reveal entry + category-specific looping particles ──────────
+  // â”€â”€ GSAP: wipe-reveal entry + category-specific looping particles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   useGSAP(() => {
     if (!containerRef.current) return;
 
@@ -898,23 +851,75 @@ export function EventIllustration({
       );
     }
 
-    // 3. Scene-specific inline SVG animations (active when PNG hasn't loaded yet)
+    // 3. Scene-specific pixel-art GSAP animations
     if (scene === 'int_guerra_ucrania') {
+      // Explosion flicker + smoke rise + tank patrol
       const tlUcr = gsap.timeline();
       tlUcr
         .to('.gsap-explosion', { autoAlpha: 0.5, yoyo: true, repeat: -1, duration: 0.28, ease: 'sine.inOut' })
-        .to('.gsap-secondary > circle', { y: -22, autoAlpha: 0, duration: 2, stagger: 0.35, repeat: -1, ease: 'power1.out' }, '<')
-        .to('.gsap-primary', { x: 20, yoyo: true, repeat: -1, duration: 5, ease: 'power1.inOut' }, '+=0');
+        .to('.gsap-secondary > rect', { y: -24, autoAlpha: 0, duration: 2.2, stagger: 0.4, repeat: -1, ease: 'power1.out' }, '<')
+        .to('.gsap-primary', { x: 18, yoyo: true, repeat: -1, duration: 5, ease: 'power1.inOut' }, '+=0');
     } else if (scene === 'int_conflicto_iran') {
+      // Flame flicker + missile launch
       const tlFlame = gsap.timeline({ repeat: -1 });
       tlFlame
         .to('.gsap-secondary > rect:last-child', { scaleY: 1.35, transformOrigin: '50% 100%', yoyo: true, duration: 0.2, ease: 'sine.inOut' }, 0)
         .to('.gsap-secondary > rect:nth-child(2)', { scaleY: 1.22, transformOrigin: '50% 100%', yoyo: true, duration: 0.32, ease: 'sine.inOut' }, 0)
         .to('.gsap-secondary > rect:first-child', { scaleY: 1.12, transformOrigin: '50% 100%', yoyo: true, duration: 0.45, ease: 'sine.inOut' }, 0);
-      const tlMissile = gsap.timeline({ repeat: -1, repeatDelay: 1.2 });
+      const tlMissile = gsap.timeline({ repeat: -1, repeatDelay: 1.4 });
       tlMissile
-        .fromTo('.gsap-primary', { x: 0, y: 0, autoAlpha: 1 }, { x: 36, y: -15, autoAlpha: 0, duration: 1.3, ease: 'power2.in' })
+        .fromTo('.gsap-primary', { x: 0, y: 0, autoAlpha: 1 }, { x: 40, y: -18, autoAlpha: 0, duration: 1.3, ease: 'power2.in', immediateRender: false })
         .set('.gsap-primary', { x: 0, y: 0, autoAlpha: 1 });
+    } else if (scene === 'crisis' || scene === 'crisis_impeachment') {
+      // Fire columns alternate scaleY + president panic sway
+      const tlFire = gsap.timeline({ repeat: -1 });
+      tlFire
+        .to('.gsap-explosion', { scaleY: 0.75, transformOrigin: '50% 100%', stagger: 0.18, yoyo: true, duration: 0.35, ease: 'sine.inOut' });
+      gsap.to('.gsap-primary', { x: 2, yoyo: true, repeat: -1, duration: 0.4, ease: 'sine.inOut' });
+    } else if (scene === 'soc_unrest') {
+      // Fire flicker
+      gsap.to('.gsap-explosion', { scaleY: 0.8, transformOrigin: '50% 100%', stagger: 0.22, yoyo: true, repeat: -1, duration: 0.3, ease: 'sine.inOut' });
+    } else if (scene === 'eco_reserves') {
+      // Gold bars pulse
+      gsap.fromTo('.gsap-secondary > rect', { autoAlpha: 0.5 }, { autoAlpha: 1, stagger: 0.3, yoyo: true, repeat: -1, duration: 0.6, ease: 'sine.inOut' });
+    } else if (scene === 'eco_growth') {
+      // Bar chart grow in, then smoke drifts
+      gsap.fromTo('.gsap-primary > rect', { scaleY: 0, transformOrigin: '50% 100%' }, { scaleY: 1, duration: 1, stagger: 0.18, ease: 'power2.out', immediateRender: false });
+      gsap.to('.gsap-secondary > rect', { y: -16, autoAlpha: 0, stagger: 0.4, repeat: -1, duration: 1.8, ease: 'power1.out' });
+    } else if (scene === 'pol_congress' || scene === 'arg_congreso_ley') {
+      // President podium subtle bob
+      gsap.to('.gsap-primary', { y: -2, yoyo: true, repeat: -1, duration: 0.8, ease: 'sine.inOut' });
+    } else if (scene === 'pol_scandal') {
+      // Spotlight flickers autoAlpha
+      gsap.fromTo('.gsap-primary', { autoAlpha: 0.75 }, { autoAlpha: 1, yoyo: true, repeat: -1, duration: 0.22, ease: 'sine.inOut' });
+    } else if (scene === 'arg_campo') {
+      // Tractor slowly moves right across field, loops
+      const tlTractor = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+      tlTractor
+        .fromTo('.gsap-primary', { x: 0 }, { x: 200, duration: 6, ease: 'none', immediateRender: false })
+        .set('.gsap-primary', { x: 0 });
+    } else if (scene === 'int_trade') {
+      // Ship slides slowly right, loops
+      const tlShip = gsap.timeline({ repeat: -1 });
+      tlShip
+        .fromTo('.gsap-primary', { x: 0 }, { x: 40, duration: 8, ease: 'none', immediateRender: false })
+        .to('.gsap-primary', { x: -60, duration: 0.01 });
+    } else if (scene === 'arg_mundial') {
+      // Confetti rects rain down
+      gsap.fromTo('.gsap-secondary > rect', { y: 0, autoAlpha: 1 }, { y: 80, autoAlpha: 0, duration: 2, stagger: { each: 0.3, repeat: -1, from: 'random' }, ease: 'power1.in' });
+    } else if (scene === 'arg_corralito') {
+      // Protesters bob (pixel art = y ±2px)
+      gsap.to('.gsap-secondary', { y: -2, yoyo: true, repeat: -1, duration: 0.5, ease: 'sine.inOut', stagger: 0.1 });
+    } else if (scene === 'int_war') {
+      // Radar sweep line sweeps, blip pulses
+      gsap.to('.gsap-primary', { rotation: 360, transformOrigin: '10% 50%', duration: 3, repeat: -1, ease: 'none' });
+      gsap.fromTo('.gsap-explosion', { autoAlpha: 0.3 }, { autoAlpha: 1, yoyo: true, repeat: -1, duration: 0.4, ease: 'sine.inOut' });
+    } else if (scene === 'eco_inflation') {
+      // Price arrow rects scroll upward
+      gsap.to('.gsap-primary', { y: -8, yoyo: true, repeat: -1, duration: 1, ease: 'power1.inOut' });
+    } else if (scene === 'int_imf') {
+      // Globe latitude lines scroll x (rotation illusion)
+      gsap.to('.gsap-primary > rect', { x: -6, yoyo: true, repeat: -1, duration: 2, stagger: 0.3, ease: 'sine.inOut' });
     }
   }, { scope: containerRef, dependencies: [scene, eventCategory] });
 
@@ -945,7 +950,7 @@ export function EventIllustration({
           xmlns="http://www.w3.org/2000/svg"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
           preserveAspectRatio="xMidYMid meet"
-          role="img" aria-label={`Ilustración: ${eventCategory}`}>
+          role="img" aria-label={`IlustraciÃ³n: ${eventCategory}`}>
           {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} />}
           {(scene === 'pol_scandal' || scene === 'arg_fmi_negocio')   && <ScenePolScandal presidentId={presidentId} />}
           {scene === 'pol_protest'   && <ScenePolProtest />}

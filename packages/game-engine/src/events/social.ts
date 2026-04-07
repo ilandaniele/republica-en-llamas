@@ -446,3 +446,139 @@ export const SOCIAL_CARDS: EventCard[] = [
     ],
   },
 ];
+// ─── Chained consequence cards ─────────────────────────────────────────────────
+export const SOCIAL_CHAINED_CARDS: EventCard[] = [
+  {
+    id: 'soc_chain_001',
+    category: 'social',
+    titleKey: 'event.soc_chain_001.title',
+    bodyKey: 'event.soc_chain_001.body',
+    weight: 6,
+    minTurn: 3,
+    requiredFlags: ['sind_first_met'],
+    memoryFlagAdded: 'huelga_cedida',
+    choices: [
+      {
+        id: 'soc_chain_001_a',
+        textKey: 'event.soc_chain_001.choice_a',
+        effects: { stabilityDelta: 14, popularityDelta: 6, deficitDelta: 8 },
+      },
+      {
+        id: 'soc_chain_001_b',
+        textKey: 'event.soc_chain_001.choice_b',
+        effects: { stabilityDelta: -10, popularityDelta: -4, mediaCredibilityDelta: 8 },
+      },
+      {
+        id: 'soc_chain_001_c',
+        textKey: 'event.soc_chain_001.choice_c',
+        effects: { stabilityDelta: 6, popularityDelta: 4, deficitDelta: 4 },
+        requiresVote: true,
+        voteChance: 0.55,
+      },
+      {
+        id: 'soc_chain_001_d',
+        textKey: 'event.soc_chain_001.choice_d',
+        effects: { stabilityDelta: 3, popularityDelta: 8, mediaCredibilityDelta: -5 },
+      },
+    ],
+  },
+  {
+    id: 'soc_chain_002',
+    category: 'social',
+    titleKey: 'event.soc_chain_002.title',
+    bodyKey: 'event.soc_chain_002.body',
+    weight: 5,
+    minTurn: 5,
+    requiredFlags: ['huelga_cedida'],
+    choices: [
+      {
+        id: 'soc_chain_002_a',
+        textKey: 'event.soc_chain_002.choice_a',
+        effects: { stabilityDelta: -6, popularityDelta: -4, deficitDelta: 10 },
+      },
+      {
+        id: 'soc_chain_002_b',
+        textKey: 'event.soc_chain_002.choice_b',
+        effects: { stabilityDelta: 8, popularityDelta: -10, marketConfidenceDelta: 8 },
+      },
+      {
+        id: 'soc_chain_002_c',
+        textKey: 'event.soc_chain_002.choice_c',
+        effects: { stabilityDelta: 3, popularityDelta: 3, deficitDelta: 5 },
+      },
+      {
+        id: 'soc_chain_002_d',
+        textKey: 'event.soc_chain_002.choice_d',
+        effects: { stabilityDelta: 5, popularityDelta: 5, mediaCredibilityDelta: 5, deficitDelta: 3 },
+        requiresVote: true,
+        voteChance: 0.6,
+      },
+    ],
+  },
+  {
+    id: 'soc_chain_003',
+    category: 'social',
+    titleKey: 'event.soc_chain_003.title',
+    bodyKey: 'event.soc_chain_003.body',
+    weight: 5,
+    minTurn: 7,
+    requiredFlags: ['gob_first_met'],
+    choices: [
+      {
+        id: 'soc_chain_003_a',
+        textKey: 'event.soc_chain_003.choice_a',
+        effects: { stabilityDelta: 10, deficitDelta: 6, popularityDelta: 4 },
+      },
+      {
+        id: 'soc_chain_003_b',
+        textKey: 'event.soc_chain_003.choice_b',
+        effects: { stabilityDelta: -5, mediaCredibilityDelta: 12, popularityDelta: -3 },
+      },
+      {
+        id: 'soc_chain_003_c',
+        textKey: 'event.soc_chain_003.choice_c',
+        effects: { stabilityDelta: 8, popularityDelta: 6, deficitDelta: 4 },
+        requiresVote: true,
+        voteChance: 0.5,
+      },
+      {
+        id: 'soc_chain_003_d',
+        textKey: 'event.soc_chain_003.choice_d',
+        effects: { stabilityDelta: 4, popularityDelta: 8, mediaCredibilityDelta: 4 },
+      },
+    ],
+  },
+  {
+    id: 'soc_chain_004',
+    category: 'social',
+    titleKey: 'event.soc_chain_004.title',
+    bodyKey: 'event.soc_chain_004.body',
+    weight: 5,
+    minTurn: 10,
+    requiredFlags: ['media_crisis'],
+    choices: [
+      {
+        id: 'soc_chain_004_a',
+        textKey: 'event.soc_chain_004.choice_a',
+        effects: { mediaCredibilityDelta: -12, popularityDelta: 10, stabilityDelta: -5 },
+      },
+      {
+        id: 'soc_chain_004_b',
+        textKey: 'event.soc_chain_004.choice_b',
+        effects: { mediaCredibilityDelta: 14, popularityDelta: -8, stabilityDelta: 6 },
+      },
+      {
+        id: 'soc_chain_004_c',
+        textKey: 'event.soc_chain_004.choice_c',
+        effects: { mediaCredibilityDelta: 6, popularityDelta: 4, stabilityDelta: 3 },
+      },
+      {
+        id: 'soc_chain_004_d',
+        textKey: 'event.soc_chain_004.choice_d',
+        effects: { mediaCredibilityDelta: 8, popularityDelta: 8, stabilityDelta: -2, deficitDelta: 3 },
+        requiresVote: true,
+        voteChance: 0.65,
+      },
+    ],
+  },
+];
