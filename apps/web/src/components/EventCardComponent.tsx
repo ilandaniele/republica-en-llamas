@@ -1,12 +1,16 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import type { EventCard, GameState } from '@republica/game-engine';
 import { getSafestChoiceIndex } from '@republica/game-engine';
 import { CharacterPortrait } from './illustrations/characters/CharacterPortrait.js';
 import { EventIllustration } from './illustrations/EventIllustration.js';
 import { PixelPortrait } from './illustrations/PixelPortrait.js';
 import type { PortraitId } from './illustrations/PixelPortrait.js';
+
+gsap.registerPlugin(useGSAP);
 
 const PRESIDENT_IDS = new Set<string>(['milei', 'massa', 'bullrich', 'ingeniero', 'populista', 'tecnocrata']);
 
@@ -46,6 +50,40 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
   const safestIndex = isEasy ? getSafestChoiceIndex(card) : -1;
   const [ripplingChoice, setRipplingChoice] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // ── GSAP: category-specific ambient particle effects on the card ────────────
+  useGSAP(() => {
+    if (!cardRef.current) return;
+
+    if (isCrisis) {
+      // Crimson border glow pulses on the whole card
+      gsap.fromTo('.card-glow-overlay',
+        { autoAlpha: 0 },
+        { autoAlpha: 0.12, duration: 0.35, yoyo: true, repeat: -1, ease: 'sine.inOut' },
+      );
+    } else if (card.category === 'economic') {
+      // $ symbols rain down through the card body
+      gsap.fromTo('.card-particle',
+        { y: 0, autoAlpha: 0.55 },
+        { y: 90, autoAlpha: 0, duration: 2.2, ease: 'power1.in',
+          stagger: { each: 0.55, repeat: -1, from: 'random' } },
+      );
+    } else if (card.category === 'social') {
+      // Smoke wisps drift upward
+      gsap.fromTo('.card-particle',
+        { y: 0, x: 0, scale: 1, autoAlpha: 0.35 },
+        { y: -50, x: 10, scale: 1.8, autoAlpha: 0, duration: 2.8, ease: 'power1.out',
+          stagger: { each: 1.1, repeat: -1 } },
+      );
+    } else if (card.category === 'international') {
+      // Radar pulse ring expands and fades
+      gsap.fromTo('.card-radar',
+        { scale: 0.6, autoAlpha: 0.7 },
+        { scale: 2.2, autoAlpha: 0, duration: 1.8, ease: 'power1.out', repeat: -1, repeatDelay: 0.6 },
+      );
+    }
+  }, { scope: cardRef, dependencies: [card.category] });
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     touchStartX.current = e.touches[0]?.clientX ?? null;
@@ -74,17 +112,47 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
 
   return (
     <motion.div
+      ref={cardRef}
       initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -40, opacity: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      className={`event-card border-l-4 ${style.border} !p-0 overflow-hidden`}
+      className={`event-card border-l-4 ${style.border} !p-0 overflow-hidden relative`}
       style={{
         backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,255,255,0.015) 24px)',
       }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
+      {/* Crisis glow overlay */}
+      {isCrisis && (
+        <div className="card-glow-overlay" style={{ position: 'absolute', inset: 0, background: 'var(--crisis-red)', pointerEvents: 'none', zIndex: 1, opacity: 0 }} />
+      )}
+
+      {/* Economic: floating $ particles */}
+      {card.category === 'economic' && (
+        <div style={{ position: 'absolute', top: '30%', left: 0, width: '100%', height: '60%', pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
+          {[12, 28, 46, 64, 80].map((x, i) => (
+            <span key={i} className="card-particle" style={{ position: 'absolute', left: `${x}%`, top: 0, color: i % 2 === 0 ? '#2e7d32' : '#f9a825', fontFamily: "'Press Start 2P', monospace", fontSize: '9px', userSelect: 'none' }}>$</span>
+          ))}
+        </div>
+      )}
+
+      {/* Social: smoke wisps */}
+      {card.category === 'social' && (
+        <div style={{ position: 'absolute', bottom: '20%', left: 0, width: '100%', height: '40%', pointerEvents: 'none', zIndex: 1, overflow: 'hidden' }}>
+          {[18, 42, 70].map((x, i) => (
+            <div key={i} className="card-particle" style={{ position: 'absolute', left: `${x}%`, bottom: 0, width: 14+i*4, height: 14+i*4, borderRadius: '50%', background: 'rgba(120,144,156,0.25)' }} />
+          ))}
+        </div>
+      )}
+
+      {/* International: radar pulse */}
+      {card.category === 'international' && (
+        <div style={{ position: 'absolute', top: 12, right: 12, width: 18, height: 18, pointerEvents: 'none', zIndex: 1 }}>
+          <div className="card-radar" style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '2px solid #7c4dff', transformOrigin: '50% 50%' }} />
+        </div>
+      )}
       {/* Header: context prefix + category badge + title */}
       <div className="px-6 pt-5 pb-3">
         {contextPrefix && (

@@ -142,6 +142,28 @@ export default function HomeScreen() {
   const [homeMode, setHomeMode] = useState<'clasico' | 'historico'>('clasico');
   const [paywallScenario, setPaywallScenario] = useState<ScenarioId | null>(null);
   const scenarioGridRef = useRef<HTMLDivElement>(null);
+  const homeContainerRef = useRef<HTMLDivElement>(null);
+
+  // ── GSAP: title entry + tab-switch card stagger ───────────────────────────
+  useGSAP(() => {
+    if (!homeContainerRef.current) return;
+    // Title + subtitle cascade in on first mount
+    gsap.from('.home-title-line', {
+      y: -24, autoAlpha: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out',
+    });
+    gsap.from('.home-subtitle', {
+      y: 10, autoAlpha: 0, duration: 0.4, delay: 0.3, ease: 'power1.out',
+    });
+  }, { scope: homeContainerRef });
+
+  useGSAP(() => {
+    if (!homeContainerRef.current) return;
+    // Tab content fades + cards stagger in whenever homeMode switches
+    gsap.fromTo('.home-tab-cards > *',
+      { y: 18, autoAlpha: 0 },
+      { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.055, ease: 'back.out(1.4)', clearProps: 'transform,opacity' },
+    );
+  }, { scope: homeContainerRef, dependencies: [homeMode] });
 
   const dailyRemaining = getDailyRunsRemaining();
   const dailyLimitReached = !hasPremium && dailyRemaining <= 0;
@@ -189,7 +211,7 @@ export default function HomeScreen() {
         </div>
 
         {/* Logo */}
-        <div className="text-center mb-10">
+        <div ref={homeContainerRef} className="text-center mb-10">
           <div className="fire-container mx-auto w-48 h-16 mb-4">
             <div className="fire-particle" />
             <div className="fire-particle" />
@@ -202,11 +224,10 @@ export default function HomeScreen() {
             <div className="smoke-particle" />
           </div>
           <h1 className="font-serif text-5xl font-black text-smoke-100 leading-none">
-            <span className="text-crimson-400 text-shadow-crimson">República</span>
-            <br />
-            <span className="text-gold-400 text-shadow-gold">en Llamas</span>
+            <span className="home-title-line block text-crimson-400 text-shadow-crimson">República</span>
+            <span className="home-title-line block text-gold-400 text-shadow-gold">en Llamas</span>
           </h1>
-          <p className="text-smoke-400 mt-3 font-mono text-sm tracking-wider uppercase">
+          <p className="home-subtitle text-smoke-400 mt-3 font-mono text-sm tracking-wider uppercase">
             Simulador de Decisiones Políticas
           </p>
         </div>
@@ -254,7 +275,7 @@ export default function HomeScreen() {
               </div>
 
               {homeMode === 'clasico' ? (
-                <div className="grid grid-cols-2 gap-3 mb-8">
+                <div className="home-tab-cards grid grid-cols-2 gap-3 mb-8">
                   {DIFFICULTIES.map((d) => (
                     <motion.button
                       key={d.id}
@@ -273,7 +294,7 @@ export default function HomeScreen() {
                   ))}
                 </div>
               ) : (
-                <div ref={scenarioGridRef} className="grid grid-cols-2 gap-3 mb-8">
+                <div ref={scenarioGridRef} className="home-tab-cards grid grid-cols-2 gap-3 mb-8">
                   {(Object.entries(HISTORICAL_SCENARIOS) as [ScenarioId, typeof HISTORICAL_SCENARIOS[ScenarioId]][]).map(([id, cfg], i) => {
                     const locked = !hasEntitlement(cfg.entitlementRequired);
                     return (
