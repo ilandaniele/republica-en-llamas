@@ -293,6 +293,14 @@ export function applyChoice(
   // Apply character memory if this is a character card
   if (card.characterId) {
     s = applyCharacterMemory(s, card.characterId, card.memoryFlagAdded, choice.effects);
+  } else if (card.memoryFlagAdded && s.characters.length > 0) {
+    // Non-character chained card: store global flag on first character so requiredFlags checks find it
+    s = {
+      ...s,
+      characters: s.characters.map((char, i) =>
+        i === 0 ? { ...char, memoryFlags: [...char.memoryFlags, card.memoryFlagAdded!] } : char
+      ),
+    };
   }
 
   // Record turn event

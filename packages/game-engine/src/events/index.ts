@@ -1,8 +1,8 @@
 import type { EventCard, GameState, CrisisType, Difficulty } from '../types.js';
 import { CARD_COOLDOWN_TURNS, CARD_WEIGHT_DECAY_WINDOW, SCENARIO_ARCS } from '../constants.js';
-import { POLITICAL_CARDS } from './political.js';
-import { ECONOMIC_CARDS } from './economic.js';
-import { SOCIAL_CARDS } from './social.js';
+import { POLITICAL_CARDS, POLITICAL_CHAINED_CARDS } from './political.js';
+import { ECONOMIC_CARDS, ECONOMIC_CHAINED_CARDS } from './economic.js';
+import { SOCIAL_CARDS, SOCIAL_CHAINED_CARDS } from './social.js';
 import { INTERNATIONAL_CARDS } from './international.js';
 import { CRISIS_CARDS } from './crisis/index.js';
 import { CHARACTER_CARDS } from './characters.js';
@@ -22,8 +22,11 @@ function difficultyAtLeast(current: Difficulty, min: Difficulty): boolean {
 
 export const ALL_CARDS: EventCard[] = [
   ...POLITICAL_CARDS,
+  ...POLITICAL_CHAINED_CARDS,
   ...ECONOMIC_CARDS,
+  ...ECONOMIC_CHAINED_CARDS,
   ...SOCIAL_CARDS,
+  ...SOCIAL_CHAINED_CARDS,
   ...INTERNATIONAL_CARDS,
   ...CRISIS_CARDS,
   ...CHARACTER_CARDS,
@@ -84,6 +87,11 @@ export function drawCard(state: GameState, rng: () => number, forceLifeline = fa
     if (card.category === 'crisis' && card.requiredCrisis === undefined) return false;
     if (card.minDifficulty !== undefined && !difficultyAtLeast(state.difficulty, card.minDifficulty)) return false;
     if (!isCharacterCardEligible(card, state)) return false;
+    // For non-character chained cards: requiredFlags must appear in any character's memoryFlags
+    if (!card.characterId && card.requiredFlags && card.requiredFlags.length > 0) {
+      const allFlags = state.characters.flatMap((c) => c.memoryFlags);
+      if (card.requiredFlags.some((f) => !allFlags.includes(f))) return false;
+    }
     // Cooldown: skip if fired too recently
     const lastFiredTurn = cooldowns[card.id];
     if (lastFiredTurn !== undefined && (state.turn - lastFiredTurn) < CARD_COOLDOWN_TURNS) return false;

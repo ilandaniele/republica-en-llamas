@@ -158,6 +158,16 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
         {contextPrefix && (
           <p className="text-smoke-500 font-mono text-xs italic mb-2">{contextPrefix}</p>
         )}
+        {/* Consequence chain indicator — shown when this card was triggered by a prior decision */}
+        {card.requiredFlags && card.requiredFlags.length > 0 && (
+          <div
+            className="flex items-center gap-1 mb-2 px-2 py-1 pixel-border text-celeste-400"
+            style={{ fontFamily: "'Press Start 2P'", fontSize: '6px', display: 'inline-flex' }}
+          >
+            <span>↩</span>
+            <span>CONSECUENCIA DE DECISIÓN PREVIA</span>
+          </div>
+        )}
         <div className={`flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-widest mb-3 ${style.badge}`}>
           <span className="text-base">{style.icon}</span>
           <span>{CATEGORY_LABELS[card.category] ?? card.category.toUpperCase()}</span>
@@ -171,7 +181,7 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       </div>
 
       {/* Full-bleed illustration — no horizontal padding */}
-      <div className="relative w-full h-[160px] md:h-[180px] overflow-hidden">
+      <div className="relative w-full h-[180px] md:h-[260px] xl:h-[360px] overflow-hidden">
         {card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
           <div className="absolute inset-0 flex items-center justify-center bg-navy-800/60 border-y border-navy-700">
             <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
@@ -207,9 +217,43 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
-          {card.choices.map((choice, index) => {
+          {Array.from({ length: 4 }).map((_, index) => {
+            const choice = card.choices[index];
+            const isLocked = !choice;
             const isSelected = selectedIndex === index;
             const letter = String.fromCharCode(65 + index);
+
+            if (isLocked) {
+              return (
+                <div
+                  key={`locked-${index}`}
+                  className="pixel-choice-card opacity-30"
+                  aria-disabled="true"
+                  style={{ pointerEvents: 'none', cursor: 'default' }}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      style={{
+                        background: 'var(--navy-600)',
+                        color: 'rgba(255,255,255,0.3)',
+                        fontFamily: "'Press Start 2P', monospace",
+                        fontSize: '8px',
+                        padding: '3px 5px',
+                        display: 'inline-block',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {letter}
+                    </span>
+                    <span
+                      style={{ fontFamily: "'VT323', monospace", fontSize: '16px', lineHeight: '1.3', color: 'rgba(255,255,255,0.25)' }}
+                    >
+                      — — —
+                    </span>
+                  </div>
+                </div>
+              );
+            }
 
             return (
               <motion.button
@@ -248,8 +292,8 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
                 </div>
                 {choice.requiresVote && (
                   <div
-                    style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-                    className="text-smoke-500 flex items-center gap-1 mt-1"
+                    className="pixel-border mt-2 px-2 py-1 flex items-center gap-1"
+                    style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', color: 'var(--celeste)', borderColor: 'var(--celeste)', display: 'inline-flex' }}
                   >
                     <span>🗳</span>
                     <span>REQUIERE CONGRESO</span>

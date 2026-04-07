@@ -447,3 +447,104 @@ export const ECONOMIC_CARDS: EventCard[] = [
     ],
   },
 ];
+// ─── Chained consequence cards ─────────────────────────────────────────────────
+export const ECONOMIC_CHAINED_CARDS: EventCard[] = [
+  {
+    id: 'eco_chain_001',
+    category: 'economic',
+    titleKey: 'event.eco_chain_001.title',
+    bodyKey: 'event.eco_chain_001.body',
+    weight: 6,
+    minTurn: 4,
+    requiredFlags: ['min_plan_discussed'],
+    choices: [
+      {
+        id: 'eco_chain_001_a',
+        textKey: 'event.eco_chain_001.choice_a',
+        effects: { inflationDelta: -8, marketConfidenceDelta: 15, popularityDelta: -6 },
+      },
+      {
+        id: 'eco_chain_001_b',
+        textKey: 'event.eco_chain_001.choice_b',
+        effects: { inflationDelta: 5, deficitDelta: 6, popularityDelta: 10 },
+      },
+      {
+        id: 'eco_chain_001_c',
+        textKey: 'event.eco_chain_001.choice_c',
+        effects: { inflationDelta: -4, deficitDelta: -3, marketConfidenceDelta: 6 },
+      },
+      {
+        id: 'eco_chain_001_d',
+        textKey: 'event.eco_chain_001.choice_d',
+        effects: { inflationDelta: -2, marketConfidenceDelta: 8, stabilityDelta: 3 },
+        requiresVote: true,
+        voteChance: 0.5,
+      },
+    ],
+  },
+  {
+    id: 'eco_chain_002',
+    category: 'economic',
+    titleKey: 'event.eco_chain_002.title',
+    bodyKey: 'event.eco_chain_002.body',
+    weight: 5,
+    minTurn: 6,
+    requiredFlags: ['gob_confronted'],
+    memoryFlagAdded: 'fiscal_war',
+    choices: [
+      {
+        id: 'eco_chain_002_a',
+        textKey: 'event.eco_chain_002.choice_a',
+        effects: { deficitDelta: -10, marketConfidenceDelta: 8, popularityDelta: -4 },
+      },
+      {
+        id: 'eco_chain_002_b',
+        textKey: 'event.eco_chain_002.choice_b',
+        effects: { deficitDelta: 8, popularityDelta: 12, stabilityDelta: -4 },
+      },
+      {
+        id: 'eco_chain_002_c',
+        textKey: 'event.eco_chain_002.choice_c',
+        effects: { deficitDelta: -4, stabilityDelta: 5, popularityDelta: 4 },
+      },
+      {
+        id: 'eco_chain_002_d',
+        textKey: 'event.eco_chain_002.choice_d',
+        effects: { deficitDelta: -6, gdpGrowthDelta: 0.4, marketConfidenceDelta: 5 },
+        requiresVote: true,
+        voteChance: 0.45,
+      },
+    ],
+  },
+  {
+    id: 'eco_chain_003',
+    category: 'economic',
+    titleKey: 'event.eco_chain_003.title',
+    bodyKey: 'event.eco_chain_003.body',
+    weight: 5,
+    minTurn: 9,
+    requiredFlags: ['fiscal_war'],
+    choices: [
+      {
+        id: 'eco_chain_003_a',
+        textKey: 'event.eco_chain_003.choice_a',
+        effects: { foreignReservesDelta: -10, inflationDelta: 8, popularityDelta: -5 },
+      },
+      {
+        id: 'eco_chain_003_b',
+        textKey: 'event.eco_chain_003.choice_b',
+        effects: { foreignReservesDelta: 5, inflationDelta: -4, popularityDelta: 8, deficitDelta: 5 },
+      },
+      {
+        id: 'eco_chain_003_c',
+        textKey: 'event.eco_chain_003.choice_c',
+        effects: { foreignReservesDelta: -3, inflationDelta: -2, marketConfidenceDelta: 10 },
+      },
+      {
+        id: 'eco_chain_003_d',
+        textKey: 'event.eco_chain_003.choice_d',
+        effects: { foreignReservesDelta: 8, inflationDelta: -6, marketConfidenceDelta: 12, deficitDelta: -4 },
+      },
+    ],
+  },
+];
