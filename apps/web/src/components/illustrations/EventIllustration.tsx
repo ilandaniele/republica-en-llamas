@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { GameState } from '@republica/game-engine';
-import { useGameImage } from '../../hooks/useGameImage.js';
+
 
 gsap.registerPlugin(useGSAP);
 
@@ -849,7 +849,6 @@ export function EventIllustration({
   eventCategory, presidentId, eventId = '', gameState,
 }: Props) {
   const scene = selectScene(eventCategory, eventId, gameState);
-  const imageUrl = useGameImage(scene);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const isCrisis = eventCategory === 'crisis';
@@ -942,15 +941,7 @@ export function EventIllustration({
         />
       )}
 
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt={eventCategory}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          loading="lazy"
-        />
-      ) : (
-        <svg viewBox="0 0 320 180"
+      <svg viewBox="0 0 320 180"
           xmlns="http://www.w3.org/2000/svg"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
           preserveAspectRatio="xMidYMid meet"
@@ -974,7 +965,6 @@ export function EventIllustration({
           {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}
           {(scene === 'crisis' || scene === 'crisis_impeachment') && <SceneCrisis presidentId={presidentId} />}
         </svg>
-      )}
 
       {/* Looping particle layer */}
       {particles.length > 0 && (

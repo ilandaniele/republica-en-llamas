@@ -1,5 +1,4 @@
 ﻿import React from 'react';
-import { useGameImage } from '../../hooks/useGameImage.js';
 
 export type PortraitId = 'milei' | 'massa' | 'bullrich' | 'bregman' | 'schiaretti' | 'larreta' | 'ingeniero' | 'populista' | 'tecnocrata' | 'izquierda' | 'federal' | 'corporativo';
 export type PortraitMood = 'neutral' | 'panic' | 'victory';
@@ -874,21 +873,6 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
     id === 'izquierda'   ? 'bregman'     :
     id === 'federal'     ? 'schiaretti'  :
     id === 'corporativo' ? 'larreta'     : id;
-
-  const imageUrl = useGameImage('char_' + base);
-
-  if (imageUrl) {
-    return (
-      <img
-        src={imageUrl}
-        alt={'Retrato de ' + id}
-        width={px}
-        height={px}
-        style={{ display: 'block', objectFit: 'cover' }}
-        loading="lazy"
-      />
-    );
-  }
 
   return (
     <svg
