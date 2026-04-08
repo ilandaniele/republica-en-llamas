@@ -1459,7 +1459,60 @@
   'event.geo_008.choice_b': 'Rechazar las condiciones y buscar financiamiento alternativo',
   'event.geo_008.choice_c': 'Abrir renegociación técnica sin comprometerse públicamente',
 
-  // ─── Chained consequence cards ────────────────────────────────────────────────
+  // ─── NUCLEAR WAR ARC (guerra_001 → guerra_002 → guerra_003) ──────────────
+  'event.guerra_001.title': 'EL PRESIDENTE DECIDE SUMARSE A LA GUERRA',
+  'event.guerra_001.body': 'El conflicto belicó internacional se intensifica. El ala dura del gobierno propone que Argentina tome partido activo y envíé apoyo militar. Los generales esperan órdenes. El mundo mira.',
+  'event.guerra_001.choice_a': 'Sumarse al conflicto: envíar tropas y apoyo logístico',
+  'event.guerra_001.choice_b': 'Declarar neutralidad activa y condenar públicamente la guerra',
+  'event.guerra_001.choice_c': 'Ofrecer mediación como país neutral',
+  'event.guerra_001.choice_d': 'Ignorar el conflicto: Argentina tiene problemas propios',
+
+  'event.guerra_002.title': 'AMENAZA NUCLEAR: RÉTIRENSE O LOS BORRAMOS DEL MAPA',
+  'event.guerra_002.body': 'Una potencia nuclear envía un ultimatum secreto: Argentina tiene 48 horas para retirar todo apoyo del conflicto o Buenos Aires pagará el precio. El Presidente debe decidir ahora.',
+  'event.guerra_002.choice_a': 'Retirarse inmediatamente: no vale la pena el riesgo',
+  'event.guerra_002.choice_b': 'Ignorar la amenaza: Argentina no cede ante chantajes',
+  'event.guerra_002.choice_c': 'Buscar mediación urgente de la ONU para desescalar',
+  'event.guerra_002.choice_d': 'Escalar: demostrar que Argentina no tiene miedo',
+
+  'event.guerra_003.title': 'BOMBA NUCLEAR SOBRE BUENOS AIRES',
+  'event.guerra_003.body': 'La amenaza era real. A las 4:17 AM, un misil balístico impacta el Área Metropolitana. La lluvia radiactiva cubre la ciudad. Ya no hay nada que decidir.',
+  'event.guerra_003.choice_a': 'Rezar',
+  'event.guerra_003.choice_b': 'Correr',
+
+  // ─── MALVINAS CONFLICT ARC (malvinas_001 → 002 → 003 → 004) ────────────
+  'event.malvinas_001.title': 'RECLAMO DE SOBERANÍA EN MALVINAS',
+  'event.malvinas_001.body': 'Un bloque parlamentario impulsa una resolución declarando la soberanía argentina sobre las Islas Malvinas. La opinión pública es favorable. Londres observa con preocupación.',
+  'event.malvinas_001.choice_a': 'Apoyar el reclamo formal y presentarlo ante la ONU',
+  'event.malvinas_001.choice_b': 'Gestionar el reclamo por vía diplomática silenciosa',
+  'event.malvinas_001.choice_c': 'Ignorar la resolución: no es el momento político',
+  'event.malvinas_001.choice_d': 'Llevar el caso a la OEA buscando respaldo regional',
+
+  'event.malvinas_002.title': 'GRAN BRETAÑA DESPLIEGA LA FLOTA',
+  'event.malvinas_002.body': 'La Royal Navy navega hacia el Atlántico Sur. Thatcher — o su sucesor — advierte que cualquier acción militar será respondida con fuerza total. Las Fuerzas Armadas argentinas están en alerta.',
+  'event.malvinas_002.choice_a': 'Mantener posición: Argentina defiende su soberanía',
+  'event.malvinas_002.choice_b': 'Dar marcha atrás: retirar el reclamo para evitar el conflicto',
+  'event.malvinas_002.choice_c': 'Solicitar mediación urgente del Consejo de Seguridad de la ONU',
+  'event.malvinas_002.choice_d': 'Pedir a EEUU que intermedie discretamente',
+
+  'event.malvinas_003.title': 'CONFLICTO ARMADO EN LAS ISLAS',
+  'event.malvinas_003.body': 'Los primeros choques entre fuerzas argentinas y británicas dejan bajas de ambos lados. La guerra es un hecho. El tiempo se acaba. El país está detrás del presidente.',
+  'event.malvinas_003.choice_a': 'Comprometer la flota completa en enfrentamiento total',
+  'event.malvinas_003.choice_b': 'Negociar alto el fuego inmediato — cualquier costo político vale',
+  'event.malvinas_003.choice_c': 'Operación limitada: demostrar fuerza y negociar desde posición',
+  'event.malvinas_003.choice_d': 'Intentar un último canal diplomático de emergencia',
+
+  'event.malvinas_004.title': 'UK DESTRUYE LA FLOTA ARGENTINA',
+  'event.malvinas_004.body': 'El ARA Belgrano y buques de escolta son hundidos. La aviación naval pierde el 60% de sus aeronaves. Las islas caen. El gobierno colapsa ante la derrota. La historia se repite.',
+  'event.malvinas_004.choice_a': 'Anunciar la rendición',
+  'event.malvinas_004.choice_b': 'Renunciar',
+
+  // ─── Game over strings ───────────────────────────────────────────────────
+  'gameOver.nuclear_annihilation.headline': 'ANIQUILACIÓN NUCLEAR',
+  'gameOver.nuclear_annihilation.sub': 'No sobreviviste la bomba. Tampoco el país.',
+  'gameOver.military_defeat.headline': 'DERROTA MILITAR',
+  'gameOver.military_defeat.sub': 'Las Malvinas siguen siendo malvinenses. El gobierno no sobrevivió la derrota.',
+
+  // ─── Chained consequence cards ─────────────────────────────────────────────
   // pol_chain_001: sindicalista confrontado retaliates
   'event.pol_chain_001.title': 'LOS GREMIOS CONTRAATACAN',
   'event.pol_chain_001.body': 'Tras la confrontación, la CTA y la CGT se unificaron. Ramírez llama a un paro nacional de 48 horas. El gobierno debe definir si negocia, resiste, legisla o dialoga.',

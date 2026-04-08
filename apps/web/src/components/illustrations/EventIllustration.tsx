@@ -58,17 +58,15 @@ function PixPerson({ c, r, suit = P_NAV, skin = P_SK, hair = P_BK }: {
 }
 
 // â”€â”€ SCENE: pol_congress â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function ScenePolCongress({ presidentId }: { presidentId: string }) {
+function ScenePolCongress({ presidentId, gameState }: { presidentId: string; gameState?: import("@republica/game-engine").GameState | null }) {
   const hair = presidentId === 'tecnocrata' ? P_GD : presidentId === 'populista' ? P_RD : P_BK;
+  const hasChaos = (gameState?.political.socialStability ?? 100) < 45
+               || (gameState?.congress.governmentSeats ?? 269) < 135;
   return (
     <g>
-      {/* Sky */}
-      {px(0,0,40,2,P_NAV)}
-      {/* Ground */}
+      {px(0,0,40,2,hasChaos ? '#1a0000' : P_NAV)}
       {px(0,19,40,1,P_BR)}
-      {/* Building body */}
       {px(4,8,32,11,P_SLT)}
-      {/* Dome â€” stepped pyramid */}
       {px(11,7,18,1,P_GR)}
       {px(13,6,14,1,P_SLT)}
       {px(14,5,12,1,P_SLT)}
@@ -76,27 +74,35 @@ function ScenePolCongress({ presidentId }: { presidentId: string }) {
       {px(17,3,6,2,P_SLT)}
       {px(18,1,4,2,P_SLT)}
       {px(19,0,2,1,P_GD)}
-      {/* Argentine flag pinned to top */}
       {px(21,0,1,2,P_CB)}{px(22,0,1,1,P_CB)}{px(22,1,1,1,P_WH)}
-      {/* Pillars */}
       {[5,8,11].map(c=><rect key={c} x={c*P} y={8*P} width={P} height={4*P} fill={P_GR}/>)}
       {[29,32,35].map(c=><rect key={c} x={c*P} y={8*P} width={P} height={4*P} fill={P_GR}/>)}
-      {/* Windows â€” gold blocks (lit at night) */}
-      {[6,9,12].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={2*P} fill={P_GD}/>)}
-      {[26,29,32].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={2*P} fill={P_GD}/>)}
-      {/* Entrance door */}
+      {[6,9,12].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={2*P} fill={hasChaos ? P_CR : P_GD}/>)}
+      {[26,29,32].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={2*P} fill={hasChaos ? P_CR : P_GD}/>)}
       {px(18,15,4,4,P_BG)}
-      {/* Deputy row (colored seats) */}
-      {[0,1,2,3,4,5,6,7,8].map(i=><rect key={i} x={(6+i*3)*P} y={13*P} width={2*P} height={P} fill={i%2===0?P_CB:P_RD}/>)}
-      {/* Podium level */}
       {px(15,14,10,1,P_GD)}
-      {/* President (animated) */}
       <g className="gsap-primary">
         {px(18,15,4,1,P_SLT)}
         {px(19,14,2,1,P_SK)}
         {px(19,13,2,1,hair)}
       </g>
-      {lbl('CONGRESO NACIONAL')}
+      {hasChaos ? (
+        <g>
+          {[0,1,2,3,4,5,6,7,8,9].map(i=>(
+            <PixPerson key={i} c={5+i*3} r={12} suit={i%3===0?P_CR:i%3===1?P_RD:P_SLT} skin={P_SK} hair={P_BK}/>
+          ))}
+          {[0,2,4,6,8].map(i=>(<rect key={i} x={(6+i*3)*P} y={10*P} width={P} height={2*P} fill={P_RD}/>))}
+          {[1,4,7].map(i=>(<g key={i}><rect x={(5+i*3)*P+4} y={9*P} width={3*P} height={2*P} fill={P_YL}/><rect x={(6+i*3)*P} y={8*P} width={1} height={P} fill={P_GR}/></g>))}
+          {px(4,16,3,2,P_OR)}{px(4,15,2,1,P_YL)}
+          {px(33,16,3,2,P_OR)}{px(34,15,2,1,P_YL)}
+          {lbl('QUILOMBO EN EL CONGRESO', P_CR)}
+        </g>
+      ) : (
+        <g>
+          {[0,1,2,3,4,5,6,7,8].map(i=>(<rect key={i} x={(6+i*3)*P} y={13*P} width={2*P} height={P} fill={i%2===0?P_CB:P_RD}/>))}
+          {lbl('CONGRESO NACIONAL')}
+        </g>
+      )}
     </g>
   );
 }
@@ -690,6 +696,126 @@ function SceneCrisis({ presidentId }: { presidentId: string }) {
   );
 }
 
+// -- SCENE: guerra_join -------------------------------------------------------
+function SceneGuerraJoin({ presidentId }: { presidentId: string }) {
+  const hair = presidentId === 'tecnocrata' ? P_GD : presidentId === 'populista' ? P_RD : P_BK;
+  return (
+    <g>
+      {px(0,0,40,6,P_DG)}
+      {px(0,0,40,3,'#1a2a0a')}
+      {px(0,18,40,2,'#3a2a10')}
+      {px(2,6,16,12,P_GR)}
+      {[3,6,9,11].map(c=><rect key={c} x={c*P} y={8*P} width={2*P} height={3*P} fill={P_BK}/>)}
+      <rect x={10*P} y={2*P} width={1} height={5*P} fill={P_GR2}/>
+      {px(11,2,3,1,P_CB)}{px(11,3,3,1,P_WH)}{px(11,4,3,1,P_CB)}
+      <g className="gsap-primary">
+        <PixPerson c={20} r={12} suit={P_DG} skin={P_SK} hair={P_BK}/>
+        <PixPerson c={24} r={12} suit={P_DG} skin={P_SK} hair={P_BK}/>
+        <PixPerson c={28} r={12} suit={P_DG} skin={P_SK} hair={P_BK}/>
+        <PixPerson c={32} r={12} suit={P_DG} skin={P_SK} hair={P_BK}/>
+        {[20,24,28,32].map(c=>(<rect key={c} x={(c+1)*P} y={14*P} width={4*P} height={1} fill={P_GR}/>))}
+      </g>
+      <g className="gsap-secondary">
+        <PixPerson c={18} r={8} suit={P_SLT} skin={P_SK} hair={hair}/>
+        <rect x={19*P} y={11*P} width={P} height={P} fill={P_GD}/>
+      </g>
+      {px(34,3,6,7,P_CB)}
+      {[4,5,6,7,8].map(r=><rect key={r} x={34*P} y={r*P} width={6*P} height={2} fill={P_DG}/>)}
+      {px(35,4,2,2,P_GN)}{px(37,6,2,1,P_GN)}
+      <rect x={34*P} y={3*P} width={6*P} height={7*P} fill="none" stroke={P_WH} strokeWidth={1}/>
+      {lbl('DECISION DE GUERRA', P_CR)}
+    </g>
+  );
+}
+
+// -- SCENE: guerra_nuke_threat ------------------------------------------------
+function SceneGuerraNukeThreat() {
+  return (
+    <g>
+      {px(0,0,40,12,P_CR)}
+      {px(0,0,40,12,'rgba(0,0,0,0.4)')}
+      {px(0,12,40,8,P_CB)}
+      {px(0,15,40,5,P_NAV)}
+      {px(22,11,8,2,P_GN)}
+      {px(23,10,6,1,P_GN)}
+      {px(24,9,4,1,P_DG)}
+      <rect x={25*P} y={7*P} width={1} height={3*P} fill={P_GR}/>
+      {px(26,7,2,1,P_CB)}{px(26,8,2,1,P_WH)}
+      <g className="gsap-primary">
+        {px(3,4,3,1,P_GR2)}
+        {px(2,5,5,2,P_GR)}
+        {px(1,6,2,1,P_GR2)}
+        {px(5,6,2,1,P_GR2)}
+        {px(3,7,3,2,P_OR)}{px(4,9,1,1,P_YL)}
+        {[0,1,2,3,4,5].map(i=>(<rect key={i} x={(8+i*3)*P} y={(5+i)*P} width={2*P} height={1} fill={P_YL}/>))}
+      </g>
+      {px(16,1,3,3,P_YL)}
+      {px(17,0,1,1,P_YL)}{px(16,3,3,1,P_YL)}
+      {px(15,2,1,1,P_YL)}{px(19,2,1,1,P_YL)}
+      {lbl('AMENAZA NUCLEAR', P_YL)}
+    </g>
+  );
+}
+
+// -- SCENE: guerra_nuke_explosion ---------------------------------------------
+function SceneGuerraNukeExplosion() {
+  return (
+    <g>
+      {px(0,0,40,20,P_OR)}
+      {px(0,0,40,8,P_CR)}
+      {px(0,0,40,4,P_BK)}
+      {px(0,10,5,10,'#300000')}{px(5,12,4,8,'#300000')}
+      {px(31,8,5,12,'#300000')}{px(36,11,4,9,'#300000')}
+      <g className="gsap-explosion">
+        {px(17,12,6,8,P_OR)}
+        {px(18,10,4,2,'#FF5722')}
+        {px(13,13,14,3,'#FF7043')}
+        {px(10,9,20,4,'#FF8A65')}
+        {px(8,6,24,4,'#FFAB91')}
+        {px(7,3,26,4,'#FFCCBC')}
+        {px(9,1,22,3,P_WH)}
+        {px(12,0,16,2,'#FFF3E0')}
+      </g>
+      <g className="gsap-secondary">
+        {([[3,9,P_OR],[7,11,P_YL],[33,8,P_OR],[37,10,P_YL],[2,6,P_RD],[38,7,P_RD]] as [number,number,string][]).map(([c,r,f])=>(
+          <rect key={`${c}`} x={c*P} y={r*P} width={P} height={P} fill={f}/>
+        ))}
+      </g>
+      <rect className="gsap-overlay" x={0} y={0} width={320} height={180} fill="#FF5722" opacity={0}/>
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.9)"/>
+      <text x={8} y={174} fill={P_CR} fontSize={8} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>ANIQUILACION NUCLEAR</text>
+    </g>
+  );
+}
+
+// -- SCENE: malvinas ----------------------------------------------------------
+function SceneCongresoMalvinas() {
+  return (
+    <g>
+      {px(0,0,40,20,P_CB)}
+      {px(0,10,40,10,P_NAV)}
+      {[11,13,15,17].map(r=>(<rect key={r} x={0} y={r*P} width={320} height={3} fill={P_LB}/>))}
+      {px(6,4,6,3,P_GN)}{px(5,5,8,2,P_GN)}{px(4,6,10,2,P_DG)}{px(5,7,8,1,P_GN)}
+      {px(15,5,8,2,P_GN)}{px(14,6,10,3,P_GN)}{px(15,8,9,2,P_DG)}{px(16,9,7,1,P_GN)}
+      <rect x={18*P} y={2*P} width={1} height={4*P} fill={P_WH}/>
+      {px(19,2,3,1,P_CB)}{px(19,3,3,1,P_WH)}{px(19,4,3,1,P_CB)}
+      <g className="gsap-primary">
+        {px(28,7,10,3,P_GR2)}
+        {px(27,8,12,2,P_SLT)}
+        {px(31,5,3,2,P_GR)}
+        {px(32,4,1,2,P_GR2)}
+        {px(33,4,2,1,'#CC0000')}{px(33,5,2,1,P_WH)}
+        {px(29,7,3,1,P_BK)}{px(35,7,3,1,P_BK)}
+        {[0,1,2].map(i=>(<rect key={i} x={(26-i)*P} y={(9+i)*P} width={(i+1)*P} height={P} fill="rgba(255,255,255,0.3)"/>))}
+      </g>
+      <PixPerson c={3} r={13} suit={P_DG} skin={P_SK} hair={P_BK}/>
+      <PixPerson c={7} r={13} suit={P_DG} skin={P_SK} hair={P_BK}/>
+      {px(5,14,2,1,P_BK)}
+      {lbl('CONFLICTO MALVINAS', P_CB)}
+    </g>
+  );
+}
+
 interface Props {
   eventCategory: string;
   presidentId: string;
@@ -733,7 +859,7 @@ const SCENARIO_SCENE_OVERRIDE: Partial<Record<string, string>> = {
   corralito_2001:       'arg_corralito',
   convertibilidad:      'eco_growth',
   rodrigazo_1975:       'soc_unrest',
-  malvinas_1982:        'int_war',
+  malvinas_1982:        'malvinas',
   kirchnerismo_boom:    'eco_growth',
   libertad_avanza_2023: 'crisis',
   guerra_ucrania_2022:  'int_guerra_ucrania',
@@ -743,6 +869,10 @@ const SCENARIO_SCENE_OVERRIDE: Partial<Record<string, string>> = {
 function selectScene(category: string, eventId: string, gameState: GameState | null | undefined): string {
   // Specific event IDs â€” keyword overrides (highest priority)
   if (eventId === 'arg_015' || eventId?.includes('mundial') || eventId?.includes('campeon')) return 'arg_mundial';
+  if (eventId?.includes('malvinas')) return 'malvinas';
+  if (eventId === 'guerra_003') return 'guerra_nuke_explosion';
+  if (eventId === 'guerra_002') return 'guerra_nuke_threat';
+  if (eventId?.startsWith('guerra_')) return 'guerra_join';
   if (eventId === 'arg_002' || eventId?.includes('corralito')) return 'arg_corralito';
   if (eventId === 'arg_003' || eventId?.includes('campo')) return 'arg_campo';
   if (eventId?.includes('impeach') || eventId?.includes('juicio_politico')) return 'crisis_impeachment';
@@ -920,6 +1050,29 @@ export function EventIllustration({
     } else if (scene === 'int_imf') {
       // Globe latitude lines scroll x (rotation illusion)
       gsap.to('.gsap-primary > rect', { x: -6, yoyo: true, repeat: -1, duration: 2, stagger: 0.3, ease: 'sine.inOut' });
+    } else if (scene === 'guerra_nuke_explosion') {
+      // Mushroom cloud expands from nothing, debris flies out, overlay pulses
+      const tlNuke = gsap.timeline();
+      tlNuke
+        .from('.gsap-explosion', { scaleY: 0, transformOrigin: '50% 100%', duration: 0.9, ease: 'power3.out', immediateRender: false })
+        .from('.gsap-secondary > rect', { scale: 0, transformOrigin: '50% 50%', autoAlpha: 0, duration: 0.5, stagger: 0.08, ease: 'back.out(1.7)', immediateRender: false }, '+=0.1');
+      gsap.to('.gsap-overlay', { autoAlpha: 0.35, yoyo: true, repeat: -1, duration: 0.4, ease: 'sine.inOut' });
+    } else if (scene === 'guerra_nuke_threat') {
+      // Missile slides toward island and warning sign flashes
+      gsap.to('.gsap-primary', { x: 12, y: 6, yoyo: true, repeat: -1, duration: 1.4, ease: 'sine.inOut' });
+    } else if (scene === 'guerra_join') {
+      // Soldiers march right continuously; commander sways
+      const tlMarch = gsap.timeline({ repeat: -1 });
+      tlMarch
+        .fromTo('.gsap-primary', { x: 0 }, { x: 30, duration: 4, ease: 'none', immediateRender: false })
+        .set('.gsap-primary', { x: 0 });
+      gsap.to('.gsap-secondary', { y: -2, yoyo: true, repeat: -1, duration: 0.6, ease: 'sine.inOut' });
+    } else if (scene === 'malvinas') {
+      // British warship advances slowly; officers look (bob)
+      const tlShip = gsap.timeline({ repeat: -1 });
+      tlShip
+        .fromTo('.gsap-primary', { x: 0 }, { x: -20, duration: 5, ease: 'none', immediateRender: false })
+        .set('.gsap-primary', { x: 0 });
     }
   }, { scope: containerRef, dependencies: [scene, eventCategory] });
 
@@ -951,7 +1104,7 @@ export function EventIllustration({
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
           preserveAspectRatio="xMidYMid meet"
           role="img" aria-label={`IlustraciÃ³n: ${eventCategory}`}>
-          {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} />}
+          {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} gameState={gameState ?? null} />}
           {(scene === 'pol_scandal' || scene === 'arg_fmi_negocio')   && <ScenePolScandal presidentId={presidentId} />}
           {scene === 'pol_protest'   && <ScenePolProtest />}
           {scene === 'eco_inflation' && <SceneEcoInflation />}
@@ -969,6 +1122,10 @@ export function EventIllustration({
           {scene === 'arg_corralito' && <SceneArgCorralito />}
           {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}
           {(scene === 'crisis' || scene === 'crisis_impeachment') && <SceneCrisis presidentId={presidentId} />}
+          {scene === 'malvinas'              && <SceneCongresoMalvinas />}
+          {scene === 'guerra_join'           && <SceneGuerraJoin presidentId={presidentId} />}
+          {scene === 'guerra_nuke_threat'    && <SceneGuerraNukeThreat />}
+          {scene === 'guerra_nuke_explosion' && <SceneGuerraNukeExplosion />}
         </svg>
 
       {/* Looping particle layer */}

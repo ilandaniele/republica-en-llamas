@@ -281,6 +281,18 @@ export function applyChoice(
   const choice = card.choices[choiceIndex];
   if (!choice) throw new Error(`Choice ${choiceIndex} not found on card ${cardId}`);
 
+  // Instant game over — skip normal effect application
+  if (choice.instantGameOver) {
+    return {
+      ...state,
+      drawnCardIds: [...state.drawnCardIds, cardId],
+      cardCooldowns: { ...state.cardCooldowns, [cardId]: state.turn },
+      history: [...state.history, { turn: state.turn, cardId, choiceIndex, effectsApplied: choice.effects }],
+      isGameOver: true,
+      gameOverReason: choice.instantGameOver,
+    };
+  }
+
   let s = applyEffects(state, choice.effects);
 
   // Track card as drawn + record cooldown

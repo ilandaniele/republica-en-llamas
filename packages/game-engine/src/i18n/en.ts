@@ -848,6 +848,59 @@
   'event.geo_008.choice_b': 'Reject the conditions and seek alternative financing',
   'event.geo_008.choice_c': 'Open technical renegotiation without public commitment',
 
+  // ─── NUCLEAR WAR ARC ────────────────────────────────────────────────
+  'event.guerra_001.title': 'THE PRESIDENT JOINS THE WAR',
+  'event.guerra_001.body': 'The international armed conflict intensifies. The government’s hard-line faction proposes that Argentina take an active side and send military support. The generals await orders. The world is watching.',
+  'event.guerra_001.choice_a': 'Join the conflict: send troops and logistical support',
+  'event.guerra_001.choice_b': 'Declare active neutrality and publicly condemn the war',
+  'event.guerra_001.choice_c': 'Offer mediation as a neutral country',
+  'event.guerra_001.choice_d': 'Ignore the conflict: Argentina has its own problems',
+
+  'event.guerra_002.title': 'NUCLEAR ULTIMATUM: STAND DOWN OR BE ERASED',
+  'event.guerra_002.body': 'A nuclear power sends a secret ultimatum: Argentina has 48 hours to withdraw all support from the conflict, or Buenos Aires will pay the price. The President must decide now.',
+  'event.guerra_002.choice_a': 'Stand down immediately: the risk is not worth it',
+  'event.guerra_002.choice_b': 'Ignore the threat: Argentina does not yield to blackmail',
+  'event.guerra_002.choice_c': 'Seek urgent UN mediation to de-escalate',
+  'event.guerra_002.choice_d': 'Escalate: show that Argentina is not afraid',
+
+  'event.guerra_003.title': 'NUCLEAR BOMB OVER BUENOS AIRES',
+  'event.guerra_003.body': 'The threat was real. At 4:17 AM, a ballistic missile strikes the Buenos Aires metro area. Radioactive fallout covers the city. There is nothing left to decide.',
+  'event.guerra_003.choice_a': 'Pray',
+  'event.guerra_003.choice_b': 'Run',
+
+  // ─── MALVINAS CONFLICT ARC ──────────────────────────────────────────
+  'event.malvinas_001.title': 'MALVINAS SOVEREIGNTY CLAIM',
+  'event.malvinas_001.body': 'A parliamentary bloc pushes a resolution declaring Argentine sovereignty over the Falkland Islands. Public opinion is favorable. London watches with concern.',
+  'event.malvinas_001.choice_a': 'Support the formal claim and bring it before the UN',
+  'event.malvinas_001.choice_b': 'Manage the claim through quiet diplomacy',
+  'event.malvinas_001.choice_c': 'Ignore the resolution: this is not the political moment',
+  'event.malvinas_001.choice_d': 'Bring the case to the OAS seeking regional backing',
+
+  'event.malvinas_002.title': 'GREAT BRITAIN DEPLOYS THE FLEET',
+  'event.malvinas_002.body': 'The Royal Navy sails toward the South Atlantic. Thatcher — or her successor — warns that any military action will be met with full force. The Argentine Armed Forces are on alert.',
+  'event.malvinas_002.choice_a': 'Hold the position: Argentina defends its sovereignty',
+  'event.malvinas_002.choice_b': 'Back down: withdraw the claim to avoid conflict',
+  'event.malvinas_002.choice_c': 'Request urgent UN Security Council mediation',
+  'event.malvinas_002.choice_d': 'Ask the US to discreetly mediate',
+
+  'event.malvinas_003.title': 'ARMED CONFLICT IN THE ISLANDS',
+  'event.malvinas_003.body': 'First clashes between Argentine and British forces leave casualties on both sides. War is a fact. Time is running out. The country stands behind the president.',
+  'event.malvinas_003.choice_a': 'Commit the full fleet to total engagement',
+  'event.malvinas_003.choice_b': 'Negotiate an immediate ceasefire — any political cost is worth it',
+  'event.malvinas_003.choice_c': 'Limited operation: show of force then negotiate from position',
+  'event.malvinas_003.choice_d': 'Attempt a last-minute emergency diplomatic channel',
+
+  'event.malvinas_004.title': 'UK DESTROYS THE ARGENTINE FLEET',
+  'event.malvinas_004.body': 'The ARA Belgrano and escort ships are sunk. Naval aviation loses 60% of its aircraft. The islands fall. The government collapses under the defeat. History repeats itself.',
+  'event.malvinas_004.choice_a': 'Announce the surrender',
+  'event.malvinas_004.choice_b': 'Resign',
+
+  // ─── Game over strings ───────────────────────────────────────────────────
+  'gameOver.nuclear_annihilation.headline': 'NUCLEAR ANNIHILATION',
+  'gameOver.nuclear_annihilation.sub': "You didn't survive the bomb. Neither did the country.",
+  'gameOver.military_defeat.headline': 'MILITARY DEFEAT',
+  'gameOver.military_defeat.sub': 'The Falklands remain British. The government did not survive the defeat.',
+
   // ─── Chained consequence cards ────────────────────────────────────────────────
   'event.pol_chain_001.title': 'THE UNIONS STRIKE BACK',
   'event.pol_chain_001.body': 'After the confrontation, the CTA and CGT unified. Ramírez calls a 48-hour general strike. The government must decide whether to negotiate, resist, legislate, or dialogue.',

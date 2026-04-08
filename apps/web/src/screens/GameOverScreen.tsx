@@ -17,6 +17,8 @@ const HEADLINES: Record<string, string> = {
   impeachment: 'EL CONGRESO DESTITUYE AL PRESIDENTE',
   election_loss: 'DERROTA ELECTORAL: EL PUEBLO HA DECIDIDO',
   term_complete: '¡MANDATO CUMPLIDO! LA REPÚBLICA SOBREVIVE',
+  nuclear_annihilation: 'ANIQUILACIÓN NUCLEAR — LA REPÚBLICA ES CENIZA',
+  military_defeat: 'DERROTA MILITAR — LAS MALVINAS SIGUEN SIENDO MALVINENSES',
 };
 
 const SUB_HEADLINES: Record<string, string> = {
@@ -27,6 +29,8 @@ const SUB_HEADLINES: Record<string, string> = {
   impeachment: 'El Congreso ejerció su poder constitucional. Un capítulo oscuro cierra.',
   election_loss: 'Las urnas hablaron. La oposición festeja. El mandato termina sin renovarse.',
   term_complete: 'Contra todo pronóstico, la república sobrevivió. La historia te recordará.',
+  nuclear_annihilation: 'Buenos Aires fue borrada del mapa. Tu decisión de ignorar el ultimatum nuclear costó millones de vidas.',
+  military_defeat: 'La flota fue hundida. Los marines británicos ondean la Union Jack sobre Port Stanley. El sueño soberano tendrá que esperar.',
 };
 
 function ScoreRow({ label, value, color = 'text-smoke-700' }: { label: string; value: string; color?: string }) {
@@ -108,6 +112,8 @@ export default function GameOverScreen() {
     impeachment: 'juicio político',
     election_loss: 'derrota electoral',
     term_complete: 'mandato completo',
+    nuclear_annihilation: 'aniquilación nuclear',
+    military_defeat: 'derrota militar',
   };
   const reasonLabel = REASON_LABELS[reason] ?? reason;
 
@@ -198,6 +204,56 @@ export default function GameOverScreen() {
 
           {/* Portrait + Headline row */}
           <div className="flex gap-4 px-6 pt-4 items-start">
+
+          {/* Special instant-death screens */}
+          {reason === 'nuclear_annihilation' && (
+            <div className="w-full flex flex-col items-center py-6" style={{ background: 'rgba(100,0,0,0.12)' }}>
+              <svg viewBox="0 0 120 120" width={140} height={140} style={{ imageRendering: 'pixelated' }}>
+                {/* Stem */}
+                <rect x={53} y={80} width={14} height={32} fill="#FF5722"/>
+                {/* Base ring */}
+                <rect x={40} y={68} width={40} height={14} fill="#FF7043"/>
+                {/* Cap layers */}
+                <rect x={28} y={52} width={64} height={18} fill="#FF8A65"/>
+                <rect x={16} y={36} width={88} height={18} fill="#FFAB91"/>
+                <rect x={12} y={20} width={96} height={18} fill="#FFCCBC"/>
+                <rect x={20} y={8} width={80} height={14} fill="#FFE0B2"/>
+                <rect x={36} y={0} width={48} height={10} fill="#FFFFFF"/>
+              </svg>
+              <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '9px', color: '#CC2200', marginTop: 12, textAlign: 'center', lineHeight: 2 }}>
+                ANIQUILACIÓN NUCLEAR
+              </div>
+              <div style={{ fontFamily: "'VT323', monospace", fontSize: '16px', color: '#888', marginTop: 8, textAlign: 'center', maxWidth: 320, padding: '0 16px' }}>
+                Buenos Aires fue borrada del mapa.
+              </div>
+            </div>
+          )}
+          {reason === 'military_defeat' && (
+            <div className="w-full flex flex-col items-center py-6" style={{ background: 'rgba(0,10,60,0.08)' }}>
+              <svg viewBox="0 0 160 80" width={180} height={90} style={{ imageRendering: 'pixelated' }}>
+                {/* Waves */}
+                <rect x={0} y={56} width={160} height={8} fill="#1565C0"/>
+                <rect x={0} y={50} width={160} height={6} fill="#1976D2"/>
+                {/* Sinking ship hull (tilted) */}
+                <g transform="rotate(20 80 60)">
+                  <rect x={24} y={34} width={80} height={18} fill="#546E7A"/>
+                  <rect x={22} y={36} width={84} height={14} fill="#607D8B"/>
+                  {/* Mast */}
+                  <rect x={60} y={14} width={6} height={26} fill="#78909C"/>
+                  {/* Argentine flag on mast (sinking) */}
+                  <rect x={66} y={14} width={16} height={6} fill="#74ACDF"/>
+                  <rect x={66} y={20} width={16} height={6} fill="#FFFFFF"/>
+                  <rect x={66} y={26} width={16} height={6} fill="#74ACDF"/>
+                </g>
+              </svg>
+              <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '9px', color: '#B3D4F0', marginTop: 12, textAlign: 'center', lineHeight: 2 }}>
+                DERROTA MILITAR
+              </div>
+              <div style={{ fontFamily: "'VT323', monospace", fontSize: '16px', color: '#888', marginTop: 8, textAlign: 'center', maxWidth: 320, padding: '0 16px' }}>
+                La flota fue hundida. Las Malvinas siguen siendo malvinenses.
+              </div>
+            </div>
+          )}
             <div className="shrink-0 pixel-border">
               <PixelPortrait
                 id={presidentId as import('../components/illustrations/PixelPortrait.js').PortraitId}
