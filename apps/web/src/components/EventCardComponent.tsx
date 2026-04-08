@@ -224,35 +224,7 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
             const letter = String.fromCharCode(65 + index);
 
             if (isLocked) {
-              return (
-                <div
-                  key={`locked-${index}`}
-                  className="pixel-choice-card opacity-30"
-                  aria-disabled="true"
-                  style={{ pointerEvents: 'none', cursor: 'default' }}
-                >
-                  <div className="flex items-center gap-2">
-                    <span
-                      style={{
-                        background: 'var(--navy-600)',
-                        color: 'rgba(255,255,255,0.3)',
-                        fontFamily: "'Press Start 2P', monospace",
-                        fontSize: '8px',
-                        padding: '3px 5px',
-                        display: 'inline-block',
-                        flexShrink: 0,
-                      }}
-                    >
-                      {letter}
-                    </span>
-                    <span
-                      style={{ fontFamily: "'VT323', monospace", fontSize: '16px', lineHeight: '1.3', color: 'rgba(255,255,255,0.25)' }}
-                    >
-                      — — —
-                    </span>
-                  </div>
-                </div>
-              );
+              return null;
             }
 
             return (

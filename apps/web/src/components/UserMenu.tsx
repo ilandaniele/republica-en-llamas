@@ -26,13 +26,13 @@ export function UserMenu() {
       <div className="flex items-center gap-2">
         <button
           onClick={() => navigate('/login')}
-          className="bg-navy-700 hover:bg-navy-600 border border-navy-500 text-smoke-300 font-mono text-xs px-3 py-1.5 rounded transition-colors"
+          className="bg-navy-700 hover:bg-navy-600 border border-navy-500 text-smoke-300 font-mono text-sm px-3 py-1.5 rounded transition-colors"
         >
           Iniciar sesión
         </button>
         <button
           onClick={() => navigate('/register')}
-          className="bg-gold-600 hover:bg-gold-500 text-navy-900 font-mono text-xs px-3 py-1.5 rounded font-bold transition-colors"
+          className="bg-gold-600 hover:bg-gold-500 text-navy-900 font-mono text-sm px-3 py-1.5 rounded font-bold transition-colors"
         >
           Crear cuenta
         </button>

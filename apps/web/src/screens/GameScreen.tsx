@@ -243,7 +243,7 @@ export default function GameScreen() {
             {/* Diary button */}
             <button
               onClick={() => setShowDiary(true)}
-              className="bg-navy-800 hover:bg-navy-700 border border-navy-600 text-smoke-400 font-mono text-xs px-3 py-2 rounded flex items-center gap-1"
+              className="bg-navy-800 hover:bg-navy-700 border border-navy-600 text-smoke-400 font-mono text-sm px-3 py-2 rounded flex items-center gap-1"
               title="Diario de Gestión"
             >
               📋 Diario
@@ -254,22 +254,22 @@ export default function GameScreen() {
                   ? 'bg-crimson-900/70 text-crimson-300 animate-pulse'
                   : 'bg-navy-800 text-smoke-300'
               }`}>
-                <p className="text-xs">⚡ EXPRESS</p>
+                <p className="text-sm">⚡ EXPRESS</p>
                 <p className="font-bold text-lg leading-none">{crisisTimeLeft}s</p>
               </div>
             )}
             <div className="text-right">
-              <p className="text-xs text-smoke-500 font-mono">Turno</p>
+              <p className="text-sm text-smoke-500 font-mono">Turno</p>
               <p className="font-mono font-bold text-gold-400">{gameState.turn}/{isCrisisExpress ? 15 : 50}</p>
             </div>
             {(gameState.currentMonth != null && gameState.currentYear != null) && (
               <div className="text-right">
-                <p className="text-xs text-smoke-500 font-mono">{t(`month.${gameState.currentMonth}`)}</p>
+                <p className="text-sm text-smoke-500 font-mono">{t(`month.${gameState.currentMonth}`)}</p>
                 <p className="font-mono font-bold text-celeste">{gameState.currentYear}</p>
               </div>
             )}
             <div className="text-right">
-              <p className="text-xs text-smoke-500 font-mono">Puntaje</p>
+              <p className="text-sm text-smoke-500 font-mono">Puntaje</p>
               <p className="font-mono font-bold text-gold-400">{gameState.score.toLocaleString()}</p>
             </div>
             <button

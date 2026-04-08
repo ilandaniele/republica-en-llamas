@@ -146,8 +146,8 @@ function ScenePolScandal({ presidentId: _p }: { presidentId: string }) {
 function ScenePolProtest() {
   return (
     <g>
-      {/* Gray overcast sky */}
-      {px(0,0,40,5,P_GR2)}
+      {/* Dark night sky */}
+      {px(0,0,40,5,P_NAV)}
       {/* Pavement */}
       {px(0,17,40,3,P_GR)}
       {/* Pavement bricks */}
@@ -206,34 +206,35 @@ function SceneEcoInflation() {
 function SceneEcoReserves() {
   return (
     <g>
-      {/* Marble/stone background */}
-      {px(0,0,40,20,P_GR2)}
+      {/* White marble background */}
       {px(0,0,40,20,P_WH)}
       {/* Stone texture lines */}
       {[3,7,11,15,19].map(r=><rect key={r} x={0} y={r*P} width={320} height={2} fill={P_GR2}/>)}
-      {/* Vault door â€” concentric square frames */}
-      {px(6,2,18,16,P_GR)}
-      {px(7,3,16,14,P_SLT)}
-      {px(8,4,14,12,P_GR)}
-      {px(9,5,12,10,P_SLT)}
-      {px(10,6,10,8,P_BK)}
-      {/* Lock wheel (cross shape in vault center) */}
-      {px(14,8,2,4,P_GR)}{px(12,9,6,2,P_GR)}
-      {/* Gold bars inside vault (partially visible) â€” animated */}
+      {/* Bank building — centered neoclassical facade */}
+      {px(6,2,28,16,P_GR2)}
+      {px(7,3,26,14,P_WH)}
+      {/* Cornice at top */}
+      {px(5,1,30,2,P_GR)}
+      {px(4,0,32,1,P_SLT)}
+      {/* Pillars — left and right sides */}
+      {[7,9,25,27].map(c=><rect key={c} x={c*P} y={3*P} width={P} height={14*P} fill={P_GR2}/>)}
+      {/* Vault door — centered concentric square frames */}
+      {px(12,4,16,12,P_GR)}
+      {px(13,5,14,10,P_SLT)}
+      {px(14,6,12,8,P_GR)}
+      {px(15,7,10,6,P_BK)}
+      {/* Lock wheel — cross shape in vault center */}
+      {px(19,9,2,4,P_GR)}{px(17,11,6,2,P_GR)}
+      {/* Gold bars inside vault — animated */}
       <g className="gsap-secondary">
-        {[11,13,15].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={P} fill={P_GD}/>)}
-        {[12,14].map(c=><rect key={c} x={c*P} y={12*P} width={2*P} height={P} fill={P_GD}/>)}
+        {[16,18,20].map(c=><rect key={c} x={c*P} y={13*P} width={2*P} height={P} fill={P_GD}/>)}
+        {[17,19].map(c=><rect key={c} x={c*P} y={14*P} width={2*P} height={P} fill={P_GD}/>)}
       </g>
-      {/* Guard figure */}
-      <PixPerson c={28} r={13} suit={P_SLT} skin={P_SK} hair={P_BK}/>
-      {/* Bank pillars */}
-      {[26,28,30,32].map(c=><rect key={c} x={c*P} y={2*P} width={P} height={16*P} fill={P_WH}/>)}
-      {/* Classical cornice at top */}
-      {px(25,1,16,2,P_GR2)}
-      {px(24,0,18,1,P_GR)}
-      {/* BCRA sign */}
-      {px(26,3,8,3,P_BK)}
-      <text x={27*P} y={6*P} fill={P_GD} fontSize={7} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>BCRA</text>
+      {/* BCRA sign above vault */}
+      {px(14,3,12,2,P_BK)}
+      <text x={15*P} y={5*P} fill={P_GD} fontSize={7} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>BCRA</text>
+      {/* Guard in front of vault */}
+      <PixPerson c={22} r={15} suit={P_SLT} skin={P_SK} hair={P_BK}/>
       {lbl('RESERVAS DEL BCRA')}
     </g>
   );
@@ -816,6 +817,57 @@ function SceneCongresoMalvinas() {
   );
 }
 
+function SceneIntAid() {
+  return (
+    <g>
+      {/* Clear sky */}
+      {px(0,0,40,10,P_LB)}
+      {/* Ground */}
+      {px(0,10,40,10,P_GN)}
+      {px(0,10,40,1,P_DG)}
+      {/* UN/Aid building — white neoclassical on left */}
+      {px(1,3,14,17,P_WH)}
+      {px(0,2,16,2,P_GR2)}
+      {/* Building columns */}
+      {[2,5,8,11].map(c=><rect key={c} x={c*P} y={3*P} width={P} height={14*P} fill={P_GR2}/>)}
+      {/* Building windows */}
+      {[3,6,9].map(c=>[4,7].map(r=><rect key={`${c}${r}`} x={c*P} y={r*P} width={2*P} height={2*P} fill={P_CB}/>))}
+      {/* ONU/UN sign */}
+      {px(4,9,6,2,P_CB)}
+      <text x={5*P} y={11*P} fill={P_WH} fontSize={6} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>ONU</text>
+      {/* Aid truck on road — animated */}
+      <g className="gsap-primary">
+        {px(18,13,10,3,P_WH)}
+        {px(18,12,7,1,P_SLT)}
+        {px(25,12,3,4,P_SLT)}
+        <rect x={19*P} y={16*P} width={2*P} height={2*P} fill={P_BK}/>
+        <rect x={24*P} y={16*P} width={2*P} height={2*P} fill={P_BK}/>
+        <rect x={21*P} y={12*P} width={P} height={3*P} fill={P_RD}/>
+        <rect x={20*P} y={13*P} width={3*P} height={P} fill={P_RD}/>
+      </g>
+      {/* Falling aid boxes — animated */}
+      <g className="gsap-secondary">
+        {([[22,1],[25,3],[28,2],[31,0],[33,4]] as [number,number][]).map(([c,r],i)=>(
+          <rect key={i} x={c*P} y={r*P} width={2*P} height={2*P} fill={P_GD}/>
+        ))}
+      </g>
+      {/* Argentine flag pole */}
+      <rect x={35*P} y={2*P} width={P} height={10*P} fill={P_BR}/>
+      {px(36,2,4,1,P_CB)}
+      {px(36,3,4,1,P_WH)}
+      {px(36,4,4,1,P_CB)}
+      {/* UN flag pole */}
+      <rect x={37*P} y={4*P} width={P} height={8*P} fill={P_BR}/>
+      {px(38,4,2,3,P_CB)}
+      {/* Two delegates */}
+      <PixPerson c={16} r={13} suit={P_SLT} skin={P_SK} hair={P_BK}/>
+      <PixPerson c={20} r={13} suit={P_WH} skin={P_SK} hair={P_BR}/>
+      {lbl('ASISTENCIA INTERNACIONAL', P_GN)}
+    </g>
+  );
+}
+
+
 interface Props {
   eventCategory: string;
   presidentId: string;
@@ -894,9 +946,10 @@ function selectScene(category: string, eventId: string, gameState: GameState | n
 
   if (category === 'international') {
     if (eventId?.includes('fmi') || eventId?.includes('emb') || eventId?.includes('imf')) return 'int_imf';
+    if (eventId?.includes('asist') || eventId?.includes('ayuda') || eventId?.includes('fondo')) return 'int_aid';
     if (eventId?.includes('war') || eventId?.includes('guerra') || eventId?.includes('conflict')) return 'int_war';
     if (eventId?.includes('trade') || eventId?.includes('export') || eventId?.includes('comercio')) return 'int_trade';
-    const intScenes = ['int_imf', 'int_trade', 'int_war'];
+    const intScenes = ['int_imf', 'int_trade', 'int_war', 'int_aid'];
     return intScenes[n % intScenes.length]!;
   }
 
@@ -1044,6 +1097,13 @@ export function EventIllustration({
       // Radar sweep line sweeps, blip pulses
       gsap.to('.gsap-primary', { rotation: 360, transformOrigin: '10% 50%', duration: 3, repeat: -1, ease: 'none' });
       gsap.fromTo('.gsap-explosion', { autoAlpha: 0.3 }, { autoAlpha: 1, yoyo: true, repeat: -1, duration: 0.4, ease: 'sine.inOut' });
+    } else if (scene === 'int_aid') {
+      // Aid truck drives right, boxes drift down
+      const tlAid = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+      tlAid
+        .fromTo('.gsap-primary', { x: 0 }, { x: 60, duration: 5, ease: 'none', immediateRender: false })
+        .set('.gsap-primary', { x: -80 });
+      gsap.fromTo('.gsap-secondary > rect', { y: 0, autoAlpha: 1 }, { y: 80, autoAlpha: 0, duration: 2.5, stagger: { each: 0.4, repeat: -1, from: 'random' }, ease: 'power1.in' });
     } else if (scene === 'eco_inflation') {
       // Price arrow rects scroll upward
       gsap.to('.gsap-primary', { y: -8, yoyo: true, repeat: -1, duration: 1, ease: 'power1.inOut' });
@@ -1116,6 +1176,7 @@ export function EventIllustration({
           {scene === 'int_imf'       && <SceneIntImf presidentId={presidentId} />}
           {scene === 'int_war'       && <SceneIntWar />}
           {scene === 'int_trade'     && <SceneIntTrade />}
+          {scene === 'int_aid'       && <SceneIntAid />}
           {scene === 'int_guerra_ucrania' && <SceneIntGuerraUcrania />}
           {scene === 'int_conflicto_iran' && <SceneIntConflictoIran />}
           {scene === 'arg_mundial'   && <SceneArgMundial />}
