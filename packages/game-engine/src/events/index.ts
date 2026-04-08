@@ -13,6 +13,8 @@ import { LAW_CARDS } from './laws.js';
 import { NEW_CARDS } from './new.js';
 import { CONSPIRACION_CARDS } from './conspiraciones.js';
 import { GEOPOLITICAL_CARDS } from './geopolitical.js';
+import { GUERRA_CARDS } from './guerra.js';
+import { MALVINAS_CARDS } from './malvinas.js';
 
 const DIFFICULTY_ORDER: Difficulty[] = ['easy', 'normal', 'hard', 'crisis'];
 
@@ -37,6 +39,8 @@ export const ALL_CARDS: EventCard[] = [
   ...NEW_CARDS,
   ...CONSPIRACION_CARDS,
   ...GEOPOLITICAL_CARDS,
+  ...GUERRA_CARDS,
+  ...MALVINAS_CARDS,
 ];
 
 export const CARD_REGISTRY = new Map<string, EventCard>(

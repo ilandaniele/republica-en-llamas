@@ -70,7 +70,9 @@ export type GameOverReason =
   | 'impeachment'
   | 'term_complete'
   | 'election_loss'
-  | 'deflation_spiral';
+  | 'deflation_spiral'
+  | 'nuclear_annihilation'
+  | 'military_defeat';
 
 export interface PoliticalVars {
   popularity: number;           // 0-100
@@ -159,6 +161,7 @@ export interface Choice {
   effects: ChoiceEffect;
   requiresVote?: boolean;
   voteChance?: number;          // 0-1, probability of passing without negotiation
+  instantGameOver?: GameOverReason; // triggers immediate game over instead of normal effect
 }
 
 export interface EventCard {

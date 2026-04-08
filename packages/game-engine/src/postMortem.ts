@@ -16,6 +16,8 @@ const GAME_OVER_TO_VARIABLE: Record<GameOverReason, keyof import('./types.js').C
   term_complete: null,
   election_loss: 'popularityDelta',
   deflation_spiral: 'inflationDelta',
+  nuclear_annihilation: null,
+  military_defeat: null,
 };
 
 export function getFatalDecision(
