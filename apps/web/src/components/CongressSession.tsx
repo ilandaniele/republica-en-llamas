@@ -284,7 +284,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
     const voteMap = new Map<number, VoteStatus>();
     indSeats.forEach((seat, i) => {
       if (i < visIndYes) voteMap.set(seat.index, 'yes');
-      else if (i < Math.round(indSeats.length * 0.85)) voteMap.set(seat.index, 'no');
+      else if (i < Math.round(indSeats.length * 0.60)) voteMap.set(seat.index, 'no');
       else voteMap.set(seat.index, 'abstain');
     });
 
@@ -401,7 +401,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
       <div className="text-center">
         <p className="font-mono text-xs text-smoke-500 uppercase tracking-widest mb-1">Sesión ordinaria del Congreso</p>
         <h2 className="font-serif text-xl font-bold text-smoke-100">{t(card.titleKey)}</h2>
-        <p className="text-smoke-400 text-xs mt-1 leading-relaxed max-w-lg mx-auto">{t(card.bodyKey)}</p>
+        <p className="text-smoke-400 text-sm mt-1 leading-relaxed max-w-lg mx-auto">{t(card.bodyKey)}</p>
       </div>
 
       {/* Seat count */}
@@ -763,7 +763,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
 
         {/* Effect preview */}
         <div className="bg-navy-800 border border-navy-600 rounded-lg px-4 py-3">
-          <p className="font-mono text-xs text-smoke-500 uppercase tracking-widest mb-2">Consecuencias inmediatas</p>
+          <p className="font-mono text-sm text-smoke-500 uppercase tracking-widest mb-2">Consecuencias inmediatas</p>
           <div className="font-mono text-sm text-smoke-300">
             {(() => {
               const choice = card.choices[resultChoiceIdx];
