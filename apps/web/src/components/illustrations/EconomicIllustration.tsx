@@ -82,18 +82,3 @@ export function EconomicIllustration() {
     </svg>
   );
 }
-      >
-        <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="2s" repeatCount="indefinite" />
-      </polyline>
-      <polyline
-        points="175,45 165,55"
-        stroke="#ef9a9a"
-        strokeWidth="3"
-        fill="none"
-        strokeLinecap="round"
-      >
-        <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="2s" repeatCount="indefinite" />
-      </polyline>
-    </svg>
-  );
-}
