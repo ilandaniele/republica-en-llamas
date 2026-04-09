@@ -36,7 +36,7 @@ export function PoliticalIllustration() {
       ))}
       {/* Stars */}
       {[[2,2],[8,1],[15,3],[25,1],[35,2],[45,1],[50,3]].map(([c,r])=>(
-        <rect key={`${c}${r}`} x={c*P} y={r*P} width={2} height={2} fill="#ECE8E0" />
+        <rect key={`${c}${r}`} x={(c!)*P} y={(r!)*P} width={2} height={2} fill="#ECE8E0" />
       ))}
       {/* Left wing */}
       {px(2,12,10,16,P_STONE)}
