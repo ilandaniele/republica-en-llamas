@@ -46,13 +46,19 @@ function Pres({ pid, x, y }: { pid: string; x: number; y: number }): React.React
       {R(x+15, y+16, 10, 12, c.dark)}
       {R(x+8, y+16, 10, 14, '#e8e8e8')}
       {R(x+10, y+16, 6, 12, c.tie)}
-      <circle cx={hx} cy={hy} r={11} fill={c.skin} />
+      {/* Head — pixel rect block */}
+      {R(hx-10, hy-12, 20, 22, c.skin)}
+      {/* Ears */}
+      {R(hx-14, hy-6,  4,  8, c.skin)}
+      {R(hx+10, hy-6,  4,  8, c.skin)}
+      {/* Hair */}
       {c.style === 'spiky' && <><rect x={hx-10} y={hy-13} width={5} height={9} fill={c.hair} /><rect x={hx-5} y={hy-15} width={5} height={12} fill={c.hair} /><rect x={hx} y={hy-16} width={5} height={12} fill={c.hair} /><rect x={hx+5} y={hy-14} width={5} height={10} fill={c.hair} /><rect x={hx+9} y={hy-12} width={4} height={8} fill={c.hair} /></>}
       {c.style === 'combed' && <rect x={hx-10} y={hy-12} width={21} height={9} fill={c.hair} />}
       {c.style === 'pulled' && <><rect x={hx-10} y={hy-12} width={21} height={8} fill={c.hair} /><rect x={hx+6} y={hy-14} width={5} height={6} fill={c.hair} /></>}
-      {c.style === 'curly' && [hx-8,hx-3,hx+2,hx+7].map((bx,i)=><circle key={i} cx={bx} cy={hy-9} r={5} fill={c.hair} />)}
-      {c.style === 'side' && <rect x={hx-10} y={hy-12} width={15} height={9} fill={c.hair} />}
-      {c.style === 'gray' && <><rect x={hx-10} y={hy-12} width={21} height={8} fill={c.hair} /><rect x={hx-10} y={hy-5} width={21} height={4} fill={c.hair} /></>}
+      {c.style === 'curly'  && [hx-8,hx-3,hx+2,hx+7].map((bx,i)=><rect key={i} x={bx-4} y={hy-14} width={8} height={8} fill={c.hair} />)}
+      {c.style === 'side'   && <rect x={hx-10} y={hy-12} width={15} height={9} fill={c.hair} />}
+      {c.style === 'gray'   && <><rect x={hx-10} y={hy-12} width={21} height={8} fill={c.hair} /><rect x={hx-10} y={hy-5} width={21} height={4} fill={c.hair} /></>}
+      {/* Eyes */}
       {R(hx-6, hy-2, 4, 3, '#1a0a00')}
       {R(hx+2, hy-2, 4, 3, '#1a0a00')}
     </g>

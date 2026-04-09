@@ -1,68 +1,75 @@
 import React from 'react';
 
-export function SocialIllustration() {
+const P = 6;
+function px(col: number, row: number, w: number, h: number, fill: string) {
+  return <rect x={col*P} y={row*P} width={w*P} height={h*P} fill={fill} />;
+}
+function PixPerson({ c, r, suit = '#2A3D52', skin = '#D4956A', hair = '#080C12' }: { c:number; r:number; suit?:string; skin?:string; hair?:string }) {
   return (
-    <svg width="200" height="120" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
-      {/* Background */}
-      <rect width="200" height="120" fill="#0d1b2a" rx="8" />
+    <g>
+      {px(c,r,2,1,hair)}
+      {px(c,r+1,2,1,skin)}
+      {px(c,r+2,2,2,suit)}
+      {px(c,r+4,1,1,suit)}
+      {px(c+1,r+4,1,1,suit)}
+    </g>
+  );
+}
 
-      {/* Street / ground */}
-      <rect x="0" y="95" width="200" height="25" fill="#1c2833" />
-      {/* Buildings bg */}
-      <rect x="0" y="15" width="40" height="80" fill="#1a237e" opacity="0.4" />
-      <rect x="155" y="25" width="45" height="70" fill="#1a237e" opacity="0.4" />
-
-      {/* Smoke clouds */}
-      <ellipse cx="80" cy="30" rx="20" ry="14" fill="#455a64" opacity="0.6">
-        <animateTransform attributeName="transform" type="translate" values="0,0;5,-5;0,0" dur="4s" repeatCount="indefinite" />
-      </ellipse>
-      <ellipse cx="110" cy="22" rx="16" ry="10" fill="#546e7a" opacity="0.5">
-        <animateTransform attributeName="transform" type="translate" values="0,0;-4,-4;0,0" dur="3s" repeatCount="indefinite" />
-      </ellipse>
-
-      {/* Protesters */}
-      {/* Person 1 */}
-      <circle cx="55" cy="74" r="7" fill="#ffb74d" />
-      <rect x="50" y="81" width="10" height="14" fill="#e53935" />
-      {/* Sign - rotating */}
-      <g>
-        <animateTransform attributeName="transform" type="rotate" values="-8 55 81;8 55 81;-8 55 81" dur="2s" repeatCount="indefinite" />
-        <rect x="47" y="52" width="22" height="13" fill="#fdd835" rx="1" />
-        <text x="58" y="62" fontSize="6" fill="#1a237e" textAnchor="middle">FUERA!</text>
-        <line x1="58" y1="65" x2="58" y2="81" stroke="#795548" strokeWidth="2" />
-      </g>
-
-      {/* Person 2 */}
-      <circle cx="90" cy="72" r="7" fill="#ffccbc" />
-      <rect x="85" y="79" width="10" height="14" fill="#1565c0" />
-      <g>
-        <animateTransform attributeName="transform" type="rotate" values="5 90 79;-10 90 79;5 90 79" dur="1.8s" repeatCount="indefinite" />
-        <rect x="84" y="50" width="20" height="12" fill="#ef9a9a" rx="1" />
-        <text x="94" y="59" fontSize="5" fill="#b71c1c" textAnchor="middle">BASTA!</text>
-        <line x1="94" y1="62" x2="94" y2="79" stroke="#795548" strokeWidth="2" />
-      </g>
-
-      {/* Person 3 */}
-      <circle cx="130" cy="73" r="7" fill="#ffb74d" />
-      <rect x="125" y="80" width="10" height="14" fill="#4caf50" />
-      <g>
-        <animateTransform attributeName="transform" type="rotate" values="0 130 80;12 130 80;0 130 80" dur="2.2s" repeatCount="indefinite" />
-        <rect x="122" y="53" width="24" height="12" fill="#80cbc4" rx="1" />
-        <text x="134" y="62" fontSize="5" fill="#004d40" textAnchor="middle">JUSTICIA</text>
-        <line x1="134" y1="65" x2="134" y2="80" stroke="#795548" strokeWidth="2" />
-      </g>
-
-      {/* Person 4 */}
-      <circle cx="160" cy="74" r="6" fill="#ffccbc" />
-      <rect x="155" y="80" width="10" height="14" fill="#ff8f00" />
-
-      {/* Fire */}
-      <ellipse cx="170" cy="88" rx="8" ry="5" fill="#ff8f00" opacity="0.9">
-        <animate attributeName="ry" values="5;7;5" dur="1s" repeatCount="indefinite" />
-      </ellipse>
-      <ellipse cx="170" cy="84" rx="5" ry="4" fill="#ffd54f">
-        <animate attributeName="ry" values="4;6;4" dur="0.8s" repeatCount="indefinite" />
-      </ellipse>
+export function SocialIllustration() {
+  const P_NAV = '#162032'; const P_SLT = '#2A3D52'; const P_CB = '#74ACDF';
+  const P_WH = '#ECE8E0'; const P_SK = '#D4956A'; const P_BK = '#080C12';
+  const P_GD = '#F6B40E'; const P_GR = '#3D5468'; const P_GR2 = '#8A9BAA';
+  const P_CR = '#CC2200'; const P_RD = '#EF3030'; const P_OR = '#FF7B2A';
+  const P_GN = '#3AA858'; const P_YL = '#FFD84D'; const P_BR = '#7A5530';
+  return (
+    <svg width="320" height="180" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg"
+      style={{ imageRendering: 'pixelated', display: 'block' }}>
+      {/* Night sky */}
+      {px(0,0,53,30,P_BK)}
+      {/* City silhouette buildings */}
+      {px(0,6,6,24,P_NAV)}{px(6,8,5,22,P_NAV)}{px(11,4,7,26,P_NAV)}
+      {px(38,7,5,23,P_NAV)}{px(43,5,6,25,P_NAV)}{px(49,9,4,21,P_NAV)}
+      {/* Lit windows */}
+      {[[1,9],[2,12],[7,10],[12,7],[13,12],[39,9],[44,7],[45,12],[50,11]].map(([c,r])=>(
+        <rect key={`${c}${r}`} x={(c as number)*P} y={(r as number)*P} width={P} height={P} fill={P_YL}/>
+      ))}
+      {/* Ground */}
+      {px(0,27,53,3,P_GR)}
+      {[0,4,8,12,16,20,24,28,32,36,40,44,48].map(c=>(
+        <rect key={c} x={c*P} y={27*P} width={3*P} height={P} fill="rgba(0,0,0,0.2)" />
+      ))}
+      {/* Barricade */}
+      {px(0,25,53,1,P_BR)}
+      {[0,2,4,6,8,10,12].map(c=>(
+        <rect key={c} x={c*P*4} y={24*P} width={2*P} height={P} fill={P_BR} />
+      ))}
+      {/* Protest crowd — 12 people */}
+      {[2,5,8,11,14,17,20,23,26,29,34,39].map((c,i)=>(
+        <PixPerson key={c} c={c} r={21}
+          suit={[P_RD,P_SLT,P_CR,P_CB,P_GN,P_RD,P_SLT,P_CR,P_GN,P_CB,P_RD,P_SLT][i]!}
+          skin={P_SK} hair={P_BK}/>
+      ))}
+      {/* Signs held up */}
+      {[3,11,20,29,34].map((c,i)=>(
+        <g key={c}>
+          <rect x={(c+1)*P} y={19*P} width={1} height={2*P} fill={P_GR} />
+          {px(c,18,3,2,[P_RD,P_CB,P_YL,P_RD,P_GN][i]!)}
+        </g>
+      ))}
+      {/* Smoke columns */}
+      {px(42,14,5,8,P_GR2)}{px(43,12,3,2,P_GR2)}
+      {px(46,16,4,7,P_GR2)}{px(47,14,2,2,P_GR2)}
+      {/* Fire pixels */}
+      {px(43,21,4,5,P_OR)}{px(44,19,2,2,P_YL)}{px(44,18,2,1,P_WH)}
+      {px(47,22,4,4,P_OR)}{px(48,20,2,2,P_YL)}
+      {/* Banner across top */}
+      {px(14,3,25,3,P_RD)}
+      {px(15,4,23,1,P_WH)}
+      <text x={16*P} y={5*P+4} fill={P_RD} fontSize={7} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>BASTA!</text>
+      {/* Label */}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(9,21,37,0.92)" />
+      <text x={8} y={174} fill={P_WH} fontSize={8} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>SOCIAL</text>
     </svg>
   );
 }

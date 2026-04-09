@@ -62,44 +62,126 @@ function ScenePolCongress({ presidentId, gameState }: { presidentId: string; gam
   const hair = presidentId === 'tecnocrata' ? P_GD : presidentId === 'populista' ? P_RD : P_BK;
   const hasChaos = (gameState?.political.socialStability ?? 100) < 45
                || (gameState?.congress.governmentSeats ?? 269) < 135;
+  const govSeats  = gameState?.congress.governmentSeats ?? 180;
+  const govRatio  = Math.max(0.05, Math.min(0.95, govSeats / 257));
+  // Palette extensions for Congress
+  const P_DOME  = '#3D6B4A'; // dark green copper dome
+  const P_DOME2 = '#4E8A5E'; // dome highlight
+  const P_STONE = '#D8CFBB'; // cream stone facade
+  const P_STONE2= '#BEB5A0'; // shadow stone
+  const P_WIN2  = '#89BAD4'; // window glazing
+  const P_STAIR = '#C8BEA8'; // staircase steps
+
   return (
     <g>
-      {px(0,0,40,2,hasChaos ? '#1a0000' : P_NAV)}
+      {/* Sky */}
+      {px(0,0,40,20,hasChaos ? '#200800' : P_NAV)}
       {px(0,19,40,1,P_BR)}
-      {px(4,8,32,11,P_SLT)}
-      {px(11,7,18,1,P_GR)}
-      {px(13,6,14,1,P_SLT)}
-      {px(14,5,12,1,P_SLT)}
-      {px(15,4,10,1,P_SLT)}
-      {px(17,3,6,2,P_SLT)}
-      {px(18,1,4,2,P_SLT)}
-      {px(19,0,2,1,P_GD)}
-      {px(21,0,1,2,P_CB)}{px(22,0,1,1,P_CB)}{px(22,1,1,1,P_WH)}
-      {[5,8,11].map(c=><rect key={c} x={c*P} y={8*P} width={P} height={4*P} fill={P_GR}/>)}
-      {[29,32,35].map(c=><rect key={c} x={c*P} y={8*P} width={P} height={4*P} fill={P_GR}/>)}
-      {[6,9,12].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={2*P} fill={hasChaos ? P_CR : P_GD}/>)}
-      {[26,29,32].map(c=><rect key={c} x={c*P} y={11*P} width={2*P} height={2*P} fill={hasChaos ? P_CR : P_GD}/>)}
-      {px(18,15,4,4,P_BG)}
-      {px(15,14,10,1,P_GD)}
+      {/* Plaza pavement */}
+      {px(2,17,36,2,P_STAIR)}
+      {[2,5,8,11,14,17,20,23,26,29,32,35].map(c=>(
+        <rect key={c} x={c*P} y={17*P} width={2*P} height={P} fill="rgba(0,0,0,0.15)" />
+      ))}
+
+      {/* ── Grand staircase ── */}
+      {px(11,16,18,1,P_STAIR)}
+      {px(12,15,16,1,P_STONE2)}
+      {px(13,14,14,1,P_STONE2)}
+
+      {/* ── Left wing ── */}
+      {px(2,10,10,9,P_STONE)}
+      {px(2,9,10,1,P_STONE2)}
+      {[3,6].map(c=>[11,14].map(r=>(
+        <rect key={`${c}${r}`} x={c*P} y={r*P} width={2*P} height={2*P} fill={P_WIN2}/>
+      )))}
+      {/* ── Right wing ── */}
+      {px(28,10,10,9,P_STONE)}
+      {px(28,9,10,1,P_STONE2)}
+      {[29,32].map(c=>[11,14].map(r=>(
+        <rect key={`r${c}${r}`} x={c*P} y={r*P} width={2*P} height={2*P} fill={P_WIN2}/>
+      )))}
+      {/* ── Central body ── */}
+      {px(10,9,20,10,P_STONE)}
+      {px(9,8,22,1,P_STONE2)}
+      {/* 8 front columns */}
+      {[10,12,14,16,18,20,22,24,26].map(c=>(
+        <rect key={c} x={c*P} y={9*P} width={P} height={9*P} fill={P_STONE2} />
+      ))}
+
+      {/* ── Dome rising in steps ── */}
+      {px(14,7,12,2,P_DOME)}
+      {px(15,6,10,1,P_DOME)}
+      {px(15,3,10,3,P_DOME2)}
+      {px(16,2,8,1,P_DOME)}
+      {px(16,3,8,3,P_DOME)}
+      {px(17,1,6,2,P_DOME)}
+      {px(17,2,6,3,P_DOME2)}
+      {px(18,0,4,2,P_DOME)}
+      {/* Lantern top */}
+      {px(19,0,2,1,P_STONE)}
+      <rect x={19*P+3} y={0} width={2} height={P} fill={P_STONE} />
+      {/* Flag on dome */}
+      <rect x={19*P+4} y={0} width={1} height={6*P} fill={P_STONE2} />
+      {px(20,0,6,1,P_CB)}{px(20,1,6,1,P_WH)}{px(20,2,6,1,P_CB)}
+      {/* Dome windows */}
+      {[16,19,22].map(c=>(
+        <rect key={c} x={c*P} y={4*P} width={2*P} height={2*P} fill={P_WIN2} />
+      ))}
+
+      {/* ── Hemicycle interior (visible through arches) ── */}
+      {px(11,10,18,8,P_BG)}
+      {/* Podium / dais */}
+      {px(18,14,4,3,P_SLT)}
+      {px(19,13,2,1,P_GD)}
+      {/* President at podium */}
       <g className="gsap-primary">
-        {px(18,15,4,1,P_SLT)}
-        {px(19,14,2,1,P_SK)}
-        {px(19,13,2,1,hair)}
+        <PixPerson c={19} r={10} suit={P_SLT} skin={P_SK} hair={hair}/>
       </g>
+      {/* Hemicycle seat rows — split celeste (gov) / crimson (opp) by ratio */}
+      {[12,14,16].map((row, ri) => {
+        const totalCols = 14;
+        const govCols   = Math.round(govRatio * totalCols);
+        return Array.from({length: totalCols}, (_, i) => (
+          <rect
+            key={`s${row}-${i}`}
+            x={(12+i)*P}
+            y={row*P}
+            width={P}
+            height={P}
+            fill={i < govCols ? P_CB : P_CR}
+            opacity={0.90 - ri*0.15}
+          />
+        ));
+      })}
+
+      {/* Overlay columns in front */}
+      {[10,14,18,22,26].map(c=>(
+        <rect key={`oc${c}`} x={c*P} y={9*P} width={P} height={10*P} fill={P_STONE} />
+      ))}
+
+      {/* ── State layers ── */}
       {hasChaos ? (
         <g>
-          {[0,1,2,3,4,5,6,7,8,9].map(i=>(
-            <PixPerson key={i} c={5+i*3} r={12} suit={i%3===0?P_CR:i%3===1?P_RD:P_SLT} skin={P_SK} hair={P_BK}/>
+          {[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>(
+            <PixPerson key={i} c={3+i*3} r={15} suit={i%3===0?P_CR:i%3===1?P_RD:P_SLT} skin={P_SK} hair={P_BK}/>
           ))}
-          {[0,2,4,6,8].map(i=>(<rect key={i} x={(6+i*3)*P} y={10*P} width={P} height={2*P} fill={P_RD}/>))}
-          {[1,4,7].map(i=>(<g key={i}><rect x={(5+i*3)*P+4} y={9*P} width={3*P} height={2*P} fill={P_YL}/><rect x={(6+i*3)*P} y={8*P} width={1} height={P} fill={P_GR}/></g>))}
-          {px(4,16,3,2,P_OR)}{px(4,15,2,1,P_YL)}
-          {px(33,16,3,2,P_OR)}{px(34,15,2,1,P_YL)}
+          {[0,3,6,9].map(i=>(<rect key={i} x={(4+i*3)*P} y={13*P} width={2*P} height={2*P} fill={P_RD}/>))}
+          {px(2,14,3,3,P_OR)}{px(2,12,2,2,P_YL)}
+          {px(35,14,3,3,P_OR)}{px(36,12,2,2,P_YL)}
+          {px(17,2,6,3,'rgba(255,40,0,0.4)')}
           {lbl('QUILOMBO EN EL CONGRESO', P_CR)}
         </g>
       ) : (
         <g>
-          {[0,1,2,3,4,5,6,7,8].map(i=>(<rect key={i} x={(6+i*3)*P} y={13*P} width={2*P} height={P} fill={i%2===0?P_CB:P_RD}/>))}
+          {[14,22].map(c=>(
+            <g key={c}>
+              <rect x={c*P} y={14*P} width={1} height={4*P} fill={P_GR} />
+              {px(c+1,14,3,1,P_CB)}{px(c+1,15,3,1,P_WH)}{px(c+1,16,3,1,P_CB)}
+            </g>
+          ))}
+          {[12,17,22,27].map((c,i)=>(
+            <PixPerson key={c} c={c} r={17} suit={[P_CB,P_SLT,P_CR,P_CB][i]!} skin={P_SK} hair={P_BK}/>
+          ))}
           {lbl('CONGRESO NACIONAL')}
         </g>
       )}
@@ -562,6 +644,165 @@ function SceneIntConflictoIran() {
   );
 }
 
+// ── SCENE: eco_dollar_blue ─────────────────────────────────────────────────────────────────────────
+function SceneEcoDolarBlue() {
+  return (
+    <g>
+      {px(0,0,40,22,P_BK)}
+      {px(0,0,6,22,'#0A0F1A')}{px(34,0,6,22,'#0A0F1A')}
+      {px(0,17,40,5,'#111827')}
+      {px(4,2,12,7,P_GR)}
+      {px(5,3,10,1,P_CB)}
+      {px(5,4,10,1,P_WH)}
+      {px(5,5,10,1,P_CB)}
+      <text x={40} y={50} fill={P_WH} fontSize={5} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>OFICIAL</text>
+      <text x={38} y={62} fill={P_GD} fontSize={6} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>$1100</text>
+      {px(9,9,2,8,P_GR)}
+      {px(22,2,14,7,'#0d0d0d')}
+      {px(23,3,12,5,P_BK)}
+      <text x={186} y={42} fill={P_RD} fontSize={4} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>BLUE</text>
+      <text x={182} y={62} fill={P_OR} fontSize={6} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>$2900</text>
+      {px(27,9,2,8,P_GR2)}
+      <g className="gsap-primary">
+        {px(17,9,4,3,P_BK)}
+        {px(17,12,4,2,P_SK)}
+        {px(16,14,6,3,P_BK)}
+        {px(16,17,2,2,P_BK)}{px(20,17,2,2,P_BK)}
+      </g>
+      {px(8,16,3,1,P_GD)}{px(14,16,2,1,P_GN)}{px(24,16,3,1,P_GD)}{px(30,16,2,1,P_GN)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
+      <text x={8} y={174} fill={P_GD} fontSize={8} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>DOLAR BLUE</text>
+    </g>
+  );
+}
+
+// ── SCENE: pol_election ────────────────────────────────────────────────────────────────────────────
+function ScenePolElection() {
+  return (
+    <g>
+      {px(0,0,40,10,P_LB)}
+      {px(0,10,40,12,P_GR)}
+      {[3,10,22,29].map((bx, i) => (
+        <g key={i}>
+          {px(bx,2,6,10,P_WH)}
+          {px(bx,2,6,1,P_SLT)}
+          {px(bx+2,5,2,4,P_GR)}
+        </g>
+      ))}
+      {[0,1,2,3,4,5].map(i=>(
+        <g key={i}>
+          {px(i*7,0,1,1,P_CB)}{px(i*7,1,1,1,P_WH)}{px(i*7,2,1,1,P_CB)}
+        </g>
+      ))}
+      {px(17,10,6,4,P_BK)}
+      {px(18,9,4,1,P_BK)}
+      {px(19,8,2,1,P_GR2)}
+      <g className="gsap-primary">
+        <PixPerson c={1}  r={10} suit={P_CB} />
+        <PixPerson c={4}  r={10} suit={P_NAV} />
+        <PixPerson c={7}  r={10} suit={P_WH} skin={P_SK} />
+        <PixPerson c={10} r={10} suit={P_GR} />
+      </g>
+      {px(19,12,2,2,P_WH)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
+      <text x={8} y={174} fill={P_CB} fontSize={8} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>ELECCIONES</text>
+    </g>
+  );
+}
+
+// ── SCENE: soc_housing ────────────────────────────────────────────────────────────────────────────
+function SceneSocHousing() {
+  return (
+    <g>
+      {px(0,0,40,10,P_SLT)}
+      {px(0,16,40,6,'#1a1a1a')}
+      {px(0,4,6,14,P_NAV)}
+      {px(7,6,7,12,P_GR)}
+      {px(15,2,8,16,P_SLT)}
+      {px(24,5,7,13,P_NAV)}
+      {px(32,7,8,11,P_GR)}
+      {[1,3].map(c=>[5,7,9,11].map(r=><rect key={`${c}${r}`} x={c*8+4} y={r*8} width={8} height={8} fill={P_YL} opacity={0.3}/>))}
+      {px(8,5,6,2,P_RD)}
+      <text x={66} y={52} fill={P_WH} fontSize={4} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>ALQUIL</text>
+      {px(25,4,6,2,P_RD)}
+      <text x={202} y={40} fill={P_WH} fontSize={4} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>ALQUIL</text>
+      <g className="gsap-primary">
+        <PixPerson c={1}  r={12} suit={P_BK} />
+        {px(3,15,2,3,P_BR)}
+        <PixPerson c={5}  r={13} suit={P_GR} />
+        {px(7,16,2,3,P_BR)}
+        <PixPerson c={9}  r={12} suit={P_NAV} />
+        {px(11,15,2,3,P_BR)}
+      </g>
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
+      <text x={8} y={174} fill={P_RD} fontSize={8} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>VIVIENDA</text>
+    </g>
+  );
+}
+
+// ── SCENE: eco_corte_luz ────────────────────────────────────────────────────────────────────────────
+function SceneEcoCorteLuz() {
+  return (
+    <g>
+      {px(0,0,40,22,'#050510')}
+      {[2,6,11,17,23,30,36].map((x,i)=>(
+        <rect key={i} x={x*8} y={(i%3)*16+8} width={2} height={2} fill={P_WH} opacity={0.6}/>
+      ))}
+      {px(0,6,5,16,P_BK)}
+      {px(6,8,6,14,P_NAV)}
+      {px(13,4,7,18,P_BK)}
+      {px(21,7,6,15,P_NAV)}
+      {px(28,5,6,17,P_BK)}
+      {px(35,9,5,13,P_NAV)}
+      <g className="gsap-primary">
+        {px(7,13,2,3,P_YL)}{px(7,12,2,1,P_OR)}
+        {px(24,10,2,3,P_YL)}{px(24,9,2,1,P_OR)}
+        {px(14,14,2,3,P_YL)}{px(14,13,2,1,P_OR)}
+      </g>
+      <rect x={52} y={96} width={32} height={16} fill={P_YL} opacity={0.06}/>
+      <rect x={188} y={72} width={32} height={16} fill={P_YL} opacity={0.06}/>
+      {px(30,5,1,7,P_GR2)}
+      <rect x={240} y={40} width={32} height={2} fill={P_GR2} transform="rotate(12,240,40)"/>
+      {px(36,9,1,5,P_GR2)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
+      <text x={8} y={174} fill={P_YL} fontSize={8} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>CORTE DE LUZ</text>
+    </g>
+  );
+}
+
+// ── SCENE: pol_veto ────────────────────────────────────────────────────────────────────────────────
+function ScenePolVeto() {
+  return (
+    <g>
+      {px(0,0,40,22,P_NAV)}
+      {px(0,14,40,8,P_SLT)}
+      {px(0,0,40,1,P_GR)}
+      {px(6,12,28,2,P_BR)}
+      {px(6,14,28,4,P_BR)}
+      {px(7,16,3,4,P_BK)}{px(29,16,3,4,P_BK)}
+      <PixPerson c={17} r={8} suit={P_BK} skin={P_SK} hair={P_BK} />
+      {px(8,11,4,2,P_WH)}{px(13,12,5,2,P_WH)}{px(25,11,4,2,P_WH)}{px(30,12,3,2,P_WH)}
+      <g className="gsap-primary">
+        <rect x={80} y={40} width={160} height={56} fill={P_CR} opacity={0.15}/>
+        <rect x={80} y={40} width={160} height={8} fill={P_CR} opacity={0.8}/>
+        <rect x={80} y={88} width={160} height={8} fill={P_CR} opacity={0.8}/>
+        <rect x={80} y={48} width={8} height={40} fill={P_CR} opacity={0.8}/>
+        <rect x={232} y={48} width={8} height={40} fill={P_CR} opacity={0.8}/>
+        <text x={90} y={72} fill={P_WH} fontSize={14} fontFamily="'Press Start 2P'" fontWeight="bold" style={{imageRendering:'pixelated' as const}}>VETADO</text>
+        <rect x={76} y={36} width={180} height={6} fill={P_CR} opacity={0.6} transform="rotate(-8,76,36)"/>
+      </g>
+      <g className="gsap-secondary">
+        {px(4,17,4,2,P_WH)}{px(10,18,5,2,P_WH)}{px(19,17,3,2,P_WH)}{px(28,18,4,2,P_WH)}{px(34,17,4,2,P_WH)}
+      </g>
+      {px(33,1,1,12,P_GR)}
+      {px(34,1,5,3,P_CB)}{px(34,4,5,3,P_WH)}{px(34,7,5,3,P_CB)}
+      <rect x={0} y={160} width={320} height={20} fill="rgba(0,0,0,0.85)"/>
+      <text x={8} y={174} fill={P_CR} fontSize={8} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>PRESIDENTE VETA</text>
+    </g>
+  );
+}
+
+
 // â”€â”€ SCENE: arg_mundial â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function SceneArgMundial() {
   return (
@@ -956,24 +1197,29 @@ function selectScene(category: string, eventId: string, gameState: GameState | n
   if (category === 'economic') {
     if (eventId?.includes('reserv')) return 'eco_reserves';
     if (eventId?.includes('growth') || eventId?.includes('pib') || eventId?.includes('gdp') || eventId?.includes('crecim')) return 'eco_growth';
-    const ecoScenes = ['eco_inflation', 'eco_reserves', 'eco_growth'];
+    if (eventId?.includes('dolar_blue') || eventId?.includes('blue') || eventId?.includes('mercado_negro')) return 'eco_dollar_blue';
+    if (eventId?.includes('corte_luz') || eventId?.includes('apagon') || eventId?.includes('blackout')) return 'eco_corte_luz';
+    const ecoScenes = ['eco_inflation', 'eco_reserves', 'eco_growth', 'eco_dollar_blue'];
     return ecoScenes[n % ecoScenes.length]!;
   }
 
   if (category === 'social') {
     if (eventId?.includes('huelga') || eventId?.includes('strike') || eventId?.includes('sind')) return 'soc_strike';
     if (eventId?.includes('health') || eventId?.includes('salud') || eventId?.includes('hospital')) return 'soc_health';
-    const socScenes = ['soc_unrest', 'soc_strike', 'soc_health'];
+    if (eventId?.includes('vivienda') || eventId?.includes('alquiler') || eventId?.includes('housing') || eventId?.includes('inquilino')) return 'soc_housing';
+    const socScenes = ['soc_unrest', 'soc_strike', 'soc_health', 'soc_housing'];
     return socScenes[n % socScenes.length]!;
   }
 
   if (category === 'political') {
     if (eventId?.startsWith('scan_') || eventId?.includes('scandal') || eventId?.includes('escandalos')) return 'pol_scandal';
     if (eventId?.includes('protest') || eventId?.includes('marcha') || eventId?.includes('piquete')) return 'pol_protest';
+    if (eventId?.includes('eleccion') || eventId?.includes('election') || eventId?.includes('voto') || eventId?.includes('ballot')) return 'pol_election';
+    if (eventId?.includes('veto')) return 'pol_veto';
     if (eventId?.startsWith('arg_') && eventId !== 'arg_015') return 'pol_scandal';
     const popularity = gameState?.political.popularity ?? 50;
     if (popularity < 25) return 'crisis';
-    const polScenes = ['pol_congress', 'pol_scandal', 'pol_protest'];
+    const polScenes = ['pol_congress', 'pol_scandal', 'pol_protest', 'pol_election'];
     return polScenes[n % polScenes.length]!;
   }
 
@@ -1133,6 +1379,23 @@ export function EventIllustration({
       tlShip
         .fromTo('.gsap-primary', { x: 0 }, { x: -20, duration: 5, ease: 'none', immediateRender: false })
         .set('.gsap-primary', { x: 0 });
+    } else if (scene === 'eco_dollar_blue') {
+      // Hooded figure sways slightly
+      gsap.to('.gsap-primary', { x: 1, yoyo: true, repeat: -1, duration: 0.9, ease: 'sine.inOut' });
+    } else if (scene === 'pol_election') {
+      // Voters shuffle forward slowly in queue
+      gsap.fromTo('.gsap-primary', { x: 0 }, { x: 8, duration: 3, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    } else if (scene === 'soc_housing') {
+      // People with suitcases drift forward
+      gsap.to('.gsap-primary', { x: 4, yoyo: true, repeat: -1, duration: 2, ease: 'sine.inOut' });
+    } else if (scene === 'eco_corte_luz') {
+      // Candle flames flicker
+      gsap.to('.gsap-primary', { autoAlpha: 0.4, yoyo: true, repeat: -1, duration: 0.7, ease: 'sine.inOut', stagger: 0.2 });
+    } else if (scene === 'pol_veto') {
+      // VETADO stamp pulses
+      gsap.fromTo('.gsap-primary', { scale: 1.04, transformOrigin: '50% 50%' }, { scale: 1, yoyo: true, repeat: -1, duration: 0.6, ease: 'sine.inOut', immediateRender: false });
+      // Scattered documents drift
+      gsap.to('.gsap-secondary', { y: 2, yoyo: true, repeat: -1, duration: 1.2, ease: 'sine.inOut', stagger: 0.15 });
     }
   }, { scope: containerRef, dependencies: [scene, eventCategory] });
 
@@ -1179,6 +1442,11 @@ export function EventIllustration({
           {scene === 'int_aid'       && <SceneIntAid />}
           {scene === 'int_guerra_ucrania' && <SceneIntGuerraUcrania />}
           {scene === 'int_conflicto_iran' && <SceneIntConflictoIran />}
+          {scene === 'eco_dollar_blue'    && <SceneEcoDolarBlue />}
+          {scene === 'pol_election'       && <ScenePolElection />}
+          {scene === 'soc_housing'        && <SceneSocHousing />}
+          {scene === 'eco_corte_luz'      && <SceneEcoCorteLuz />}
+          {scene === 'pol_veto'           && <ScenePolVeto />}
           {scene === 'arg_mundial'   && <SceneArgMundial />}
           {scene === 'arg_corralito' && <SceneArgCorralito />}
           {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}
