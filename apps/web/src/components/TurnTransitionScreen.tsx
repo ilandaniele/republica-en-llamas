@@ -5,7 +5,7 @@ import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
 import { useGameStore } from '../stores/gameStore.js';
 
 // ── pixel palette (subset) ───────────────────────────────────────────────
-const P = 5;
+const P = 3;
 const NAV = '#162032'; const SLT = '#2A3D52'; const CB  = '#74ACDF';
 const WH  = '#ECE8E0'; const SK  = '#D4956A'; const BK  = '#080C12';
 const GN  = '#3AA858'; const DG  = '#1E3A1E'; const BR  = '#7A5530';
@@ -37,7 +37,7 @@ function Person({ c, r, suit = SLT, hair = BK, skin = SK }: { c: number; r: numb
 }
 
 function CasaRosadaScene({ state }: { state: CasaState }) {
-  const W = 480; const H = 200;
+  const W = 96 * P; const H = 40 * P;
   const skyColor = state === 'nuke'  ? '#3A1000'
     : state === 'chaos' ? '#221508'
     : state === 'riot'  ? '#160E1E'
@@ -305,9 +305,19 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: '-100%', opacity: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      className="fixed inset-0 z-50 flex items-start justify-center pt-12 bg-navy-900/95"
+      className="fixed inset-0 z-50 overflow-y-auto bg-navy-900/95"
     >
-      <div className="max-w-xl w-full mx-4">
+      <div className="max-w-xl w-full mx-auto px-4 py-4">
+        {/* Casa Rosada floating island — FIRST for quick visual context */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="w-full mb-4 pixel-border overflow-hidden"
+        >
+          <CasaRosadaScene state={casaState} />
+        </motion.div>
+
         {/* Turn counter */}
         <div className="text-center mb-4">
           <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }} className="text-smoke-500 uppercase">TURNO {data.fromTurn} ▶ {data.toTurn}</span>
@@ -359,16 +369,6 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
         >
           {data.hookText}
         </motion.p>
-
-        {/* Casa Rosada floating island */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.3 }}
-          className="w-full mb-4 pixel-border overflow-hidden"
-        >
-          <CasaRosadaScene state={casaState} />
-        </motion.div>
 
         {/* Continue button */}
         <motion.div

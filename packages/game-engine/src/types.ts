@@ -236,6 +236,10 @@ export interface GameState {
   scenarioArcPhase: number;
   /** Consecutive turns with inflation below -10 (deflationary spiral tracker). */
   deflationStreakTurns: number;
+  /** True after losing presidential election — enters survival/lame-duck mode. */
+  lameDuckMode?: boolean;
+  /** Turns remaining in lame-duck mode before election_loss game over. */
+  lameDuckTurnsRemaining?: number;
 }
 
 export interface VoteResult {
@@ -244,6 +248,10 @@ export interface VoteResult {
   independentVotes: number;
   totalVotes: number;
   requiredVotes: number;
+  bribeOccurred: boolean;
+  bribedVotes: number;
+  abstentionCount: number;
+  defectionCount: number;
 }
 
 export interface NegotiationResult {

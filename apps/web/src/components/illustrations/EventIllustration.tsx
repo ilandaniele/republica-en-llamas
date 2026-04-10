@@ -7,7 +7,7 @@ gsap.registerPlugin(useGSAP);
 
 // â”€â”€ Pixel grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // ViewBox: 320Ã—180. Each "pixel" = 8 SVG units â†’ 40Ã—22 grid.
-const P = 8;
+const P = 3;
 // px(col, row, wCols, hRows, fill) â†’ single rect on the 8px grid
 function px(col: number, row: number, wCols: number, hRows: number, fill: string): React.ReactElement {
   return <rect x={col * P} y={row * P} width={wCols * P} height={hRows * P} fill={fill} />;
