@@ -111,9 +111,15 @@ async function generateImage(prompt: string, width = 320, height = 180): Promise
   // Low resolution forces upscaling → pixel art aesthetic when displayed
   const encoded = encodeURIComponent(prompt);
   const url = `https://image.pollinations.ai/prompt/${encoded}?width=${width}&height=${height}&nologo=true&enhance=false&model=flux&seed=${Math.floor(Math.random()*9999)}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Pollinations error ${res.status}: ${await res.text()}`);
-  return res.arrayBuffer();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 90_000); // 90s max
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    if (!res.ok) throw new Error(`Pollinations error ${res.status}: ${await res.text()}`);
+    return res.arrayBuffer();
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 async function uploadToSupabase(id: string, data: ArrayBuffer): Promise<string> {
@@ -156,6 +162,7 @@ async function main() {
 
   let done = 0;
   let skipped = 0;
+  const RETRY_DELAYS = [30_000, 60_000, 90_000]; // backoff on 429 / network errors
 
   for (const img of IMAGES) {
     if (manifest[img.id] && manifest[img.id] !== '') {
@@ -165,22 +172,39 @@ async function main() {
     }
 
     process.stdout.write(`⏳  [${done + skipped + 1}/${IMAGES.length}] ${img.id} … `);
-    try {
-      // Portraits: square 256x256 → chunky pixel sprite; Scenes: 320x180 → 16:9 pixel art
-      const isPortrait = img.id.startsWith('char_');
-      const [w, h] = isPortrait ? [256, 256] : [320, 180];
-      const buffer  = await generateImage(img.prompt, w, h);
-      const url     = await uploadToSupabase(img.id, buffer);
-      manifest[img.id] = url;
-      fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
-      console.log(`✅  ${url.split('/').pop()}`);
-      done++;
-    } catch (err) {
-      console.error(`\n❌  Failed: ${(err as Error).message}`);
+
+    // Portraits: square 256x256 → chunky pixel sprite; Scenes: 320x180 → 16:9 pixel art
+    const isPortrait = img.id.startsWith('char_');
+    const [w, h] = isPortrait ? [256, 256] : [320, 180];
+
+    let success = false;
+    for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+      try {
+        if (attempt > 0) {
+          const wait = RETRY_DELAYS[attempt - 1];
+          process.stdout.write(`\n  ↩  retry ${attempt} (waiting ${wait / 1000}s) … `);
+          await sleep(wait);
+        }
+        const buffer = await generateImage(img.prompt, w, h);
+        const url    = await uploadToSupabase(img.id, buffer);
+        manifest[img.id] = url;
+        fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
+        console.log(`✅  ${url.split('/').pop()}`);
+        done++;
+        success = true;
+        break;
+      } catch (err) {
+        const msg = (err as Error).message;
+        if (attempt < RETRY_DELAYS.length) {
+          process.stdout.write(`⚠️  ${msg.slice(0, 60)} — retrying…`);
+        } else {
+          console.error(`\n❌  Failed after ${attempt + 1} attempts: ${msg.slice(0, 120)}`);
+        }
+      }
     }
 
-    // Courtesy delay between requests — Pollinations.ai: no strict limit, 3s is plenty
-    await sleep(3000);
+    // Pause between requests — 15s after success, 5s after final failure
+    await sleep(success ? 15_000 : 5_000);
   }
 
   console.log(`\n✅  Done! Generated ${done} new images, skipped ${skipped}.`);
