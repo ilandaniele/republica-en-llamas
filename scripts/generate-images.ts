@@ -17,13 +17,11 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const REPLICATE_TOKEN  = process.env.REPLICATE_API_TOKEN       ?? '';
-const HF_TOKEN         = process.env.HF_TOKEN                   ?? '';
 const SUPABASE_URL     = process.env.SUPABASE_URL               ?? process.env.VITE_SUPABASE_URL ?? '';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY  ?? '';
 
-if ((!HF_TOKEN && !REPLICATE_TOKEN) || !SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  console.error('Missing env vars: HF_TOKEN (or REPLICATE_API_TOKEN), SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
+if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+  console.error('Missing env vars: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
   process.exit(1);
 }
 
@@ -106,67 +104,12 @@ async function sleep(ms: number) {
 }
 
 async function generateImage(prompt: string): Promise<ArrayBuffer> {
-  if (HF_TOKEN) {
-    // HuggingFace Inference API (free, primary)
-    const HF_MODEL = 'black-forest-labs/FLUX.1-schnell';
-    const url = `https://router.huggingface.co/hf-inference/models/${HF_MODEL}`;
-    let attempt = 0;
-    while (attempt < 5) {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${HF_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ inputs: prompt }),
-      });
-      if (res.status === 503) {
-        let waitMs = 25_000;
-        try { const b = await res.json() as { estimated_time?: number }; waitMs = Math.max((b.estimated_time ?? 25), 25) * 1000; } catch { /* ignore */ }
-        console.log(`  Model loading... waiting ${waitMs / 1000}s`);
-        await sleep(waitMs);
-        attempt++;
-        continue;
-      }
-      if (!res.ok) throw new Error(`HF API error ${res.status}: ${await res.text()}`);
-      return res.arrayBuffer();
-    }
-    throw new Error(`HF failed after ${attempt} attempts`);
-  }
-
-  // Replicate fallback (requires billing) — stability-ai/sdxl
-  const SDXL_VERSION = '7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc';
-  let retries = 0;
-  let createRes: Response | null = null;
-  while (retries < 10) {
-    createRes = await fetch('https://api.replicate.com/v1/predictions', {
-      method: 'POST',
-      headers: { 'Authorization': `Token ${REPLICATE_TOKEN}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ version: SDXL_VERSION, input: { prompt, width: 512, height: 512, num_inference_steps: 30 } }),
-    });
-    if (createRes.status === 429) {
-      let waitMs = 12000;
-      try { const e = await createRes.json() as { retry_after?: number }; waitMs = Math.max((e.retry_after ?? 12), 12) * 1000; } catch { /* ignore */ }
-      console.log(`  Rate limited — waiting ${waitMs / 1000}s...`);
-      await sleep(waitMs);
-      retries++;
-      continue;
-    }
-    break;
-  }
-  if (!createRes || !createRes.ok) throw new Error(`Replicate error ${createRes?.status}: ${await createRes?.text()}`);
-  const { id } = await createRes.json() as { id: string };
-  while (true) {
-    await sleep(4000);
-    const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
-      headers: { 'Authorization': `Token ${REPLICATE_TOKEN}` },
-    });
-    if (!pollRes.ok) throw new Error(`Replicate poll error ${pollRes.status}`);
-    const pred = await pollRes.json() as { status: string; output?: string[]; error?: string };
-    if (pred.status === 'succeeded' && pred.output?.[0]) {
-      const imgRes = await fetch(pred.output[0]);
-      if (!imgRes.ok) throw new Error(`Image download error ${imgRes.status}`);
-      return imgRes.arrayBuffer();
-    }
-    if (pred.status === 'failed') throw new Error(`Replicate failed: ${pred.error ?? 'unknown'}`);
-  }
+  // Pollinations.ai — free, no auth, FLUX-based
+  const encoded = encodeURIComponent(prompt);
+  const url = `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=576&nologo=true&enhance=true&model=flux`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Pollinations error ${res.status}: ${await res.text()}`);
+  return res.arrayBuffer();
 }
 
 async function uploadToSupabase(id: string, data: ArrayBuffer): Promise<string> {

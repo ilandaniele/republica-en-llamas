@@ -43,5 +43,8 @@
   "eco_dollar_blue": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/eco_dollar_blue.png",
   "eco_corte_luz": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/eco_corte_luz.png",
   "soc_housing": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/soc_housing.png",
-  "pol_election": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/pol_election.png"
+  "pol_election": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/pol_election.png",
+  "pol_veto": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/pol_veto.png",
+  "int_aid": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/int_aid.png",
+  "malvinas": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/malvinas.png"
 }
