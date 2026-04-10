@@ -1,4 +1,8 @@
-﻿import React from 'react';
+﻿import React, { useRef } from 'react';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP);
 
 export type PortraitId = 'milei' | 'massa' | 'bullrich' | 'bregman' | 'schiaretti' | 'larreta' | 'ingeniero' | 'populista' | 'tecnocrata' | 'izquierda' | 'federal' | 'corporativo';
 export type PortraitMood = 'neutral' | 'panic' | 'victory';
@@ -866,6 +870,9 @@ function LarretaPortrait({ mood }: { mood: PortraitMood }) {
 
 // ── Export ─────────────────────────────────────────────────────────────────────
 export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const prevMood     = useRef<PortraitMood>(mood);
+
   const base: PortraitId =
     id === 'ingeniero'   ? 'milei'       :
     id === 'populista'   ? 'massa'       :
@@ -874,22 +881,75 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
     id === 'federal'     ? 'schiaretti'  :
     id === 'corporativo' ? 'larreta'     : id;
 
+  const svgH = Math.round(px * 240 / 200);
+
+  // ── Idle: subtle float animation ──────────────────────────────────────────
+  useGSAP(() => {
+    gsap.to(containerRef.current, {
+      y: -3,
+      duration: 2,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut',
+    });
+  }, { scope: containerRef });
+
+  // ── Mood transitions ──────────────────────────────────────────────────────
+  useGSAP(() => {
+    if (prevMood.current === mood) return;
+    prevMood.current = mood;
+
+    if (mood === 'panic') {
+      gsap.killTweensOf(containerRef.current, 'x,rotation');
+      gsap.timeline()
+        .to(containerRef.current, { x: -5, rotation: -3, duration: 0.06, ease: 'none' })
+        .to(containerRef.current, { x:  5, rotation:  3, duration: 0.06, ease: 'none' })
+        .to(containerRef.current, { x: -4, rotation: -2, duration: 0.06, ease: 'none' })
+        .to(containerRef.current, { x:  4, rotation:  2, duration: 0.06, ease: 'none' })
+        .to(containerRef.current, { x:  0, rotation:  0, duration: 0.08, ease: 'none' });
+    } else if (mood === 'victory') {
+      gsap.killTweensOf(containerRef.current, 'scale,y');
+      gsap.timeline()
+        .to(containerRef.current, {
+          scale: 1.18,
+          duration: 0.18,
+          ease: 'back.out(3)',
+          transformOrigin: '50% 100%',
+          immediateRender: false,
+        })
+        .to(containerRef.current, {
+          scale: 1,
+          duration: 0.4,
+          ease: 'elastic.out(1, 0.5)',
+          transformOrigin: '50% 100%',
+        });
+    } else {
+      // back to neutral
+      gsap.to(containerRef.current, { x: 0, rotation: 0, scale: 1, duration: 0.2 });
+    }
+  }, { scope: containerRef, dependencies: [mood] });
+
   return (
-    <svg
-      width={px}
-      height={px}
-      viewBox="0 0 200 240"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ imageRendering: 'pixelated', display: 'block' }}
-      role="img"
-      aria-label={'Retrato de ' + id}
+    <div
+      ref={containerRef}
+      style={{ display: 'inline-block', width: px, height: svgH, lineHeight: 0 }}
     >
-      {base === 'milei'      && <MileiPortrait      mood={mood} />}
-      {base === 'massa'      && <MassaPortrait      mood={mood} />}
-      {base === 'bullrich'   && <BullrichPortrait   mood={mood} />}
-      {base === 'bregman'    && <BregmanPortrait    mood={mood} />}
-      {base === 'schiaretti' && <SchiarettiPortrait mood={mood} />}
-      {base === 'larreta'    && <LarretaPortrait    mood={mood} />}
-    </svg>
+      <svg
+        width={px}
+        height={svgH}
+        viewBox="0 0 200 240"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ imageRendering: 'pixelated', display: 'block' }}
+        role="img"
+        aria-label={'Retrato de ' + id}
+      >
+        {base === 'milei'      && <MileiPortrait      mood={mood} />}
+        {base === 'massa'      && <MassaPortrait      mood={mood} />}
+        {base === 'bullrich'   && <BullrichPortrait   mood={mood} />}
+        {base === 'bregman'    && <BregmanPortrait    mood={mood} />}
+        {base === 'schiaretti' && <SchiarettiPortrait mood={mood} />}
+        {base === 'larreta'    && <LarretaPortrait    mood={mood} />}
+      </svg>
+    </div>
   );
 }

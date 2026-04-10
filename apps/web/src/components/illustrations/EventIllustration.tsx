@@ -1451,7 +1451,7 @@ export function EventIllustration({
           role="img" aria-label={`IlustraciÃ³n: ${eventCategory}`}>
           {aiUrl ? (
             <>
-              <image href={aiUrl} x={0} y={0} width={320} height={180} preserveAspectRatio="xMidYMid slice" />
+              <image href={aiUrl} x={0} y={0} width={320} height={180} preserveAspectRatio="xMidYMid slice" style={{ imageRendering: 'pixelated' as const }} />
               {lbl(scene.replace(/_/g, ' ').toUpperCase())}
             </>
           ) : (

@@ -27,20 +27,23 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
 
 const BUCKET        = 'game-images';
 const FOLDER        = 'illustrations';
-const STYLE_SUFFIX  = ', pixel art style, 16-bit sprites, crisp pixels, Argentine political scene, dark navy blue background, no text, no words, no letters';
+// Scene illustrations (16:9)
+const STYLE_SUFFIX  = ', retro pixel art 8-bit game, SNES 16-bit sprite style, flat solid color blocks, crisp hard pixel edges, no smooth gradients, no anti-aliasing, limited 16-color palette, simple bold readable shapes, Argentine political, dark navy background, no text no letters';
+// Character portrait sprites (square)
+const PORTRAIT_SUFFIX = ', 8-bit pixel art character bust sprite, frontal facing, flat solid colors, crisp hard pixel edges, SNES RPG game portrait style, no smooth gradients, limited color palette, black background, no text no letters';
 const MANIFEST_PATH = path.join(__dirname, '../apps/web/src/assets/image-manifest.json');
 
 // ── Image definitions ─────────────────────────────────────────────────────────
 const IMAGES: Array<{ id: string; prompt: string }> = [
   // Political scenes
-  { id: 'pol_congress',     prompt: 'Argentine congress chamber, politicians debating at wooden desks, classical columns, dramatic lighting' + STYLE_SUFFIX },
-  { id: 'pol_scandal',      prompt: 'Argentine politician caught in scandal, briefcase spilling money, journalists with microphones, flashbulbs' + STYLE_SUFFIX },
-  { id: 'pol_protest',      prompt: 'Crowd of protesters in Buenos Aires street, banging pots pans, holding signs, obelisk in background' + STYLE_SUFFIX },
+  { id: 'pol_congress',     prompt: 'Argentine congress chamber interior hemicycle, legislators at desks, large dome above, two-tone seats government opposition, podium center' + STYLE_SUFFIX },
+  { id: 'pol_scandal',      prompt: 'Argentine politician at podium caught in scandal, briefcase open spilling cash, journalists with cameras flashbulbs, newspaper headline' + STYLE_SUFFIX },
+  { id: 'pol_protest',      prompt: 'Street protest Buenos Aires, crowd marching, cacerolazo people banging pots, obelisk monument background, smoke' + STYLE_SUFFIX },
 
   // Economic scenes
-  { id: 'eco_inflation',    prompt: 'Shopping cart overflowing with price tags, shelves with triple-digit price labels, worried shopper, Argentine supermarket' + STYLE_SUFFIX },
-  { id: 'eco_reserves',     prompt: 'Argentine central bank vault, gold bars behind iron bars, empty shelves, worried banker in suit' + STYLE_SUFFIX },
-  { id: 'eco_growth',       prompt: 'Argentine factory workers, rising stock chart, construction cranes, green upward arrows, celebration' + STYLE_SUFFIX },
+  { id: 'eco_inflation',    prompt: 'Supermarket shelves empty, giant red upward price arrow, peso bills scattered, worried character in store aisle' + STYLE_SUFFIX },
+  { id: 'eco_reserves',     prompt: 'Bank vault underground, gold bars stacked, iron bars gate, BCRA sign on wall, worried banker character foreground' + STYLE_SUFFIX },
+  { id: 'eco_growth',       prompt: 'Factory building with smokestacks, bar chart rising green bars, construction crane, worker silhouette celebrating' + STYLE_SUFFIX },
 
   // Social scenes
   { id: 'soc_strike',       prompt: 'Union workers on strike outside factory, picket signs, hard hats, fists raised, CGT banner' + STYLE_SUFFIX },
@@ -63,8 +66,8 @@ const IMAGES: Array<{ id: string; prompt: string }> = [
   { id: 'arg_fmi_negocio',  prompt: 'Argentine official signing debt agreement with foreign bankers, stacks of loan documents, IMF logo on briefcase' + STYLE_SUFFIX },
 
   // Crisis
-  { id: 'crisis',           prompt: 'Argentina hyperinflation, store shelves empty, wheelbarrow full of banknotes, apocalyptic cityscape, people panicking' + STYLE_SUFFIX },
-  { id: 'crisis_impeachment', prompt: 'Argentine president impeachment trial, congress podium, angry legislators pointing, president sweating, gavel' + STYLE_SUFFIX },
+  { id: 'crisis',           prompt: 'Argentine hyperinflation apocalypse, wheelbarrow overflowing with banknotes, burning city skyline, queues outside empty shops, red sky chaos' + STYLE_SUFFIX },
+  { id: 'crisis_impeachment', prompt: 'Argentine president impeachment trial in congress chamber, angry legislators pointing, president sweating at podium, judge gavel, dramatic red lighting' + STYLE_SUFFIX },
 
   // New pixel-art scenes (missing from original HF batch)
   { id: 'guerra_nuke_explosion', prompt: 'nuclear mushroom cloud explosion over Buenos Aires skyline, apocalyptic orange sky, massive shockwave, ruins silhouettes foreground' + STYLE_SUFFIX },
@@ -79,22 +82,22 @@ const IMAGES: Array<{ id: string; prompt: string }> = [
   { id: 'malvinas',              prompt: 'Malvinas Falkland Islands map with Argentine flag, warship South Atlantic, political debate Buenos Aires congress' + STYLE_SUFFIX },
 
   // Character portraits (editorial caricature style)
-  { id: 'char_milei',       prompt: 'Javier Milei caricature portrait bust, seven wild black hair spikes pointing upward, thick black mutton-chop sideburns, wide staring eyes, red necktie, holding a chainsaw, anarcho-capitalist libertarian Argentina president, plain white background' + STYLE_SUFFIX },
-  { id: 'char_massa',       prompt: 'Sergio Massa caricature portrait bust, flat slicked-back dark hair, very wide square jaw, hooded drooping eyelids, navy blue suit red tie, politician smirk one side, Argentine economy minister peronist, plain white background' + STYLE_SUFFIX },
-  { id: 'char_bullrich',    prompt: 'Patricia Bullrich caricature portrait bust, short straight gray hair, angular bony face, extremely thin pressed lips, charcoal blazer teal blouse, gold security badge on lapel, cold stern expression, Argentine security minister PRO party, plain white background' + STYLE_SUFFIX },
-  { id: 'char_bregman',     prompt: 'Myriam Bregman caricature portrait bust, large voluminous curly dark hair, round glasses green tinted lenses, golden hoop earrings, bright red blazer, determined raised fist, Argentine leftist FIT-Unidad Trotskyist politician, plain white background' + STYLE_SUFFIX },
-  { id: 'char_schiaretti',  prompt: 'Juan Schiaretti caricature portrait bust, completely bald shiny head zero hair on top, thin gray fringe only on the sides above ears, very wide fat round face, heavy jowls, conservative gray suit blue tie, Argentine Cordoba province governor, plain white background' + STYLE_SUFFIX },
-  { id: 'char_larreta',     prompt: 'Horacio Rodriguez Larreta caricature portrait bust, salt and pepper short hair with neat side part, slim narrow face, dark under-eye bags tired look, light blue tie charcoal slim suit, exhausted worried expression, Buenos Aires mayor Argentine PRO party technocrat, plain white background' + STYLE_SUFFIX },
-  { id: 'char_caputo',      prompt: 'Luis Caputo caricature portrait, grey hair, dark suit, Argentine economy minister, serious face, spreadsheets, white background' + STYLE_SUFFIX },
-  { id: 'char_moyano',      prompt: 'Hugo Moyano caricature portrait, grey hair, union leader Argentina, Teamsters jacket, powerful stout figure, white background' + STYLE_SUFFIX },
-  { id: 'char_kicillof',    prompt: 'Axel Kicillof caricature portrait, curly black hair, scruffy beard, leftist economics professor Argentina, white background' + STYLE_SUFFIX },
-  { id: 'char_kirchner',    prompt: 'Cristina Kirchner caricature portrait, dark dyed hair, pantsuit, Peronist cross necklace, Argentina former president, white background' + STYLE_SUFFIX },
-  { id: 'char_georgieva',   prompt: 'Kristalina Georgieva caricature portrait, short grey hair, IMF director badge, stern look, conference room, European diplomat, white background' + STYLE_SUFFIX },
-  { id: 'char_macri',       prompt: 'Mauricio Macri caricature portrait bust, neat dark hair side-parted, CEO smile wide teeth, navy suit gold tie, Boca Juniors pin on lapel, confident businessman posture, Argentina PRO party former president, plain white background' + STYLE_SUFFIX },
-  { id: 'char_anibal',      prompt: 'Anibal Fernandez caricature portrait bust, large thick walrus mustache dominating lower face, heavy jowls, squinting eyes menacing gaze, dark rumpled suit, Argentine Peronist security minister, imposing heavyset figure, plain white background' + STYLE_SUFFIX },
-  { id: 'char_berni',       prompt: 'Sergio Berni caricature portrait bust, black police beret tilted, police uniform with medals, aggressive jutting chin, short dark hair, fierce stare, Buenos Aires province security minister Argentina, plain white background' + STYLE_SUFFIX },
-  { id: 'char_grabois',     prompt: 'Juan Grabois caricature portrait bust, unkempt dark beard and hair, round face, casual rumpled plaid shirt no tie, raised fist gesture solidarity, Argentine social activist piquetero movement leader, plain white background' + STYLE_SUFFIX },
-  { id: 'char_milani',      prompt: 'Cesar Milani caricature portrait bust, full dress military uniform Argentina, general rank insignia gold stars on shoulders, rows of medal ribbons on chest, stern formal expression, grey hair short, plain white background' + STYLE_SUFFIX },
+  { id: 'char_milei',       prompt: 'Javier Milei pixel bust, seven black spiky wild hair sticking up, thick black sideburns, wide staring eyes, red tie dark suit, small chainsaw in hand, anarcho-capitalist Argentine president' + PORTRAIT_SUFFIX },
+  { id: 'char_massa',       prompt: 'Sergio Massa pixel bust, flat slicked-back dark brown hair, very wide square jaw, heavy drooping eyelids, navy suit red tie, holding briefcase, Argentine Peronist economy minister' + PORTRAIT_SUFFIX },
+  { id: 'char_bullrich',    prompt: 'Patricia Bullrich pixel bust, short choppy auburn-gray hair, angular bony face, thin pressed lips, charcoal blazer, gold star security badge on lapel, cold stern expression, Argentine security minister' + PORTRAIT_SUFFIX },
+  { id: 'char_bregman',     prompt: 'Myriam Bregman pixel bust, large voluminous curly blonde hair, round glasses, hoop earrings, bright red blazer, raised fist, leftist Argentine politician FIT' + PORTRAIT_SUFFIX },
+  { id: 'char_schiaretti',  prompt: 'Juan Schiaretti pixel bust, completely bald shiny head, thin gray side fringe only, very wide fat round face with heavy jowls, blue suit, Argentine Cordoba governor, holding mate gourd' + PORTRAIT_SUFFIX },
+  { id: 'char_larreta',     prompt: 'Horacio Larreta pixel bust, salt-and-pepper short neat hair, pale narrow face, very thick dark eyebrows, dark under-eye bags, light blue tie charcoal suit, tired worried expression, Buenos Aires mayor' + PORTRAIT_SUFFIX },
+  { id: 'char_caputo',      prompt: 'Luis Caputo pixel bust, grey neatly combed hair, sharp angular face, dark banker suit, stern expression, holding spreadsheet document, Argentine economy minister' + PORTRAIT_SUFFIX },
+  { id: 'char_moyano',      prompt: 'Hugo Moyano pixel bust, grey stubbly hair, heavyset wide neck, Teamsters-style jacket with union logo, angry pointing gesture, Argentine union boss' + PORTRAIT_SUFFIX },
+  { id: 'char_kicillof',    prompt: 'Axel Kicillof pixel bust, curly unkempt black hair, scruffy dark beard, open-collar casual shirt, professor glasses, Argentine leftist Kirchnerist governor' + PORTRAIT_SUFFIX },
+  { id: 'char_kirchner',    prompt: 'Cristina Kirchner pixel bust, dark dyed hair blown out, pearl necklace, Peronist cross pendant, charcoal pantsuit, sharp confident expression, Argentine former president' + PORTRAIT_SUFFIX },
+  { id: 'char_georgieva',   prompt: 'Kristalina Georgieva pixel bust, short silver-white hair, European suit with IMF pin badge, reading glasses, stern diplomatic expression, IMF director' + PORTRAIT_SUFFIX },
+  { id: 'char_macri',       prompt: 'Mauricio Macri pixel bust, neat side-parted dark hair, wide CEO smile showing teeth, navy suit gold tie, Boca Juniors pin, confident businessman posture, Argentine PRO party former president' + PORTRAIT_SUFFIX },
+  { id: 'char_anibal',      prompt: 'Anibal Fernandez pixel bust, giant walrus mustache covering mouth, heavy jowls, squinting menacing eyes, dark rumpled jacket, large imposing heavyset figure, Argentine security minister' + PORTRAIT_SUFFIX },
+  { id: 'char_berni',       prompt: 'Sergio Berni pixel bust, black police beret tilted sideways, police dress uniform with rows of medals, jutting aggressive chin, short dark hair, fierce intimidating stare, Buenos Aires security minister' + PORTRAIT_SUFFIX },
+  { id: 'char_grabois',     prompt: 'Juan Grabois pixel bust, unkempt dark curly beard and messy hair, round friendly face, plaid flannel shirt no tie, raised solidarity fist gesture, Argentine social movement piquetero leader' + PORTRAIT_SUFFIX },
+  { id: 'char_milani',      prompt: 'Cesar Milani pixel bust, full Argentine military dress uniform, gold general star rank insignia on shoulders, rows of medal ribbons on chest, grey short hair, stern formal military expression' + PORTRAIT_SUFFIX },
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -103,10 +106,11 @@ async function sleep(ms: number) {
   return new Promise<void>((r) => setTimeout(r, ms));
 }
 
-async function generateImage(prompt: string): Promise<ArrayBuffer> {
+async function generateImage(prompt: string, width = 320, height = 180): Promise<ArrayBuffer> {
   // Pollinations.ai — free, no auth, FLUX-based
+  // Low resolution forces upscaling → pixel art aesthetic when displayed
   const encoded = encodeURIComponent(prompt);
-  const url = `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=576&nologo=true&enhance=true&model=flux`;
+  const url = `https://image.pollinations.ai/prompt/${encoded}?width=${width}&height=${height}&nologo=true&enhance=false&model=flux&seed=${Math.floor(Math.random()*9999)}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Pollinations error ${res.status}: ${await res.text()}`);
   return res.arrayBuffer();
@@ -162,7 +166,10 @@ async function main() {
 
     process.stdout.write(`⏳  [${done + skipped + 1}/${IMAGES.length}] ${img.id} … `);
     try {
-      const buffer  = await generateImage(img.prompt);
+      // Portraits: square 256x256 → chunky pixel sprite; Scenes: 320x180 → 16:9 pixel art
+      const isPortrait = img.id.startsWith('char_');
+      const [w, h] = isPortrait ? [256, 256] : [320, 180];
+      const buffer  = await generateImage(img.prompt, w, h);
       const url     = await uploadToSupabase(img.id, buffer);
       manifest[img.id] = url;
       fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
@@ -172,8 +179,8 @@ async function main() {
       console.error(`\n❌  Failed: ${(err as Error).message}`);
     }
 
-    // Courtesy delay between requests — Replicate free tier: 6 req/min
-    await sleep(11000);
+    // Courtesy delay between requests — Pollinations.ai: no strict limit, 3s is plenty
+    await sleep(3000);
   }
 
   console.log(`\n✅  Done! Generated ${done} new images, skipped ${skipped}.`);
