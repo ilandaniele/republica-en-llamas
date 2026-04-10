@@ -1,0 +1,20 @@
+export { PresidentAvatar } from './PresidentAvatar.js';
+export { PoliticalIllustration } from './PoliticalIllustration.js';
+export { EconomicIllustration } from './EconomicIllustration.js';
+export { SocialIllustration } from './SocialIllustration.js';
+export { InternationalIllustration } from './InternationalIllustration.js';
+export { GameOverNewspaper } from './GameOverNewspaper.js';
+export { ArgentinaMapSVG } from './ArgentinaMapSVG.js';
+export { BuenosAiresBackground } from './BuenosAiresBackground.js';
+export { PresidentCaricature } from './presidents/PresidentCaricature.js';
+export type { CaricatureState } from './presidents/PresidentCaricature.js';
+export { CharacterPortrait } from './characters/CharacterPortrait.js';
+export { PixelCharacter } from './PixelCharacter.js';
+export { PixelPortrait } from './PixelPortrait.js';
+export type { PortraitMood, PortraitId } from './PixelPortrait.js';
+export { PixelMate } from './PixelMate.js';
+export { PixelAsado } from './PixelAsado.js';
+export { PixelFuego } from './PixelFuego.js';
+export { PixelDolar } from './PixelDolar.js';
+export { PixelColectivo } from './PixelColectivo.js';
+//# sourceMappingURL=index.d.ts.map

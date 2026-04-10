@@ -36,5 +36,12 @@
   "char_anibal": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/char_anibal.png",
   "char_berni": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/char_berni.png",
   "char_grabois": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/char_grabois.png",
-  "char_milani": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/char_milani.png"
+  "char_milani": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/char_milani.png",
+  "guerra_nuke_explosion": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/guerra_nuke_explosion.png",
+  "guerra_nuke_threat": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/guerra_nuke_threat.png",
+  "guerra_join": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/guerra_join.png",
+  "eco_dollar_blue": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/eco_dollar_blue.png",
+  "eco_corte_luz": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/eco_corte_luz.png",
+  "soc_housing": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/soc_housing.png",
+  "pol_election": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/pol_election.png"
 }

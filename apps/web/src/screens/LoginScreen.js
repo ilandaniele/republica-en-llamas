@@ -1,0 +1,58 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useAuth } from '../hooks/useAuth.js';
+import { supabase, isOfflineMode, missingEnvVars, signInWithGoogle, translateAuthError } from '../lib/supabase.js';
+import { useGameStore } from '../stores/gameStore.js';
+export default function LoginScreen() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const difficulty = location.state?.difficulty ?? 'normal';
+    const { signIn } = useAuth();
+    const startNewGame = useGameStore((s) => s.startNewGame);
+    const setUserId = useGameStore((s) => s.setUserId);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(true);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [resetSent, setResetSent] = useState(false);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+        try {
+            const { data, error: err } = await signIn(email, password);
+            if (err) {
+                setError(translateAuthError(err.message));
+                return;
+            }
+            if (data.user)
+                setUserId(data.user.id);
+            startNewGame(difficulty);
+            navigate('/president');
+        }
+        catch {
+            setError('Error inesperado. Intentá de nuevo.');
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+    const handleForgotPassword = async () => {
+        if (!email) {
+            setError('Ingresá tu email primero');
+            return;
+        }
+        setLoading(true);
+        await supabase.auth.resetPasswordForEmail(email);
+        setResetSent(true);
+        setLoading(false);
+    };
+    if (isOfflineMode) {
+        return (_jsx("div", { className: "min-h-screen flex items-center justify-center p-6", children: _jsxs("div", { className: "max-w-md w-full bg-navy-800 border border-navy-600 rounded-xl p-8 text-center", children: [_jsx("p", { className: "text-crimson-400 font-serif text-xl font-bold mb-3", children: "\u26A0 Sin conexi\u00F3n a Supabase" }), _jsxs("p", { className: "text-smoke-400 font-mono text-xs mb-4", children: ["Faltan variables de entorno en ", _jsx("code", { className: "text-gold-400", children: ".env" }), ":"] }), missingEnvVars.url && _jsx("p", { className: "text-smoke-300 font-mono text-xs mb-1", children: "\u2022 VITE_SUPABASE_URL" }), missingEnvVars.key && _jsx("p", { className: "text-smoke-300 font-mono text-xs mb-1", children: "\u2022 VITE_SUPABASE_ANON_KEY" }), _jsx("button", { onClick: () => navigate('/'), className: "mt-6 text-gold-400 font-mono text-sm underline", children: "Jugar en modo offline \u2192" })] }) }));
+    }
+    return (_jsx(motion.div, { initial: { opacity: 0, x: -40 }, animate: { opacity: 1, x: 0 }, className: "min-h-screen flex flex-col items-center justify-center p-6", children: _jsxs("div", { className: "max-w-md w-full", children: [_jsx("button", { onClick: () => navigate(-1), className: "text-smoke-500 font-mono text-xs mb-6 hover:text-smoke-300 flex items-center gap-1", children: "\u2190 Volver" }), _jsx("h1", { className: "font-serif text-3xl text-smoke-100 font-bold mb-2", children: "Iniciar sesi\u00F3n" }), _jsx("p", { className: "text-smoke-400 font-mono text-xs mb-8", children: "Tu historial y puntajes te esperan." }), _jsxs("button", { onClick: () => { void signInWithGoogle(); }, className: "w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-gray-800 font-semibold py-3 px-4 rounded-lg border border-gray-300 transition-colors mb-4", children: [_jsxs("svg", { width: "18", height: "18", viewBox: "0 0 48 48", xmlns: "http://www.w3.org/2000/svg", children: [_jsx("path", { fill: "#EA4335", d: "M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" }), _jsx("path", { fill: "#4285F4", d: "M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" }), _jsx("path", { fill: "#FBBC05", d: "M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" }), _jsx("path", { fill: "#34A853", d: "M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" })] }), "Continuar con Google"] }), _jsxs("div", { className: "flex items-center gap-3 mb-4", children: [_jsx("div", { className: "flex-1 h-px bg-navy-600" }), _jsx("span", { className: "text-smoke-600 font-mono text-xs", children: "o" }), _jsx("div", { className: "flex-1 h-px bg-navy-600" })] }), resetSent ? (_jsx("div", { className: "bg-emerald-900/40 border border-emerald-700 rounded-lg p-4 text-emerald-300 font-mono text-sm", children: "\u2713 Te enviamos un email para restablecer tu contrase\u00F1a." })) : (_jsxs("form", { onSubmit: (e) => { void handleSubmit(e); }, className: "space-y-4", children: [_jsx("input", { type: "email", placeholder: "Email", value: email, onChange: (e) => setEmail(e.target.value), required: true, className: "w-full bg-navy-800 border border-navy-600 text-smoke-100 font-mono text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-gold-500" }), _jsx("input", { type: "password", placeholder: "Contrase\u00F1a", value: password, onChange: (e) => setPassword(e.target.value), required: true, className: "w-full bg-navy-800 border border-navy-600 text-smoke-100 font-mono text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-gold-500" }), _jsxs("div", { className: "flex items-center gap-2", children: [_jsx("input", { type: "checkbox", id: "rememberMe", checked: rememberMe, onChange: (e) => setRememberMe(e.target.checked), className: "accent-gold-500" }), _jsx("label", { htmlFor: "rememberMe", className: "text-smoke-400 font-mono text-xs cursor-pointer", children: "Recordarme" })] }), error && (_jsx("div", { className: "bg-crimson-900/40 border border-crimson-700 rounded px-3 py-2", children: _jsx("p", { className: "text-crimson-300 font-mono text-xs", children: error }) })), _jsx("button", { type: "submit", disabled: loading, className: "w-full bg-crimson-600 hover:bg-crimson-500 text-smoke-100 font-serif font-bold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 uppercase tracking-wider", children: loading ? 'Ingresando...' : 'Entrar y jugar' })] })), _jsxs("div", { className: "flex justify-between mt-4", children: [_jsx("button", { onClick: () => { void handleForgotPassword(); }, className: "text-smoke-500 hover:text-smoke-300 font-mono text-xs underline", children: "Olvid\u00E9 mi contrase\u00F1a" }), _jsx("button", { onClick: () => navigate('/register', { state: { difficulty } }), className: "text-gold-400 hover:text-gold-300 font-mono text-xs underline", children: "Crear cuenta \u2192" })] })] }) }));
+}
+//# sourceMappingURL=LoginScreen.js.map

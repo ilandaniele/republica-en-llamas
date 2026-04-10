@@ -2,12 +2,10 @@
  * REP EN LLAMAS — Image Generation Script
  *
  * Usage:
- *   HF_TOKEN=hf_... SUPABASE_URL=https://... SUPABASE_SERVICE_ROLE_KEY=sb_secret_... \
+ *   REPLICATE_API_TOKEN=r8_... SUPABASE_URL=https://... SUPABASE_SERVICE_ROLE_KEY=sb_secret_... \
  *   npx tsx scripts/generate-images.ts
  *
- * Or create a .env.generate file and export vars before running.
- *
- * Generates 28 editorial-cartoon illustrations via Hugging Face SDXL,
+ * Generates pixel-art illustrations via Replicate nerijs/pixel-art-xl,
  * uploads each to Supabase Storage bucket "game-images/illustrations/",
  * then writes apps/web/src/assets/image-manifest.json with public URLs.
  */
@@ -19,22 +17,20 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const HF_TOKEN             = process.env.HF_TOKEN             ?? '';
-const SUPABASE_URL         = process.env.SUPABASE_URL         ?? process.env.VITE_SUPABASE_URL ?? '';
-const SERVICE_ROLE_KEY     = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
+const REPLICATE_TOKEN  = process.env.REPLICATE_API_TOKEN       ?? '';
+const HF_TOKEN         = process.env.HF_TOKEN                   ?? '';
+const SUPABASE_URL     = process.env.SUPABASE_URL               ?? process.env.VITE_SUPABASE_URL ?? '';
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY  ?? '';
 
-if (!HF_TOKEN || !SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  console.error('Missing env vars: HF_TOKEN, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
+if ((!HF_TOKEN && !REPLICATE_TOKEN) || !SUPABASE_URL || !SERVICE_ROLE_KEY) {
+  console.error('Missing env vars: HF_TOKEN (or REPLICATE_API_TOKEN), SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
   process.exit(1);
 }
 
-const BUCKET       = 'game-images';
-const FOLDER       = 'illustrations';
-const HF_MODEL     = 'stabilityai/stable-diffusion-xl-base-1.0';
-const HF_BASE_URL  = 'https://router.huggingface.co';
-const STYLE_SUFFIX = ', editorial cartoon illustration, Argentine political satire, bold black outlines, flat bright colors, newspaper caricature style, white background, no text, no words, no letters, no watermarks';
+const BUCKET        = 'game-images';
+const FOLDER        = 'illustrations';
+const STYLE_SUFFIX  = ', pixel art style, 16-bit sprites, crisp pixels, Argentine political scene, dark navy blue background, no text, no words, no letters';
 const MANIFEST_PATH = path.join(__dirname, '../apps/web/src/assets/image-manifest.json');
-const RETRY_WAIT_MS = 25_000;
 
 // ── Image definitions ─────────────────────────────────────────────────────────
 const IMAGES: Array<{ id: string; prompt: string }> = [
@@ -72,6 +68,18 @@ const IMAGES: Array<{ id: string; prompt: string }> = [
   { id: 'crisis',           prompt: 'Argentina hyperinflation, store shelves empty, wheelbarrow full of banknotes, apocalyptic cityscape, people panicking' + STYLE_SUFFIX },
   { id: 'crisis_impeachment', prompt: 'Argentine president impeachment trial, congress podium, angry legislators pointing, president sweating, gavel' + STYLE_SUFFIX },
 
+  // New pixel-art scenes (missing from original HF batch)
+  { id: 'guerra_nuke_explosion', prompt: 'nuclear mushroom cloud explosion over Buenos Aires skyline, apocalyptic orange sky, massive shockwave, ruins silhouettes foreground' + STYLE_SUFFIX },
+  { id: 'guerra_nuke_threat',    prompt: 'ballistic missile launching toward city, red emergency siren, bomb shelter door, panicked Argentine officials in bunker' + STYLE_SUFFIX },
+  { id: 'guerra_join',           prompt: 'Argentine soldiers marching in desert, military airplane overhead, trench warfare, Argentine flag, war declaration ceremony' + STYLE_SUFFIX },
+  { id: 'eco_dollar_blue',       prompt: 'black market currency exchange dark alley Buenos Aires, stacks of dollar bills, hooded figure, unofficial exchange board' + STYLE_SUFFIX },
+  { id: 'eco_corte_luz',         prompt: 'city blackout night scene, dark buildings, Argentine family with candles, downed power lines, electrical failure' + STYLE_SUFFIX },
+  { id: 'soc_housing',           prompt: 'family evicted from apartment Buenos Aires, boxes on sidewalk, angry landlord with papers, housing crisis protesters outside' + STYLE_SUFFIX },
+  { id: 'pol_election',          prompt: 'Argentine election voting booths, ballot box with fingerprint ink, long voter queue, celeste y blanco flag, democracy' + STYLE_SUFFIX },
+  { id: 'pol_veto',              prompt: 'Argentine president stamping VETO in red on law document, furious legislators in congress, official seal stamp' + STYLE_SUFFIX },
+  { id: 'int_aid',               prompt: 'international humanitarian aid arriving Buenos Aires port, UN flags, aid workers unloading crates, food packages relief' + STYLE_SUFFIX },
+  { id: 'malvinas',              prompt: 'Malvinas Falkland Islands map with Argentine flag, warship South Atlantic, political debate Buenos Aires congress' + STYLE_SUFFIX },
+
   // Character portraits (editorial caricature style)
   { id: 'char_milei',       prompt: 'Javier Milei caricature portrait bust, seven wild black hair spikes pointing upward, thick black mutton-chop sideburns, wide staring eyes, red necktie, holding a chainsaw, anarcho-capitalist libertarian Argentina president, plain white background' + STYLE_SUFFIX },
   { id: 'char_massa',       prompt: 'Sergio Massa caricature portrait bust, flat slicked-back dark hair, very wide square jaw, hooded drooping eyelids, navy blue suit red tie, politician smirk one side, Argentine economy minister peronist, plain white background' + STYLE_SUFFIX },
@@ -98,40 +106,67 @@ async function sleep(ms: number) {
 }
 
 async function generateImage(prompt: string): Promise<ArrayBuffer> {
-  const url = `${HF_BASE_URL}/hf-inference/models/${HF_MODEL}`;
-  let attempt = 0;
-  while (attempt < 3) {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${HF_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        inputs: prompt,
-        parameters: { num_inference_steps: 30, guidance_scale: 7.5, width: 1024, height: 576 },
-      }),
-    });
+  if (HF_TOKEN) {
+    // HuggingFace Inference API (free, primary)
+    const HF_MODEL = 'black-forest-labs/FLUX.1-schnell';
+    const url = `https://router.huggingface.co/hf-inference/models/${HF_MODEL}`;
+    let attempt = 0;
+    while (attempt < 5) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${HF_TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inputs: prompt }),
+      });
+      if (res.status === 503) {
+        let waitMs = 25_000;
+        try { const b = await res.json() as { estimated_time?: number }; waitMs = Math.max((b.estimated_time ?? 25), 25) * 1000; } catch { /* ignore */ }
+        console.log(`  Model loading... waiting ${waitMs / 1000}s`);
+        await sleep(waitMs);
+        attempt++;
+        continue;
+      }
+      if (!res.ok) throw new Error(`HF API error ${res.status}: ${await res.text()}`);
+      return res.arrayBuffer();
+    }
+    throw new Error(`HF failed after ${attempt} attempts`);
+  }
 
-    if (res.status === 503) {
-      const body = await res.text();
-      const waitSec = (() => {
-        try { return (JSON.parse(body) as { estimated_time?: number }).estimated_time ?? 30; } catch { return 30; }
-      })();
-      console.log(`  Model loading (${Math.ceil(waitSec)}s)… waiting ${RETRY_WAIT_MS / 1000}s`);
-      await sleep(RETRY_WAIT_MS);
-      attempt++;
+  // Replicate fallback (requires billing) — stability-ai/sdxl
+  const SDXL_VERSION = '7762fd07cf82c948538e41f63f77d685e02b063e37e496e96eefd46c929f9bdc';
+  let retries = 0;
+  let createRes: Response | null = null;
+  while (retries < 10) {
+    createRes = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: { 'Authorization': `Token ${REPLICATE_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ version: SDXL_VERSION, input: { prompt, width: 512, height: 512, num_inference_steps: 30 } }),
+    });
+    if (createRes.status === 429) {
+      let waitMs = 12000;
+      try { const e = await createRes.json() as { retry_after?: number }; waitMs = Math.max((e.retry_after ?? 12), 12) * 1000; } catch { /* ignore */ }
+      console.log(`  Rate limited — waiting ${waitMs / 1000}s...`);
+      await sleep(waitMs);
+      retries++;
       continue;
     }
-
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`HF API error ${res.status}: ${body}`);
-    }
-
-    return res.arrayBuffer();
+    break;
   }
-  throw new Error(`Failed after ${attempt} attempts`);
+  if (!createRes || !createRes.ok) throw new Error(`Replicate error ${createRes?.status}: ${await createRes?.text()}`);
+  const { id } = await createRes.json() as { id: string };
+  while (true) {
+    await sleep(4000);
+    const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
+      headers: { 'Authorization': `Token ${REPLICATE_TOKEN}` },
+    });
+    if (!pollRes.ok) throw new Error(`Replicate poll error ${pollRes.status}`);
+    const pred = await pollRes.json() as { status: string; output?: string[]; error?: string };
+    if (pred.status === 'succeeded' && pred.output?.[0]) {
+      const imgRes = await fetch(pred.output[0]);
+      if (!imgRes.ok) throw new Error(`Image download error ${imgRes.status}`);
+      return imgRes.arrayBuffer();
+    }
+    if (pred.status === 'failed') throw new Error(`Replicate failed: ${pred.error ?? 'unknown'}`);
+  }
 }
 
 async function uploadToSupabase(id: string, data: ArrayBuffer): Promise<string> {
@@ -194,8 +229,8 @@ async function main() {
       console.error(`\n❌  Failed: ${(err as Error).message}`);
     }
 
-    // Small courtesy delay between requests
-    await sleep(1500);
+    // Courtesy delay between requests — Replicate free tier: 6 req/min
+    await sleep(11000);
   }
 
   console.log(`\n✅  Done! Generated ${done} new images, skipped ${skipped}.`);
