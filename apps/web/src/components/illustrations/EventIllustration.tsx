@@ -2,15 +2,20 @@
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { GameState } from '@republica/game-engine';
+import imageManifest from '../../assets/image-manifest.json';
 
 gsap.registerPlugin(useGSAP);
 
 // â”€â”€ Pixel grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // ViewBox: 320Ã—180. Each "pixel" = 8 SVG units â†’ 40Ã—22 grid.
-const P = 3;
+const P = 8;
 // px(col, row, wCols, hRows, fill) â†’ single rect on the 8px grid
 function px(col: number, row: number, wCols: number, hRows: number, fill: string): React.ReactElement {
   return <rect x={col * P} y={row * P} width={wCols * P} height={hRows * P} fill={fill} />;
+}
+// px2 P=4 fine-detail grid (80x45 canvas) for detail layers
+function px2(col: number, row: number, wCols: number, hRows: number, fill: string): React.ReactElement {
+  return <rect x={col * 4} y={row * 4} width={wCols * 4} height={hRows * 4} fill={fill} />;
 }
 // Pixel-art label bar (y=160, height=20)
 function lbl(text: string, col = '#ECE8E0'): React.ReactElement {
@@ -279,6 +284,10 @@ function SceneEcoInflation() {
       {/* Price tag */}
       {px(26,0,10,4,P_BK)}
       <text x={27*P} y={3*P} fill={P_CR} fontSize={11} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>$$$</text>
+      {/* Ceiling fluorescent light fixtures (px2 fine detail) */}
+      {px2(5,1,10,1,P_GR2)}{px2(35,1,10,1,P_GR2)}{px2(65,1,10,1,P_GR2)}
+      {/* Shopper near bottom shelf */}
+      <PixPerson c={5} r={15} suit={P_SLT} skin={P_SK} hair={P_BR}/>
       {lbl('INFLACIÃ“N')}
     </g>
   );
@@ -385,6 +394,13 @@ function SceneSocStrike() {
       {/* Fist raised sign text */}
       {px(20,8,5,3,P_RD)}
       <text x={21*P} y={11*P} fill={P_WH} fontSize={6} fontFamily="'Press Start 2P'" style={{imageRendering:'pixelated' as const}}>HUELGA</text>
+      {/* Chimney on left factory */}
+      {px(1,2,2,3,P_GR)}
+      {/* Factory smoke (px2 wisps) */}
+      {px2(4,2,6,4,'rgba(80,90,100,0.6)')}{px2(2,0,5,3,'rgba(80,90,100,0.4)')}
+      {/* CGT flag pole on middle factory */}
+      <rect x={16*P} y={3*P} width={1} height={3*P} fill={P_GR}/>
+      {px(17,3,3,1,P_RD)}{px(17,4,3,1,P_WH)}{px(17,5,3,1,P_RD)}
       {lbl('HUELGA GENERAL')}
     </g>
   );
@@ -931,6 +947,11 @@ function SceneCrisis({ presidentId }: { presidentId: string }) {
         {/* Arms raised in panic */}
         {px(17,15,2,1,P_SLT)}{px(23,15,2,1,P_SLT)}
       </g>
+      {/* Ground rubble (px2 detail) */}
+      {px2(2,36,5,2,P_GR2)}{px2(10,37,7,2,P_SLT)}{px2(22,36,4,2,P_GR2)}
+      {px2(62,37,6,2,P_SLT)}{px2(76,36,5,2,P_GR2)}
+      {/* Sparks from fire bases */}
+      {px2(38,30,2,2,P_YL)}{px2(44,27,2,2,P_OR)}{px2(72,29,2,2,P_YL)}
       {/* Smoke overlay */}
       {px(0,0,40,4,'rgba(30,0,0,0.6)')}
       {lbl('âš  CRISIS DE GOBIERNO', P_CR)}
@@ -1231,6 +1252,7 @@ export function EventIllustration({
   eventCategory, presidentId, eventId = '', gameState,
 }: Props) {
   const scene = selectScene(eventCategory, eventId, gameState);
+  const aiUrl = (imageManifest as Record<string, string>)[scene] ?? null;
   const containerRef = useRef<HTMLDivElement>(null);
 
   const isCrisis = eventCategory === 'crisis';
@@ -1427,34 +1449,43 @@ export function EventIllustration({
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
           preserveAspectRatio="xMidYMid meet"
           role="img" aria-label={`IlustraciÃ³n: ${eventCategory}`}>
-          {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} gameState={gameState ?? null} />}
-          {(scene === 'pol_scandal' || scene === 'arg_fmi_negocio')   && <ScenePolScandal presidentId={presidentId} />}
-          {scene === 'pol_protest'   && <ScenePolProtest />}
-          {scene === 'eco_inflation' && <SceneEcoInflation />}
-          {scene === 'eco_reserves'  && <SceneEcoReserves />}
-          {scene === 'eco_growth'    && <SceneEcoGrowth />}
-          {scene === 'soc_strike'    && <SceneSocStrike />}
-          {scene === 'soc_unrest'    && <SceneSocUnrest />}
-          {scene === 'soc_health'    && <SceneSocHealth />}
-          {scene === 'int_imf'       && <SceneIntImf presidentId={presidentId} />}
-          {scene === 'int_war'       && <SceneIntWar />}
-          {scene === 'int_trade'     && <SceneIntTrade />}
-          {scene === 'int_aid'       && <SceneIntAid />}
-          {scene === 'int_guerra_ucrania' && <SceneIntGuerraUcrania />}
-          {scene === 'int_conflicto_iran' && <SceneIntConflictoIran />}
-          {scene === 'eco_dollar_blue'    && <SceneEcoDolarBlue />}
-          {scene === 'pol_election'       && <ScenePolElection />}
-          {scene === 'soc_housing'        && <SceneSocHousing />}
-          {scene === 'eco_corte_luz'      && <SceneEcoCorteLuz />}
-          {scene === 'pol_veto'           && <ScenePolVeto />}
-          {scene === 'arg_mundial'   && <SceneArgMundial />}
-          {scene === 'arg_corralito' && <SceneArgCorralito />}
-          {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}
-          {(scene === 'crisis' || scene === 'crisis_impeachment') && <SceneCrisis presidentId={presidentId} />}
-          {scene === 'malvinas'              && <SceneCongresoMalvinas />}
-          {scene === 'guerra_join'           && <SceneGuerraJoin presidentId={presidentId} />}
-          {scene === 'guerra_nuke_threat'    && <SceneGuerraNukeThreat />}
-          {scene === 'guerra_nuke_explosion' && <SceneGuerraNukeExplosion />}
+          {aiUrl ? (
+            <>
+              <image href={aiUrl} x={0} y={0} width={320} height={180} preserveAspectRatio="xMidYMid slice" />
+              {lbl(scene.replace(/_/g, ' ').toUpperCase())}
+            </>
+          ) : (
+            <>
+              {(scene === 'pol_congress' || scene === 'arg_congreso_ley') && <ScenePolCongress presidentId={presidentId} gameState={gameState ?? null} />}
+              {(scene === 'pol_scandal' || scene === 'arg_fmi_negocio')   && <ScenePolScandal presidentId={presidentId} />}
+              {scene === 'pol_protest'   && <ScenePolProtest />}
+              {scene === 'eco_inflation' && <SceneEcoInflation />}
+              {scene === 'eco_reserves'  && <SceneEcoReserves />}
+              {scene === 'eco_growth'    && <SceneEcoGrowth />}
+              {scene === 'soc_strike'    && <SceneSocStrike />}
+              {scene === 'soc_unrest'    && <SceneSocUnrest />}
+              {scene === 'soc_health'    && <SceneSocHealth />}
+              {scene === 'int_imf'       && <SceneIntImf presidentId={presidentId} />}
+              {scene === 'int_war'       && <SceneIntWar />}
+              {scene === 'int_trade'     && <SceneIntTrade />}
+              {scene === 'int_aid'       && <SceneIntAid />}
+              {scene === 'int_guerra_ucrania' && <SceneIntGuerraUcrania />}
+              {scene === 'int_conflicto_iran' && <SceneIntConflictoIran />}
+              {scene === 'eco_dollar_blue'    && <SceneEcoDolarBlue />}
+              {scene === 'pol_election'       && <ScenePolElection />}
+              {scene === 'soc_housing'        && <SceneSocHousing />}
+              {scene === 'eco_corte_luz'      && <SceneEcoCorteLuz />}
+              {scene === 'pol_veto'           && <ScenePolVeto />}
+              {scene === 'arg_mundial'   && <SceneArgMundial />}
+              {scene === 'arg_corralito' && <SceneArgCorralito />}
+              {(scene === 'arg_campo' || scene === 'arg_dolar') && <SceneArgCampo />}
+              {(scene === 'crisis' || scene === 'crisis_impeachment') && <SceneCrisis presidentId={presidentId} />}
+              {scene === 'malvinas'              && <SceneCongresoMalvinas />}
+              {scene === 'guerra_join'           && <SceneGuerraJoin presidentId={presidentId} />}
+              {scene === 'guerra_nuke_threat'    && <SceneGuerraNukeThreat />}
+              {scene === 'guerra_nuke_explosion' && <SceneGuerraNukeExplosion />}
+            </>
+          )}
         </svg>
 
       {/* Looping particle layer */}
