@@ -32,7 +32,11 @@ export function initGame(
   const gdp = scenario?.gdpGrowth ?? preset.gdpGrowth;
   const govSeats = scenario?.governmentSeats ?? preset.governmentSeats;
   const oppSeats = scenario?.oppositionSeats ?? preset.oppositionSeats;
-  const independentSeats = TOTAL_SEATS - govSeats - oppSeats;
+  // Add ±8 random variance to starting congress composition (seeded for determinism)
+  const congrRng = createRng(seed + 77);
+  const congrVariance = Math.floor((congrRng() - 0.5) * 16);
+  const finalGovSeats = clamp(govSeats + congrVariance, 50, 480);
+  const independentSeats = TOTAL_SEATS - finalGovSeats - oppSeats;
 
   // Scenario flag pushed to first character so requiredFlags cards can filter
   const scenarioFlag = scenarioId ? `scenario_${scenarioId}` : null;
@@ -69,7 +73,7 @@ export function initGame(
       gdpGrowth: gdp,
     },
     congress: {
-      governmentSeats: govSeats,
+      governmentSeats: finalGovSeats,
       oppositionSeats: oppSeats,
       independentSeats,
       coalitionTurnsRemaining: 0,
@@ -282,7 +286,29 @@ export function applyChoice(
   if (!choice) throw new Error(`Choice ${choiceIndex} not found on card ${cardId}`);
 
   // Instant game over — skip normal effect application
+  // Special case: election_loss enters lame-duck mode instead of ending the game
   if (choice.instantGameOver) {
+    if (choice.instantGameOver === 'election_loss') {
+      // Enter 8-turn lame duck survival mode
+      const newState: GameState = {
+        ...state,
+        drawnCardIds: [...state.drawnCardIds, cardId],
+        cardCooldowns: { ...state.cardCooldowns, [cardId]: state.turn },
+        history: [...state.history, { turn: state.turn, cardId, choiceIndex, effectsApplied: choice.effects }],
+        lameDuckMode: true,
+        lameDuckTurnsRemaining: 8,
+        political: {
+          ...state.political,
+          popularity: clamp((state.political.popularity) - 15, 0, 100),
+          socialStability: clamp(state.political.socialStability - 10, 0, 100),
+        },
+        economic: {
+          ...state.economic,
+          publicDeficit: clamp(state.economic.publicDeficit + 5, 0, 100),
+        },
+      };
+      return newState;
+    }
     return {
       ...state,
       drawnCardIds: [...state.drawnCardIds, cardId],
@@ -428,6 +454,28 @@ export function advanceTurn(state: GameState): GameState {
   // Track deflationary spiral streak
   const isDeflating = s.economic.inflation < -10;
   s = { ...s, deflationStreakTurns: isDeflating ? (s.deflationStreakTurns ?? 0) + 1 : 0 };
+
+  // Lame duck mode: apply per-turn penalties; game over when countdown reaches zero
+  if (s.lameDuckMode) {
+    const remaining = (s.lameDuckTurnsRemaining ?? 0) - 1;
+    s = {
+      ...s,
+      lameDuckTurnsRemaining: remaining,
+      political: {
+        ...s.political,
+        popularity: clamp(s.political.popularity - 3, 0, 100),
+        socialStability: clamp(s.political.socialStability - 2, 0, 100),
+      },
+    };
+    if (remaining <= 0) {
+      return {
+        ...s,
+        isGameOver: true,
+        gameOverReason: 'election_loss',
+        score: calculateScore(s),
+      };
+    }
+  }
 
   // Advance narrative arc phase for scenario runs
   if (s.activeScenario) {

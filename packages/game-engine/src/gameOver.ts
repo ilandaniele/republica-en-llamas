@@ -1,9 +1,12 @@
 import type { GameState, GameOverResult } from './types.js';
-import { GAME_OVER, PRESIDENTIAL_ELECTION_TURN } from './constants.js';
+import { GAME_OVER } from './constants.js';
 import { calculateScore } from './scoring.js';
 
 export function checkGameOver(state: GameState): GameOverResult | null {
   const { political, economic, activeCrises, turn } = state;
+
+  // In lame duck mode the countdown in advanceTurn handles the game over
+  if (state.lameDuckMode) return null;
 
   // Win condition: survived all 50 turns
   if (turn >= GAME_OVER.MAX_TURNS) {
@@ -82,15 +85,7 @@ export function checkGameOver(state: GameState): GameOverResult | null {
     };
   }
 
-  // Presidential election loss: popularity below threshold on election day
-  if (turn === PRESIDENTIAL_ELECTION_TURN && political.popularity < 40) {
-    return {
-      reason: 'election_loss',
-      score: calculateScore(state),
-      turn,
-      isWin: false,
-    };
-  }
+  // Presidential election: handled via pol_election_result card + lame duck mode in gameLoop
 
   return null;
 }

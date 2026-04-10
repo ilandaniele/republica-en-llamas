@@ -106,6 +106,13 @@
   'event.pol_election_result.choice_win': 'The government wins: the people renew the mandate',
   'event.pol_election_result.choice_lose': 'Historic defeat: the opposition wins the election',
 
+  'event.pol_congressional_elections.title': 'MID-TERM ELECTIONS',
+  'event.pol_congressional_elections.body': 'Argentines go to the polls to renew half of Congress. The result could strengthen or weaken the ruling bloc.',
+  'event.pol_congressional_elections.choice_a': 'Aggressive campaign: the president rallies across the country',
+  'event.pol_congressional_elections.choice_b': 'Bipartisan deal: bring in moderate opposition candidates',
+  'event.pol_congressional_elections.choice_c': 'Skip the campaign and focus on governing',
+  'event.pol_congressional_elections.choice_d': 'Populist pledges: announce bonuses and raises before voting day',
+
   // ─── Economic cards ────────────────────────────────────────────────────────
   'event.eco_001.title': 'Inflationary Pressure',
   'event.eco_001.body': 'Consumer prices rise for the third consecutive month. The central bank debates whether to intervene.',

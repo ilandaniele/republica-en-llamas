@@ -4,7 +4,8 @@ import { clamp, createRng } from './utils.js';
 
 export function calculateVote(
   state: GameState,
-  _negotiation: NegotiationType | null
+  _negotiation: NegotiationType | null,
+  lawId?: string
 ): VoteResult {
   const { congress, political } = state;
   const requiredVotes = 128;
@@ -13,30 +14,48 @@ export function calculateVote(
   const rng = createRng(state.seed + state.turn * 13);
   const variance = Math.floor((rng() - 0.5) * 8);
 
-  // Coalition bonus (same as before)
-  const effectiveGovSeats =
+  // Coalition bonus
+  const baseGovSeats =
     congress.coalitionTurnsRemaining > 0
       ? congress.governmentSeats + NEGOTIATION_CONFIG.COALITION_BUILDING.governmentSeatsDelta
       : congress.governmentSeats;
 
-  // New independent support formula from patch spec
+  // Government defections — controversial laws lose 1-3 gov votes (10% chance)
+  const isControversial = lawId ? /reform|ajuste|veto|recorte/i.test(lawId) : false;
+  let defectionCount = 0;
+  if (isControversial && rng() < 0.10) {
+    defectionCount = Math.floor(rng() * 3) + 1;
+  }
+  const effectiveGovSeats = Math.max(0, baseGovSeats - defectionCount);
+
+  // Independent support formula
   let independentSupport = 0.3;
   if (political.popularity > 60) independentSupport += 0.2;
-  // Use independentSupportBonus as proxy for last action type:
-  //   BUDGET_CONCESSION adds 30 bonus → treat as 'budget' (+0.4)
-  //   POLITICAL_DEAL adds 20 bonus → treat as 'deal' (+0.3)
   if (congress.independentSupportBonus >= 30) {
-    independentSupport += 0.4; // budget concession
+    independentSupport += 0.4;
   } else if (congress.independentSupportBonus >= 20) {
-    independentSupport += 0.3; // political deal
+    independentSupport += 0.3;
   } else if (congress.independentSupportBonus > 0) {
     independentSupport += congress.independentSupportBonus / 100;
   }
   if (political.emergencyDecreesUsed > 2) independentSupport -= 0.2;
   independentSupport = Math.max(0, Math.min(1, independentSupport));
 
-  const independentVotes = clamp(Math.round(35 * independentSupport) + variance, 0, 35);
-  const totalGovVotes = effectiveGovSeats + independentVotes;
+  // Abstentions — 15-35% of independents don't show up
+  const abstentionCount = Math.round(congress.independentSeats * (0.15 + rng() * 0.20));
+  const votingIndependents = Math.max(0, congress.independentSeats - abstentionCount);
+  const independentVotes = clamp(Math.round(votingIndependents * independentSupport) + variance, 0, votingIndependents);
+
+  let totalGovVotes = effectiveGovSeats + independentVotes;
+
+  // Opposition bribery — if opposition is large, they can flip 1-4 independent votes (25% chance)
+  let bribeOccurred = false;
+  let bribedVotes = 0;
+  if (congress.oppositionSeats > 140 && rng() < 0.25) {
+    bribedVotes = Math.floor(rng() * 4) + 1;
+    totalGovVotes = Math.max(0, totalGovVotes - bribedVotes);
+    bribeOccurred = true;
+  }
 
   return {
     passed: totalGovVotes >= requiredVotes,
@@ -44,7 +63,21 @@ export function calculateVote(
     independentVotes,
     totalVotes: totalGovVotes,
     requiredVotes,
+    bribeOccurred,
+    bribedVotes,
+    abstentionCount,
+    defectionCount,
   };
+}
+
+/** Determines presidential election outcome based on current game state. */
+export function calculateElectionResult(state: GameState): { won: boolean; marginPercent: number } {
+  const { political, economic } = state;
+  const won = political.popularity > 45 && economic.marketConfidence > 35;
+  const popularityMargin = (political.popularity - 45) / 55;
+  const economyBonus = (economic.marketConfidence - 35) / 65 * 0.3;
+  const marginPercent = Math.round(clamp((popularityMargin + economyBonus) * 100, -50, 50));
+  return { won, marginPercent };
 }
 
 export function applyNegotiation(

@@ -33,7 +33,7 @@ export { DIFFICULTY_PRESETS, DIFFICULTY_MODIFIERS, CRISIS_THRESHOLDS, GAME_OVER,
 export type { DifficultyModifiers } from './constants.js';
 
 export { calculateInflation, calculateInflationBreakdown } from './inflation.js';
-export { calculateVote, applyNegotiation } from './congress.js';
+export { calculateVote, applyNegotiation, calculateElectionResult } from './congress.js';
 export { applyMediaSpin } from './media.js';
 export { calculateScore } from './scoring.js';
 export { detectCrises, isCrisisResolved } from './crises.js';

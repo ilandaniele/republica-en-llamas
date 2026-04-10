@@ -749,6 +749,13 @@
   'event.pol_election_result.choice_win': 'El gobierno triunfa: el pueblo renueva el mandato',
   'event.pol_election_result.choice_lose': 'Derrota histórica: la oposición gana las elecciones',
 
+  'event.pol_congressional_elections.title': 'ELECCIONES DE MEDIO TÉRMINO',
+  'event.pol_congressional_elections.body': 'Los argentinos van a las urnas para renovar la mitad del Congreso. El resultado puede fortalecer o debilitar el bloque oficialista.',
+  'event.pol_congressional_elections.choice_a': 'Campaña agresiva: el presidente sale a hacer actos en todo el país',
+  'event.pol_congressional_elections.choice_b': 'Acuerdo bipartidista: sumar candidatos moderados de la oposición',
+  'event.pol_congressional_elections.choice_c': 'Ignorar la campaña y enfocarse en gestión',
+  'event.pol_congressional_elections.choice_d': 'Promesas populistas: anunciar bonos y aumentos antes de votar',
+
   // ─── NEW: choice_c / choice_d for Economic cards ──────────────────────────
   'event.eco_001.choice_d': 'Pacto social de precios con cámaras empresariales',
   'event.eco_002.choice_c': 'Negociar condiciones más favorables en 30 días',

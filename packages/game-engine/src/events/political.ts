@@ -447,6 +447,60 @@ export const POLITICAL_CARDS: EventCard[] = [
       },
     ],
   },
+  // ─── Congressional mid-term elections ─────────────────────────────────────
+  {
+    id: 'pol_congressional_elections',
+    category: 'political',
+    titleKey: 'event.pol_congressional_elections.title',
+    bodyKey: 'event.pol_congressional_elections.body',
+    weight: 8,
+    minTurn: 15,
+    maxTurn: 20,
+    choices: [
+      {
+        id: 'pol_congress_el_a',
+        textKey: 'event.pol_congressional_elections.choice_a',
+        effects: { governmentSeatsDelta: 12, popularityDelta: -5, deficitDelta: 4 },
+      },
+      {
+        id: 'pol_congress_el_b',
+        textKey: 'event.pol_congressional_elections.choice_b',
+        effects: { governmentSeatsDelta: 6, stabilityDelta: 5, popularityDelta: 2 },
+      },
+      {
+        id: 'pol_congress_el_c',
+        textKey: 'event.pol_congressional_elections.choice_c',
+        effects: { governmentSeatsDelta: -8, popularityDelta: -3, stabilityDelta: -2 },
+      },
+      {
+        id: 'pol_congress_el_d',
+        textKey: 'event.pol_congressional_elections.choice_d',
+        effects: { governmentSeatsDelta: 8, deficitDelta: 7, popularityDelta: 6 },
+      },
+    ],
+  },
+  // ─── Presidential election result (forced draw at turn 40) ────────────────
+  {
+    id: 'pol_election_result',
+    category: 'political',
+    titleKey: 'event.pol_election_result.title',
+    bodyKey: 'event.pol_election_result.body',
+    weight: 1,
+    choices: [
+      {
+        id: 'pol_election_result_win',
+        textKey: 'event.pol_election_result.choice_win',
+        effects: { popularityDelta: 10, stabilityDelta: 5 },
+        instantGameOver: 'term_complete',
+      },
+      {
+        id: 'pol_election_result_lose',
+        textKey: 'event.pol_election_result.choice_lose',
+        effects: { popularityDelta: -15, stabilityDelta: -10 },
+        instantGameOver: 'election_loss',
+      },
+    ],
+  },
   // ─── Presidential election arc ───────────────────────────────────────────
   {
     id: 'pol_election_campaign',
