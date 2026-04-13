@@ -37,7 +37,7 @@ const MANIFEST_PATH = path.join(__dirname, '../apps/web/src/assets/image-manifes
 const IMAGES: Array<{ id: string; prompt: string }> = [
   // Political scenes
   { id: 'pol_congress',     prompt: 'Argentine congress chamber interior hemicycle, legislators at desks, large dome above, two-tone seats government opposition, podium center' + STYLE_SUFFIX },
-  { id: 'pol_scandal',      prompt: 'Argentine politician at podium caught in scandal, briefcase open spilling cash, journalists with cameras flashbulbs, newspaper headline' + STYLE_SUFFIX },
+  { id: 'pol_scandal',      prompt: 'Argentine politician at press conference looking nervous, open briefcase with documents on podium, reporters with cameras and microphones surrounding him, spotlight center stage' + STYLE_SUFFIX },
   { id: 'pol_protest',      prompt: 'Street protest Buenos Aires, crowd marching, cacerolazo people banging pots, obelisk monument background, smoke' + STYLE_SUFFIX },
 
   // Economic scenes
@@ -52,7 +52,7 @@ const IMAGES: Array<{ id: string; prompt: string }> = [
 
   // International scenes
   { id: 'int_imf',          prompt: 'Argentine minister shaking hands with IMF officials at conference table, flags, formal suits, pile of documents' + STYLE_SUFFIX },
-  { id: 'int_war',          prompt: 'World map showing global conflict zones, red hotspots, concerned diplomats watching TV screen showing explosions' + STYLE_SUFFIX },
+  { id: 'int_war',          prompt: 'World map with red alert markers on multiple countries, two diplomats at conference table with national flags, globe and papers, tense negotiation room' + STYLE_SUFFIX },
   { id: 'int_trade',        prompt: 'Argentine cargo ship at port loaded with soy soybeans, containers, export crane, sunrise, handshake in foreground' + STYLE_SUFFIX },
   { id: 'int_guerra_ucrania', prompt: 'Ukraine crisis 2022, blue and yellow Ukrainian flag colors dominating sky, burning city silhouettes at night, military tank foreground, Argentine diplomat in suit watching a conflict map on TV screen, dark war atmosphere, explosion glow on horizon' + STYLE_SUFFIX },
   { id: 'int_conflicto_iran', prompt: 'Iran conflict 2024, fiery orange oil-fire sky, oil derricks silhouette, crescent moon symbol, Argentine diplomat at desk with Middle-East maps, missile trail in sky, tense negotiation atmosphere, desert landscape' + STYLE_SUFFIX },
@@ -73,12 +73,12 @@ const IMAGES: Array<{ id: string; prompt: string }> = [
   { id: 'guerra_nuke_explosion', prompt: 'nuclear mushroom cloud explosion over Buenos Aires skyline, apocalyptic orange sky, massive shockwave, ruins silhouettes foreground' + STYLE_SUFFIX },
   { id: 'guerra_nuke_threat',    prompt: 'ballistic missile launching toward city, red emergency siren, bomb shelter door, panicked Argentine officials in bunker' + STYLE_SUFFIX },
   { id: 'guerra_join',           prompt: 'Argentine soldiers marching in desert, military airplane overhead, trench warfare, Argentine flag, war declaration ceremony' + STYLE_SUFFIX },
-  { id: 'eco_dollar_blue',       prompt: 'black market currency exchange dark alley Buenos Aires, stacks of dollar bills, hooded figure, unofficial exchange board' + STYLE_SUFFIX },
+  { id: 'eco_dollar_blue',       prompt: 'informal currency exchange Buenos Aires street corner, stacks of dollar bills on table, secretive transaction, exchange rate board with numbers, night scene' + STYLE_SUFFIX },
   { id: 'eco_corte_luz',         prompt: 'city blackout night scene, dark buildings, Argentine family with candles, downed power lines, electrical failure' + STYLE_SUFFIX },
   { id: 'soc_housing',           prompt: 'family evicted from apartment Buenos Aires, boxes on sidewalk, angry landlord with papers, housing crisis protesters outside' + STYLE_SUFFIX },
   { id: 'pol_election',          prompt: 'Argentine election voting booths, ballot box with fingerprint ink, long voter queue, celeste y blanco flag, democracy' + STYLE_SUFFIX },
   { id: 'pol_veto',              prompt: 'Argentine president stamping VETO in red on law document, furious legislators in congress, official seal stamp' + STYLE_SUFFIX },
-  { id: 'int_aid',               prompt: 'international humanitarian aid arriving Buenos Aires port, UN flags, aid workers unloading crates, food packages relief' + STYLE_SUFFIX },
+  { id: 'int_aid',               prompt: 'cargo ship arriving Buenos Aires port, workers unloading labeled boxes from containers, officials signing documents on dock, cranes and national flags' + STYLE_SUFFIX },
   { id: 'malvinas',              prompt: 'Malvinas Falkland Islands map with Argentine flag, warship South Atlantic, political debate Buenos Aires congress' + STYLE_SUFFIX },
 
   // Character portraits (editorial caricature style)
@@ -86,9 +86,9 @@ const IMAGES: Array<{ id: string; prompt: string }> = [
   { id: 'char_massa',       prompt: 'Sergio Massa pixel bust, flat slicked-back dark brown hair, very wide square jaw, heavy drooping eyelids, navy suit red tie, holding briefcase, Argentine Peronist economy minister' + PORTRAIT_SUFFIX },
   { id: 'char_bullrich',    prompt: 'Patricia Bullrich pixel bust, short choppy auburn-gray hair, angular bony face, thin pressed lips, charcoal blazer, gold star security badge on lapel, cold stern expression, Argentine security minister' + PORTRAIT_SUFFIX },
   { id: 'char_bregman',     prompt: 'Myriam Bregman pixel bust, large voluminous curly blonde hair, round glasses, hoop earrings, bright red blazer, raised fist, leftist Argentine politician FIT' + PORTRAIT_SUFFIX },
-  { id: 'char_schiaretti',  prompt: 'Juan Schiaretti pixel bust, completely bald shiny head, thin gray side fringe only, very wide fat round face with heavy jowls, blue suit, Argentine Cordoba governor, holding mate gourd' + PORTRAIT_SUFFIX },
+  { id: 'char_schiaretti',  prompt: 'Juan Schiaretti pixel bust, bald head with thin gray hair on sides, wide round face, blue suit, Argentine Cordoba governor, holding mate cup' + PORTRAIT_SUFFIX },
   { id: 'char_larreta',     prompt: 'Horacio Larreta pixel bust, salt-and-pepper short neat hair, pale narrow face, very thick dark eyebrows, dark under-eye bags, light blue tie charcoal suit, tired worried expression, Buenos Aires mayor' + PORTRAIT_SUFFIX },
-  { id: 'char_caputo',      prompt: 'Luis Caputo pixel bust, grey neatly combed hair, sharp angular face, dark banker suit, stern expression, holding spreadsheet document, Argentine economy minister' + PORTRAIT_SUFFIX },
+  { id: 'char_caputo',      prompt: 'Luis Caputo pixel bust, combed gray hair, angular narrow face, dark suit white shirt, serious stern expression, holding financial documents, Argentine economy minister' + PORTRAIT_SUFFIX },
   { id: 'char_moyano',      prompt: 'Hugo Moyano pixel bust, grey stubbly hair, heavyset wide neck, Teamsters-style jacket with union logo, angry pointing gesture, Argentine union boss' + PORTRAIT_SUFFIX },
   { id: 'char_kicillof',    prompt: 'Axel Kicillof pixel bust, curly unkempt black hair, scruffy dark beard, open-collar casual shirt, professor glasses, Argentine leftist Kirchnerist governor' + PORTRAIT_SUFFIX },
   { id: 'char_kirchner',    prompt: 'Cristina Kirchner pixel bust, dark dyed hair blown out, pearl necklace, Peronist cross pendant, charcoal pantsuit, sharp confident expression, Argentine former president' + PORTRAIT_SUFFIX },
