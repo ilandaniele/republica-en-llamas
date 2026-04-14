@@ -290,7 +290,9 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
     ];
     for (let i = voteTypes.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [voteTypes[i], voteTypes[j]] = [voteTypes[j], voteTypes[i]];
+      const tmp = voteTypes[i]!;
+      voteTypes[i] = voteTypes[j]!;
+      voteTypes[j] = tmp;
     }
     const voteMap = new Map<number, VoteStatus>();
     indSeats.forEach((seat, i) => {
