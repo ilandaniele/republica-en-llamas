@@ -281,11 +281,20 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
 
     // Compute how many visual independents vote yes
     const visIndYes = Math.round(indSeats.length * Math.min(100, indYesPercent) / 100);
+    const indNoCount = Math.round(indSeats.length * 0.60) - visIndYes;
+    // Build vote type array and shuffle so different seats abstain/no each session
+    const voteTypes: VoteStatus[] = [
+      ...Array(visIndYes).fill('yes' as VoteStatus),
+      ...Array(Math.max(0, indNoCount)).fill('no' as VoteStatus),
+      ...Array(Math.max(0, indSeats.length - visIndYes - Math.max(0, indNoCount))).fill('abstain' as VoteStatus),
+    ];
+    for (let i = voteTypes.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [voteTypes[i], voteTypes[j]] = [voteTypes[j], voteTypes[i]];
+    }
     const voteMap = new Map<number, VoteStatus>();
     indSeats.forEach((seat, i) => {
-      if (i < visIndYes) voteMap.set(seat.index, 'yes');
-      else if (i < Math.round(indSeats.length * 0.60)) voteMap.set(seat.index, 'no');
-      else voteMap.set(seat.index, 'abstain');
+      voteMap.set(seat.index, voteTypes[i] ?? 'abstain');
     });
 
     let delay = 0;
