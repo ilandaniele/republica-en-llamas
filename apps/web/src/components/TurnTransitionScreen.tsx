@@ -259,7 +259,6 @@ function CasaRosadaScene({ state }: { state: CasaState }) {
         {px(21,5,1,1,GD)}{px(26,5,1,1,GD)}
         {px(23,5,2,1,BK)}
       </>}
-      </>}
     </svg>
   );
 }
