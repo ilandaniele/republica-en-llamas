@@ -27,10 +27,10 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
 
 const BUCKET        = 'game-images';
 const FOLDER        = 'illustrations';
-// Scene illustrations (16:9)
-const STYLE_SUFFIX  = ', retro pixel art 8-bit game, SNES 16-bit sprite style, flat solid color blocks, crisp hard pixel edges, no smooth gradients, no anti-aliasing, limited 16-color palette, simple bold readable shapes, Argentine political, dark navy background, no text no letters';
-// Character portrait sprites (square)
-const PORTRAIT_SUFFIX = ', 8-bit pixel art character bust sprite, frontal facing, flat solid colors, crisp hard pixel edges, SNES RPG game portrait style, no smooth gradients, limited color palette, black background, no text no letters';
+// Scene illustrations — 512×512 uniform, chunky visible pixel grid
+const STYLE_SUFFIX  = ', retro 16-bit pixel art, Super Nintendo SNES sprite style, chunky visible pixel grid, each pixel is a large solid square, bold flat color blocks with hard pixel edges, zero dithering, maximum 8 solid colors, no anti-aliasing, no gradients, no blurring, Argentine political satire, dark navy blue background, no text no letters no watermark';
+// Character portrait sprites — 512×512 chunky pixel bust
+const PORTRAIT_SUFFIX = ', retro 16-bit pixel art character bust portrait, frontal facing centered, very large chunky visible pixels, bold flat solid color blocks, hard pixel edges, Super Nintendo RPG character sprite style, zero dithering, limited 8-color palette, solid black background, no text no letters no watermark';
 const MANIFEST_PATH = path.join(__dirname, '../apps/web/src/assets/image-manifest.json');
 
 // ── Image definitions ─────────────────────────────────────────────────────────
@@ -173,9 +173,8 @@ async function main() {
 
     process.stdout.write(`⏳  [${done + skipped + 1}/${IMAGES.length}] ${img.id} … `);
 
-    // Portraits: square 256x256 → chunky pixel sprite; Scenes: 320x180 → 16:9 pixel art
-    const isPortrait = img.id.startsWith('char_');
-    const [w, h] = isPortrait ? [256, 256] : [320, 180];
+    // All images: 512×512 uniform resolution for consistent pixel density
+    const [w, h] = [512, 512];
 
     let success = false;
     for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
