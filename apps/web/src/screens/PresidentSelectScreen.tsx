@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGameStore } from '../stores/gameStore.js';
-import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
 import { useEntitlements } from '../hooks/useEntitlements.js';
+import imageManifest from '../assets/image-manifest.json';
 import { PaywallModal } from '../components/PaywallModal.js';
 import { HISTORICAL_SCENARIOS } from '@republica/game-engine';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,15 @@ interface Archetype {
   color: string;
   emoji: string;
 }
+
+const ARCHETYPE_CHAR: Record<string, string> = {
+  ingeniero:   'char_milei',
+  populista:   'char_massa',
+  tecnocrata:  'char_bullrich',
+  izquierda:   'char_bregman',
+  federal:     'char_schiaretti',
+  corporativo: 'char_larreta',
+};
 
 const ARCHETYPES: Archetype[] = [
   {
@@ -115,9 +124,15 @@ function ArchetypeCard({ archetype, selected, onSelect }: { archetype: Archetype
           : 'bg-navy-800 hover:bg-navy-750'
       }`}
     >
-      {/* President caricature */}
+      {/* President portrait */}
       <div className="flex justify-center mb-3">
-        <PixelPortrait id={archetype.id as import('../components/illustrations/PixelPortrait.js').PortraitId} mood={selected ? 'victory' : 'neutral'} px={120} />
+        {(() => {
+          const charKey = ARCHETYPE_CHAR[archetype.id];
+          const charUrl = charKey ? (imageManifest as Record<string, string>)[charKey] : null;
+          return charUrl
+            ? <img src={charUrl} width={120} height={120} style={{ imageRendering: 'pixelated', display: 'block' }} alt={archetype.name} />
+            : <span className="text-5xl">{archetype.emoji}</span>;
+        })()}
       </div>
 
       {/* Name */}

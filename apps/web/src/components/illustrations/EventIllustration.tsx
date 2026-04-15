@@ -6,6 +6,16 @@ import imageManifest from '../../assets/image-manifest.json';
 
 gsap.registerPlugin(useGSAP);
 
+// Archetype → char_* image key mapping
+const ARCHETYPE_CHAR: Record<string, string> = {
+  ingeniero:   'char_milei',
+  populista:   'char_massa',
+  tecnocrata:  'char_bullrich',
+  izquierda:   'char_bregman',
+  federal:     'char_schiaretti',
+  corporativo: 'char_larreta',
+};
+
 // â”€â”€ Pixel grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // ViewBox: 320Ã—180. Each "pixel" = 8 SVG units â†’ 40Ã—22 grid.
 const P = 8;
@@ -1253,6 +1263,9 @@ export function EventIllustration({
 }: Props) {
   const scene = selectScene(eventCategory, eventId, gameState);
   const aiUrl = (imageManifest as Record<string, string>)[scene] ?? null;
+  // Resolve president char portrait for overlay
+  const presCharKey = ARCHETYPE_CHAR[presidentId] ?? (presidentId?.startsWith('char_') ? presidentId : null);
+  const presCharUrl = presCharKey ? ((imageManifest as Record<string, string>)[presCharKey] ?? null) : null;
   const containerRef = useRef<HTMLDivElement>(null);
 
   const isCrisis = eventCategory === 'crisis';
@@ -1453,6 +1466,15 @@ export function EventIllustration({
             <>
               <image href={aiUrl} x={0} y={0} width={320} height={180} preserveAspectRatio="xMidYMid slice" style={{ imageRendering: 'pixelated' as const }} />
               {lbl(scene.replace(/_/g, ' ').toUpperCase())}
+              {presCharUrl && (
+                <>
+                  {/* Dark backing panel for portrait readability */}
+                  <rect x={228} y={86} width={90} height={90} fill="rgba(0,0,0,0.55)" />
+                  <image href={presCharUrl} x={228} y={86} width={90} height={90}
+                    preserveAspectRatio="xMidYMid meet"
+                    style={{ imageRendering: 'pixelated' as const }} />
+                </>
+              )}
             </>
           ) : (
             <>
