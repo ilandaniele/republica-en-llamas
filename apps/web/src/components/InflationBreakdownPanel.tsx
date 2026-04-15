@@ -44,7 +44,7 @@ export function InflationBreakdownPanel({ breakdown }: Props) {
               <span>{f.emoji}</span>
               <span>{f.label}</span>
             </span>
-            <span className={`font-bold ${f.value > 0 ? 'text-emerald-400' : 'text-crimson-400'}`}>
+            <span className={`font-bold ${f.value > 0 ? 'text-crimson-400' : 'text-emerald-400'}`}>
               {f.value > 0 ? '+' : ''}{f.value.toFixed(1)}%
             </span>
           </div>

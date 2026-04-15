@@ -5,11 +5,11 @@ import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
 import { useGameStore } from '../stores/gameStore.js';
 
 // ── pixel palette (subset) ───────────────────────────────────────────────
-// P=3 on 96×40 grid → viewBox 288×120. Each cell is 3 SVG units.
-// Double the grid density vs the old 48×20 layout → 4× more detail cells.
-const P = 3;
-const COLS = 96;
-const ROWS = 40;
+// P=2 on 144×60 grid → viewBox 288×120. Each cell is 2 SVG units.
+// 2.25× more detail cells vs the old P=3 layout.
+const P = 2;
+const COLS = 144;
+const ROWS = 60;
 const NAV = '#162032'; const SLT = '#2A3D52'; const CB  = '#74ACDF';
 const WH  = '#ECE8E0'; const SK  = '#D4956A'; const BK  = '#080C12';
 const GN  = '#3AA858'; const DG  = '#1E3A1E'; const BR  = '#7A5530';
@@ -27,7 +27,7 @@ function px(col: number, row: number, w: number, h: number, fill: string) {
   return <rect x={col * P} y={row * P} width={w * P} height={h * P} fill={fill} />;
 }
 
-// 2×5 pixel person at P=3 → 6×15 SVG units
+// 2×5 person sprite at P=2 → 4×10 SVG units
 function Person({ c, r, suit = SLT, hair = BK, skin = SK }: { c: number; r: number; suit?: string; hair?: string; skin?: string }) {
   return (
     <g>
@@ -41,8 +41,8 @@ function Person({ c, r, suit = SLT, hair = BK, skin = SK }: { c: number; r: numb
 }
 
 function CasaRosadaScene({ state }: { state: CasaState }) {
-  const W = COLS * P;  // 96 × 3 = 288
-  const H = ROWS * P;  // 40 × 3 = 120
+  const W = COLS * P;  // 144 × 2 = 288
+  const H = ROWS * P;  // 60  × 2 = 120
   const skyColor = state === 'nuke'  ? '#3A1000'
     : state === 'chaos' ? '#221508'
     : state === 'riot'  ? '#160E1E'
@@ -56,278 +56,235 @@ function CasaRosadaScene({ state }: { state: CasaState }) {
       {/* Sky */}
       <rect x={0} y={0} width={W} height={H} fill={skyColor} />
 
-      {/* City skyline silhouette — 10 buildings on 96×40 grid */}
-      {[0,10,18,26,34,40,50,58,66,74].map((x, i) => {
-        const hs = [22,18,26,20,14,30,24,16,28,20];
-        const ws = [10,8,10,8,6,10,8,8,8,6];
-        return <rect key={i} x={x*P} y={(38-hs[i]!)*P} width={ws[i]!*P} height={hs[i]!*P} fill="rgba(20,30,50,0.4)" />;
+      {/* City skyline silhouette — 14 buildings */}
+      {([0,12,22,32,42,52,62,72,84,96,106,116,126,136] as number[]).map((x, i) => {
+        const hs = [28,24,34,26,18,38,30,22,36,26,20,32,28,24];
+        const ws = [12,10,12,10,8,12,10,10,10,8,10,10,10,8];
+        return <rect key={i} x={x*P} y={(58-hs[i]!)*P} width={ws[i]!*P} height={hs[i]!*P} fill="rgba(20,30,50,0.38)" />;
       })}
 
-      {/* Floating island */}
-      {px(2, 24, 92, 2, DG)}
-      {px(2, 26, 92, 2, GN)}
-      {/* Plaza with cobblestone pattern */}
-      {px(6, 28, 84, 4, BR)}
-      {[8,16,24,32,40,48,56,64,72,80].map((c,i) => (
-        <rect key={i} x={c*P} y={28*P} width={6*P} height={2*P} fill="rgba(0,0,0,0.18)" />
+      {/* Ground strip */}
+      {px(0, 56, 144, 4, DG)}
+      {px(0, 57, 144, 3, GN)}
+      {/* Plaza cobblestones */}
+      {px(8, 45, 128, 14, BR)}
+      {([10,22,34,46,58,70,82,94,106,118] as number[]).map((c,i) => (
+        <rect key={i} x={c*P} y={45*P} width={10*P} height={3*P} fill="rgba(0,0,0,0.16)" />
       ))}
-      {/* Cobble cross-lines */}
-      {[8,16,24,32,40,48,56,64,72,80].map((c,i) => (
-        <rect key={`v${i}`} x={c*P} y={30*P} width={6*P} height={1*P} fill="rgba(0,0,0,0.12)" />
+      {([10,22,34,46,58,70,82,94,106,118] as number[]).map((c,i) => (
+        <rect key={`v${i}`} x={c*P} y={48*P} width={10*P} height={1*P} fill="rgba(0,0,0,0.10)" />
       ))}
-      {/* Island narrows toward bottom */}
-      {px(10, 32, 76, 2, BR)}
-      {px(14, 34, 68, 2, BR)}
-      {px(20, 36, 56, 2, BR)}
-      {px(28, 38, 40, 2, BK)}
 
-      {/* ── Casa Rosada — 96×40 grid, P=3, viewBox 288×120 ── */}
+      {/* ── Casa Rosada — 144×60 grid, P=2 ── */}
 
-      {/* Main facade — two floors */}
-      {px(14, 12, 68, 14, PK)}
-      {/* Facade highlight on upper floor */}
-      {px(16, 12, 64, 4, PK2)}
+      {/* Corner pavilions — slightly taller */}
+      {px(18, 17, 10, 42, PK)}
+      {px(116, 17, 10, 42, PK)}
+      {/* Pavilion highlights */}
+      {px(19, 17, 8, 5, PK2)}
+      {px(117, 17, 8, 5, PK2)}
+      {/* Pavilion cornice */}
+      {px(17, 14, 12, 3, WH)}
+      {px(115, 14, 12, 3, WH)}
+      {/* Pavilion dentils */}
+      {([18,21,24] as number[]).map((c,i) => <rect key={i} x={c*P} y={14*P} width={2*P} height={2*P} fill={GR2} />)}
+      {([116,119,122] as number[]).map((c,i) => <rect key={i} x={c*P} y={14*P} width={2*P} height={2*P} fill={GR2} />)}
+
+      {/* Main facade — between pavilions, 2 floors */}
+      {px(28, 20, 88, 39, PK)}
+      {/* Facade highlight upper floor */}
+      {px(30, 20, 84, 6, PK2)}
       {/* Horizontal stonework courses */}
-      {px(14, 18, 68, 1, ST)}
-      {px(14, 22, 68, 1, ST)}
+      {px(28, 28, 88, 1, ST)}
+      {px(28, 34, 88, 1, ST)}
 
-      {/* Wing extensions */}
-      {px(12, 16, 4, 10, PK)}
-      {px(80, 16, 4, 10, PK)}
-      {/* Wing stonework */}
-      {px(12, 20, 4, 1, ST)}
-      {px(80, 20, 4, 1, ST)}
-
-      {/* Cornice — top band */}
-      {px(12,  8, 72, 4, WH)}
-      {/* Dentil row — alternating GR2 blocks */}
-      {[12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80].map((c,i) => (
-        <rect key={i} x={c*P} y={8*P} width={2*P} height={2*P} fill={GR2} />
+      {/* Cornice across full width */}
+      {px(17, 12, 110, 5, WH)}
+      {/* Dentil row */}
+      {([18,22,26,30,34,38,42,46,50,54,58,62,66,70,74,78,82,86,90,94,98,102,106,110,114,118,122] as number[]).map((c,i) => (
+        <rect key={i} x={c*P} y={12*P} width={2*P} height={3*P} fill={GR2} />
       ))}
 
       {/* Parapet balustrade */}
-      {px(12, 10, 72, 2, ST)}
-      {/* Balustrade spindles */}
-      {[12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78].map((c,i) => (
-        <rect key={i} x={c*P} y={10*P} width={2*P} height={2*P} fill={WH} />
+      {px(17, 17, 110, 3, ST)}
+      {([18,21,24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,108,111,114,117,120,123] as number[]).map((c,i) => (
+        <rect key={i} x={c*P} y={17*P} width={2*P} height={3*P} fill={WH} />
       ))}
 
-      {/* 5 arcade arches on ground floor — each arch 8 cols wide */}
-      {[18,30,42,54,66].map((c,i) => (
+      {/* 7 arcade arches on ground floor */}
+      {([28,42,56,70,84,98,112] as number[]).map((c,i) => (
         <g key={i}>
-          {/* Arch opening */}
-          {px(c, 18, 8, 10, BK)}
-          {/* Arch lintel */}
-          {px(c-2, 16, 12, 2, PK)}
-          {/* Arch soffit (curved pixel art — 2-cell steps) */}
-          {px(c,   14, 8, 2, PK)}
-          {px(c+1, 13, 6, 1, PK)}
-          {px(c+2, 12, 4, 1, PK)}
-          {/* Keystone accent */}
-          {px(c+3, 13, 2, 1, ST)}
-          {/* Arch pilasters */}
-          {px(c-2, 18, 2, 10, ST)}
-          {px(c+8, 18, 2, 10, ST)}
+          {px(c, 34, 10, 24, BK)}
+          {px(c-1, 32, 12, 2, PK)}
+          {px(c,   30, 10, 2, PK)}
+          {px(c+1, 28, 8, 2, PK)}
+          {px(c+2, 26, 6, 2, PK)}
+          {px(c+3, 24, 4, 2, PK)}
+          {px(c+4, 25, 2, 2, ST)}
+          {px(c-2, 34, 3, 24, ST)}
+          {px(c+10, 34, 3, 24, ST)}
         </g>
       ))}
 
-      {/* Upper floor windows — 10 celeste windows with cross-dividers */}
-      {[16,24,32,42,50,58,67,75,78,82].slice(0,8).map((c,i) => {
-        const cols = [16,24,32,42,50,58,67,75];
-        const col = cols[i]!;
-        return (
-          <g key={i}>
-            {px(col, 12, 6, 6, CB)}
-            {/* Window sill */}
-            {px(col-1, 18, 8, 1, ST)}
-            {/* Cross divider vertical */}
-            <rect x={(col+3)*P} y={12*P} width={P} height={6*P} fill="rgba(0,0,0,0.3)" />
-            {/* Cross divider horizontal */}
-            <rect x={col*P} y={15*P} width={6*P} height={P} fill="rgba(0,0,0,0.3)" />
-            {/* Window header arch */}
-            {px(col, 11, 6, 1, ST)}
-          </g>
-        );
-      })}
+      {/* Upper floor windows — 8 celeste windows with cross-dividers */}
+      {([30,42,54,66,78,90,102,114] as number[]).map((c,i) => (
+        <g key={i}>
+          {px(c, 21, 8, 8, CB)}
+          {px(c-1, 29, 10, 1, ST)}
+          <rect x={(c+4)*P} y={21*P} width={P} height={8*P} fill="rgba(0,0,0,0.28)" />
+          <rect x={c*P} y={25*P} width={8*P} height={P} fill="rgba(0,0,0,0.28)" />
+          {px(c, 20, 8, 1, ST)}
+        </g>
+      ))}
 
       {/* Balcony rail between floors */}
-      {px(14, 18, 68, 2, ST)}
-      {/* Balcony balusters */}
-      {[14,17,20,23,26,29,32,35,38,41,44,47,50,53,56,59,62,65,68,71,74,77,80].map((c,i) => (
-        <rect key={i} x={c*P} y={18*P} width={2*P} height={2*P} fill={WH} />
+      {px(28, 34, 88, 3, ST)}
+      {([29,32,35,38,41,44,47,50,53,56,59,62,65,68,71,74,77,80,83,86,89,92,95,98,101,104,107,110,113] as number[]).map((c,i) => (
+        <rect key={i} x={c*P} y={34*P} width={2*P} height={3*P} fill={WH} />
       ))}
 
-      {/* Side pavilion pillars */}
-      {[14,15,16,80,81,82].map((c,i) => (
-        <rect key={i} x={c*P} y={12*P} width={P} height={14*P} fill={ST} />
+      {/* Side pavilion pilasters */}
+      {([18,20,22,24,116,118,120,122] as number[]).map((c,i) => (
+        <rect key={i} x={c*P} y={20*P} width={P} height={22*P} fill={ST} />
       ))}
-      {/* Pavilion capitals */}
-      {px(13, 11, 5, 1, WH)}
-      {px(79, 11, 5, 1, WH)}
 
-      {/* Roof trim line */}
-      {px(14, 12, 68, 2, GR3)}
+      {/* Roof trim */}
+      {px(17, 12, 110, 2, GR3)}
 
-      {/* Center clock tower */}
-      {px(42,  4, 12, 10, PK)}
-      {px(40,  2, 16,  2, ST)}
-      {px(42,  0, 12,  2, WH)}
-      {/* Tower cornice */}
-      {px(41,  8, 14,  2, ST)}
-      {/* Clock face surround */}
-      {px(43,  4,  10, 6, WH)}
-      {/* Clock face detail */}
-      {px(44,  4,  8, 6, '#F5F0E8')}
-      {/* 12 o'clock mark */}
-      {px(47,  4, 2, 1, GR2)}
-      {/* 6 o'clock mark */}
-      {px(47,  9, 2, 1, GR2)}
-      {/* 9 o'clock mark */}
-      {px(43,  6, 2, 1, GR2)}
-      {/* 3 o'clock mark */}
-      {px(51,  6, 2, 1, GR2)}
-      {/* Hour hand */}
-      <rect x={48*P} y={4*P+1} width={1} height={4*P} fill={BK} />
-      {/* Minute hand */}
-      <rect x={48*P} y={5*P} width={4*P} height={1} fill={BK} />
+      {/* Central flag tower */}
+      {px(64,  4, 16, 14, PK)}
+      {px(62,  2, 20,  2, ST)}
+      {px(64,  0, 16,  2, WH)}
+      {px(63,  9, 18,  3, ST)}
+      {px(65,  4, 14,  8, WH)}
+      {px(66,  4, 12,  8, '#F5F0E8')}
+      {px(70,  4, 2, 1, GR2)}
+      {px(70, 11, 2, 1, GR2)}
+      {px(65,  7, 2, 1, GR2)}
+      {px(77,  7, 2, 1, GR2)}
+      <rect x={71*P} y={4*P+1} width={1} height={4*P} fill={BK} />
+      <rect x={71*P} y={6*P} width={5*P} height={1} fill={BK} />
 
-      {/* Argentine flag on clock tower */}
-      <rect x={49*P+1} y={0} width={3} height={6*P} fill={BR} />
-      {px(50, 0, 10, 2, CB)}
-      {px(50, 2, 10, 2, WH)}
-      {px(50, 4, 10, 2, CB)}
-      {/* Sol de Mayo — 2×2 gold dot in white stripe */}
-      {px(54, 2, 2, 2, GD)}
+      {/* Argentine flag on tower */}
+      <rect x={73*P+1} y={0} width={3} height={7*P} fill={BR} />
+      {px(74, 0, 14, 2, CB)}
+      {px(74, 2, 14, 2, WH)}
+      {px(74, 4, 14, 2, CB)}
+      {px(80, 2, 3, 2, GD)}
 
       {/* ── State layers ── */}
 
-      {/* GUARD — 4 guards at plaza edges */}
+      {/* GUARD */}
       {state === 'guard' && <>
-        <Person c={4}   r={18} suit={NAV} hair={BK} />
-        <Person c={10}  r={18} suit={NAV} hair={BK} />
-        <Person c={82}  r={18} suit={NAV} hair={BK} />
-        <Person c={88}  r={18} suit={NAV} hair={BK} />
-        {/* Guard rifles */}
-        {px(4,16,2,2,BK)}{px(10,16,2,2,BK)}{px(82,16,2,2,BK)}{px(88,16,2,2,BK)}
-        {/* Flag poles in plaza */}
-        <rect x={36*P} y={22*P} width={3} height={6*P} fill={GR2} />
-        <rect x={62*P} y={22*P} width={3} height={6*P} fill={GR2} />
-        {px(37,22,6,2,CB)}{px(37,24,6,2,WH)}{px(37,26,6,2,CB)}
-        {px(63,22,6,2,CB)}{px(63,24,6,2,WH)}{px(63,26,6,2,CB)}
+        <Person c={4}   r={28} suit={NAV} hair={BK} />
+        <Person c={10}  r={28} suit={NAV} hair={BK} />
+        <Person c={16}  r={28} suit={NAV} hair={BK} />
+        <Person c={122} r={28} suit={NAV} hair={BK} />
+        <Person c={128} r={28} suit={NAV} hair={BK} />
+        <Person c={134} r={28} suit={NAV} hair={BK} />
+        {([4,10,16,122,128,134] as number[]).map((c,i) => <rect key={i} x={c*P} y={24*P} width={2*P} height={4*P} fill={BK} />)}
+        <rect x={54*P} y={37*P} width={3} height={8*P} fill={GR2} />
+        <rect x={90*P} y={37*P} width={3} height={8*P} fill={GR2} />
+        {px(55,37,8,2,CB)}{px(55,39,8,2,WH)}{px(55,41,8,2,CB)}
+        {px(91,37,8,2,CB)}{px(91,39,8,2,WH)}{px(91,41,8,2,CB)}
       </>}
 
-      {/* MATE — 6 civilians, mate cups, benches */}
+      {/* MATE */}
       {state === 'mate' && <>
-        <Person c={6}   r={20} suit={SLT} />
-        <Person c={12}  r={20} suit={CB} />
-        <Person c={18}  r={20} hair="#8B4513" suit={GN} />
-        <Person c={78}  r={20} suit={SLT} />
-        <Person c={84}  r={20} suit={CB} />
-        <Person c={72}  r={20} suit={OR} />
-        {/* Benches */}
-        {px(8, 26, 12, 2, BR)}{px(8,28,12,2,'#5a3a1e')}
-        {px(70,26,12,2, BR)}{px(70,28,12,2,'#5a3a1e')}
-        {/* Mate cups */}
-        {[10,16,74].map((c,i) => (
+        <Person c={8}   r={36} suit={SLT} />
+        <Person c={16}  r={36} suit={CB} />
+        <Person c={24}  r={36} hair="#8B4513" suit={GN} />
+        <Person c={32}  r={36} suit={OR} />
+        <Person c={108} r={36} suit={SLT} />
+        <Person c={116} r={36} suit={CB} />
+        <Person c={124} r={36} suit={GN} />
+        <Person c={132} r={36} suit={OR} />
+        {px(10,42,18,3,BR)}{px(10,45,18,3,'#5a3a1e')}
+        {px(116,42,18,3,BR)}{px(116,45,18,3,'#5a3a1e')}
+        {([12,22,118,128] as number[]).map((c,i) => (
           <g key={i}>
-            {px(c, 26, 4, 4, '#8B4513')}
-            <rect x={(c+2)*P} y={24*P} width={4} height={4*P} fill="#A8A8A8" />
+            {px(c, 40, 5, 5, '#8B4513')}
+            <rect x={(c+3)*P} y={38*P} width={4} height={5*P} fill="#A8A8A8" />
           </g>
         ))}
       </>}
 
-      {/* QUIET — pigeons, lone guard */}
+      {/* QUIET */}
       {state === 'quiet' && <>
-        {[20,36,50,66].map((c,i) => (
+        {([28,50,72,94,116] as number[]).map((c,i) => (
           <g key={i}>
-            {/* Pigeon body */}
-            <rect x={c*P} y={26*P} width={4*P} height={3*P} fill={GR2} />
-            {/* Pigeon head */}
-            <rect x={c*P+1} y={25*P} width={2*P} height={2*P} fill={GR2} />
-            {/* Tail feathers */}
-            <rect x={(c+4)*P} y={27*P} width={2*P} height={2*P} fill="#9AAABB" />
+            <rect x={c*P} y={42*P} width={6*P} height={4*P} fill={GR2} />
+            <rect x={c*P+1} y={40*P} width={3*P} height={3*P} fill={GR2} />
+            <rect x={(c+6)*P} y={43*P} width={3*P} height={3*P} fill="#9AAABB" />
           </g>
         ))}
-        <Person c={46} r={20} suit={NAV} hair={BK} />
+        <Person c={68} r={32} suit={NAV} hair={BK} />
       </>}
 
-      {/* PROTEST — 10 people, signs, banner */}
+      {/* PROTEST */}
       {state === 'protest' && <>
-        {[4,10,14,20,24,60,64,70,76,80].map((c,i) => (
-          <Person key={i} c={c} r={18} suit={[RD,SLT,OR,CB,RD,SLT,RD,OR,CB,RD][i]!} />
+        {([4,10,16,22,28,34,40,104,110,116,122,128,134,140] as number[]).map((c,i) => (
+          <Person key={i} c={c} r={28} suit={([RD,SLT,OR,CB,RD,SLT,RD,OR,CB,RD,SLT,OR,CB,RD] as string[])[i]!} />
         ))}
-        {/* Protest signs */}
-        {[4,14,24,64,76].map((c,i) => (
+        {([4,16,28,110,128] as number[]).map((c,i) => (
           <g key={i}>
-            {px(c, 14, 4, 4, RD)}
-            <rect x={(c+2)*P} y={12*P} width={2} height={4*P} fill={GR2} />
+            {px(c, 22, 6, 6, RD)}
+            <rect x={(c+3)*P} y={20*P} width={3} height={6*P} fill={GR2} />
           </g>
         ))}
-        {/* Banner across plaza */}
-        {px(28, 22, 36, 4, RD)}
-        {px(30, 24, 32, 2, WH)}
+        {px(44, 36, 56, 5, RD)}
+        {px(46, 38, 52, 3, WH)}
       </>}
 
-      {/* RIOT — 14 people, sticks, fires */}
+      {/* RIOT */}
       {state === 'riot' && <>
-        <rect x={0} y={0} width={W} height={H} fill="rgba(80,30,0,0.30)" />
-        {[4,8,12,16,20,24,28,56,60,66,70,76,80,86].map((c,i) => (
-          <Person key={i} c={c} r={18} suit={[RD,SLT,OR,RD,OR,SLT,RD,OR,RD,SLT,OR,RD,SLT,OR][i]!} />
+        <rect x={0} y={0} width={W} height={H} fill="rgba(80,30,0,0.28)" />
+        {([4,8,14,18,24,28,34,38,44,100,106,112,118,124,130,136,140,142] as number[]).map((c,i) => (
+          <Person key={i} c={c} r={28} suit={([RD,SLT,OR,RD,OR,SLT,RD,OR,RD,SLT,OR,RD,SLT,OR,RD,SLT,OR,RD] as string[])[i]!} />
         ))}
-        {/* Riot torches */}
-        {[4,12,20,28,60,70,80].map((c,i) => (
-          <rect key={i} x={(c+1)*P} y={14*P} width={4} height={4*P} fill={BR} />
+        {([4,14,24,34,104,120,132] as number[]).map((c,i) => (
+          <rect key={i} x={(c+1)*P} y={22*P} width={4} height={6*P} fill={BR} />
         ))}
-        {/* Fire at edges */}
-        {px(4,22,4,4,OR)}{px(4,20,4,2,YL)}
-        {px(86,22,4,4,OR)}{px(86,20,4,2,YL)}
-        {/* Broken pavement */}
-        {[14,20,28,40,46].map(c => (
-          <rect key={c} x={c*P} y={14*P} width={4*P} height={4*P} fill={BK} />
+        {px(4,38,6,6,OR)}{px(4,34,6,4,YL)}
+        {px(134,38,6,6,OR)}{px(134,34,6,4,YL)}
+        {([20,30,40,60,72] as number[]).map(c => (
+          <rect key={c} x={c*P} y={20*P} width={6*P} height={6*P} fill={BK} />
         ))}
       </>}
 
-      {/* CHAOS — 16+ people, heavy fires, broken windows */}
+      {/* CHAOS */}
       {state === 'chaos' && <>
-        <rect x={0} y={0} width={W} height={H} fill="rgba(130,45,0,0.40)" />
-        {[2,6,10,14,18,22,26,30,54,60,66,72,78,84,88,92].map((c,i) => (
-          <Person key={i} c={c} r={18} suit={[RD,OR,RD,SLT,OR,CR,RD,SLT,OR,RD,SLT,OR,CR,RD,SLT,OR][i]!} />
+        <rect x={0} y={0} width={W} height={H} fill="rgba(130,45,0,0.38)" />
+        {([2,6,12,16,20,24,30,36,40,46,98,108,116,124,130,136,140] as number[]).map((c,i) => (
+          <Person key={i} c={c} r={28} suit={([RD,OR,RD,SLT,OR,CR,RD,SLT,OR,RD,SLT,OR,CR,RD,SLT,OR,RD] as string[])[i]!} />
         ))}
-        {/* Large fires on both wings */}
-        {px(2,18,6,6,OR)}{px(4,14,4,4,YL)}{px(4,12,4,2,WH)}
-        {px(10,16,6,8,OR)}{px(12,12,4,4,YL)}
-        {px(80,18,6,6,OR)}{px(82,14,4,4,YL)}{px(82,12,4,2,WH)}
-        {px(74,16,6,8,OR)}{px(76,12,4,4,YL)}
-        {/* Broken arch windows (black fill replaces pink) */}
-        {[18,30,42,54,66].map(c => (
-          <rect key={c} x={c*P} y={12*P} width={8*P} height={8*P} fill={BK} />
+        {px(2,30,10,14,OR)}{px(4,22,8,8,YL)}{px(6,18,6,4,WH)}
+        {px(14,26,10,18,OR)}{px(16,20,8,6,YL)}
+        {px(122,30,10,14,OR)}{px(122,22,8,8,YL)}{px(122,18,6,4,WH)}
+        {px(112,26,10,18,OR)}{px(112,20,8,6,YL)}
+        {([28,42,56,70,84,98,112] as number[]).map(c => (
+          <rect key={c} x={c*P} y={18*P} width={10*P} height={12*P} fill={BK} />
         ))}
-        {/* Heavy smoke top */}
-        <rect x={0} y={0} width={W} height={H*0.35} fill="rgba(20,5,0,0.45)" />
+        <rect x={0} y={0} width={W} height={H*0.32} fill="rgba(20,5,0,0.42)" />
       </>}
 
-      {/* NUKE — mushroom cloud, crumbled building */}
+      {/* NUKE */}
       {state === 'nuke' && <>
-        <rect x={0} y={0} width={W} height={H} fill="rgba(255,90,0,0.50)" />
-        {/* Mushroom stem */}
-        {px(38, 8,20, 4,OR)}{px(38, 6,20, 2,YL)}
-        {/* Cloud layers */}
-        {px(34, 4,28, 4,OR)}{px(34, 2,28, 2,YL)}{px(36, 0,24, 2,WH)}
-        {px(28, 0,40, 4,OR)}{px(30, 0,36, 2,YL)}
-        {/* Building ruins */}
-        {px(14,12,68,14,OR)}
-        <rect x={14*P} y={12*P} width={68*P} height={14*P} fill="rgba(0,0,0,0.65)" />
-        {/* Rubble chunks */}
-        {[16,22,30,38,46,54,62,70].map((c,i) => (
-          <rect key={i} x={c*P} y={26*P} width={(2+i%3)*P} height={2*P} fill={[GR2,BR,PK,GR3][i%4]!} />
+        <rect x={0} y={0} width={W} height={H} fill="rgba(255,90,0,0.48)" />
+        {px(56, 12,32, 6,OR)}{px(58,  8,28, 4,YL)}
+        {px(48,  6,48, 6,OR)}{px(50,  3,44, 4,YL)}{px(52,  0,40, 4,WH)}
+        {px(38,  0,68, 8,OR)}{px(42,  0,60, 4,YL)}
+        {px(18,20, 108, 22,OR)}
+        <rect x={18*P} y={20*P} width={108*P} height={22*P} fill="rgba(0,0,0,0.62)" />
+        {([20,32,44,56,68,80,92,104,116] as number[]).map((c,i) => (
+          <rect key={i} x={c*P} y={42*P} width={(4+i%4)*P} height={3*P} fill={([GR2,BR,PK,GR3] as string[])[i%4]!} />
         ))}
-        {/* Gold presidential seal in dust cloud */}
-        {px(40, 8,16,6,GD)}
-        <rect x={40*P} y={8*P} width={16*P} height={6*P} fill="rgba(0,0,0,0.5)" />
-        {px(44, 8, 8,6,GD)}
-        {px(46, 6, 4,2,GD)}{px(46,14, 4,2,GD)}
-        {px(42,10, 2,2,GD)}{px(52,10, 2,2,GD)}
-        {px(46,10, 4,2,BK)}
+        {px(60, 12,24,10,GD)}
+        <rect x={60*P} y={12*P} width={24*P} height={10*P} fill="rgba(0,0,0,0.48)" />
+        {px(64, 12,16,10,GD)}
+        {px(68,  9, 8, 3,GD)}{px(68,22, 8, 2,GD)}
+        {px(60, 15, 4, 4,GD)}{px(80,15, 4, 4,GD)}
+        {px(68, 15, 8, 4,BK)}
       </>}
     </svg>
   );
