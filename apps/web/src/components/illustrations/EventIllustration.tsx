@@ -1466,15 +1466,6 @@ export function EventIllustration({
             <>
               <image href={aiUrl} x={0} y={0} width={320} height={180} preserveAspectRatio="xMidYMid slice" style={{ imageRendering: 'pixelated' as const }} />
               {lbl(scene.replace(/_/g, ' ').toUpperCase())}
-              {presCharUrl && (
-                <>
-                  {/* Dark backing panel for portrait readability */}
-                  <rect x={228} y={86} width={90} height={90} fill="rgba(0,0,0,0.55)" />
-                  <image href={presCharUrl} x={228} y={86} width={90} height={90}
-                    preserveAspectRatio="xMidYMid meet"
-                    style={{ imageRendering: 'pixelated' as const }} />
-                </>
-              )}
             </>
           ) : (
             <>

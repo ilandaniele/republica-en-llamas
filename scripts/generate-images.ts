@@ -19,18 +19,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ── Config ────────────────────────────────────────────────────────────────────
 const SUPABASE_URL     = process.env.SUPABASE_URL               ?? process.env.VITE_SUPABASE_URL ?? '';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY  ?? '';
+const REPLICATE_TOKEN  = process.env.REPLICATE_API_TOKEN        ?? '';
 
 if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   console.error('Missing env vars: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
   process.exit(1);
 }
+if (!REPLICATE_TOKEN) {
+  console.error('Missing env var: REPLICATE_API_TOKEN');
+  process.exit(1);
+}
 
 const BUCKET        = 'game-images';
 const FOLDER        = 'illustrations';
-// Scene illustrations — 512×512 uniform, chunky visible pixel grid
-const STYLE_SUFFIX  = ', retro 16-bit pixel art, Super Nintendo SNES sprite style, chunky visible pixel grid, each pixel is a large solid square, bold flat color blocks with hard pixel edges, zero dithering, maximum 8 solid colors, no anti-aliasing, no gradients, no blurring, Argentine political satire, dark navy blue background, no text no letters no watermark';
+// Scene illustrations — 512×512 uniform, pixel_art LoRA trigger word required
+const STYLE_SUFFIX  = ', pixel_art, retro 16-bit pixel art, Super Nintendo SNES sprite style, chunky visible pixel grid, each pixel is a large solid square, bold flat color blocks with hard pixel edges, zero dithering, maximum 8 solid colors, no anti-aliasing, no gradients, no blurring, Argentine political satire, dark navy blue background, no text no letters no watermark';
 // Character portrait sprites — 512×512 chunky pixel bust
-const PORTRAIT_SUFFIX = ', retro 16-bit pixel art character bust portrait, frontal facing centered, very large chunky visible pixels, bold flat solid color blocks, hard pixel edges, Super Nintendo RPG character sprite style, zero dithering, limited 8-color palette, solid black background, no text no letters no watermark';
+const PORTRAIT_SUFFIX = ', pixel_art, retro 16-bit pixel art character bust portrait, frontal facing centered, very large chunky visible pixels, bold flat solid color blocks, hard pixel edges, Super Nintendo RPG character sprite style, zero dithering, limited 8-color palette, solid black background, no text no letters no watermark';
 const MANIFEST_PATH = path.join(__dirname, '../apps/web/src/assets/image-manifest.json');
 
 // ── Image definitions ─────────────────────────────────────────────────────────
@@ -106,20 +111,50 @@ async function sleep(ms: number) {
   return new Promise<void>((r) => setTimeout(r, ms));
 }
 
-async function generateImage(prompt: string, width = 320, height = 180): Promise<ArrayBuffer> {
-  // Pollinations.ai — free, no auth, FLUX-based
-  // Low resolution forces upscaling → pixel art aesthetic when displayed
-  const encoded = encodeURIComponent(prompt);
-  const url = `https://image.pollinations.ai/prompt/${encoded}?width=${width}&height=${height}&nologo=true&enhance=false&model=flux&seed=${Math.floor(Math.random()*9999)}`;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 90_000); // 90s max
-  try {
-    const res = await fetch(url, { signal: controller.signal });
-    if (!res.ok) throw new Error(`Pollinations error ${res.status}: ${await res.text()}`);
-    return res.arrayBuffer();
-  } finally {
-    clearTimeout(timeout);
+async function generateImage(prompt: string, _width = 512, _height = 512): Promise<ArrayBuffer> {
+  // Replicate nerijs/pixel-art-xl — sync mode (Prefer: wait=60), poll if still processing
+  const createRes = await fetch('https://api.replicate.com/v1/models/nerijs/pixel-art-xl/predictions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${REPLICATE_TOKEN}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'wait=60',
+    },
+    body: JSON.stringify({
+      input: {
+        prompt,
+        width: 512,
+        height: 512,
+        num_inference_steps: 30,
+      },
+    }),
+  });
+
+  if (!createRes.ok) {
+    throw new Error(`Replicate create error ${createRes.status}: ${await createRes.text()}`);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let prediction: any = await createRes.json();
+
+  // Poll if not yet succeeded
+  while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && prediction.status !== 'canceled') {
+    await sleep(3_000);
+    const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
+      headers: { 'Authorization': `Bearer ${REPLICATE_TOKEN}` },
+    });
+    if (!pollRes.ok) throw new Error(`Replicate poll error ${pollRes.status}: ${await pollRes.text()}`);
+    prediction = await pollRes.json();
+  }
+
+  if (prediction.status !== 'succeeded' || !prediction.output?.[0]) {
+    throw new Error(`Replicate prediction failed: ${prediction.error ?? prediction.status}`);
+  }
+
+  const imageUrl: string = prediction.output[0];
+  const imgRes = await fetch(imageUrl);
+  if (!imgRes.ok) throw new Error(`Image fetch error ${imgRes.status}: ${imageUrl}`);
+  return imgRes.arrayBuffer();
 }
 
 async function uploadToSupabase(id: string, data: ArrayBuffer): Promise<string> {

@@ -9,10 +9,29 @@ import { CharacterPortrait } from './illustrations/characters/CharacterPortrait.
 import { EventIllustration } from './illustrations/EventIllustration.js';
 import { PixelPortrait } from './illustrations/PixelPortrait.js';
 import type { PortraitId } from './illustrations/PixelPortrait.js';
+import imageManifest from '../assets/image-manifest.json';
 
 gsap.registerPlugin(useGSAP);
 
 const PRESIDENT_IDS = new Set<string>(['milei', 'massa', 'bullrich', 'ingeniero', 'populista', 'tecnocrata']);
+
+const ARCHETYPE_CHAR: Record<string, string> = {
+  ingeniero:   'char_milei',
+  populista:   'char_massa',
+  tecnocrata:  'char_bullrich',
+  izquierda:   'char_bregman',
+  federal:     'char_schiaretti',
+  corporativo: 'char_larreta',
+};
+
+const ARCHETYPE_LABEL: Record<string, string> = {
+  ingeniero:   'Pres. Milei',
+  populista:   'Pres. Massa',
+  tecnocrata:  'Min. Bullrich',
+  izquierda:   'Dip. Bregman',
+  federal:     'Gob. Schiaretti',
+  corporativo: 'Jefe Larreta',
+};
 
 interface Props {
   card: EventCard;
@@ -209,6 +228,33 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
           />
         )}
       </div>
+
+      {/* President strip — visual novel style, shown when no card-specific character */}
+      {!card.characterId && (() => {
+        const charKey = ARCHETYPE_CHAR[presidentId] ?? (presidentId?.startsWith('char_') ? presidentId : null);
+        const charUrl = charKey ? (imageManifest as Record<string, string>)[charKey] ?? null : null;
+        const charLabel = ARCHETYPE_LABEL[presidentId] ?? presidentId;
+        if (!charUrl) return null;
+        return (
+          <div
+            className="flex items-center gap-3 px-4 py-2 border-b border-navy-700"
+            style={{ background: 'rgba(9,21,37,0.92)' }}
+          >
+            <img
+              src={charUrl}
+              alt={charLabel}
+              width={48}
+              height={48}
+              style={{ imageRendering: 'pixelated', flexShrink: 0, border: '2px solid var(--celeste-dark)' }}
+            />
+            <span
+              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px', color: 'var(--celeste)' }}
+            >
+              {charLabel}
+            </span>
+          </div>
+        );
+      })()}
 
       {/* Body + choices + confirm */}
       <div className="px-6 pt-4 pb-6">
