@@ -157,7 +157,7 @@ export default function ProfileScreen() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           {[
-        { label: 'Partidas', value: totalRuns_display_display.toString() },
+        { label: 'Partidas', value: totalRuns_display.toString() },
             { label: 'Mejor Score', value: (personalBest?.score ?? bestScore).toLocaleString() },
             { label: 'Mejor Turno', value: personalBest ? `T${personalBest.turns}` : '—' },
           ].map((stat) => (
