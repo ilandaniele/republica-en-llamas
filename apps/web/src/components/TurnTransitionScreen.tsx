@@ -301,9 +301,19 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
   const breakdown = gameState?.lastInflationBreakdown;
 
   const handleContinue = () => {
+    if (clicked) return;
     setClicked(true);
     onDismiss();
   };
+
+  // Keyboard: Enter or Space to continue
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleContinue(); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [clicked]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pop   = gameState?.political.popularity ?? 70;
   const stab  = gameState?.political.socialStability ?? 70;
@@ -344,10 +354,10 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
         {data.statDeltas.length > 0 && (
           <div className="pixel-border bg-navy-800 p-4 mb-4 grid grid-cols-2 gap-2">
             {data.statDeltas.map((d) => (
-              <div key={d.label} className="flex items-center justify-between bg-navy-900/60 rounded px-3 py-2">
+              <div key={d.label} className="flex items-center justify-between bg-navy-900/60 px-3 py-2">
                 <span className="font-mono text-xs text-smoke-400">{d.emoji} {d.label}</span>
                 <span className={`font-mono font-bold text-sm ${d.delta > 0 ? 'text-green-400' : 'text-crimson-400'}`}>
-                  {d.delta > 0 ? '+' : ''}{Math.round(d.delta)}
+                  {d.delta > 0 ? '▲ +' : '▼ '}{Math.round(d.delta)}
                 </span>
               </div>
             ))}
