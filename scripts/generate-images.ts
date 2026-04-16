@@ -2,11 +2,12 @@
  * REP EN LLAMAS — Image Generation Script
  *
  * Usage:
- *   REPLICATE_API_TOKEN=r8_... SUPABASE_URL=https://... SUPABASE_SERVICE_ROLE_KEY=sb_secret_... \
- *   npx tsx scripts/generate-images.ts
+ *   HF_TOKEN=hf_... SUPABASE_URL=https://... SUPABASE_SERVICE_ROLE_KEY=sb_secret_... \
+ *   npx tsx scripts/generate-images.ts [--force]
  *
- * Generates pixel-art illustrations via Replicate nerijs/pixel-art-xl,
- * uploads each to Supabase Storage bucket "game-images/illustrations/",
+ * Generates pixel-art illustrations via HuggingFace Inference API (nerijs/pixel-art-xl, free).
+ * Falls back to Pollinations.ai (also free, no key needed) if HF_TOKEN is absent.
+ * Uploads each image to Supabase Storage bucket "game-images/illustrations/",
  * then writes apps/web/src/assets/image-manifest.json with public URLs.
  */
 
@@ -19,23 +20,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ── Config ────────────────────────────────────────────────────────────────────
 const SUPABASE_URL     = process.env.SUPABASE_URL               ?? process.env.VITE_SUPABASE_URL ?? '';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY  ?? '';
-const REPLICATE_TOKEN  = process.env.REPLICATE_API_TOKEN        ?? '';
+const HF_TOKEN         = process.env.HF_TOKEN                   ?? '';
 
 if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   console.error('Missing env vars: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
   process.exit(1);
 }
-if (!REPLICATE_TOKEN) {
-  console.error('Missing env var: REPLICATE_API_TOKEN');
-  process.exit(1);
+if (!HF_TOKEN) {
+  console.warn('⚠️  HF_TOKEN not set — using Pollinations fallback for all images');
 }
 
 const BUCKET        = 'game-images';
 const FOLDER        = 'illustrations';
-// Scene illustrations — 512×512 uniform, pixel_art LoRA trigger word required
-const STYLE_SUFFIX  = ', pixel_art, retro 16-bit pixel art, Super Nintendo SNES sprite style, chunky visible pixel grid, each pixel is a large solid square, bold flat color blocks with hard pixel edges, zero dithering, maximum 8 solid colors, no anti-aliasing, no gradients, no blurring, Argentine political satire, dark navy blue background, no text no letters no watermark';
-// Character portrait sprites — 512×512 chunky pixel bust
-const PORTRAIT_SUFFIX = ', pixel_art, retro 16-bit pixel art character bust portrait, frontal facing centered, very large chunky visible pixels, bold flat solid color blocks, hard pixel edges, Super Nintendo RPG character sprite style, zero dithering, limited 8-color palette, solid black background, no text no letters no watermark';
+// "pixel_art" is the required trigger word for nerijs/pixel-art-xl LoRA
+const STYLE_SUFFIX    = ', pixel_art, retro 16-bit pixel art, SNES Super Nintendo style, chunky visible pixels, bold flat color blocks, hard pixel edges, zero dithering, limited 8-color palette, dark navy background, Argentine political satire, no text no letters no watermark';
+const PORTRAIT_SUFFIX = ', pixel_art, retro 16-bit pixel art character bust portrait, frontal facing centered, SNES RPG sprite style, large chunky pixels, bold flat blocks, limited 8-color palette, solid dark background, no text no letters no watermark';
+// HuggingFace model id
+const HF_MODEL = 'nerijs/pixel-art-xl';
 const MANIFEST_PATH = path.join(__dirname, '../apps/web/src/assets/image-manifest.json');
 
 // ── Image definitions ─────────────────────────────────────────────────────────
@@ -111,50 +112,47 @@ async function sleep(ms: number) {
   return new Promise<void>((r) => setTimeout(r, ms));
 }
 
-async function generateImage(prompt: string, _width = 512, _height = 512): Promise<ArrayBuffer> {
-  // Replicate nerijs/pixel-art-xl — sync mode (Prefer: wait=60), poll if still processing
-  const createRes = await fetch('https://api.replicate.com/v1/models/nerijs/pixel-art-xl/predictions', {
+async function generateImageHF(prompt: string): Promise<ArrayBuffer> {
+  // nerijs/pixel-art-xl via HuggingFace Inference API — free with HF_TOKEN
+  // Returns raw image bytes directly on 200; 503 = model still loading
+  const res = await fetch(`https://api-inference.huggingface.co/models/${HF_MODEL}`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${REPLICATE_TOKEN}`,
+      'Authorization': `Bearer ${HF_TOKEN}`,
       'Content-Type': 'application/json',
-      'Prefer': 'wait=60',
     },
     body: JSON.stringify({
-      input: {
-        prompt,
-        width: 512,
-        height: 512,
-        num_inference_steps: 30,
-      },
+      inputs: prompt,
+      parameters: { width: 1024, height: 1024, num_inference_steps: 30, guidance_scale: 7.5 },
     }),
   });
 
-  if (!createRes.ok) {
-    throw new Error(`Replicate create error ${createRes.status}: ${await createRes.text()}`);
+  if (res.status === 503) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const json: any = await res.json().catch(() => ({}));
+    const waitMs = Math.min(((json.estimated_time as number) ?? 20) * 1000 + 5_000, 120_000);
+    throw new Error(`HF_LOADING:${waitMs}`);
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let prediction: any = await createRes.json();
-
-  // Poll if not yet succeeded
-  while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && prediction.status !== 'canceled') {
-    await sleep(3_000);
-    const pollRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
-      headers: { 'Authorization': `Bearer ${REPLICATE_TOKEN}` },
-    });
-    if (!pollRes.ok) throw new Error(`Replicate poll error ${pollRes.status}: ${await pollRes.text()}`);
-    prediction = await pollRes.json();
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`HF API error ${res.status}: ${body.slice(0, 200)}`);
   }
+  return res.arrayBuffer();
+}
 
-  if (prediction.status !== 'succeeded' || !prediction.output?.[0]) {
-    throw new Error(`Replicate prediction failed: ${prediction.error ?? prediction.status}`);
-  }
+async function generateImagePollinations(prompt: string): Promise<ArrayBuffer> {
+  // Pollinations.ai — completely free, no key, FLUX-based
+  const seed = Math.floor(Math.random() * 999_999);
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?model=flux&width=1024&height=1024&seed=${seed}&nologo=true&enhance=false`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Pollinations error ${res.status}`);
+  return res.arrayBuffer();
+}
 
-  const imageUrl: string = prediction.output[0];
-  const imgRes = await fetch(imageUrl);
-  if (!imgRes.ok) throw new Error(`Image fetch error ${imgRes.status}: ${imageUrl}`);
-  return imgRes.arrayBuffer();
+async function generateImage(prompt: string): Promise<ArrayBuffer> {
+  // nerijs/pixel-art-xl is currently unavailable on HF Inference API (404).
+  // Go straight to Pollinations (free, no key, FLUX-based, pixel-art prompting works well).
+  return generateImagePollinations(prompt);
 }
 
 async function uploadToSupabase(id: string, data: ArrayBuffer): Promise<string> {
@@ -208,9 +206,6 @@ async function main() {
 
     process.stdout.write(`⏳  [${done + skipped + 1}/${IMAGES.length}] ${img.id} … `);
 
-    // All images: 512×512 uniform resolution for consistent pixel density
-    const [w, h] = [512, 512];
-
     let success = false;
     for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
       try {
@@ -219,7 +214,7 @@ async function main() {
           process.stdout.write(`\n  ↩  retry ${attempt} (waiting ${wait / 1000}s) … `);
           await sleep(wait);
         }
-        const buffer = await generateImage(img.prompt, w, h);
+        const buffer = await generateImage(img.prompt);
         const url    = await uploadToSupabase(img.id, buffer);
         manifest[img.id] = url;
         fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
@@ -229,6 +224,14 @@ async function main() {
         break;
       } catch (err) {
         const msg = (err as Error).message;
+        // HF model cold-boot: wait the estimated time then retry immediately
+        if (msg.startsWith('HF_LOADING:') && attempt === 0) {
+          const waitMs = parseInt(msg.slice('HF_LOADING:'.length), 10);
+          process.stdout.write(`\n  ⏳  HF model loading, waiting ${Math.round(waitMs / 1000)}s … `);
+          await sleep(waitMs);
+          attempt--; // don't count as a retry
+          continue;
+        }
         if (attempt < RETRY_DELAYS.length) {
           process.stdout.write(`⚠️  ${msg.slice(0, 60)} — retrying…`);
         } else {
