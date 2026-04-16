@@ -25,6 +25,7 @@ export default function ProfileScreen() {
 
   const [recentRuns, setRecentRuns] = useState<GameRun[]>([]);
   const [loadingRuns, setLoadingRuns] = useState(false);
+  const [totalRuns, setTotalRuns] = useState(0);
   const [editingUsername, setEditingUsername] = useState(false);
   const [newUsername, setNewUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
@@ -44,13 +45,14 @@ export default function ProfileScreen() {
       if (profileData) setProfile(profileData as Tables['profiles']);
 
       setLoadingRuns(true);
-      const { data: runsData } = await supabase
+      const { data: runsData, count } = await supabase
         .from('game_runs')
-        .select('*')
+        .select('id, score, turns_survived, is_win, difficulty, created_at', { count: 'exact' })
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(10);
       if (runsData) setRecentRuns(runsData as GameRun[]);
+      if (count !== null) setTotalRuns(count);
       setLoadingRuns(false);
     })();
   }, [user]);
@@ -92,7 +94,7 @@ export default function ProfileScreen() {
   const avatarInitials = displayName.slice(0, 2).toUpperCase();
   const avatarColor = generateAvatarColor(displayName);
 
-  const totalRuns = recentRuns.length;
+  const totalRuns_display = totalRuns || recentRuns.length;
   const bestScore = recentRuns.reduce((max, r) => Math.max(max, r.score), 0);
   const presidentCounts: Record<string, number> = {};
   // Note: we don't store president_id in game_runs currently, so skip for now
@@ -109,9 +111,9 @@ export default function ProfileScreen() {
         </button>
 
         {/* Profile header */}
-        <div className="bg-navy-800 border border-navy-600 rounded-xl p-6 mb-6 flex items-center gap-6">
+        <div className="bg-navy-800 pixel-border p-6 mb-6 flex items-center gap-6">
           <div
-            className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold text-white shrink-0"
+            className="w-14 h-14 pixel-border flex items-center justify-center text-xl font-bold text-white shrink-0"
             style={{ backgroundColor: avatarColor }}
           >
             {avatarInitials}
@@ -155,20 +157,20 @@ export default function ProfileScreen() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           {[
-            { label: 'Partidas', value: totalRuns.toString() },
+        { label: 'Partidas', value: totalRuns_display_display.toString() },
             { label: 'Mejor Score', value: (personalBest?.score ?? bestScore).toLocaleString() },
             { label: 'Mejor Turno', value: personalBest ? `T${personalBest.turns}` : '—' },
           ].map((stat) => (
-            <div key={stat.label} className="bg-navy-800 border border-navy-600 rounded-lg p-4 text-center">
-              <p className="text-smoke-500 font-mono text-xs uppercase tracking-widest">{stat.label}</p>
-              <p className="font-serif text-2xl text-gold-400 font-bold mt-1">{stat.value}</p>
+            <div key={stat.label} className="pixel-border bg-navy-800 p-4 text-center">
+              <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', color: 'var(--peso-grey)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{stat.label}</p>
+              <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '14px', color: 'var(--gold)', marginTop: '6px' }}>{stat.value}</p>
             </div>
           ))}
         </div>
 
         {/* Recent runs */}
-        <div className="bg-navy-800 border border-navy-600 rounded-xl p-4">
-          <h3 className="font-serif text-gold-400 text-sm uppercase tracking-widest mb-4">
+        <div className="pixel-border bg-navy-800 p-4">
+          <h3 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px', color: 'var(--gold)', letterSpacing: '0.1em', marginBottom: '16px', textTransform: 'uppercase' }}>
             Últimas Partidas
           </h3>
           {loadingRuns ? (
@@ -178,7 +180,7 @@ export default function ProfileScreen() {
           ) : (
             <div className="space-y-2">
               {recentRuns.map((run) => (
-                <div key={run.id} className="flex items-center justify-between bg-navy-900/60 rounded px-3 py-2">
+                <div key={run.id} className="flex items-center justify-between pixel-border px-3 py-2 bg-navy-900/60">
                   <div>
                     <span className={`font-mono text-xs font-bold ${run.is_win ? 'text-emerald-400' : 'text-crimson-400'}`}>
                       {run.is_win ? '✓' : '✗'}
@@ -207,22 +209,24 @@ export default function ProfileScreen() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-navy-800 border border-navy-600 rounded-xl p-6 max-w-sm w-full"
+              className="pixel-border bg-navy-800 p-6 max-w-sm w-full"
             >
-              <h3 className="font-serif text-xl text-smoke-100 font-bold mb-3">¿Cerrar sesión?</h3>
+              <h3 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--smoke-100)', marginBottom: '12px' }}>¿Cerrar sesión?</h3>
               <p className="text-smoke-400 font-mono text-xs mb-6">
                 Tu progreso guardado se mantendrá en el servidor. Podés volver cuando quieras.
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => { void handleLogout(); }}
-                  className="flex-1 bg-crimson-600 hover:bg-crimson-500 text-smoke-100 font-serif font-bold py-2 px-4 rounded-lg transition-colors"
+                  className="flex-1 pixel-border-crisis text-smoke-100 py-2 px-4 transition-colors"
+                  style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
                 >
                   Cerrar sesión
                 </button>
                 <button
                   onClick={() => setShowLogoutModal(false)}
-                  className="flex-1 bg-navy-700 hover:bg-navy-600 border border-navy-500 text-smoke-300 font-mono py-2 px-4 rounded-lg transition-colors"
+                  className="flex-1 pixel-border bg-navy-700 hover:bg-navy-600 text-smoke-300 py-2 px-4 transition-colors"
+                  style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
                 >
                   Cancelar
                 </button>

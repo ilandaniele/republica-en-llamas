@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { GameState, Difficulty, Language, NegotiationType, GameOverReason, ScenarioId } from '@republica/game-engine';
 import { isOfflineMode } from '../lib/supabase.js';
+import { trackTurnCompleted, trackCrisisTriggered } from '../lib/analytics.js';
 import {
   initGame,
   applyChoice,
@@ -253,6 +254,12 @@ export const useGameStore = create<GameStore>()(
           pendingChoiceIndex
         );
 
+        trackTurnCompleted({
+          turn_number: gameState.turn,
+          event_category: get().currentCard?.category ?? 'unknown',
+          choice_index: pendingChoiceIndex,
+        });
+
         set({
           gameState: stateWithScore,
           pendingCardId: null,
@@ -290,6 +297,9 @@ export const useGameStore = create<GameStore>()(
         }
         const hasCrisis = next.activeCrises.length > gameState.activeCrises.length;
         const crisisResolved = gameState.activeCrises.length > 0 && next.activeCrises.length < gameState.activeCrises.length;
+        if (hasCrisis && next.activeCrises[0]) {
+          trackCrisisTriggered({ crisis_type: next.activeCrises[0].type, turn: next.turn });
+        }
         const card = next.isGameOver ? null : drawNextCard(next);
 
         // Crisis countdown: turns to resolve
