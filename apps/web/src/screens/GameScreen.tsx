@@ -180,7 +180,7 @@ export default function GameScreen() {
       const idx = map[e.key.toLowerCase()];
       if (idx !== undefined && idx < (currentCard.choices?.length ?? 0)) {
         e.preventDefault();
-        selectChoice(idx);
+        selectChoice(currentCard.id, idx);
         return;
       }
       if (e.key === 'Enter' && pendingChoiceIndex !== null) {
