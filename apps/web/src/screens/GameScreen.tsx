@@ -172,6 +172,26 @@ export default function GameScreen() {
     prevLawsPassedRef.current = curr;
   }, [gameState?.congress.lawsPassedThisRun]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Keyboard: 1-4 or A-D to select choice; Enter to confirm
+  useEffect(() => {
+    if (isAnimating || showTransition || !currentCard || currentCard.isLaw) return;
+    const onKey = (e: KeyboardEvent) => {
+      const map: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3, a: 0, b: 1, c: 2, d: 3 };
+      const idx = map[e.key.toLowerCase()];
+      if (idx !== undefined && idx < (currentCard.choices?.length ?? 0)) {
+        e.preventDefault();
+        selectChoice(idx);
+        return;
+      }
+      if (e.key === 'Enter' && pendingChoiceIndex !== null) {
+        e.preventDefault();
+        confirmChoice();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isAnimating, showTransition, currentCard, pendingChoiceIndex, selectChoice, confirmChoice]);
+
   if (!gameState || !currentCard) return null;
 
   const hasCrisis = gameState.activeCrises.length > 0;
@@ -251,7 +271,7 @@ export default function GameScreen() {
             {isCrisisExpress && (
               <div className={`pixel-border flex flex-col items-center px-3 py-1 font-mono ${
                 crisisTimeLeft <= 10
-                  ? 'bg-crimson-900/70 text-crimson-300 animate-pulse'
+                  ? 'bg-crimson-900/70 text-crimson-300 animate-[shake_0.3s_ease-in-out_infinite]'
                   : 'bg-navy-800 text-smoke-300'
               }`}>
                 <p className="text-sm">⚡ EXPRESS</p>
