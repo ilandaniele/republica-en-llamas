@@ -46,6 +46,19 @@ const DIFFICULTY_LABELS: Record<string, string> = {
   easy: 'Fácil', normal: 'Normal', hard: 'Difícil', crisis: 'Crisis',
 };
 
+interface Medal { icon: string; label: string }
+
+function getRunMedals(gs: import('@republica/game-engine').GameState, isCrisisExpress: boolean): Medal[] {
+  const medals: Medal[] = [];
+  const isWin = gs.gameOverReason === 'term_complete';
+  if (gs.turn >= 20) medals.push({ icon: '🏆', label: 'Superviviente' });
+  if (gs.economic.inflation < 30) medals.push({ icon: '💰', label: 'Economista' });
+  if (gs.political.popularity >= 70) medals.push({ icon: '👑', label: 'Popular' });
+  if (isCrisisExpress && isWin) medals.push({ icon: '⚡', label: 'Crisis Express' });
+  if (!isWin && gs.turn >= 15) medals.push({ icon: '💀', label: 'Resistencia' });
+  return medals;
+}
+
 export default function GameOverScreen() {
   const navigate = useNavigate();
   const gameState = useGameStore((s) => s.gameState);
@@ -53,6 +66,7 @@ export default function GameOverScreen() {
   const personalBest = useGameStore((s) => s.personalBest);
   const updatePersonalBest = useGameStore((s) => s.updatePersonalBest);
   const presidentId = useGameStore((s) => s.presidentId);
+  const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
   const { user } = useAuth();
   const { mutate: saveRun, isPending: isSaving } = useSaveRun();
   const [copied, setCopied] = useState(false);
@@ -91,6 +105,7 @@ export default function GameOverScreen() {
   const counterfactual = getCounterfactual(fatalDecision);
   const bestMomentTurn = getBestMomentTurn(gameState.history);
   const anibalLine = getAnibalLine(gameState);
+  const medals = getRunMedals(gameState, isCrisisExpress);
 
   const isNewRecord = !isWin && (!personalBest || gameState.score > personalBest.score);
 
@@ -335,6 +350,25 @@ export default function GameOverScreen() {
                 <span style={{ fontFamily: "'VT323', monospace", fontSize: '16px', color: '#444' }}>
                   {personalBest.turns} turnos · {personalBest.score.toLocaleString()} pts
                 </span>
+              </div>
+            )}
+
+            {/* Medals */}
+            {medals.length > 0 && (
+              <div className="mt-3 mb-2">
+                <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', color: '#444', marginBottom: '6px', letterSpacing: '0.1em' }}>LOGROS</div>
+                <div className="flex flex-wrap gap-2">
+                  {medals.map((m) => (
+                    <div
+                      key={m.label}
+                      className="pixel-border-gold px-2 py-1 flex items-center gap-1"
+                      style={{ background: '#e8e4d0' }}
+                    >
+                      <span style={{ fontSize: '14px' }}>{m.icon}</span>
+                      <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '5px', color: '#5a4a00' }}>{m.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
