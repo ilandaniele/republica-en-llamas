@@ -213,12 +213,21 @@ export function VariablesPanel({ state }: Props) {
 
   return (
     <div className="pixel-border bg-navy-800 p-4 space-y-4">
-      <h3
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px', borderBottom: '2px solid var(--celeste-dark)', paddingBottom: '8px', color: 'var(--celeste)' }}
-        className="uppercase"
-      >
-        TERMOMETRO NACIONAL
-      </h3>
+      <div className="flex items-center justify-between" style={{ borderBottom: '2px solid var(--celeste-dark)', paddingBottom: '8px' }}>
+        <h3
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px', color: 'var(--celeste)' }}
+          className="uppercase"
+        >
+          TERMOMETRO NACIONAL
+        </h3>
+        {(state.positiveStreak ?? 0) >= 2 && (
+          <span
+            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', background: 'var(--gold)', color: '#0D1B2A', padding: '2px 5px' }}
+          >
+            🔥 RACHA ×{state.positiveStreak}
+          </span>
+        )}
+      </div>
 
       {/* Pixel decoration: fuego or Casa Rosada depending on state */}
       <div className="flex justify-center py-1">

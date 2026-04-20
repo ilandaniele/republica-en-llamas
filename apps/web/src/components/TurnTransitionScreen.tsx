@@ -3,6 +3,17 @@ import { motion } from 'framer-motion';
 import type { TransitionData } from '../stores/gameStore.js';
 import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
 import { useGameStore } from '../stores/gameStore.js';
+import imageManifest from '../assets/image-manifest.json';
+
+const CASA_IMAGE: Record<string, string> = {
+  guard:   'casa_rosada_normal',
+  mate:    'casa_rosada_mate',
+  quiet:   'casa_rosada_quiet',
+  protest: 'casa_rosada_protest',
+  riot:    'casa_rosada_riot',
+  chaos:   'casa_rosada_chaos',
+  nuke:    'casa_rosada_nuke',
+};
 
 // ── pixel palette (subset) ───────────────────────────────────────────────
 // P=2 on 144×60 grid → viewBox 288×120. Each cell is 2 SVG units.
@@ -335,14 +346,23 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
       className="fixed inset-0 z-50 overflow-y-auto bg-navy-900/95"
     >
       <div className="max-w-xl w-full mx-auto px-4 py-4">
-        {/* Casa Rosada floating island — FIRST for quick visual context */}
+        {/* Casa Rosada — AI image with SVG fallback */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="w-full mb-4 pixel-border overflow-hidden"
+          className="w-full mb-4 pixel-border overflow-hidden rounded"
         >
-          <CasaRosadaScene state={casaState} />
+          {(imageManifest as Record<string, string>)[CASA_IMAGE[casaState] ?? 'casa_rosada_normal'] ? (
+            <img
+              src={(imageManifest as Record<string, string>)[CASA_IMAGE[casaState] ?? 'casa_rosada_normal']!}
+              alt={`Casa Rosada — ${casaState}`}
+              className="w-full object-cover"
+              style={{ maxHeight: '200px' }}
+            />
+          ) : (
+            <CasaRosadaScene state={casaState} />
+          )}
         </motion.div>
 
         {/* Turn counter */}
@@ -353,14 +373,18 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
         {/* Stat deltas */}
         {data.statDeltas.length > 0 && (
           <div className="pixel-border bg-navy-800 p-4 mb-4 grid grid-cols-2 gap-2">
-            {data.statDeltas.map((d) => (
-              <div key={d.label} className="flex items-center justify-between bg-navy-900/60 px-3 py-2">
-                <span className="font-mono text-xs text-smoke-400">{d.emoji} {d.label}</span>
-                <span className={`font-mono font-bold text-sm ${d.delta > 0 ? 'text-green-400' : 'text-crimson-400'}`}>
-                  {d.delta > 0 ? '▲ +' : '▼ '}{Math.round(d.delta)}
-                </span>
-              </div>
-            ))}
+            {data.statDeltas.map((d) => {
+              const isGood = d.inverse ? d.delta < 0 : d.delta > 0;
+              const impact = Math.round(Math.abs(d.delta));
+              return (
+                <div key={d.label} className="flex items-center justify-between bg-navy-900/60 px-3 py-2">
+                  <span className="font-mono text-xs text-smoke-400">{d.emoji} {d.label}</span>
+                  <span className={`font-mono font-bold text-sm ${isGood ? 'text-green-400' : 'text-crimson-400'}`}>
+                    {isGood ? `▲ +${impact}` : `▼ -${impact}`}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         )}
 

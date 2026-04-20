@@ -99,6 +99,7 @@ export function initGame(
     cardCooldowns: {},
     scenarioArcPhase: 0,
     deflationStreakTurns: 0,
+    positiveStreak: 0,
   };
 }
 
@@ -454,6 +455,22 @@ export function advanceTurn(state: GameState): GameState {
   // Track deflationary spiral streak
   const isDeflating = s.economic.inflation < -10;
   s = { ...s, deflationStreakTurns: isDeflating ? (s.deflationStreakTurns ?? 0) + 1 : 0 };
+
+  // Track positive streak: all key metrics moving in good direction this turn
+  const prevPop = state.political.popularity;
+  const prevStab = state.political.socialStability;
+  const prevConf = state.economic.marketConfidence;
+  const prevRes = state.economic.foreignReserves;
+  const prevInf = state.economic.inflation;
+  const prevDef = state.economic.publicDeficit;
+  const goodTurn =
+    s.political.popularity >= prevPop &&
+    s.political.socialStability >= prevStab &&
+    s.economic.marketConfidence >= prevConf &&
+    s.economic.foreignReserves >= prevRes &&
+    s.economic.inflation <= prevInf &&
+    s.economic.publicDeficit <= prevDef;
+  s = { ...s, positiveStreak: goodTurn ? (s.positiveStreak ?? 0) + 1 : 0 };
 
   // Lame duck mode: apply per-turn penalties; game over when countdown reaches zero
   if (s.lameDuckMode) {

@@ -236,6 +236,8 @@ export interface GameState {
   scenarioArcPhase: number;
   /** Consecutive turns with inflation below -10 (deflationary spiral tracker). */
   deflationStreakTurns: number;
+  /** Consecutive turns with no metrics going red (popularity, stability, confidence, reserves up; inflation, deficit down). */
+  positiveStreak: number;
   /** True after losing presidential election — enters survival/lame-duck mode. */
   lameDuckMode?: boolean;
   /** Turns remaining in lame-duck mode before election_loss game over. */
