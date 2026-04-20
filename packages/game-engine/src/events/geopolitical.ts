@@ -15,6 +15,7 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
     bodyKey: 'event.geo_001.body',
     weight: 18,
     minTurn: 3,
+    isExogenous: true,
     choices: [
       {
         id: 'geo_001_a',
@@ -46,6 +47,7 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
     bodyKey: 'event.geo_007.body',
     weight: 15,
     minTurn: 5,
+    isExogenous: true,
     choices: [
       {
         id: 'geo_007_a',
@@ -72,6 +74,7 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
     bodyKey: 'event.geo_008.body',
     weight: 14,
     minTurn: 8,
+    isExogenous: true,
     choices: [
       {
         id: 'geo_008_a',

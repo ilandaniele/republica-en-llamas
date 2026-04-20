@@ -185,6 +185,10 @@ export interface EventCard {
   lifelineFor?: string[];       // variable names this card helps recover
   // Congressional session
   isLaw?: boolean;              // triggers congressional minigame instead of normal choice UI
+  /** When true, this event originates from external forces (foreign wars, pandemics, IMF pressure).
+   *  Its draw weight is NOT adjusted by the state-aware category multiplier — it can appear
+   *  regardless of how well or badly the domestic game is going. */
+  isExogenous?: boolean;
 }
 
 export interface TurnEvent {
