@@ -172,6 +172,25 @@ export default function GameScreen() {
     prevLawsPassedRef.current = curr;
   }, [gameState?.congress.lawsPassedThisRun]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Milestone toasts at turns 10, 20, 30, 40
+  const [milestoneToast, setMilestoneToast] = useState<string | null>(null);
+  const shownMilestonesRef = useRef<Set<number>>(new Set());
+  const MILESTONE_MESSAGES: Record<number, string> = {
+    10: '¡Sobreviviste el primer mes de gobierno!',
+    20: 'Mitad del mandato. El pueblo te juzga.',
+    30: 'Los medios no paran de hablar de vos.',
+    40: 'Se vienen las elecciones. ¿Llegás?',
+  };
+  useEffect(() => {
+    if (!gameState) return;
+    const turn = gameState.turn;
+    if (MILESTONE_MESSAGES[turn] && !shownMilestonesRef.current.has(turn)) {
+      shownMilestonesRef.current.add(turn);
+      setMilestoneToast(MILESTONE_MESSAGES[turn]!);
+      setTimeout(() => setMilestoneToast(null), 4000);
+    }
+  }, [gameState?.turn]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Keyboard: 1-4 or A-D to select choice; Enter to confirm
   useEffect(() => {
     if (isAnimating || showTransition || !currentCard || currentCard.isLaw) return;
@@ -216,6 +235,23 @@ export default function GameScreen() {
       <BuenosAiresBackground />
 
       <OfflineBanner />
+
+      {/* Milestone toast */}
+      <AnimatePresence>
+        {milestoneToast && (
+          <motion.div
+            key="milestone-toast"
+            initial={{ y: -60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -60, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            className="fixed top-4 left-1/2 z-50 pixel-border-gold bg-navy-900 text-gold-400 px-4 py-3 text-center"
+            style={{ transform: 'translateX(-50%)', fontFamily: "'Press Start 2P', monospace", fontSize: '7px', maxWidth: '80vw' }}
+          >
+            ⭐ {milestoneToast}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Decision Diary (slide-in from left) */}
       <DecisionDiary isOpen={showDiary} onClose={() => setShowDiary(false)} />

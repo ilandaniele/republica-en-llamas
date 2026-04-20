@@ -782,11 +782,12 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
               const e = choice.effects;
               return (
                 <div className="space-y-1">
-                  {e.popularityDelta !== undefined && <p>{e.popularityDelta >= 0 ? '▲' : '▼'} Popularidad {e.popularityDelta > 0 ? '+' : ''}{e.popularityDelta}</p>}
-                  {e.stabilityDelta !== undefined && <p>{e.stabilityDelta >= 0 ? '▲' : '▼'} Estabilidad {e.stabilityDelta > 0 ? '+' : ''}{e.stabilityDelta}</p>}
-                  {e.marketConfidenceDelta !== undefined && <p>{e.marketConfidenceDelta >= 0 ? '▲' : '▼'} Mercados {e.marketConfidenceDelta > 0 ? '+' : ''}{e.marketConfidenceDelta}</p>}
-                  {e.deficitDelta !== undefined && <p>{e.deficitDelta <= 0 ? '▲' : '▼'} Déficit {e.deficitDelta > 0 ? '+' : ''}{e.deficitDelta}%</p>}
-                  {e.lawsPassedDelta !== undefined && e.lawsPassedDelta > 0 && <p>✓ Ley promulgada</p>}
+                  {e.popularityDelta !== undefined && (() => { const good = e.popularityDelta > 0; return <p className={good ? 'text-green-400' : 'text-crimson-400'}>{good ? '▲' : '▼'} Popularidad {good ? '+' : '-'}{Math.abs(e.popularityDelta)}</p>; })()}
+                  {e.stabilityDelta !== undefined && (() => { const good = e.stabilityDelta > 0; return <p className={good ? 'text-green-400' : 'text-crimson-400'}>{good ? '▲' : '▼'} Estabilidad {good ? '+' : '-'}{Math.abs(e.stabilityDelta)}</p>; })()}
+                  {e.marketConfidenceDelta !== undefined && (() => { const good = e.marketConfidenceDelta > 0; return <p className={good ? 'text-green-400' : 'text-crimson-400'}>{good ? '▲' : '▼'} Mercados {good ? '+' : '-'}{Math.abs(e.marketConfidenceDelta)}</p>; })()}
+                  {e.deficitDelta !== undefined && (() => { const good = e.deficitDelta < 0; return <p className={good ? 'text-green-400' : 'text-crimson-400'}>{good ? '▲' : '▼'} Déficit {good ? '-' : '+'}{Math.abs(e.deficitDelta)}%</p>; })()}
+                  {e.foreignReservesDelta !== undefined && (() => { const good = e.foreignReservesDelta > 0; return <p className={good ? 'text-green-400' : 'text-crimson-400'}>{good ? '▲' : '▼'} Reservas {good ? '+' : '-'}{Math.abs(e.foreignReservesDelta)}</p>; })()}
+                  {e.lawsPassedDelta !== undefined && e.lawsPassedDelta > 0 && <p className="text-green-400">✓ Ley promulgada</p>}
                 </div>
               );
             })()}
