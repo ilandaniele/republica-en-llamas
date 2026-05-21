@@ -40,10 +40,13 @@ const STYLE_SUFFIX =
   ', SNES 16-bit pixel art, limited 16-color palette, chunky hard pixels, no anti-aliasing, bold outlines, flat colors, political satire retro game art, no text no watermark';
 
 const PORTRAIT_SUFFIX =
-  ', SNES 16-bit pixel art bust portrait, exaggerated caricature, 16 colors, chunky hard pixels, no anti-aliasing, solid dark navy background, retro political game sprite, no text no watermark';
+  ', pixel art caricature portrait, 64-color palette, hard crisp pixels, visible facial details, exaggerated features, dark navy background, Argentine political satire game sprite, no text no watermark';
 
 const ACTION_SUFFIX =
-  ', SNES 16-bit pixel art scene, 16 colors, chunky pixels, no anti-aliasing, flat saturated colors, Argentine political satire game art, no text no watermark';
+  ', pixel art scene, 64 colors, crisp hard pixels, flat saturated colors, Argentine political satire game art, no text no watermark';
+
+const CASA_SUFFIX =
+  ', detailed pixel art scene, 256 colors, crisp pixels, iconic Argentine landmark, realistic architectural pixel art, political satire game background, high detail, no text no watermark';
 
 // Deterministic seed per image id (so re-runs produce same images unless --force)
 function seedForId(id: string, offset = 0): number {
@@ -100,31 +103,31 @@ const IMAGES: Array<{ id: string; prompt: string }> = [
   { id: 'malvinas',              prompt: 'Malvinas Falklands crisis, Argentine warship in South Atlantic storm, soldiers on rocky island, Buenos Aires protests for sovereignty, emotional patriotism' + STYLE_SUFFIX },
 
   // ── Casa Rosada states (replaces SVG in TurnTransitionScreen) ────────────
-  { id: 'casa_rosada_normal',  prompt: 'Casa Rosada salmon-pink baroque neoclassical palace facade, ornate white arched columns and balcony, two Argentine flags waving, presidential guards in blue uniform, Plaza de Mayo cobblestones, daylight blue sky, Buenos Aires' + STYLE_SUFFIX },
-  { id: 'casa_rosada_quiet',   prompt: 'Casa Rosada salmon-pink palace at dawn, empty Plaza de Mayo, soft golden sunrise light behind the baroque facade, lone guard at gate, peaceful tranquil atmosphere, Buenos Aires morning' + STYLE_SUFFIX },
-  { id: 'casa_rosada_mate',    prompt: 'Casa Rosada salmon-pink palace with cheerful citizens in Plaza de Mayo sharing mate, pigeons flying, sunny afternoon, folkloric atmosphere, peaceful popular gathering, Buenos Aires' + STYLE_SUFFIX },
-  { id: 'casa_rosada_protest', prompt: 'Casa Rosada salmon-pink palace under siege, Plaza de Mayo packed with cacerolazo protesters, crowd with banners and pots, smoke and megaphones, CGT flags, government besieged' + STYLE_SUFFIX },
-  { id: 'casa_rosada_riot',    prompt: 'Casa Rosada salmon-pink palace during riots, burning barricades in Plaza de Mayo, riot police with shields vs protesters, fire and dark red smoky sky, 2001 Argentina crisis' + STYLE_SUFFIX },
-  { id: 'casa_rosada_chaos',   prompt: 'Casa Rosada salmon-pink palace in apocalyptic crisis, surrounding buildings on fire, smoke pillars, blackout darkness, abandoned plaza, dystopian Argentina collapse' + STYLE_SUFFIX },
-  { id: 'casa_rosada_nuke',    prompt: 'Casa Rosada salmon-pink palace with nuclear mushroom cloud rising behind it, deep red apocalyptic sky, end-of-times Buenos Aires, shockwave light' + STYLE_SUFFIX },
+  { id: 'casa_rosada_normal',  prompt: 'Casa Rosada presidential palace of Argentina, iconic salmon-pink baroque neoclassical facade, white ornate columns and arched windows, central presidential balcony, two Argentine flags waving, presidential guards, blue sky, Plaza de Mayo cobblestones in foreground' + CASA_SUFFIX },
+  { id: 'casa_rosada_quiet',   prompt: 'Casa Rosada salmon-pink palace at quiet early dawn, empty Plaza de Mayo, golden sunrise light illuminating baroque facade, lone guard at iron gate, peaceful Buenos Aires morning, mist' + CASA_SUFFIX },
+  { id: 'casa_rosada_mate',    prompt: 'Casa Rosada salmon-pink palace with Argentine citizens relaxing in Plaza de Mayo sharing mate gourds, pigeons flying, sunny midday, relaxed folkloric Buenos Aires atmosphere, happy crowd' + CASA_SUFFIX },
+  { id: 'casa_rosada_protest', prompt: 'Casa Rosada salmon-pink palace besieged by massive cacerolazo protest, Plaza de Mayo packed with crowd banging pots and pans, smoke, protest banners and CGT flags, megaphones, Argentine political crisis' + CASA_SUFFIX },
+  { id: 'casa_rosada_riot',    prompt: 'Casa Rosada salmon-pink palace during 2001-style riots, burning barricades in Plaza de Mayo, riot police shields vs protesters, fire and thick dark smoke, Argentine political collapse' + CASA_SUFFIX },
+  { id: 'casa_rosada_chaos',   prompt: 'Casa Rosada salmon-pink palace in total apocalyptic crisis, surrounding buildings on fire, black smoke pillars, complete darkness, abandoned Plaza de Mayo, dystopian Argentina in ruins' + CASA_SUFFIX },
+  { id: 'casa_rosada_nuke',    prompt: 'Casa Rosada salmon-pink palace silhouette with massive nuclear mushroom cloud towering behind it, deep red apocalyptic Buenos Aires sky, end-of-world shockwave light, destruction' + CASA_SUFFIX },
 
   // ── Character portraits — highly detailed caricatures ───────────────────
-  { id: 'char_milei',       prompt: 'SEVEN wild jet-black hair spikes radiating like a crown, anarcho-capitalist president, pale staring manic eyes, thick black sideburns, tiny golden chainsaw, black suit red tie, Javier Milei Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_massa',       prompt: 'ENORMOUSLY wide square jaw dominating the face, two mobile phones in hands, slicked dark oiled hair, drooping eyelids, cunning smile, navy suit red tie, Sergio Massa economy minister Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_bullrich',    prompt: 'Short choppy gray-brown hair, crossed arms with gold security badge, sharp angular cheekbones, thin pursed frown, charcoal blazer, cold intimidating stare, Patricia Bullrich security minister Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_bregman',     prompt: 'ENORMOUS explosion of curly blonde hair filling frame, round thick glasses, hoop earrings, bright crimson red blazer, raised solidarity fist, Myriam Bregman leftist deputy Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_schiaretti',  prompt: 'Shiny bald head with thin gray fringe on sides, holding a mate gourd proudly, wide round cheerful cordobés face, sky blue suit, Juan Schiaretti governor Córdoba Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_larreta',     prompt: 'VERY thick dark bushy eyebrows on pale narrow long face, dramatic under-eye circles, salt-and-pepper hair, exhausted worried expression, charcoal suit light blue tie, Horacio Larreta mayor Buenos Aires caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_caputo',      prompt: 'Silver-gray neatly combed hair, sharp angular narrow face, stern cold Wall Street demeanor, dark tailored suit, holding financial spreadsheet, Luis Caputo economy minister Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_moyano',      prompt: 'Thick meaty pointing finger, heavyset bull neck, grey stubbly hair, CGT union jacket with emblem, furious confrontational expression, Hugo Moyano union boss Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_kicillof',    prompt: 'Curly messy dark hair and scraggly beard, round wire professor glasses, open casual shirt no tie, leftist intellectual expression, Axel Kicillof governor Buenos Aires province Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_kirchner',    prompt: 'Pearl necklace AND large golden Peronist cross pendant, dark blow-dried hair, elegant dark pantsuit, confident knowing smile, powerful presence, Cristina Kirchner ex-president Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_georgieva',   prompt: 'Short precise silver-white hair, IMF badge pin on tailored European suit, stern reading glasses, cold diplomatic expression, pen over balance sheet, Kristalina Georgieva IMF director caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_macri',       prompt: 'ENORMOUS wide CEO smile showing all teeth, neat dark side-parted hair, Boca Juniors pin on lapel, supremely confident businessman posture, navy suit gold tie, Mauricio Macri ex-president Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_anibal',      prompt: 'GIANT walrus mustache completely hiding the mouth, massive heavyset figure, heavy jowls, squinting menacing small eyes, dark rumpled baggy jacket, imposing presence, Aníbal Fernández minister Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_berni',       prompt: 'Black police beret tilted at sharp angle, full dress uniform covered in medal rows, jutting aggressive chin, fierce military stare, Sergio Berni security minister Buenos Aires caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_grabois',     prompt: 'Wild dark curly beard and messy hair halo, plaid flannel shirt no tie, raised clenched solidarity fist, genuine warm smile, piquetero energy, Juan Grabois social movement leader Argentina caricature' + PORTRAIT_SUFFIX },
-  { id: 'char_milani',      prompt: 'Full military dress uniform covered in medal ribbons, general star rank on shoulders, closely cropped grey hair, rigid formal military bearing, César Milani army general Argentina caricature' + PORTRAIT_SUFFIX },
+  { id: 'char_milei',       prompt: 'Javier Milei Argentine president, ICONIC jet-black hair spiked in 7 wild directions like a crown, staring manic pale eyes, thick black sideburns, small golden chainsaw in hand, black suit red tie, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_massa',       prompt: 'Sergio Massa Argentine economy minister, ENORMOUS wide square jaw dominating the face, slicked dark oiled hair, holding two cell phones simultaneously, cunning smile, navy suit red tie, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_bullrich',    prompt: 'Patricia Bullrich Argentine security minister, short choppy gray-brown hair, VERY stern crossed arms, gold security badge pin, sharp angular cheekbones, thin pursed lips, charcoal blazer, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_bregman',     prompt: 'Myriam Bregman Argentine leftist deputy, MASSIVE curly blonde hair explosion filling entire frame, round thick glasses, hoop earrings, bright crimson red blazer, raised solidarity fist, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_schiaretti',  prompt: 'Juan Schiaretti governor of Córdoba Argentina, completely bald shiny head with thin gray fringe, wide round warm cordobés face, holding mate gourd proudly, sky blue suit, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_larreta',     prompt: 'Horacio Larreta Buenos Aires mayor, EXTREMELY thick bushy dark eyebrows on long narrow pale face, pronounced dark under-eye circles, exhausted worried CEO expression, charcoal suit light blue tie, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_caputo',      prompt: 'Luis Caputo Argentine economy minister, silver neatly combed hair, sharp thin angular face, cold Wall Street demeanor, dark tailored suit, holding financial spreadsheet, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_moyano',      prompt: 'Hugo Moyano CGT union boss Argentina, heavyset bull-like thick neck, meaty pointing finger raised, grey stubble, CGT union jacket with emblem, furious confrontational expression, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_kicillof',    prompt: 'Axel Kicillof governor of Buenos Aires province Argentina, curly messy dark hair and scraggly beard, round wire-frame professor glasses, open casual shirt no tie, leftist intellectual expression, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_kirchner',    prompt: 'Cristina Kirchner Argentine ex-president, pearl necklace AND large golden Peronist cross pendant, dark blow-dried hair, elegant dark pantsuit, confident knowing smile, powerful commanding presence, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_georgieva',   prompt: 'Kristalina Georgieva IMF managing director, precise short silver-white hair, IMF badge pin on tailored European suit, stern reading glasses, cold diplomatic expression, pen over balance sheet, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_macri',       prompt: 'Mauricio Macri Argentine ex-president, ENORMOUS wide CEO smile showing all teeth, neat dark side-parted hair, Boca Juniors FC pin on lapel, supremely confident businessman posture, navy suit gold tie, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_anibal',      prompt: 'Aníbal Fernández Argentine minister, MASSIVE walrus mustache completely covering the mouth, giant heavyset imposing figure, heavy jowls, squinting menacing small eyes, dark rumpled baggy jacket, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_berni',       prompt: 'Sergio Berni Buenos Aires province security minister, black police beret tilted at sharp angle, full dress uniform covered in medal ribbon rows, jutting aggressive chin, fierce intense military stare, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_grabois',     prompt: 'Juan Grabois Argentine social movement leader, wild dark curly beard and messy hair halo, plaid flannel shirt no tie, raised clenched solidarity fist, genuine warm smile, piquetero energy, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
+  { id: 'char_milani',      prompt: 'César Milani Argentine army general, full military dress uniform loaded with medal ribbon rows, general star rank insignia on shoulders, closely cropped grey hair, rigid formal military bearing, pixel art caricature bust portrait' + PORTRAIT_SUFFIX },
 
   // ── President × Category action scenes (static PNG, president doing card action) ──
   // Milei

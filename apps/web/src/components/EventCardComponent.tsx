@@ -33,6 +33,13 @@ const ARCHETYPE_LABEL: Record<string, string> = {
   corporativo: 'Jefe Larreta',
 };
 
+// Maps archetype → president slug used in scene image IDs
+const ARCHETYPE_PRES_SLUG: Record<string, string> = {
+  ingeniero:   'milei',
+  populista:   'massa',
+  tecnocrata:  'bullrich',
+};
+
 interface Props {
   card: EventCard;
   selectedIndex: number | null;
@@ -200,34 +207,51 @@ export function EventCardComponent({ card, selectedIndex, onSelect, onConfirm, d
       </div>
 
       {/* Full-bleed illustration — no horizontal padding */}
-      <div className="relative w-full h-[180px] md:h-[260px] xl:h-[360px] overflow-hidden">
-        {card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-navy-800/60 border-y border-navy-700">
-            <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
+      {(() => {
+        const presSlug = ARCHETYPE_PRES_SLUG[presidentId];
+        const sceneKey = presSlug ? `pres_${presSlug}_${card.category}` : null;
+        const sceneGifKey = sceneKey ? `${sceneKey}_anim` : null;
+        const manifest = imageManifest as Record<string, string>;
+        const sceneUrl = sceneKey ? (manifest[sceneGifKey ?? ''] || manifest[sceneKey] || null) : null;
+
+        return (
+          <div className="relative w-full h-[180px] md:h-[260px] xl:h-[360px] overflow-hidden">
+            {sceneUrl && !card.characterId ? (
+              <motion.img
+                src={sceneUrl}
+                alt={`${presidentId} — ${card.category}`}
+                initial={{ scale: 1.06, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="w-full h-full object-cover object-top"
+              />
+            ) : card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-navy-800/60 border-y border-navy-700">
+                <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
+              </div>
+            ) : card.characterId ? (
+              <div className="absolute inset-0 flex items-center gap-3 bg-navy-800/60 border-y border-navy-600 px-4">
+                <CharacterPortrait characterId={card.characterId} size={72} />
+                <div className="text-smoke-400 font-mono text-xs italic opacity-70">
+                  Personaje recurrente
+                </div>
+              </div>
+            ) : (
+              <EventIllustration
+                eventCategory={card.category}
+                presidentId={presidentId}
+                eventId={card.id}
+                gameState={gameState}
+              />
+            )}
+            {/* Bottom gradient overlay */}
+            <div
+              className="absolute bottom-0 inset-x-0 h-12 pointer-events-none"
+              style={{ background: 'linear-gradient(to top, rgba(9,21,37,0.9) 0%, transparent 100%)' }}
+            />
           </div>
-        ) : card.characterId ? (
-          <div className="absolute inset-0 flex items-center gap-3 bg-navy-800/60 border-y border-navy-600 px-4">
-            <CharacterPortrait characterId={card.characterId} size={72} />
-            <div className="text-smoke-400 font-mono text-xs italic opacity-70">
-              Personaje recurrente
-            </div>
-          </div>
-        ) : (
-          <EventIllustration
-            eventCategory={card.category}
-            presidentId={presidentId}
-            eventId={card.id}
-            gameState={gameState}
-          />
-        )}
-        {/* Bottom gradient overlay for legibility on AI images */}
-        {!card.characterId && (
-          <div
-            className="absolute bottom-0 inset-x-0 h-10 pointer-events-none"
-            style={{ background: 'linear-gradient(to top, rgba(9,21,37,0.85) 0%, transparent 100%)' }}
-          />
-        )}
-      </div>
+        );
+      })()}
 
       {/* President strip — visual novel style, shown when no card-specific character */}
       {!card.characterId && (() => {

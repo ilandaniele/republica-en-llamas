@@ -15,8 +15,10 @@
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "turbo": "^2.0.0",
+    "gif-encoder-2": "^1.0.5",
+    "sharp": "^0.34.5",
     "tsx": "^4.19.2",
+    "turbo": "^2.0.0",
     "typescript": "^5.4.5"
   },
   "engines": {

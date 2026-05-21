@@ -17,7 +17,7 @@ import type { EventCard } from '@republica/game-engine';
 export interface TransitionData {
   fromTurn: number;
   toTurn: number;
-  statDeltas: { label: string; delta: number; emoji: string }[];
+  statDeltas: { label: string; delta: number; emoji: string; inverse?: boolean }[];
   headline: string;
   hookText: string;
 }
@@ -119,13 +119,42 @@ interface GameStore {
   setScenario: (id: ScenarioId | null) => void;
 }
 
+const SHOCK_NAMES_ES: Record<string, string> = {
+  'shock.oilPriceSpike':      'SUBA DEL PETRÓLEO',
+  'shock.globalRecession':    'RECESIÓN GLOBAL',
+  'shock.currencyAttack':     'ATAQUE A LA MONEDA',
+  'shock.tradeWar':           'GUERRA COMERCIAL',
+  'shock.pandemic':           'PANDEMIA',
+  'shock.naturalDisaster':    'DESASTRE NATURAL',
+  'shock.techBoom':           'BOOM TECNOLÓGICO',
+  'shock.foreignInvestment':  'INVERSIÓN EXTRANJERA',
+};
+
+const CATEGORY_HEADLINES: Record<string, string[]> = {
+  economic:      ['MERCADOS EN VILO', 'EL PESO TIEMBLA', 'RESERVAS BAJO PRESIÓN', 'CRISIS FISCAL EN MARCHA'],
+  political:     ['EL EJECUTIVO SE MUEVE', 'LA GRIETA SE PROFUNDIZA', 'CONGRESO EN SESIÓN', 'JUEGO POLÍTICO INTERNO'],
+  social:        ['LAS CALLES HABLAN', 'TENSIÓN SOCIAL CRECE', 'EL PUEBLO REACCIONA', 'CONFLICTO EN LAS BASES'],
+  international: ['CANCILLERÍA EN ALERTA', 'PRESIÓN EXTERNA', 'EL MUNDO MIRA A ARGENTINA', 'NEGOCIACIÓN CRUCIAL'],
+  crisis:        ['🚨 CRISIS EN MARCHA', '⚠ SITUACIÓN LÍMITE', 'AL BORDE DEL ABISMO', 'EMERGENCIA NACIONAL'],
+};
+
+const CATEGORY_HOOKS: Record<string, string[]> = {
+  economic:      ['Los mercados abren mañana. Todo puede cambiar.', 'El FMI sigue de cerca cada movimiento.', 'Los ahorristas miran el dólar blue con miedo.'],
+  political:     ['La oposición ya prepara su respuesta.', 'Los medios amplifican cada palabra.', 'Las encuestas captarán esto en días.'],
+  social:        ['Las calles tienen memoria larga.', 'La CGT monitora la situación.', 'El malestar social no desaparece solo.'],
+  international: ['Washington tomó nota.', 'El FMI revisa los números.', 'Cancillerías extranjeras esperan resultados.'],
+  crisis:        ['El país aguanta la respiración.', 'No hay margen para errores ahora.', 'La historia juzgará esta decisión.'],
+};
+
 function buildTransitionData(
   before: GameState,
   after: GameState,
   cardId: string,
-  choiceIndex: number
+  choiceIndex: number,
+  cardCategory?: string,
+  newShockName?: string,
 ): TransitionData {
-  const deltas: { label: string; delta: number; emoji: string }[] = [];
+  const deltas: { label: string; delta: number; emoji: string; inverse?: boolean }[] = [];
 
   const polDelta = after.political.popularity - before.political.popularity;
   const stabDelta = after.political.socialStability - before.political.socialStability;
@@ -134,25 +163,22 @@ function buildTransitionData(
 
   if (Math.abs(polDelta) >= 1) deltas.push({ label: 'Popularidad', delta: polDelta, emoji: '★' });
   if (Math.abs(stabDelta) >= 1) deltas.push({ label: 'Estabilidad', delta: stabDelta, emoji: '⚖' });
-  if (Math.abs(infDelta) >= 1) deltas.push({ label: 'Inflación', delta: infDelta, emoji: '💸' });
+  if (Math.abs(infDelta) >= 1) deltas.push({ label: 'Inflación', delta: infDelta, emoji: '💸', inverse: true });
   if (Math.abs(mktDelta) >= 1) deltas.push({ label: 'Mercados', delta: mktDelta, emoji: '📈' });
 
-  const hooks = [
-    'Las consecuencias se harán sentir pronto...',
-    'El país espera los resultados de esta decisión.',
-    'La oposición ya prepara su respuesta.',
-    'Los medios no tardarán en reaccionar.',
-    'Mientras tanto, se avecina otro asunto urgente.',
-  ];
-  const hookText = hooks[after.turn % hooks.length] ?? hooks[0]!;
+  const cat = cardCategory ?? 'political';
+  const headlinePool = CATEGORY_HEADLINES[cat] ?? CATEGORY_HEADLINES['political']!;
+  const hookPool = CATEGORY_HOOKS[cat] ?? CATEGORY_HOOKS['political']!;
 
-  // Simple headline from category/choice
-  const headlines = [
-    `TURNO ${after.turn}: EL GOBIERNO TOMA POSICIÓN`,
-    `DECISIÓN DEL EJECUTIVO: TURNO ${after.turn}`,
-    `EL PRESIDENTE ACTÚA EN TURNO ${after.turn}`,
-  ];
-  const headline = headlines[choiceIndex % headlines.length] ?? headlines[0]!;
+  let headline: string;
+  if (newShockName) {
+    const shockLabel = SHOCK_NAMES_ES[newShockName] ?? newShockName.replace('shock.', '').toUpperCase();
+    headline = `💥 SHOCK EXTERNO: ${shockLabel}`;
+  } else {
+    headline = headlinePool[(after.turn + choiceIndex) % headlinePool.length]!;
+  }
+
+  const hookText = hookPool[after.turn % hookPool.length]!;
 
   return {
     fromTurn: before.turn,
@@ -199,7 +225,14 @@ export const useGameStore = create<GameStore>()(
         let score = calculateScore(afterChoice);
         if (isCrisisExpress) score = Math.round(score * 2);
         const stateWithScore = { ...afterChoice, score };
-        const transitionData = buildTransitionData(gameState, stateWithScore, cardId, choiceIndex);
+        const newShock = stateWithScore.activeShocks.find(
+          (s) => !gameState.activeShocks.some((old) => old.id === s.id)
+        );
+        const transitionData = buildTransitionData(
+          gameState, stateWithScore, cardId, choiceIndex,
+          get().currentCard?.category,
+          newShock?.name,
+        );
         set({
           gameState: stateWithScore,
           pendingCardId: null,
@@ -247,11 +280,16 @@ export const useGameStore = create<GameStore>()(
         if (isCrisisExpress) score = Math.round(score * 2);
         const stateWithScore = { ...afterChoice, score };
 
+        const newShock = stateWithScore.activeShocks.find(
+          (s) => !gameState.activeShocks.some((old) => old.id === s.id)
+        );
         const transitionData = buildTransitionData(
           gameState,
           stateWithScore,
           pendingCardId,
-          pendingChoiceIndex
+          pendingChoiceIndex,
+          get().currentCard?.category,
+          newShock?.name,
         );
 
         trackTurnCompleted({
