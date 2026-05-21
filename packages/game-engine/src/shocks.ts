@@ -66,7 +66,7 @@ const SHOCK_TEMPLATES: ShockTemplate[] = [
     marketConfidenceMod: -25,
     deficitMod: 15,
     popularityMod: -10,
-    durationTurns: 6,
+    durationTurns: 4,
   },
   {
     id: 'natural_disaster',
@@ -103,7 +103,7 @@ const SHOCK_TEMPLATES: ShockTemplate[] = [
   },
 ];
 
-const SHOCK_CHANCE_PER_TURN = 0.15;
+const SHOCK_CHANCE_PER_TURN = 0.07;
 
 export function rollInternationalShock(turn: number, rng: () => number): Shock | null {
   if (rng() > SHOCK_CHANCE_PER_TURN) return null;
