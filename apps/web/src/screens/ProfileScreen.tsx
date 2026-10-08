@@ -39,7 +39,7 @@ export default function ProfileScreen() {
     void (async () => {
       const { data: profileData } = await supabase
         .from('profiles')
-        .select('*')
+        .select('username')
         .eq('id', user.id)
         .maybeSingle();
       if (profileData) setProfile(profileData as Tables['profiles']);
