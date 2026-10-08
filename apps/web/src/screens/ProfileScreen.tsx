@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth.js';
 import { supabase, isOfflineMode } from '../lib/supabase.js';
 import { useGameStore } from '../stores/gameStore.js';
@@ -100,7 +100,7 @@ export default function ProfileScreen() {
   // Note: we don't store president_id in game_runs currently, so skip for now
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen p-6">
+    <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen p-6">
       <div className="mx-auto max-w-2xl">
         <button
           onClick={() => navigate(-1)}
@@ -245,13 +245,13 @@ export default function ProfileScreen() {
       {/* Logout confirmation modal */}
       <AnimatePresence>
         {showLogoutModal && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-navy-900/90 p-6"
           >
-            <motion.div
+            <m.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
@@ -288,10 +288,10 @@ export default function ProfileScreen() {
                   Cancelar
                 </button>
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </m.div>
   );
 }
