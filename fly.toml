@@ -1,10 +1,8 @@
 app = "republica-en-llamas"
 primary_region = "gru"
 
+# VITE_* build args are passed by CI (flyctl deploy --build-arg); see .github/workflows/deploy.yml.
 [build]
-  [build.args]
-    VITE_SUPABASE_URL = ""
-    VITE_SUPABASE_ANON_KEY = ""
 
 [http_service]
   internal_port = 8080

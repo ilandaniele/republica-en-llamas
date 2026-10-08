@@ -29,7 +29,7 @@ const store = useGameStore();
 
 ## Design System — Pixel Art
 
-This project uses a **pixel-art aesthetic**. Follow these rules strictly:
+This project uses a pixel-art aesthetic.
 
 ### Fonts
 - Headlines / labels / buttons: `font-serif` (resolves to `'Press Start 2P'`) — keep font-size ≤ 10px
@@ -64,7 +64,7 @@ Apply these instead of inline styles:
 - `.glow-celeste` — box-shadow glow in celeste
 
 ### Global Rules
-- **Never use `rounded-*` Tailwind classes** — `border-radius: 0 !important` is applied globally in `theme.css`
+- `border-radius: 0 !important` is applied globally in `theme.css`, so `rounded-*` classes have no effect — don't add them
 - **`image-rendering: pixelated`** is applied globally; don't override it
 
 ### Animations (Tailwind `animate-*` utilities)
@@ -74,14 +74,14 @@ Apply these instead of inline styles:
 
 All pixel SVG components live in `apps/web/src/components/illustrations/` and are re-exported from `./index.ts`.
 
-Available pixel components: `PixelMate`, `PixelAsado`, `PixelFuego`, `PixelDolar`, `PixelColectivo`, `BuenosAiresBackground`, `PixelPortrait`.
+Check `index.ts` for the current list of components before creating a new one.
 
-`BuenosAiresBackground` is `fixed inset-0 z-0 pointer-events-none opacity-15` — always render it as the first child of the root game div.
+`BuenosAiresBackground` positions itself (fixed, full-screen, `z-0`, no pointer events, 15% opacity) — render it as `<BuenosAiresBackground />` with no props, as the first child of the root game div.
 
 ## Component Conventions
 
 - Framer Motion is used for enter/exit animations. Use `<AnimatePresence mode="wait">` around card transitions.
-- Screen components live in `apps/web/src/screens/`. Route-level lazy loading via `React.lazy` is configured in `App.tsx`.
+- Screen components live in `apps/web/src/screens/`. Route-level lazy loading and idle/hover prefetch live in `apps/web/src/app/routes.ts`.
 - `useAuth` → Supabase session. `useEntitlements` → IAP unlock status. Both are in `apps/web/src/hooks/`.
 
 ## Narrative Arc
@@ -93,20 +93,19 @@ Each run has a 4-phase arc. Use `gameState.turn` and `minTurn`/`maxTurn` on card
 | 1–5 | Establishment | Meet characters, easy decisions, build habits |
 | 6–12 | Complication | Consequences of early decisions surface |
 | 13–20 | Crisis | Betrayed characters return, compounding pressure |
-| 20+ | Survival | Pure endurance — no mercy |
+| 21+ | Survival | Pure endurance — no mercy |
 
 Lifelines are guaranteed every N turns per `DIFFICULTY_MODIFIERS.lifelineGuaranteeEvery` (easy=3, normal=6, hard=10, crisis=99).
 
 ## Analytics
 
 PostHog is wired in `apps/web/src/lib/analytics.ts`. Every user action that changes state must fire a typed `track*()` function from that file — never call `posthog.capture()` directly in components.
-
 Key funnels already instrumented:
 - `game_started` → `turn_completed` (×N) → `game_over`
 - `game_over` → `paywall_shown` → `purchase_started` → `purchase_completed`
 - `game_over` → `share_clicked`
 
-For A/B tests: use `posthog.getFeatureFlag('flag_name')` — never branch on raw `Math.random()` for UX experiments. Always fire `$experiment_started` on component mount when a flag is read.
+For A/B tests: use `getFeatureFlag('flag_name')` from `lib/analytics.ts` (posthog-js is lazy-loaded; never import it in components) — never branch on raw `Math.random()` for UX experiments. Always call `trackExperimentStarted({ experiment, variant })` on component mount when a flag is read.
 
 ## i18n
 

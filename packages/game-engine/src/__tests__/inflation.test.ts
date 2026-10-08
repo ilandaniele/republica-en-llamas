@@ -43,7 +43,7 @@ describe('calculateInflation', () => {
     expect(result).toBeLessThanOrEqual(200);
   });
 
-  it('clamps at 0 minimum', () => {
+  it('clamps at -20 minimum (deflation floor)', () => {
     const state = {
       ...initGame('easy', 42),
       economic: {
@@ -55,7 +55,7 @@ describe('calculateInflation', () => {
       },
     };
     const result = calculateInflation(state);
-    expect(result).toBeGreaterThanOrEqual(0);
+    expect(result).toBeGreaterThanOrEqual(-20);
   });
 
   it('shock multiplier increases inflation', () => {

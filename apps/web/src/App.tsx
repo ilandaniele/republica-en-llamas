@@ -1,31 +1,41 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { useGameStore } from './stores/gameStore.js';
 import { SoundProvider } from './components/SoundManager.js';
 import { initAnalytics } from './lib/analytics.js';
 import { useEntitlements } from './hooks/useEntitlements.js';
 import { PixelMate } from './components/illustrations/PixelMate.js';
+import { prefetchRoutesWhenIdle, screens } from './app/routes.js';
 
-const HomeScreen = lazy(() => import('./screens/HomeScreen.js'));
-const GameScreen = lazy(() => import('./screens/GameScreen.js'));
-const CrisisScreen = lazy(() => import('./screens/CrisisScreen.js'));
-const GameOverScreen = lazy(() => import('./screens/GameOverScreen.js'));
-const LeaderboardScreen = lazy(() => import('./screens/LeaderboardScreen.js'));
-const HistoryScreen = lazy(() => import('./screens/HistoryScreen.js'));
-const PresidentSelectScreen = lazy(() => import('./screens/PresidentSelectScreen.js'));
-const AuthScreen = lazy(() => import('./screens/AuthScreen.js'));
-const RegisterScreen = lazy(() => import('./screens/RegisterScreen.js'));
-const LoginScreen = lazy(() => import('./screens/LoginScreen.js'));
-const ProfileScreen = lazy(() => import('./screens/ProfileScreen.js'));
+const {
+  HomeScreen,
+  GameScreen,
+  CrisisScreen,
+  GameOverScreen,
+  LeaderboardScreen,
+  HistoryScreen,
+  PresidentSelectScreen,
+  AuthScreen,
+  RegisterScreen,
+  LoginScreen,
+  ProfileScreen,
+} = screens;
 
 function LoadingSpinner() {
   return (
     <div
-      className="flex flex-col items-center justify-center gap-6 min-h-screen"
+      className="flex min-h-screen flex-col items-center justify-center gap-6"
       style={{ background: 'var(--night-blue)' }}
     >
       <PixelMate steaming width={80} height={100} />
-      <div style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--gold)', lineHeight: 2 }}>
+      <div
+        style={{
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: '8px',
+          color: 'var(--gold)',
+          lineHeight: 2,
+        }}
+      >
         Cargando...
       </div>
     </div>
@@ -45,34 +55,37 @@ function PurchaseSuccessToast() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!show) return null;
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-800 border border-emerald-500 text-emerald-100 font-mono text-sm px-6 py-3 rounded-xl shadow-xl">
+    <div className="fixed left-1/2 top-4 z-50 -translate-x-1/2 rounded-xl border border-emerald-500 bg-emerald-800 px-6 py-3 font-mono text-sm text-emerald-100 shadow-xl">
       ✅ Compra exitosa — contenido desbloqueado
     </div>
   );
 }
 
 export default function App() {
-  useEffect(() => { initAnalytics(); }, []);
+  useEffect(() => {
+    initAnalytics();
+    prefetchRoutesWhenIdle(['presidentSelect', 'game']);
+  }, []);
   return (
     <SoundProvider>
-    <BrowserRouter>
-      <Suspense fallback={<LoadingSpinner />}>
-        <PurchaseSuccessToast />
-        <Routes>
-          <Route path="/" element={<HomeScreen />} />
-          <Route path="/president" element={<PresidentSelectRoute />} />
-          <Route path="/game" element={<GameRoute />} />
-          <Route path="/gameover" element={<GameOverRoute />} />
-          <Route path="/leaderboard" element={<LeaderboardScreen />} />
-          <Route path="/history" element={<HistoryScreen />} />
-          <Route path="/auth" element={<AuthScreen />} />
-          <Route path="/register" element={<RegisterScreen />} />
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/profile" element={<ProfileScreen />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Suspense fallback={<LoadingSpinner />}>
+          <PurchaseSuccessToast />
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/president" element={<PresidentSelectRoute />} />
+            <Route path="/game" element={<GameRoute />} />
+            <Route path="/gameover" element={<GameOverRoute />} />
+            <Route path="/leaderboard" element={<LeaderboardScreen />} />
+            <Route path="/history" element={<HistoryScreen />} />
+            <Route path="/auth" element={<AuthScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
     </SoundProvider>
   );
 }

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { GameState } from '@republica/game-engine';
 import { useGameStore } from '../stores/gameStore.js';
-import type { VarSnapshot } from '../stores/gameStore.js';
 import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
 import { PixelFuego } from './illustrations/PixelFuego.js';
 
@@ -10,49 +9,57 @@ import { PixelFuego } from './illustrations/PixelFuego.js';
 function CasaRosadaMini({ tense = false }: { tense?: boolean }) {
   const PK = tense ? '#D4948A' : '#E8B4B8';
   const WH = '#ECE8E0';
-  const BK = '#080C12';
   const CB = '#74ACDF';
   const GD = '#F6B40E';
   const GR = '#8A9BAA';
   const BR = '#7A5530';
   // P=2 grid, viewBox 80×60
-  const r = (x: number, y: number, w: number, h: number, fill: string) =>
-    <rect x={x*2} y={y*2} width={w*2} height={h*2} fill={fill} />;
+  const r = (x: number, y: number, w: number, h: number, fill: string) => (
+    <rect x={x * 2} y={y * 2} width={w * 2} height={h * 2} fill={fill} />
+  );
   return (
-    <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg"
-      width={80} height={60}
-      style={{ imageRendering: 'pixelated', display: 'block' }}>
+    <svg
+      viewBox="0 0 80 60"
+      xmlns="http://www.w3.org/2000/svg"
+      width={80}
+      height={60}
+      style={{ imageRendering: 'pixelated', display: 'block' }}
+    >
       {/* Sky */}
       <rect x={0} y={0} width={80} height={60} fill={CB} opacity={0.25} />
       {/* Flag pole + flag */}
-      {r(19,1,1,8,GR)}
-      {r(20,1,3,1,CB)}{r(20,2,3,1,WH)}{r(20,3,3,1,CB)}
+      {r(19, 1, 1, 8, GR)}
+      {r(20, 1, 3, 1, CB)}
+      {r(20, 2, 3, 1, WH)}
+      {r(20, 3, 3, 1, CB)}
       {/* Parapet row */}
-      {r(8,5,24,1,WH)}
-      {[8,10,12,14,16,18,20,22,24,26,28,30].map((c,i) => <rect key={i} x={c*2} y={4*2} width={1*2} height={1*2} fill={GR} />)}
+      {r(8, 5, 24, 1, WH)}
+      {[8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30].map((c, i) => (
+        <rect key={i} x={c * 2} y={4 * 2} width={1 * 2} height={1 * 2} fill={GR} />
+      ))}
       {/* Main facade */}
-      {r(8,6,24,12,PK)}
+      {r(8, 6, 24, 12, PK)}
       {/* Facade highlight */}
-      {r(9,6,22,4,tense ? '#D8A099' : '#F0C8CC')}
+      {r(9, 6, 22, 4, tense ? '#D8A099' : '#F0C8CC')}
       {/* Ground floor arcade arches (5 arches) */}
-      {[9,12,15,18,21].map((c,i) => (
+      {[9, 12, 15, 18, 21].map((c, i) => (
         <g key={i}>
-          {r(c,14,2,4,WH)}
-          {r(c,13,2,1,GD)}
+          {r(c, 14, 2, 4, WH)}
+          {r(c, 13, 2, 1, GD)}
         </g>
       ))}
       {/* Upper floor windows (4 windows) */}
-      {[10,14,18,22].map((c,i) => (
+      {[10, 14, 18, 22].map((c, i) => (
         <g key={i}>
-          {r(c,8,2,3,tense ? '#553030' : '#B3D4F0')}
-          {r(c,7,2,1,GR)}
+          {r(c, 8, 2, 3, tense ? '#553030' : '#B3D4F0')}
+          {r(c, 7, 2, 1, GR)}
         </g>
       ))}
       {/* Central balcony */}
-      {r(18,10,4,1,GD)}
+      {r(18, 10, 4, 1, GD)}
       {/* Ground / steps */}
-      {r(7,18,26,1,BR)}
-      {r(6,19,28,1,BR)}
+      {r(7, 18, 26, 1, BR)}
+      {r(6, 19, 28, 1, BR)}
     </svg>
   );
 }
@@ -72,18 +79,34 @@ interface MeterProps {
   flashDir?: 'up' | 'down' | null | undefined;
 }
 
-function TrendArrow({ current, prev, inverse = false }: { current: number; prev?: number | undefined; inverse?: boolean | undefined }) {
+function TrendArrow({
+  current,
+  prev,
+  inverse = false,
+}: {
+  current: number;
+  prev?: number | undefined;
+  inverse?: boolean | undefined;
+}) {
   if (prev === undefined) return null;
   const delta = current - prev;
-  if (Math.abs(delta) < 1) return <span className="text-smoke-600 text-xs">→</span>;
+  if (Math.abs(delta) < 1) return <span className="text-xs text-smoke-600">→</span>;
   const goingUp = delta > 0;
   // For higher-is-better vars: up = green. For lower-is-better (inverse): down = green.
   const isGood = inverse ? !goingUp : goingUp;
   const isVeryBig = Math.abs(delta) > 10;
   if (isVeryBig) {
-    return <span className={isGood ? 'text-green-400 text-sm' : 'text-crimson-400 text-sm'}>{goingUp ? '↑↑' : '↓↓'}</span>;
+    return (
+      <span className={isGood ? 'text-sm text-green-400' : 'text-sm text-crimson-400'}>
+        {goingUp ? '↑↑' : '↓↓'}
+      </span>
+    );
   }
-  return <span className={isGood ? 'text-green-400 text-xs' : 'text-crimson-400 text-xs'}>{goingUp ? '↑' : '↓'}</span>;
+  return (
+    <span className={isGood ? 'text-xs text-green-400' : 'text-xs text-crimson-400'}>
+      {goingUp ? '↑' : '↓'}
+    </span>
+  );
 }
 
 function AnimatedNumber({ value, inverse = false }: { value: number; inverse?: boolean }) {
@@ -111,14 +134,16 @@ function AnimatedNumber({ value, inverse = false }: { value: number; inverse?: b
     <motion.span
       animate={flash ? { scale: [1, 1.2, 1] } : {}}
       transition={{ duration: 0.3 }}
-      className={flash === 'good' ? 'text-green-400' : flash === 'bad' ? 'text-crimson-400' : 'text-smoke-100'}
+      className={
+        flash === 'good' ? 'text-green-400' : flash === 'bad' ? 'text-crimson-400' : 'text-smoke-100'
+      }
     >
       {Math.round(displayed)}
     </motion.span>
   );
 }
 
-function Meter({ label, value, prevValue, max = 100, color, icon, inverse = false, flashDir }: MeterProps) {
+function Meter({ label, value, prevValue, max = 100, icon, inverse = false, flashDir }: MeterProps) {
   const pct = Math.max(0, Math.min(100, (value / max) * 100));
   const isWarning = inverse ? pct > 70 : pct < 30;
   const isCritical = inverse ? pct > 85 : pct < 15;
@@ -126,11 +151,12 @@ function Meter({ label, value, prevValue, max = 100, color, icon, inverse = fals
 
   // Pixel bar color class
   const barFillClass = isCritical ? 'bar-critical' : isWarning ? 'bar-warning' : 'bar-good';
-  const flashClass = flashDir === 'up' ? 'animate-bar-flash-up' : flashDir === 'down' ? 'animate-bar-flash-down' : '';
+  const flashClass =
+    flashDir === 'up' ? 'animate-bar-flash-up' : flashDir === 'down' ? 'animate-bar-flash-down' : '';
 
   return (
     <div className="variable-meter">
-      <div className="flex justify-between items-center mb-1">
+      <div className="mb-1 flex items-center justify-between">
         <span
           style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
           className={`flex items-center gap-1 ${isCritical ? 'text-crimson-400' : isDanger ? 'text-gold-400' : 'text-smoke-400'}`}
@@ -140,17 +166,14 @@ function Meter({ label, value, prevValue, max = 100, color, icon, inverse = fals
         </span>
         <span
           style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
-          className="font-bold flex items-center gap-1"
+          className="flex items-center gap-1 font-bold"
         >
           <TrendArrow current={value} prev={prevValue} inverse={inverse} />
           <AnimatedNumber value={Math.round(value)} inverse={inverse} />
         </span>
       </div>
       <div className={`pixel-bar-container ${flashClass}`}>
-        <div
-          className={`pixel-bar-fill ${barFillClass}`}
-          style={{ width: `${pct}%` }}
-        />
+        <div className={`pixel-bar-fill ${barFillClass}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
@@ -165,10 +188,28 @@ function getTemperatura(state: GameState): { label: string; emoji: string; color
     state.economic.foreignReserves,
   ];
   const minVar = Math.min(...vars);
-  if (minVar < 10) return { label: 'COLAPSO INMINENTE', emoji: '💀', color: 'text-red-300', bg: 'bg-red-900/50 border-red-600 animate-pulse' };
-  if (minVar < 25) return { label: 'EN LLAMAS', emoji: '🔴', color: 'text-crimson-300', bg: 'bg-crimson-900/40 border-crimson-700' };
-  if (minVar < 50) return { label: 'CALIENTE', emoji: '🟡', color: 'text-gold-300', bg: 'bg-gold-900/30 border-gold-700' };
-  return { label: 'ESTABLE', emoji: '🟢', color: 'text-emerald-300', bg: 'bg-emerald-900/30 border-emerald-700' };
+  if (minVar < 10)
+    return {
+      label: 'COLAPSO INMINENTE',
+      emoji: '💀',
+      color: 'text-red-300',
+      bg: 'bg-red-900/50 border-red-600 animate-pulse',
+    };
+  if (minVar < 25)
+    return {
+      label: 'EN LLAMAS',
+      emoji: '🔴',
+      color: 'text-crimson-300',
+      bg: 'bg-crimson-900/40 border-crimson-700',
+    };
+  if (minVar < 50)
+    return { label: 'CALIENTE', emoji: '🟡', color: 'text-gold-300', bg: 'bg-gold-900/30 border-gold-700' };
+  return {
+    label: 'ESTABLE',
+    emoji: '🟢',
+    color: 'text-emerald-300',
+    bg: 'bg-emerald-900/30 border-emerald-700',
+  };
 }
 
 export function VariablesPanel({ state }: Props) {
@@ -188,7 +229,12 @@ export function VariablesPanel({ state }: Props) {
       { key: 'currencyStrength', curr: economic.currencyStrength, prev: prevSnapshot.currencyStrength },
       { key: 'foreignReserves', curr: economic.foreignReserves, prev: prevSnapshot.foreignReserves },
       { key: 'inflation', curr: economic.inflation, prev: prevSnapshot.inflation, inverse: true },
-      { key: 'publicDeficit', curr: economic.publicDeficit, prev: prevSnapshot.publicDeficit ?? economic.publicDeficit, inverse: true },
+      {
+        key: 'publicDeficit',
+        curr: economic.publicDeficit,
+        prev: prevSnapshot.publicDeficit ?? economic.publicDeficit,
+        inverse: true,
+      },
     ];
     let hasFlash = false;
     for (const { key, curr, prev, inverse } of checks) {
@@ -208,12 +254,21 @@ export function VariablesPanel({ state }: Props) {
   const temp = getTemperatura(state);
   const isDeflation = economic.inflation < 0;
 
-  const hasAnyCrisis = [political.popularity, political.socialStability, economic.marketConfidence, economic.currencyStrength, economic.foreignReserves].some((v) => v < 30);
+  const hasAnyCrisis = [
+    political.popularity,
+    political.socialStability,
+    economic.marketConfidence,
+    economic.currencyStrength,
+    economic.foreignReserves,
+  ].some((v) => v < 30);
   const isStable = political.socialStability > 50 && political.popularity > 50;
 
   return (
-    <div className="pixel-border bg-navy-800 p-4 space-y-4">
-      <div className="flex items-center justify-between" style={{ borderBottom: '2px solid var(--celeste-dark)', paddingBottom: '8px' }}>
+    <div className="pixel-border space-y-4 bg-navy-800 p-4">
+      <div
+        className="flex items-center justify-between"
+        style={{ borderBottom: '2px solid var(--celeste-dark)', paddingBottom: '8px' }}
+      >
         <h3
           style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px', color: 'var(--celeste)' }}
           className="uppercase"
@@ -222,7 +277,13 @@ export function VariablesPanel({ state }: Props) {
         </h3>
         {(state.positiveStreak ?? 0) >= 2 && (
           <span
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', background: 'var(--gold)', color: '#0D1B2A', padding: '2px 5px' }}
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: '6px',
+              background: 'var(--gold)',
+              color: '#0D1B2A',
+              padding: '2px 5px',
+            }}
           >
             🔥 RACHA ×{state.positiveStreak}
           </span>
@@ -236,11 +297,33 @@ export function VariablesPanel({ state }: Props) {
 
       {/* Political */}
       <div className="space-y-3">
-        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }} className="text-smoke-600 uppercase">POLITICO</p>
-        <Meter label="POP" value={political.popularity} prevValue={prevSnapshot?.popularity} color="bg-blue-500" icon="★" flashDir={flashMap['popularity']} />
-        <Meter label="EST" value={political.socialStability} prevValue={prevSnapshot?.socialStability} color="bg-emerald-500" icon="⚖" flashDir={flashMap['socialStability']} />
+        <p
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+          className="uppercase text-smoke-600"
+        >
+          POLITICO
+        </p>
+        <Meter
+          label="POP"
+          value={political.popularity}
+          prevValue={prevSnapshot?.popularity}
+          color="bg-blue-500"
+          icon="★"
+          flashDir={flashMap['popularity']}
+        />
+        <Meter
+          label="EST"
+          value={political.socialStability}
+          prevValue={prevSnapshot?.socialStability}
+          color="bg-emerald-500"
+          icon="⚖"
+          flashDir={flashMap['socialStability']}
+        />
         <Meter label="MED" value={political.mediaCredibility} color="bg-purple-500" icon="📺" />
-        <div className="flex justify-between" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}>
+        <div
+          className="flex justify-between"
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+        >
           <span className="text-smoke-400">DECRETOS</span>
           <span className={political.emergencyDecreesUsed > 2 ? 'text-crimson-400' : 'text-smoke-200'}>
             {political.emergencyDecreesUsed}
@@ -250,7 +333,12 @@ export function VariablesPanel({ state }: Props) {
 
       {/* Economic */}
       <div className="space-y-3">
-        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }} className="text-smoke-600 uppercase">ECONOMICO</p>
+        <p
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+          className="uppercase text-smoke-600"
+        >
+          ECONOMICO
+        </p>
         <button
           className="w-full text-left"
           onClick={() => setShowInflationBreakdown((v) => !v)}
@@ -259,12 +347,26 @@ export function VariablesPanel({ state }: Props) {
           <Meter
             label={isDeflation ? `DEFL${breakdown ? ' 🔍' : ''}` : `INF${breakdown ? ' 🔍' : ''}`}
             value={isDeflation ? Math.abs(economic.inflation) : economic.inflation}
-            prevValue={prevSnapshot?.inflation !== undefined ? (isDeflation ? Math.abs(prevSnapshot.inflation) : prevSnapshot.inflation) : undefined}
+            prevValue={
+              prevSnapshot?.inflation !== undefined
+                ? isDeflation
+                  ? Math.abs(prevSnapshot.inflation)
+                  : prevSnapshot.inflation
+                : undefined
+            }
             max={isDeflation ? 20 : 200}
             color={isDeflation ? 'bg-crimson-500' : 'bg-orange-500'}
             icon={isDeflation ? '📉' : '💸'}
             inverse
-            flashDir={isDeflation ? (flashMap['inflation'] === 'up' ? 'down' : flashMap['inflation'] === 'down' ? 'up' : null) : flashMap['inflation']}
+            flashDir={
+              isDeflation
+                ? flashMap['inflation'] === 'up'
+                  ? 'down'
+                  : flashMap['inflation'] === 'down'
+                    ? 'up'
+                    : null
+                : flashMap['inflation']
+            }
           />
         </button>
         <AnimatePresence>
@@ -279,32 +381,88 @@ export function VariablesPanel({ state }: Props) {
             </motion.div>
           )}
         </AnimatePresence>
-        <Meter label="DEF" value={economic.publicDeficit} prevValue={prevSnapshot?.publicDeficit} color="bg-red-500" icon="📊" inverse flashDir={flashMap['publicDeficit']} />
-        <Meter label="MKT" value={economic.marketConfidence} prevValue={prevSnapshot?.marketConfidence} color="bg-teal-500" icon="📈" flashDir={flashMap['marketConfidence']} />
-        <Meter label="$$$" value={economic.currencyStrength} prevValue={prevSnapshot?.currencyStrength} color="bg-yellow-500" icon="💰" flashDir={flashMap['currencyStrength']} />
-        <Meter label="RES" value={economic.foreignReserves} prevValue={prevSnapshot?.foreignReserves} color="bg-cyan-500" icon="🏦" flashDir={flashMap['foreignReserves']} />
-        <div className="flex justify-between" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}>
+        <Meter
+          label="DEF"
+          value={economic.publicDeficit}
+          prevValue={prevSnapshot?.publicDeficit}
+          color="bg-red-500"
+          icon="📊"
+          inverse
+          flashDir={flashMap['publicDeficit']}
+        />
+        <Meter
+          label="MKT"
+          value={economic.marketConfidence}
+          prevValue={prevSnapshot?.marketConfidence}
+          color="bg-teal-500"
+          icon="📈"
+          flashDir={flashMap['marketConfidence']}
+        />
+        <Meter
+          label="$$$"
+          value={economic.currencyStrength}
+          prevValue={prevSnapshot?.currencyStrength}
+          color="bg-yellow-500"
+          icon="💰"
+          flashDir={flashMap['currencyStrength']}
+        />
+        <Meter
+          label="RES"
+          value={economic.foreignReserves}
+          prevValue={prevSnapshot?.foreignReserves}
+          color="bg-cyan-500"
+          icon="🏦"
+          flashDir={flashMap['foreignReserves']}
+        />
+        <div
+          className="flex justify-between"
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+        >
           <span className="text-smoke-400">PIB</span>
           <span className={economic.gdpGrowth >= 0 ? 'text-green-400' : 'text-crimson-400'}>
-            {economic.gdpGrowth >= 0 ? '+' : ''}{economic.gdpGrowth.toFixed(1)}%
+            {economic.gdpGrowth >= 0 ? '+' : ''}
+            {economic.gdpGrowth.toFixed(1)}%
           </span>
         </div>
       </div>
 
       {/* Congress */}
       <div className="space-y-2">
-        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }} className="text-smoke-600 uppercase">CONGRESO</p>
-        <div className="flex gap-0.5 h-3 overflow-hidden" style={{ border: '2px solid #444' }}>
-          <div className="transition-all duration-700" style={{ width: `${(congress.governmentSeats / 538) * 100}%`, background: 'var(--celeste)' }} title={`Gobierno: ${congress.governmentSeats}`} />
-          <div className="bg-smoke-600 transition-all duration-700" style={{ width: `${(congress.independentSeats / 538) * 100}%` }} title={`Independientes: ${congress.independentSeats}`} />
-          <div className="bg-crimson-500 transition-all duration-700" style={{ width: `${(congress.oppositionSeats / 538) * 100}%` }} title={`Oposición: ${congress.oppositionSeats}`} />
+        <p
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+          className="uppercase text-smoke-600"
+        >
+          CONGRESO
+        </p>
+        <div className="flex h-3 gap-0.5 overflow-hidden" style={{ border: '2px solid #444' }}>
+          <div
+            className="transition-all duration-700"
+            style={{ width: `${(congress.governmentSeats / 538) * 100}%`, background: 'var(--celeste)' }}
+            title={`Gobierno: ${congress.governmentSeats}`}
+          />
+          <div
+            className="bg-smoke-600 transition-all duration-700"
+            style={{ width: `${(congress.independentSeats / 538) * 100}%` }}
+            title={`Independientes: ${congress.independentSeats}`}
+          />
+          <div
+            className="bg-crimson-500 transition-all duration-700"
+            style={{ width: `${(congress.oppositionSeats / 538) * 100}%` }}
+            title={`Oposición: ${congress.oppositionSeats}`}
+          />
         </div>
-        <div className="flex justify-between" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}>
+        <div
+          className="flex justify-between"
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+        >
           <span style={{ color: 'var(--celeste)' }}>GOB:{congress.governmentSeats}</span>
           <span className="text-smoke-400">IND:{congress.independentSeats}</span>
           <span className="text-crimson-400">OPO:{congress.oppositionSeats}</span>
         </div>
-        <div className="flex justify-between" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}>
+        <div
+          className="flex justify-between"
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+        >
           <span className="text-smoke-400">LEYES</span>
           <span style={{ color: 'var(--gold)' }}>{congress.lawsPassedThisRun}</span>
         </div>
@@ -312,22 +470,44 @@ export function VariablesPanel({ state }: Props) {
 
       {/* Temperatura del País */}
       <div className={`p-3 ${temp.bg}`} style={{ border: '2px solid currentColor' }}>
-        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }} className="text-smoke-500 uppercase mb-1">TEMPERATURA</p>
-        <div className={`flex items-center gap-2 font-bold ${temp.color}`} style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}>
+        <p
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+          className="text-smoke-500 mb-1 uppercase"
+        >
+          TEMPERATURA
+        </p>
+        <div
+          className={`flex items-center gap-2 font-bold ${temp.color}`}
+          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
+        >
           <span>{temp.emoji}</span>
           <span>{temp.label}</span>
         </div>
       </div>
 
       {/* Turn / Score */}
-      <div className="pt-3 flex justify-between" style={{ borderTop: '2px solid var(--celeste-dark)' }}>
+      <div className="flex justify-between pt-3" style={{ borderTop: '2px solid var(--celeste-dark)' }}>
         <div>
-          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }} className="text-smoke-600">TURNO</p>
-          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--gold)' }}>{state.turn}/50</p>
+          <p
+            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+            className="text-smoke-600"
+          >
+            TURNO
+          </p>
+          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--gold)' }}>
+            {state.turn}/50
+          </p>
         </div>
         <div className="text-right">
-          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }} className="text-smoke-600">SCORE</p>
-          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--gold)' }}>{state.score.toLocaleString()}</p>
+          <p
+            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+            className="text-smoke-600"
+          >
+            SCORE
+          </p>
+          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--gold)' }}>
+            {state.score.toLocaleString()}
+          </p>
         </div>
       </div>
     </div>

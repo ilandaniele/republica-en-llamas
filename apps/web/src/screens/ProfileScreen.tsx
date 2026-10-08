@@ -34,7 +34,7 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     if (!user || isOfflineMode) return;
-    setNewUsername(user.user_metadata?.['username'] as string ?? '');
+    setNewUsername((user.user_metadata?.['username'] as string) ?? '');
 
     void (async () => {
       const { data: profileData } = await supabase
@@ -79,10 +79,10 @@ export default function ProfileScreen() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6">
+      <div className="flex min-h-screen items-center justify-center p-6">
         <div className="text-center">
-          <p className="text-smoke-400 font-mono mb-4">No hay sesión activa.</p>
-          <button onClick={() => navigate('/')} className="text-gold-400 font-mono text-sm underline">
+          <p className="mb-4 font-mono text-smoke-400">No hay sesión activa.</p>
+          <button onClick={() => navigate('/')} className="font-mono text-sm text-gold-400 underline">
             Volver al inicio
           </button>
         </div>
@@ -90,30 +90,29 @@ export default function ProfileScreen() {
     );
   }
 
-  const displayName = profile?.username ?? (user.user_metadata?.['username'] as string | undefined) ?? user.email ?? '?';
+  const displayName =
+    profile?.username ?? (user.user_metadata?.['username'] as string | undefined) ?? user.email ?? '?';
   const avatarInitials = displayName.slice(0, 2).toUpperCase();
   const avatarColor = generateAvatarColor(displayName);
 
   const totalRuns_display = totalRuns || recentRuns.length;
   const bestScore = recentRuns.reduce((max, r) => Math.max(max, r.score), 0);
-  const presidentCounts: Record<string, number> = {};
   // Note: we don't store president_id in game_runs currently, so skip for now
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen p-6"
-    >
-      <div className="max-w-2xl mx-auto">
-        <button onClick={() => navigate(-1)} className="text-smoke-500 font-mono text-xs mb-6 hover:text-smoke-300 flex items-center gap-1">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen p-6">
+      <div className="mx-auto max-w-2xl">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-smoke-500 hover:text-smoke-300 mb-6 flex items-center gap-1 font-mono text-xs"
+        >
           ← Volver
         </button>
 
         {/* Profile header */}
-        <div className="bg-navy-800 pixel-border p-6 mb-6 flex items-center gap-6">
+        <div className="pixel-border mb-6 flex items-center gap-6 bg-navy-800 p-6">
           <div
-            className="w-14 h-14 pixel-border flex items-center justify-center text-xl font-bold text-white shrink-0"
+            className="pixel-border flex h-14 w-14 shrink-0 items-center justify-center text-xl font-bold text-white"
             style={{ backgroundColor: avatarColor }}
           >
             {avatarInitials}
@@ -125,70 +124,117 @@ export default function ProfileScreen() {
                   type="text"
                   value={newUsername}
                   onChange={(e) => setNewUsername(e.target.value)}
-                  className="bg-navy-900 border border-navy-500 text-smoke-100 font-mono text-sm px-3 py-1 rounded focus:outline-none focus:border-gold-500"
+                  className="rounded border border-navy-500 bg-navy-900 px-3 py-1 font-mono text-sm text-smoke-100 focus:border-gold-500 focus:outline-none"
+                  // eslint-disable-next-line jsx-a11y/no-autofocus -- inline edit opened by explicit user click
                   autoFocus
                 />
-                <button onClick={() => { void handleUpdateUsername(); }} className="text-gold-400 font-mono text-xs hover:text-gold-300">
+                <button
+                  onClick={() => {
+                    void handleUpdateUsername();
+                  }}
+                  className="font-mono text-xs text-gold-400 hover:text-gold-300"
+                >
                   Guardar
                 </button>
-                <button onClick={() => setEditingUsername(false)} className="text-smoke-500 font-mono text-xs hover:text-smoke-300">
+                <button
+                  onClick={() => setEditingUsername(false)}
+                  className="text-smoke-500 hover:text-smoke-300 font-mono text-xs"
+                >
                   Cancelar
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <h2 className="font-serif text-xl text-smoke-100 font-bold">{displayName}</h2>
-                <button onClick={() => setEditingUsername(true)} className="text-smoke-600 hover:text-smoke-400 font-mono text-xs">
+                <h2 className="font-serif text-xl font-bold text-smoke-100">{displayName}</h2>
+                <button
+                  onClick={() => setEditingUsername(true)}
+                  className="font-mono text-xs text-smoke-600 hover:text-smoke-400"
+                >
                   ✎
                 </button>
               </div>
             )}
-            {usernameError && <p className="text-crimson-400 font-mono text-xs mt-1">{usernameError}</p>}
-            <p className="text-smoke-500 font-mono text-xs mt-1">{user.email}</p>
+            {usernameError && <p className="mt-1 font-mono text-xs text-crimson-400">{usernameError}</p>}
+            <p className="text-smoke-500 mt-1 font-mono text-xs">{user.email}</p>
           </div>
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="bg-navy-700 hover:bg-navy-600 border border-navy-500 text-smoke-400 font-mono text-xs px-4 py-2 rounded transition-colors shrink-0"
+            className="shrink-0 rounded border border-navy-500 bg-navy-700 px-4 py-2 font-mono text-xs text-smoke-400 transition-colors hover:bg-navy-600"
           >
             Cerrar sesión
           </button>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="mb-6 grid grid-cols-3 gap-4">
           {[
-        { label: 'Partidas', value: totalRuns_display.toString() },
+            { label: 'Partidas', value: totalRuns_display.toString() },
             { label: 'Mejor Score', value: (personalBest?.score ?? bestScore).toLocaleString() },
             { label: 'Mejor Turno', value: personalBest ? `T${personalBest.turns}` : '—' },
           ].map((stat) => (
             <div key={stat.label} className="pixel-border bg-navy-800 p-4 text-center">
-              <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', color: 'var(--peso-grey)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{stat.label}</p>
-              <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '14px', color: 'var(--gold)', marginTop: '6px' }}>{stat.value}</p>
+              <p
+                style={{
+                  fontFamily: "'Press Start 2P', monospace",
+                  fontSize: '6px',
+                  color: 'var(--peso-grey)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                }}
+              >
+                {stat.label}
+              </p>
+              <p
+                style={{
+                  fontFamily: "'Press Start 2P', monospace",
+                  fontSize: '14px',
+                  color: 'var(--gold)',
+                  marginTop: '6px',
+                }}
+              >
+                {stat.value}
+              </p>
             </div>
           ))}
         </div>
 
         {/* Recent runs */}
         <div className="pixel-border bg-navy-800 p-4">
-          <h3 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px', color: 'var(--gold)', letterSpacing: '0.1em', marginBottom: '16px', textTransform: 'uppercase' }}>
+          <h3
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: '7px',
+              color: 'var(--gold)',
+              letterSpacing: '0.1em',
+              marginBottom: '16px',
+              textTransform: 'uppercase',
+            }}
+          >
             Últimas Partidas
           </h3>
           {loadingRuns ? (
-            <p className="text-smoke-500 font-mono text-xs animate-pulse">Cargando historial...</p>
+            <p className="text-smoke-500 animate-pulse font-mono text-xs">Cargando historial...</p>
           ) : recentRuns.length === 0 ? (
             <p className="text-smoke-500 font-mono text-xs">Sin partidas registradas aún.</p>
           ) : (
             <div className="space-y-2">
               {recentRuns.map((run) => (
-                <div key={run.id} className="flex items-center justify-between pixel-border px-3 py-2 bg-navy-900/60">
+                <div
+                  key={run.id}
+                  className="pixel-border flex items-center justify-between bg-navy-900/60 px-3 py-2"
+                >
                   <div>
-                    <span className={`font-mono text-xs font-bold ${run.is_win ? 'text-emerald-400' : 'text-crimson-400'}`}>
+                    <span
+                      className={`font-mono text-xs font-bold ${run.is_win ? 'text-emerald-400' : 'text-crimson-400'}`}
+                    >
                       {run.is_win ? '✓' : '✗'}
                     </span>
-                    <span className="text-smoke-400 font-mono text-xs ml-2 capitalize">{run.difficulty}</span>
-                    <span className="text-smoke-600 font-mono text-xs ml-2">T{run.turns_survived}</span>
+                    <span className="ml-2 font-mono text-xs capitalize text-smoke-400">{run.difficulty}</span>
+                    <span className="ml-2 font-mono text-xs text-smoke-600">T{run.turns_survived}</span>
                   </div>
-                  <span className="text-gold-400 font-mono text-xs font-bold">{run.score.toLocaleString()}</span>
+                  <span className="font-mono text-xs font-bold text-gold-400">
+                    {run.score.toLocaleString()}
+                  </span>
                 </div>
               ))}
             </div>
@@ -203,29 +249,40 @@ export default function ProfileScreen() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-navy-900/90 z-50 flex items-center justify-center p-6"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-navy-900/90 p-6"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="pixel-border bg-navy-800 p-6 max-w-sm w-full"
+              className="pixel-border w-full max-w-sm bg-navy-800 p-6"
             >
-              <h3 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--smoke-100)', marginBottom: '12px' }}>¿Cerrar sesión?</h3>
-              <p className="text-smoke-400 font-mono text-xs mb-6">
+              <h3
+                style={{
+                  fontFamily: "'Press Start 2P', monospace",
+                  fontSize: '8px',
+                  color: 'var(--smoke-100)',
+                  marginBottom: '12px',
+                }}
+              >
+                ¿Cerrar sesión?
+              </h3>
+              <p className="mb-6 font-mono text-xs text-smoke-400">
                 Tu progreso guardado se mantendrá en el servidor. Podés volver cuando quieras.
               </p>
               <div className="flex gap-3">
                 <button
-                  onClick={() => { void handleLogout(); }}
-                  className="flex-1 pixel-border-crisis text-smoke-100 py-2 px-4 transition-colors"
+                  onClick={() => {
+                    void handleLogout();
+                  }}
+                  className="pixel-border-crisis flex-1 px-4 py-2 text-smoke-100 transition-colors"
                   style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
                 >
                   Cerrar sesión
                 </button>
                 <button
                   onClick={() => setShowLogoutModal(false)}
-                  className="flex-1 pixel-border bg-navy-700 hover:bg-navy-600 text-smoke-300 py-2 px-4 transition-colors"
+                  className="pixel-border text-smoke-300 flex-1 bg-navy-700 px-4 py-2 transition-colors hover:bg-navy-600"
                   style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
                 >
                   Cancelar

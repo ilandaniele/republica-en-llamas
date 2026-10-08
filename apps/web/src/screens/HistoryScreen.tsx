@@ -13,10 +13,10 @@ export default function HistoryScreen() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <p className="text-smoke-400 font-mono mb-4">Inicia sesión para ver tu historial</p>
-          <button onClick={() => navigate('/')} className="text-gold-400 font-mono hover:underline">
+          <p className="mb-4 font-mono text-smoke-400">Inicia sesión para ver tu historial</p>
+          <button onClick={() => navigate('/')} className="font-mono text-gold-400 hover:underline">
             ← Volver al inicio
           </button>
         </div>
@@ -25,26 +25,29 @@ export default function HistoryScreen() {
   }
 
   return (
-    <div className="min-h-screen p-6 max-w-3xl mx-auto">
+    <div className="mx-auto min-h-screen max-w-3xl p-6">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="flex items-center justify-between mb-8">
+        <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="font-serif text-3xl font-bold text-gold-400">Historial de Partidas</h1>
-            <p className="text-smoke-500 font-mono text-sm mt-1">Tus últimas 20 partidas</p>
+            <p className="text-smoke-500 mt-1 font-mono text-sm">Tus últimas 20 partidas</p>
           </div>
-          <button onClick={() => navigate('/')} className="text-smoke-400 hover:text-smoke-200 font-mono text-sm">
+          <button
+            onClick={() => navigate('/')}
+            className="font-mono text-sm text-smoke-400 hover:text-smoke-200"
+          >
             ← Volver
           </button>
         </div>
 
         {isLoading && (
-          <div className="text-smoke-400 font-mono text-center animate-pulse py-12">
+          <div className="animate-pulse py-12 text-center font-mono text-smoke-400">
             Cargando historial...
           </div>
         )}
 
         {runs && runs.length === 0 && (
-          <div className="text-smoke-500 font-mono text-center py-12">
+          <div className="text-smoke-500 py-12 text-center font-mono">
             No tienes partidas registradas aún.
           </div>
         )}
@@ -54,15 +57,16 @@ export default function HistoryScreen() {
             const isExpanded = expandedRunId === run.id;
             const isWin = run.is_win as boolean;
             return (
-              <div key={run.id as string} className="bg-navy-800 border border-navy-600 rounded-lg overflow-hidden">
+              <div
+                key={run.id as string}
+                className="overflow-hidden rounded-lg border border-navy-600 bg-navy-800"
+              >
                 <button
-                  onClick={() => setExpandedRunId(isExpanded ? null : run.id as string)}
-                  className="w-full p-4 flex items-center justify-between hover:bg-navy-700 transition-colors"
+                  onClick={() => setExpandedRunId(isExpanded ? null : (run.id as string))}
+                  className="flex w-full items-center justify-between p-4 transition-colors hover:bg-navy-700"
                 >
                   <div className="flex items-center gap-4">
-                    <span className={`text-xl ${isWin ? '' : 'grayscale'}`}>
-                      {isWin ? '👑' : '💀'}
-                    </span>
+                    <span className={`text-xl ${isWin ? '' : 'grayscale'}`}>{isWin ? '👑' : '💀'}</span>
                     <div className="text-left">
                       <p className="font-serif font-bold text-smoke-100">
                         {run.difficulty as string} — Turno {run.turns_survived as number}/50
@@ -70,12 +74,12 @@ export default function HistoryScreen() {
                       <p className="text-smoke-500 font-mono text-xs">
                         {new Date(run.created_at as string).toLocaleDateString('es')}
                         {' · '}
-                        {run.game_over_reason as string ?? 'En curso'}
+                        {(run.game_over_reason as string) ?? 'En curso'}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="font-mono font-bold text-gold-400 text-lg">
+                    <span className="font-mono text-lg font-bold text-gold-400">
                       {(run.score as number).toLocaleString()}
                     </span>
                     <span className="text-smoke-500 text-sm">{isExpanded ? '▲' : '▼'}</span>
@@ -88,20 +92,23 @@ export default function HistoryScreen() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-navy-700 overflow-hidden"
+                      className="overflow-hidden border-t border-navy-700"
                     >
-                      <div className="p-4 space-y-2">
-                        <p className="text-smoke-400 font-mono text-xs uppercase tracking-wider mb-3">
+                      <div className="space-y-2 p-4">
+                        <p className="mb-3 font-mono text-xs uppercase tracking-wider text-smoke-400">
                           Decisiones clave
                         </p>
                         {((run.run_events as unknown[]) ?? []).slice(0, 10).map((ev) => {
                           const event = ev as { turn_number: number; card_id: string; choice_index: number };
-                          let card;
-                          try { card = getCard(event.card_id); } catch { return null; }
+                          try {
+                            getCard(event.card_id);
+                          } catch {
+                            return null;
+                          }
                           return (
                             <div key={`${event.turn_number}`} className="flex gap-3 text-sm">
-                              <span className="font-mono text-smoke-600 w-12">T{event.turn_number}</span>
-                              <span className="text-smoke-400 truncate">
+                              <span className="w-12 font-mono text-smoke-600">T{event.turn_number}</span>
+                              <span className="truncate text-smoke-400">
                                 {event.card_id} → Opción {String.fromCharCode(65 + event.choice_index)}
                               </span>
                             </div>

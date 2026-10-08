@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import type { TurnEvent } from '@republica/game-engine';
 import { useGameStore } from '../stores/gameStore.js';
 
@@ -41,23 +40,23 @@ function DiaryEntry({ event, isFatal }: DiaryEntryProps) {
 
   return (
     <div
-      className={`flex gap-3 py-2 border-b border-navy-700/50 text-xs ${
-        isFatal ? 'bg-crimson-900/20 border-crimson-800 rounded px-2' : ''
+      className={`flex gap-3 border-b border-navy-700/50 py-2 text-xs ${
+        isFatal ? 'bg-crimson-900/20 rounded border-crimson-800 px-2' : ''
       }`}
     >
-      <span className={`font-mono shrink-0 ${isFatal ? 'text-crimson-400 font-bold' : 'text-smoke-600'}`}>
+      <span className={`shrink-0 font-mono ${isFatal ? 'font-bold text-crimson-400' : 'text-smoke-600'}`}>
         T{event.turn}
       </span>
       <div className="flex-1">
         <div className={`font-mono ${hasBadEffect ? 'text-gold-400' : 'text-smoke-300'}`}>
           {effectStr}
-          {isFatal && <span className="ml-2 text-crimson-400 font-bold text-xs">← DECISIÓN FATAL</span>}
+          {isFatal && <span className="ml-2 text-xs font-bold text-crimson-400">← DECISIÓN FATAL</span>}
         </div>
         {event.crisisTriggered && (
-          <div className="text-crimson-400 font-mono text-xs mt-0.5">⚠ Desencadenó crisis</div>
+          <div className="mt-0.5 font-mono text-xs text-crimson-400">⚠ Desencadenó crisis</div>
         )}
         {event.crisisResolved && (
-          <div className="text-emerald-400 font-mono text-xs mt-0.5">✓ Crisis resuelta</div>
+          <div className="mt-0.5 font-mono text-xs text-emerald-400">✓ Crisis resuelta</div>
         )}
       </div>
     </div>
@@ -81,15 +80,18 @@ export function DecisionDiary({ isOpen, onClose }: Props) {
       -(event.effectsApplied.popularityDelta ?? 0) +
       -(event.effectsApplied.stabilityDelta ?? 0) +
       (event.effectsApplied.inflationDelta ?? 0);
-    const prevImpact = worst !== null
-      ? (() => {
-          const prev = history.find((e) => e.turn === worst);
-          if (!prev) return 0;
-          return -(prev.effectsApplied.popularityDelta ?? 0) +
-            -(prev.effectsApplied.stabilityDelta ?? 0) +
-            (prev.effectsApplied.inflationDelta ?? 0);
-        })()
-      : 0;
+    const prevImpact =
+      worst !== null
+        ? (() => {
+            const prev = history.find((e) => e.turn === worst);
+            if (!prev) return 0;
+            return (
+              -(prev.effectsApplied.popularityDelta ?? 0) +
+              -(prev.effectsApplied.stabilityDelta ?? 0) +
+              (prev.effectsApplied.inflationDelta ?? 0)
+            );
+          })()
+        : 0;
     if (impact > prevImpact) return event.turn;
     return worst;
   }, null);
@@ -112,27 +114,22 @@ export function DecisionDiary({ isOpen, onClose }: Props) {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed left-0 top-0 bottom-0 z-50 w-80 bg-navy-900 border-r border-navy-600 overflow-hidden flex flex-col"
+            className="fixed bottom-0 left-0 top-0 z-50 flex w-80 flex-col overflow-hidden border-r border-navy-600 bg-navy-900"
           >
-            <div className="p-4 border-b border-navy-600 flex items-center justify-between">
-              <h2 className="font-serif text-gold-400 font-bold text-base">
-                📋 Diario de Gestión
-              </h2>
-              <button
-                onClick={onClose}
-                className="text-smoke-500 hover:text-smoke-300 font-mono text-sm"
-              >
+            <div className="flex items-center justify-between border-b border-navy-600 p-4">
+              <h2 className="font-serif text-base font-bold text-gold-400">📋 Diario de Gestión</h2>
+              <button onClick={onClose} className="text-smoke-500 hover:text-smoke-300 font-mono text-sm">
                 ✕
               </button>
             </div>
             <div className="p-3">
-              <p className="font-mono text-xs text-smoke-500 uppercase tracking-widest">
+              <p className="text-smoke-500 font-mono text-xs uppercase tracking-widest">
                 Turno actual: {gameState.turn}
               </p>
             </div>
             <div className="flex-1 overflow-y-auto px-4 pb-4">
               {history.length === 0 ? (
-                <p className="text-smoke-600 font-mono text-xs italic mt-4">
+                <p className="mt-4 font-mono text-xs italic text-smoke-600">
                   El diario está vacío. Tomá decisiones para ver el registro.
                 </p>
               ) : (
