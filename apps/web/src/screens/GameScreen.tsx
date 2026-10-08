@@ -25,6 +25,7 @@ import { BuenosAiresBackground } from '../components/illustrations/BuenosAiresBa
 import { AnibalTicker } from '../components/AnibalTicker.js';
 import { PixelDolar } from '../components/illustrations/PixelDolar.js';
 import { PaywallModal } from '../components/PaywallModal.js';
+import { useTransientValue } from '../hooks/useTransientValue.js';
 import { useEntitlements } from '../hooks/useEntitlements.js';
 
 const DIFFICULTY_LABELS: Record<string, string> = {
@@ -56,13 +57,14 @@ export default function GameScreen() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Easter egg states
-  const [idlePresidentMood, setIdlePresidentMood] = useState<PortraitMood | null>(null);
+  const [idlePresidentMood, showIdlePresidentMood, hideIdlePresidentMood] =
+    useTransientValue<PortraitMood | null>(null);
   const [showMidGamePaywall, setShowMidGamePaywall] = useState(false);
   const { hasEntitlement } = useEntitlements();
   const paywallTimingVariant = getFeatureFlag('paywall_timing') ?? 'after_game_over';
-  const [showDolarFloat, setShowDolarFloat] = useState(false);
-  const [showCrowd, setShowCrowd] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [showDolarFloat, flashDolarFloat] = useTransientValue(false);
+  const [showCrowd, flashCrowd] = useTransientValue(false);
+  const [showConfetti, flashConfetti] = useTransientValue(false);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevInflationRef = useRef<number | null>(null);
   const prevLawsPassedRef = useRef<number>(0);
@@ -130,11 +132,8 @@ export default function GameScreen() {
   useEffect(() => {
     const resetIdle = () => {
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-      setIdlePresidentMood(null);
-      idleTimerRef.current = setTimeout(() => {
-        setIdlePresidentMood('panic');
-        setTimeout(() => setIdlePresidentMood(null), 2000);
-      }, 10000);
+      hideIdlePresidentMood();
+      idleTimerRef.current = setTimeout(() => showIdlePresidentMood('panic', 2000), 10000);
     };
     resetIdle();
     window.addEventListener('mousemove', resetIdle);
@@ -144,15 +143,14 @@ export default function GameScreen() {
       window.removeEventListener('mousemove', resetIdle);
       window.removeEventListener('keydown', resetIdle);
     };
-  }, []);
+  }, [hideIdlePresidentMood, showIdlePresidentMood]);
 
   // Easter egg: inflation ≥50 → floating dollar
   useEffect(() => {
     if (!gameState) return;
     const curr = gameState.economic.inflation;
     if (prevInflationRef.current !== null && prevInflationRef.current < 50 && curr >= 50) {
-      setShowDolarFloat(true);
-      setTimeout(() => setShowDolarFloat(false), 2000);
+      flashDolarFloat(true, 2000);
     }
     prevInflationRef.current = curr;
   }, [gameState?.economic.inflation]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -161,8 +159,7 @@ export default function GameScreen() {
   useEffect(() => {
     if (!gameState) return;
     if (gameState.political.popularity <= 0) {
-      setShowCrowd(true);
-      setTimeout(() => setShowCrowd(false), 2000);
+      flashCrowd(true, 2000);
     }
   }, [gameState?.political.popularity]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -171,14 +168,13 @@ export default function GameScreen() {
     if (!gameState) return;
     const curr = gameState.congress.lawsPassedThisRun ?? 0;
     if (curr > prevLawsPassedRef.current) {
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 1500);
+      flashConfetti(true, 1500);
     }
     prevLawsPassedRef.current = curr;
   }, [gameState?.congress.lawsPassedThisRun]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Milestone toasts at turns 10, 20, 30, 40
-  const [milestoneToast, setMilestoneToast] = useState<string | null>(null);
+  const [milestoneToast, showMilestoneToast] = useTransientValue<string | null>(null);
   const shownMilestonesRef = useRef<Set<number>>(new Set());
   const MILESTONE_MESSAGES: Record<number, string> = {
     10: '¡Sobreviviste el primer mes de gobierno!',
@@ -191,8 +187,7 @@ export default function GameScreen() {
     const turn = gameState.turn;
     if (MILESTONE_MESSAGES[turn] && !shownMilestonesRef.current.has(turn)) {
       shownMilestonesRef.current.add(turn);
-      setMilestoneToast(MILESTONE_MESSAGES[turn]!);
-      setTimeout(() => setMilestoneToast(null), 4000);
+      showMilestoneToast(MILESTONE_MESSAGES[turn]!, 4000);
     }
   }, [gameState?.turn]); // eslint-disable-line react-hooks/exhaustive-deps
 

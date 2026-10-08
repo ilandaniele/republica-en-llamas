@@ -4,6 +4,7 @@ import { m } from 'framer-motion';
 import { useGameStore } from '../stores/gameStore.js';
 import { useAuth } from '../hooks/useAuth.js';
 import { useSaveRun } from '../hooks/useSupabase.js';
+import { useTransientValue } from '../hooks/useTransientValue.js';
 import {
   getFatalDecision,
   getCounterfactual,
@@ -95,7 +96,7 @@ export default function GameOverScreen() {
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
   const { user } = useAuth();
   const { mutate: saveRun, isPending: isSaving, isSuccess: isSaved } = useSaveRun();
-  const [copied, setCopied] = useState(false);
+  const [copied, flashCopied] = useTransientValue(false);
   const shareCardRef = useRef<HTMLDivElement>(null);
   const [sharingImage, setSharingImage] = useState(false);
 
@@ -175,8 +176,7 @@ export default function GameOverScreen() {
 
   const handleCopyText = () => {
     void navigator.clipboard.writeText(viralText).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      flashCopied(true, 2000);
     });
     trackShareClicked({ share_type: 'game_over' });
   };
