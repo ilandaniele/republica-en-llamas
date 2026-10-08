@@ -106,6 +106,8 @@ Cada fase termina con: `npm run lint` sin errores, type-check de ambos workspace
 6. **Upsert de `country`** a una columna inexistente en `profiles`: agregar columna en migración o quitar el campo.
 7. **Guardado duplicado de runs.** Idempotencia por `run_id` (upsert) y guardia en el cliente.
 
+Estado (rama `fix/phase0-security`): resueltos 4, 5 (migración `005_username_available.sql`, función `security definer` que solo devuelve existencia), 6 (se quitó `country` del cliente) y la guardia de cliente de 7. En 2, las tiradas de `CongressSession` que afectan el resultado usan `createRng(seed + turn)`. Quedan 1 y 3, que requieren replay completo del motor en una edge function (incluyendo las acciones de negociación en `run_events`), y la idempotencia de 7 en servidor, que conviene resolver junto con 1.
+
 ### Fase 1 — Estructura base
 
 - Crear `app/` (providers), `features/`, `config/env.ts` (validación de `VITE_*` con zod).

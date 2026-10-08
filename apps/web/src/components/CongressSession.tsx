@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { createRng } from '@republica/game-engine';
 import type { EventCard, GameState, ChoiceEffect } from '@republica/game-engine';
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -305,6 +306,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
   // Vote animation
   const [seatVotes, setSeatVotes] = useState<VoteStatus[]>(() => new Array(VISUAL_SEATS).fill('pending'));
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const rngRef = useRef(createRng(gameState.seed + gameState.turn));
 
   // Swing senators (phase 4)
   const [swingSens, setSwingSens] = useState<SwingSen[]>([]);
@@ -362,7 +364,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
       }
 
       const bonus =
-        action.voteRange[0] + Math.floor(Math.random() * (action.voteRange[1] - action.voteRange[0] + 1));
+        action.voteRange[0] + Math.floor(rngRef.current() * (action.voteRange[1] - action.voteRange[0] + 1));
       setNegBonusVotes((prev) => prev + bonus);
       setNegEffects((prev) => mergeEffects(prev, action.effects));
       setActionsUsed((prev) => [...prev, action.id]);
@@ -465,7 +467,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
 
         if (margin <= 5 && SWING_POOL.length > 0) {
           // Select 3 random swing senators
-          const shuffled = [...SWING_POOL].sort(() => Math.random() - 0.5).slice(0, 3);
+          const shuffled = [...SWING_POOL].sort(() => rngRef.current() - 0.5).slice(0, 3);
           setSwingSens(shuffled);
           setSwingIdx(0);
           setPhase('swing');
@@ -491,7 +493,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
         setSwingExtraNo((prev) => prev + 1);
       } else {
         // Random 50/50
-        if (Math.random() < 0.5) setSwingExtraYes((prev) => prev + 1);
+        if (rngRef.current() < 0.5) setSwingExtraYes((prev) => prev + 1);
         else setSwingExtraNo((prev) => prev + 1);
       }
 
