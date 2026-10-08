@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import type { TurnEvent } from '@republica/game-engine';
 import { useGameStore } from '../stores/gameStore.js';
 
@@ -101,7 +101,7 @@ export function DecisionDiary({ isOpen, onClose }: Props) {
       {isOpen && (
         <>
           {/* Backdrop */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -109,7 +109,7 @@ export function DecisionDiary({ isOpen, onClose }: Props) {
             onClick={onClose}
           />
           {/* Panel */}
-          <motion.div
+          <m.div
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
@@ -144,7 +144,7 @@ export function DecisionDiary({ isOpen, onClose }: Props) {
                 </div>
               )}
             </div>
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>

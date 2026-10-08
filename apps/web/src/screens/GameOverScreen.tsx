@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useGameStore } from '../stores/gameStore.js';
 import { useAuth } from '../hooks/useAuth.js';
 import { useSaveRun } from '../hooks/useSupabase.js';
@@ -230,7 +230,7 @@ export default function GameOverScreen() {
 
   return (
     <>
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="flex min-h-screen items-center justify-center p-6"
@@ -734,7 +734,7 @@ export default function GameOverScreen() {
             </button>
           </div>
         </div>
-      </motion.div>
+      </m.div>
 
       <ShareImageCard
         ref={shareCardRef}

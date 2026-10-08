@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../stores/gameStore.js';
 import { VariablesPanel } from '../components/VariablesPanel.js';
@@ -241,7 +241,7 @@ export default function GameScreen() {
       {/* Milestone toast */}
       <AnimatePresence>
         {milestoneToast && (
-          <motion.div
+          <m.div
             key="milestone-toast"
             initial={{ y: -60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -256,7 +256,7 @@ export default function GameScreen() {
             }}
           >
             ⭐ {milestoneToast}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
@@ -276,7 +276,7 @@ export default function GameScreen() {
         </AnimatePresence>
 
         {/* Header */}
-        <motion.header
+        <m.header
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           className={`mb-4 flex items-center justify-between border-b pb-4 ${hasCrisis ? 'border-crimson-800' : 'border-navy-700'}`}
@@ -343,7 +343,7 @@ export default function GameScreen() {
               ← Salir
             </button>
           </div>
-        </motion.header>
+        </m.header>
 
         {/* Tension meter */}
         <div className="mb-4">
@@ -395,13 +395,13 @@ export default function GameScreen() {
             </AnimatePresence>
 
             {isAnimating && !showTransition && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex h-64 items-center justify-center"
               >
                 <p className="animate-pulse font-mono text-2xl text-gold-400">Aplicando decisión...</p>
-              </motion.div>
+              </m.div>
             )}
           </main>
         </div>

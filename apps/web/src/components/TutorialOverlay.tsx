@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../stores/gameStore.js';
 
 const TUTORIAL_STEPS = [
@@ -45,7 +45,7 @@ export function TutorialOverlay() {
 
   return (
     <AnimatePresence>
-      <motion.div
+      <m.div
         key={tutorialStep}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -53,37 +53,44 @@ export function TutorialOverlay() {
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
         onClick={(e) => e.target === e.currentTarget && completeTutorialStep()}
       >
-        <div className="pixel-border bg-navy-800 p-8 max-w-md mx-4 shadow-2xl glow-celeste">
+        <div className="pixel-border glow-celeste mx-4 max-w-md bg-navy-800 p-8 shadow-2xl">
           <div
             style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-            className="text-gold-400 uppercase mb-3"
-          >TUTORIAL {tutorialStep + 1}/{TUTORIAL_STEPS.length}</div>
+            className="mb-3 uppercase text-gold-400"
+          >
+            TUTORIAL {tutorialStep + 1}/{TUTORIAL_STEPS.length}
+          </div>
           <h2
             style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', lineHeight: '1.8' }}
-            className="text-smoke-100 mb-3"
+            className="mb-3 text-smoke-100"
           >
             {step.title}
           </h2>
-          <p style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }} className="text-smoke-300 leading-relaxed mb-6">{step.body}</p>
-          <div className="flex justify-between items-center">
+          <p
+            style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }}
+            className="text-smoke-300 mb-6 leading-relaxed"
+          >
+            {step.body}
+          </p>
+          <div className="flex items-center justify-between">
             <div className="flex gap-1">
               {TUTORIAL_STEPS.map((_, i) => (
                 <div
                   key={i}
-                  className={`w-2 h-2 rounded-full ${i <= tutorialStep ? 'bg-gold-400' : 'bg-navy-600'}`}
+                  className={`h-2 w-2 rounded-full ${i <= tutorialStep ? 'bg-gold-400' : 'bg-navy-600'}`}
                 />
               ))}
             </div>
             <button
               onClick={isLast ? completeTutorial : completeTutorialStep}
-              className="pixel-border-gold bg-gold-500 hover:bg-gold-400 text-navy-900 font-bold py-2 px-6 transition-colors"
+              className="pixel-border-gold bg-gold-500 px-6 py-2 font-bold text-navy-900 transition-colors hover:bg-gold-400"
               style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
             >
               {isLast ? 'COMENZAR' : 'SIGUIENTE ▶'}
             </button>
           </div>
         </div>
-      </motion.div>
+      </m.div>
     </AnimatePresence>
   );
 }

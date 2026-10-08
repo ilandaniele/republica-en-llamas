@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -171,7 +171,7 @@ export function EventCardComponent({
   );
 
   return (
-    <motion.div
+    <m.div
       ref={cardRef}
       initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -333,7 +333,7 @@ export function EventCardComponent({
         return (
           <div className="relative h-[180px] w-full overflow-hidden md:h-[260px] xl:h-[360px]">
             {sceneUrl && !card.characterId ? (
-              <motion.img
+              <m.img
                 src={sceneUrl}
                 alt={`${presidentId} — ${card.category}`}
                 initial={{ scale: 1.06, opacity: 0 }}
@@ -425,7 +425,7 @@ export function EventCardComponent({
             }
 
             return (
-              <motion.button
+              <m.button
                 key={choice.id}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0, scale: isSelected ? 1.02 : 1 }}
@@ -476,13 +476,13 @@ export function EventCardComponent({
                     <span>REQUIERE CONGRESO</span>
                   </div>
                 )}
-              </motion.button>
+              </m.button>
             );
           })}
         </div>
 
         {selectedIndex !== null && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-5">
+          <m.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-5">
             <button
               onClick={onConfirm}
               disabled={disabled}
@@ -497,9 +497,9 @@ export function EventCardComponent({
             >
               Podés cambiar tu opción antes de confirmar
             </p>
-          </motion.div>
+          </m.div>
         )}
       </div>
-    </motion.div>
+    </m.div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth.js';
 import { useRunHistory } from '../hooks/useRunHistory.js';
 import { getCard } from '@republica/game-engine';
@@ -26,7 +26,7 @@ export default function HistoryScreen() {
 
   return (
     <div className="mx-auto min-h-screen max-w-3xl p-6">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+      <m.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="font-serif text-3xl font-bold text-gold-400">Historial de Partidas</h1>
@@ -88,7 +88,7 @@ export default function HistoryScreen() {
 
                 <AnimatePresence>
                   {isExpanded && (
-                    <motion.div
+                    <m.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -115,14 +115,14 @@ export default function HistoryScreen() {
                           );
                         })}
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </div>
             );
           })}
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

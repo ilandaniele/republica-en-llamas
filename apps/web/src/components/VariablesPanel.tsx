@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import type { GameState } from '@republica/game-engine';
 import { useGameStore } from '../stores/gameStore.js';
 import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
@@ -131,7 +131,7 @@ function AnimatedNumber({ value, inverse = false }: { value: number; inverse?: b
   }, [value, inverse]);
 
   return (
-    <motion.span
+    <m.span
       animate={flash ? { scale: [1, 1.2, 1] } : {}}
       transition={{ duration: 0.3 }}
       className={
@@ -139,7 +139,7 @@ function AnimatedNumber({ value, inverse = false }: { value: number; inverse?: b
       }
     >
       {Math.round(displayed)}
-    </motion.span>
+    </m.span>
   );
 }
 
@@ -371,14 +371,14 @@ export function VariablesPanel({ state }: Props) {
         </button>
         <AnimatePresence>
           {showInflationBreakdown && breakdown && (
-            <motion.div
+            <m.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
               <InflationBreakdownPanel breakdown={breakdown} />
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
         <Meter

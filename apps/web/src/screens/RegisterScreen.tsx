@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth.js';
 import {
   checkUsernameAvailable,
@@ -141,7 +141,7 @@ export default function RegisterScreen() {
   }
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, x: 40 }}
       animate={{ opacity: 1, x: 0 }}
       className="flex min-h-screen flex-col items-center justify-center p-6"
@@ -277,6 +277,6 @@ export default function RegisterScreen() {
           </button>
         </p>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

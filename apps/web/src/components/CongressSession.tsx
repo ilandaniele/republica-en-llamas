@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { createRng } from '@republica/game-engine';
 import type { EventCard, GameState, ChoiceEffect } from '@republica/game-engine';
@@ -526,7 +526,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
 
   // ── Render: Negotiation ────────────────────────────────────────────────────
   const renderNegotiation = () => (
-    <motion.div
+    <m.div
       key="negotiation"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -603,7 +603,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
           const isHovered = hoveredAction === action.id;
 
           return (
-            <motion.button
+            <m.button
               key={action.id}
               onClick={() => handleAction(action)}
               onMouseEnter={() => setHoveredAction(action.id)}
@@ -636,7 +636,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
                   </div>
                   <AnimatePresence>
                     {isHovered && !used && (
-                      <motion.div
+                      <m.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
@@ -644,12 +644,12 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
                       >
                         <p className="mt-1 text-xs text-smoke-400">{action.preview}</p>
                         <p className="mt-0.5 font-mono text-xs text-crimson-400">Costo: {action.costLabel}</p>
-                      </motion.div>
+                      </m.div>
                     )}
                   </AnimatePresence>
                 </div>
               </div>
-            </motion.button>
+            </m.button>
           );
         })}
       </div>
@@ -661,12 +661,12 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
       >
         🏛 Llamar a votar →
       </button>
-    </motion.div>
+    </m.div>
   );
 
   // ── Render: Hemiciclo + voting ─────────────────────────────────────────────
   const renderVoting = () => (
-    <motion.div key="voting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+    <m.div key="voting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
       <div className="text-center">
         <p className="text-smoke-500 font-mono text-xs uppercase tracking-widest">{t(card.titleKey)}</p>
         <p className="mt-1 font-mono text-sm text-smoke-400">Hemiciclo en vivo</p>
@@ -780,7 +780,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
           </span>
         ))}
       </div>
-    </motion.div>
+    </m.div>
   );
 
   // ── Render: Swing senator ──────────────────────────────────────────────────
@@ -789,7 +789,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
     if (!sen) return null;
 
     return (
-      <motion.div
+      <m.div
         key={`swing-${swingIdx}`}
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -877,7 +877,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
             </button>
           </div>
         </div>
-      </motion.div>
+      </m.div>
     );
   };
 
@@ -891,7 +891,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
     const mode = usedDecree ? 'decree' : lawPassed ? 'pass' : 'fail';
 
     return (
-      <motion.div
+      <m.div
         key="result"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -1015,7 +1015,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
         >
           Continuar con el gobierno →
         </button>
-      </motion.div>
+      </m.div>
     );
   };
 

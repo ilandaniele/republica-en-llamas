@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -92,7 +92,7 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
   };
 
   return (
-    <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}>
+    <m.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}>
       <button
         onClick={onBack}
         className="text-smoke-500 hover:text-smoke-300 mb-6 flex items-center gap-1 font-mono text-xs"
@@ -161,7 +161,7 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
           {loading ? 'Cargando...' : mode === 'login' ? 'Entrar' : 'Registrarse'}
         </button>
       </form>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -263,7 +263,7 @@ export default function HomeScreen() {
       <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-transparent via-navy-900 to-navy-900" />
 
       {/* Main content */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -298,7 +298,7 @@ export default function HomeScreen() {
 
         <AnimatePresence mode="wait">
           {authMode === 'menu' ? (
-            <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <m.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               {/* Logged-in user header */}
               {!authLoading && user && (
                 <div className="mb-6 flex items-center justify-between rounded-lg border border-navy-600 bg-navy-800 px-4 py-3">
@@ -341,7 +341,7 @@ export default function HomeScreen() {
               {homeMode === 'clasico' ? (
                 <div className="home-tab-cards mb-8 grid grid-cols-2 gap-3">
                   {DIFFICULTIES.map((d) => (
-                    <motion.button
+                    <m.button
                       key={d.id}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -354,7 +354,7 @@ export default function HomeScreen() {
                     >
                       <div className="mb-1 font-serif font-bold text-smoke-100">{d.label}</div>
                       <div className="text-xs italic text-smoke-400">{d.flavor}</div>
-                    </motion.button>
+                    </m.button>
                   ))}
                 </div>
               ) : (
@@ -399,55 +399,55 @@ export default function HomeScreen() {
               <div className="space-y-3">
                 {!dailyLimitReached &&
                   (user ? (
-                    <motion.button
+                    <m.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleLoggedInStart}
                       className="w-full rounded-lg bg-crimson-600 px-8 py-4 font-serif text-xl font-bold uppercase tracking-wider text-smoke-100 shadow-lg transition-colors hover:bg-crimson-500"
                     >
                       Nueva Partida
-                    </motion.button>
+                    </m.button>
                   ) : (
                     <>
                       {!isOfflineMode && (
                         <>
-                          <motion.button
+                          <m.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => setAuthMode('login')}
                             className="w-full rounded-lg bg-crimson-600 px-8 py-4 font-serif text-xl font-bold uppercase tracking-wider text-smoke-100 shadow-lg transition-colors hover:bg-crimson-500"
                           >
                             Iniciar sesión
-                          </motion.button>
-                          <motion.button
+                          </m.button>
+                          <m.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => setAuthMode('register')}
                             className="w-full rounded-lg border border-gold-600 bg-navy-700 px-8 py-3 font-serif font-bold text-gold-400 transition-colors hover:bg-navy-600"
                           >
                             Crear cuenta
-                          </motion.button>
+                          </m.button>
                         </>
                       )}
-                      <motion.button
+                      <m.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={handleGuest}
                         className={`w-full ${isOfflineMode ? 'bg-crimson-600 py-4 font-serif text-xl font-bold text-smoke-100 shadow-lg hover:bg-crimson-500' : 'border border-navy-500 bg-navy-800 text-smoke-400 hover:bg-navy-700'} rounded-lg px-8 py-3 font-bold transition-colors`}
                       >
                         {isOfflineMode ? 'Nueva Partida' : 'Jugar como invitado'}
-                      </motion.button>
+                      </m.button>
                     </>
                   ))}
 
                 {gameState && !gameState.isGameOver && (
-                  <motion.button
+                  <m.button
                     whileHover={{ scale: 1.02 }}
                     onClick={handleContinue}
                     className="w-full rounded-lg border border-navy-500 bg-navy-700 px-8 py-3 font-serif font-bold text-smoke-200 transition-colors hover:bg-navy-600"
                   >
                     Continuar Partida — Turno {gameState.turn}
-                  </motion.button>
+                  </m.button>
                 )}
 
                 <button
@@ -459,16 +459,16 @@ export default function HomeScreen() {
                   Tabla de Líderes
                 </button>
               </div>
-            </motion.div>
+            </m.div>
           ) : (
-            <motion.div key="auth" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <m.div key="auth" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <AuthForm mode={authMode as 'login' | 'register'} onBack={() => setAuthMode('menu')} />
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
 
         <p className="mt-8 text-center font-mono text-xs text-smoke-600">v0.3.0 — República en Llamas</p>
-      </motion.div>
+      </m.div>
 
       {paywallScenario && (
         <PaywallModal
