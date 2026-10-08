@@ -1,9 +1,10 @@
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { useGameStore } from './stores/gameStore.js';
 import { SoundProvider } from './components/SoundManager.js';
 import { initAnalytics } from './lib/analytics.js';
 import { useEntitlements } from './hooks/useEntitlements.js';
+import { useTransientValue } from './hooks/useTransientValue.js';
 import { PixelMate } from './components/illustrations/PixelMate.js';
 import { prefetchRoutesWhenIdle, screens } from './app/routes.js';
 
@@ -45,12 +46,11 @@ function LoadingSpinner() {
 function PurchaseSuccessToast() {
   const [params] = useSearchParams();
   const { refetch } = useEntitlements();
-  const [show, setShow] = useState(false);
+  const [show, flash] = useTransientValue(false);
   useEffect(() => {
     if (params.get('purchase_success') === '1') {
-      setShow(true);
+      flash(true, 4000);
       void refetch();
-      setTimeout(() => setShow(false), 4000);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   if (!show) return null;

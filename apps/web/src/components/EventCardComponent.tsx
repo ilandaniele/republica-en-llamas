@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
+import { useTransientValue } from '../hooks/useTransientValue.js';
 import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { gsap } from 'gsap';
@@ -83,7 +84,7 @@ export function EventCardComponent({
   const isCrisis = card.category === 'crisis';
   const isEasy = gameState?.difficulty === 'easy';
   const safestIndex = isEasy ? getSafestChoiceIndex(card) : -1;
-  const [ripplingChoice, setRipplingChoice] = useState<number | null>(null);
+  const [ripplingChoice, showRipplingChoice] = useTransientValue<number | null>(null);
   const touchStartX = useRef<number | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -164,10 +165,9 @@ export function EventCardComponent({
     (idx: number) => {
       if (disabled) return;
       onSelect(card.id, idx);
-      setRipplingChoice(idx);
-      setTimeout(() => setRipplingChoice(null), 400);
+      showRipplingChoice(idx, 400);
     },
-    [disabled, onSelect, card.id],
+    [disabled, onSelect, card.id, showRipplingChoice],
   );
 
   return (
