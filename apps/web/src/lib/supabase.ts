@@ -3,8 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env['VITE_SUPABASE_URL'] as string | undefined;
 const supabaseAnonKey = import.meta.env['VITE_SUPABASE_ANON_KEY'] as string | undefined;
 
-const MISSING_URL = !supabaseUrl || supabaseUrl.includes('your_project') || supabaseUrl.includes('placeholder');
-const MISSING_KEY = !supabaseAnonKey || supabaseAnonKey.includes('your_anon') || supabaseAnonKey.includes('placeholder');
+const MISSING_URL =
+  !supabaseUrl || supabaseUrl.includes('your_project') || supabaseUrl.includes('placeholder');
+const MISSING_KEY =
+  !supabaseAnonKey || supabaseAnonKey.includes('your_anon') || supabaseAnonKey.includes('placeholder');
 
 export const isOfflineMode = MISSING_URL || MISSING_KEY;
 export const missingEnvVars = {
@@ -15,15 +17,16 @@ export const missingEnvVars = {
 if (isOfflineMode) {
   console.warn(
     '[República en Llamas] Modo offline activo.\n' +
-    (MISSING_URL ? '  ⚠ Falta VITE_SUPABASE_URL en .env\n' : '') +
-    (MISSING_KEY ? '  ⚠ Falta VITE_SUPABASE_ANON_KEY en .env\n' : '') +
-    '  El progreso se guarda en localStorage.'
+      (MISSING_URL ? '  ⚠ Falta VITE_SUPABASE_URL en .env\n' : '') +
+      (MISSING_KEY ? '  ⚠ Falta VITE_SUPABASE_ANON_KEY en .env\n' : '') +
+      '  El progreso se guarda en localStorage.',
   );
 }
 
 // Use a valid-format fallback so @supabase/supabase-js v2 never throws on init
 const OFFLINE_URL = 'https://offline-mode.supabase.co';
-const OFFLINE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.ZM1234567890000000000000000000000000000000';
+const OFFLINE_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.ZM1234567890000000000000000000000000000000';
 
 export const supabase = isOfflineMode
   ? createClient(OFFLINE_URL, OFFLINE_KEY)
@@ -35,7 +38,8 @@ export function translateAuthError(message: string): string {
   if (message.includes('User already registered')) return 'Este email ya tiene una cuenta';
   if (message.includes('Invalid email')) return 'Email inválido';
   if (message.includes('Email not confirmed')) return 'Confirmá tu email antes de ingresar';
-  if (message.includes('Password should be at least')) return 'La contraseña debe tener al menos 6 caracteres';
+  if (message.includes('Password should be at least'))
+    return 'La contraseña debe tener al menos 6 caracteres';
   if (message.includes('Unable to validate email address')) return 'Email inválido';
   if (message.includes('duplicate key')) return 'Ese nombre de usuario ya está ocupado';
   if (message.includes('Network')) return 'Error de conexión. Revisá tu internet.';
@@ -72,27 +76,21 @@ export async function signInWithGoogle() {
 export async function ensureProfile(userId: string, email: string) {
   if (isOfflineMode) return;
   const username = email.split('@')[0]?.replace(/[^a-zA-Z0-9_]/g, '_') ?? 'jugador';
-  await supabase.from('profiles').upsert(
-    { id: userId, username, country: '', avatar_url: null },
-    { onConflict: 'id', ignoreDuplicates: true }
-  );
+  await supabase
+    .from('profiles')
+    .upsert({ id: userId, username, avatar_url: null }, { onConflict: 'id', ignoreDuplicates: true });
 }
 
 export async function checkUsernameAvailable(username: string): Promise<boolean> {
   if (isOfflineMode) return true;
-  const { data } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('username', username)
-    .maybeSingle();
-  return data === null;
+  const { data, error } = await supabase.rpc('username_available', { name: username });
+  return error ? true : data === true;
 }
 
 export type Tables = {
   profiles: {
     id: string;
     username: string;
-    country: string;
     avatar_url: string | null;
     created_at: string;
     updated_at: string;
