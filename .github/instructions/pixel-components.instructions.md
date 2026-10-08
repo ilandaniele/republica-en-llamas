@@ -4,7 +4,7 @@ applyTo: "apps/web/src/components/illustrations/**"
 
 # Pixel SVG Components — Contributor Instructions
 
-All components in this folder render pixel-art SVG illustrations. Follow these conventions exactly.
+All components in this folder render pixel-art SVG illustrations.
 
 ## SVG Rules
 
@@ -22,11 +22,11 @@ All components in this folder render pixel-art SVG illustrations. Follow these c
 | Medium character | `0 0 60 80` |
 | Vehicle | `0 0 80 40` |
 | Background / cityscape | `0 0 800 400` with `preserveAspectRatio="xMidYMid slice"` |
-| Portrait | `0 0 120 140` |
+| Portrait | `0 0 200 240` |
 
 ## CSS Animations
 
-Apply pixel animations via `style={{ animation: '...' }}` referencing these keyframe names (defined in `theme.css`):
+Apply pixel animations via `style={{ animation: '...' }}` referencing these keyframe names (defined under `keyframes` in `apps/web/tailwind.config.ts`):
 
 | Animation | Use |
 |---|---|
@@ -71,22 +71,21 @@ export function PixelXxx({ steaming = false, size = 'md' }: Props) {
 
 ## Exporting
 
-After creating a new component, add it to `index.ts` in alphabetical order:
+After creating a new component, add an export line for it to `index.ts`:
 ```ts
 export { PixelXxx } from './PixelXxx.js';
 ```
 
 ## PixelPortrait specifics
 
-`PortraitId = 'milei' | 'massa' | 'bullrich' | 'ingeniero' | 'populista' | 'tecnocrata'`
-`PortraitMood = 'neutral' | 'panic' | 'victory'`
+`PortraitId` and `PortraitMood` are exported from `PixelPortrait.tsx` — read the unions there rather than relying on a copy.
 
-Each portrait is a `<g>` component inside the switch. The SVG canvas is `120×140`. Adding a new president requires:
-1. A new `function XxxPortrait({ mood })` component rendering on a `120×140` canvas
-2. A new case in the main `switch(id)` inside `PixelPortrait`
+Each portrait is a `function XxxPortrait({ mood })` returning a `<g>` drawn on the shared `200×240` canvas. `PixelPortrait` maps archetype ids (e.g. `ingeniero` → `milei`) to a base portrait, then renders the matching component with `{base === 'xxx' && <XxxPortrait mood={mood} />}`. Adding a new president requires:
+1. A new `function XxxPortrait({ mood })` component on the `200×240` canvas
+2. A new `{base === 'xxx' && …}` line in `PixelPortrait` (and an alias in the `base` mapping if the id is an archetype)
 3. Adding the new id to the `PortraitId` type union
 
 ## BuenosAiresBackground
 
-Fixed full-screen overlay: `className="fixed inset-0 z-0 pointer-events-none"` with `opacity={0.15}`.  
+Fixed full-screen overlay: `className="fixed inset-0 pointer-events-none z-0"` with `style={{ opacity: 0.15 }}`, set inside the component (it takes no props).  
 Always rendered as the **first child** of the root game div, before all other content.

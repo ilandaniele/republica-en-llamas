@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import posthog from 'posthog-js';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../stores/gameStore.js';
 import { VariablesPanel } from '../components/VariablesPanel.js';
@@ -16,7 +15,12 @@ import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
 import { CongressSession } from '../components/CongressSession.js';
 import type { PortraitMood } from '../components/illustrations/PixelPortrait.js';
 import { UserMenu } from '../components/UserMenu.js';
-import { trackCongressSession, trackTurnCompleted } from '../lib/analytics.js';
+import {
+  getFeatureFlag,
+  trackCongressSession,
+  trackExperimentStarted,
+  trackTurnCompleted,
+} from '../lib/analytics.js';
 import { BuenosAiresBackground } from '../components/illustrations/BuenosAiresBackground.js';
 import { AnibalTicker } from '../components/AnibalTicker.js';
 import { PixelDolar } from '../components/illustrations/PixelDolar.js';
@@ -29,16 +33,6 @@ const DIFFICULTY_LABELS: Record<string, string> = {
   hard: 'Difícil',
   crisis: 'Crisis',
 };
-
-function getRedZoneVars(state: import('@republica/game-engine').GameState): string[] {
-  const vars: string[] = [];
-  if (state.political.popularity < 25) vars.push('popularity');
-  if (state.political.socialStability < 25) vars.push('socialStability');
-  if (state.economic.marketConfidence < 25) vars.push('marketConfidence');
-  if (state.economic.currencyStrength < 25) vars.push('currencyStrength');
-  if (state.economic.foreignReserves < 25) vars.push('foreignReserves');
-  return vars;
-}
 
 export default function GameScreen() {
   const { t } = useTranslation();
@@ -65,7 +59,7 @@ export default function GameScreen() {
   const [idlePresidentMood, setIdlePresidentMood] = useState<PortraitMood | null>(null);
   const [showMidGamePaywall, setShowMidGamePaywall] = useState(false);
   const { hasEntitlement } = useEntitlements();
-  const paywallTimingVariant = (posthog.getFeatureFlag('paywall_timing') ?? 'after_game_over') as string;
+  const paywallTimingVariant = getFeatureFlag('paywall_timing') ?? 'after_game_over';
   const [showDolarFloat, setShowDolarFloat] = useState(false);
   const [showCrowd, setShowCrowd] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -82,7 +76,10 @@ export default function GameScreen() {
   // Countdown tick
   useEffect(() => {
     if (!isCrisisExpress || !currentCard || isAnimating) {
-      if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
       return;
     }
     timerRef.current = setInterval(() => {
@@ -96,15 +93,23 @@ export default function GameScreen() {
         return t - 1;
       });
     }, 1000);
-    return () => { if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; } };
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
   }, [currentCard?.id, isCrisisExpress, isAnimating, timeoutSelection]);
 
   React.useEffect(() => {
-    if (!gameState) { navigate('/'); return; }
+    if (!gameState) {
+      navigate('/');
+      return;
+    }
   }, [gameState, navigate]);
 
   useEffect(() => {
-    posthog.capture('$experiment_started', { experiment: 'paywall_timing', variant: paywallTimingVariant });
+    trackExperimentStarted({ experiment: 'paywall_timing', variant: paywallTimingVariant });
   }, [paywallTimingVariant]);
 
   useEffect(() => {
@@ -139,7 +144,7 @@ export default function GameScreen() {
       window.removeEventListener('mousemove', resetIdle);
       window.removeEventListener('keydown', resetIdle);
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   // Easter egg: inflation ≥50 → floating dollar
   useEffect(() => {
@@ -214,8 +219,6 @@ export default function GameScreen() {
   if (!gameState || !currentCard) return null;
 
   const hasCrisis = gameState.activeCrises.length > 0;
-  const redZoneVars = getRedZoneVars(gameState);
-  const inRedZone = redZoneVars.length > 0;
   const anyBelowTen = [
     gameState.political.popularity,
     gameState.political.socialStability,
@@ -223,14 +226,13 @@ export default function GameScreen() {
     gameState.economic.currencyStrength,
     gameState.economic.foreignReserves,
   ].some((v) => v < 10);
-  const presidentMood: PortraitMood = hasCrisis || anyBelowTen
-    ? 'panic'
-    : gameState.political.popularity > 65
-      ? 'victory'
-      : 'neutral';
+  const presidentMood: PortraitMood =
+    hasCrisis || anyBelowTen ? 'panic' : gameState.political.popularity > 65 ? 'victory' : 'neutral';
 
   return (
-    <div className={`min-h-screen relative transition-colors duration-500 bg-[var(--night-blue)] ${anyBelowTen ? 'animate-pulse' : ''}`}>
+    <div
+      className={`relative min-h-screen bg-[var(--night-blue)] transition-colors duration-500 ${anyBelowTen ? 'animate-pulse' : ''}`}
+    >
       {/* Buenos Aires pixel background */}
       <BuenosAiresBackground />
 
@@ -245,8 +247,13 @@ export default function GameScreen() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -60, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            className="fixed top-4 left-1/2 z-50 pixel-border-gold bg-navy-900 text-gold-400 px-4 py-3 text-center"
-            style={{ transform: 'translateX(-50%)', fontFamily: "'Press Start 2P', monospace", fontSize: '7px', maxWidth: '80vw' }}
+            className="pixel-border-gold fixed left-1/2 top-4 z-50 bg-navy-900 px-4 py-3 text-center text-gold-400"
+            style={{
+              transform: 'translateX(-50%)',
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: '7px',
+              maxWidth: '80vw',
+            }}
           >
             ⭐ {milestoneToast}
           </motion.div>
@@ -264,10 +271,7 @@ export default function GameScreen() {
         {/* Turn transition overlay */}
         <AnimatePresence>
           {showTransition && transitionData && (
-            <TurnTransitionScreen
-              data={transitionData}
-              onDismiss={dismissTransition}
-            />
+            <TurnTransitionScreen data={transitionData} onDismiss={dismissTransition} />
           )}
         </AnimatePresence>
 
@@ -275,10 +279,10 @@ export default function GameScreen() {
         <motion.header
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className={`flex items-center justify-between mb-4 pb-4 border-b ${hasCrisis ? 'border-crimson-800' : 'border-navy-700'}`}
+          className={`mb-4 flex items-center justify-between border-b pb-4 ${hasCrisis ? 'border-crimson-800' : 'border-navy-700'}`}
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 overflow-hidden pixel-border">
+            <div className="pixel-border h-12 w-12 overflow-hidden">
               <PixelPortrait
                 id={presidentId as import('../components/illustrations/PixelPortrait.js').PortraitId}
                 mood={idlePresidentMood ?? presidentMood}
@@ -286,10 +290,10 @@ export default function GameScreen() {
               />
             </div>
             <div>
-              <h1 className="font-serif text-base text-gold-400 font-bold leading-tight uppercase">
+              <h1 className="font-serif text-base font-bold uppercase leading-tight text-gold-400">
                 República en Llamas
               </h1>
-              <span className="font-mono text-sm text-smoke-400 bg-navy-800 px-2 py-0.5">
+              <span className="bg-navy-800 px-2 py-0.5 font-mono text-sm text-smoke-400">
                 {DIFFICULTY_LABELS[gameState.difficulty] ?? gameState.difficulty}
               </span>
             </div>
@@ -299,44 +303,47 @@ export default function GameScreen() {
             {/* Diary button */}
             <button
               onClick={() => setShowDiary(true)}
-              className="bg-navy-800 hover:bg-navy-700 border border-navy-600 text-smoke-400 font-mono text-sm px-3 py-2 rounded flex items-center gap-1"
+              className="flex items-center gap-1 rounded border border-navy-600 bg-navy-800 px-3 py-2 font-mono text-sm text-smoke-400 hover:bg-navy-700"
               title="Diario de Gestión"
             >
               📋 Diario
             </button>
             {isCrisisExpress && (
-              <div className={`pixel-border flex flex-col items-center px-3 py-1 font-mono ${
-                crisisTimeLeft <= 10
-                  ? 'bg-crimson-900/70 text-crimson-300 animate-[shake_0.3s_ease-in-out_infinite]'
-                  : 'bg-navy-800 text-smoke-300'
-              }`}>
+              <div
+                className={`pixel-border flex flex-col items-center px-3 py-1 font-mono ${
+                  crisisTimeLeft <= 10
+                    ? 'bg-crimson-900/70 text-crimson-300 animate-[shake_0.3s_ease-in-out_infinite]'
+                    : 'text-smoke-300 bg-navy-800'
+                }`}
+              >
                 <p className="text-sm">⚡ EXPRESS</p>
-                <p className="font-bold text-lg leading-none">{crisisTimeLeft}s</p>
+                <p className="text-lg font-bold leading-none">{crisisTimeLeft}s</p>
               </div>
             )}
             <div className="text-right">
-              <p className="text-sm text-smoke-500 font-mono">Turno</p>
-              <p className="font-mono font-bold text-gold-400">{gameState.turn}/{isCrisisExpress ? 15 : 50}</p>
+              <p className="text-smoke-500 font-mono text-sm">Turno</p>
+              <p className="font-mono font-bold text-gold-400">
+                {gameState.turn}/{isCrisisExpress ? 15 : 50}
+              </p>
             </div>
-            {(gameState.currentMonth != null && gameState.currentYear != null) && (
+            {gameState.currentMonth != null && gameState.currentYear != null && (
               <div className="text-right">
-                <p className="text-sm text-smoke-500 font-mono">{t(`month.${gameState.currentMonth}`)}</p>
+                <p className="text-smoke-500 font-mono text-sm">{t(`month.${gameState.currentMonth}`)}</p>
                 <p className="font-mono font-bold text-celeste">{gameState.currentYear}</p>
               </div>
             )}
             <div className="text-right">
-              <p className="text-sm text-smoke-500 font-mono">Puntaje</p>
+              <p className="text-smoke-500 font-mono text-sm">Puntaje</p>
               <p className="font-mono font-bold text-gold-400">{gameState.score.toLocaleString()}</p>
             </div>
             <button
               onClick={() => navigate('/')}
-              className="text-smoke-600 hover:text-smoke-400 font-mono text-xs"
+              className="font-mono text-xs text-smoke-600 hover:text-smoke-400"
             >
               ← Salir
             </button>
           </div>
         </motion.header>
-
 
         {/* Tension meter */}
         <div className="mb-4">
@@ -344,7 +351,7 @@ export default function GameScreen() {
         </div>
 
         {/* Main layout: mobile = card on top, indicators below; desktop = sidebar left */}
-        <div className="flex flex-col-reverse lg:grid lg:grid-cols-[320px_1fr] gap-6">
+        <div className="flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[320px_1fr]">
           {/* Left: Variables panel */}
           <aside>
             <VariablesPanel state={gameState} />
@@ -372,7 +379,11 @@ export default function GameScreen() {
                   onSelect={selectChoice}
                   onConfirm={() => {
                     if (pendingChoiceIndex !== null && currentCard) {
-                      trackTurnCompleted({ turn_number: gameState.turn, event_category: currentCard.category, choice_index: pendingChoiceIndex });
+                      trackTurnCompleted({
+                        turn_number: gameState.turn,
+                        event_category: currentCard.category,
+                        choice_index: pendingChoiceIndex,
+                      });
                     }
                     confirmChoice();
                   }}
@@ -387,11 +398,9 @@ export default function GameScreen() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex items-center justify-center h-64"
+                className="flex h-64 items-center justify-center"
               >
-                <p className="font-mono text-gold-400 text-2xl animate-pulse">
-                  Aplicando decisión...
-                </p>
+                <p className="animate-pulse font-mono text-2xl text-gold-400">Aplicando decisión...</p>
               </motion.div>
             )}
           </main>
@@ -406,11 +415,11 @@ export default function GameScreen() {
 
         {/* Shock notification */}
         {gameState.activeShocks.length > 0 && (
-          <div className="mt-4 flex gap-2 flex-wrap">
+          <div className="mt-4 flex flex-wrap gap-2">
             {gameState.activeShocks.map((shock) => (
               <span
                 key={shock.id}
-                className="pixel-border bg-orange-900/50 text-orange-300 font-mono text-xs px-3 py-1"
+                className="pixel-border bg-orange-900/50 px-3 py-1 font-mono text-xs text-orange-300"
               >
                 ⚡ {shock.name} ({shock.turnsRemaining} turnos)
               </span>
@@ -421,19 +430,23 @@ export default function GameScreen() {
       {/* Fixed overlays */}
       <AnibalTicker isCrisis={hasCrisis} />
       {showDolarFloat && (
-        <div className="fixed inset-0 pointer-events-none z-40 flex items-center justify-center">
+        <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center">
           <PixelDolar floating />
         </div>
       )}
       {showCrowd && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 pointer-events-none flex justify-around items-end pb-1">
+        <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-40 flex items-end justify-around pb-1">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="pixel-crowd-torches w-2 h-8 bg-orange-500" style={{ animationDelay: `${i * 0.12}s` }} />
+            <div
+              key={i}
+              className="pixel-crowd-torches h-8 w-2 bg-orange-500"
+              style={{ animationDelay: `${i * 0.12}s` }}
+            />
           ))}
         </div>
       )}
       {showConfetti && (
-        <div className="fixed inset-0 pointer-events-none z-40">
+        <div className="pointer-events-none fixed inset-0 z-40">
           {Array.from({ length: 10 }).map((_, i) => (
             <div
               key={i}

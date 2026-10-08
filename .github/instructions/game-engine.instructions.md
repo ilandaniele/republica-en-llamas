@@ -21,7 +21,7 @@ Every card in `packages/game-engine/src/events/` must conform to `EventCard` fro
   requiredCrisis?: CrisisType;   // only draw when this crisis is active
   minDifficulty?: Difficulty;    // 'easy' | 'normal' | 'hard' | 'crisis'
   // Character memory system
-  characterId?: CharacterId;     // 'ministro' | 'sindicalista' | 'periodista' | 'embajador' | 'gobernadora'
+  characterId?: string;          // a CharacterId: 'ministro' | 'sindicalista' | 'periodista' | 'embajador' | 'gobernadora'
   memoryFlagAdded?: string;      // flag stored on character when card is drawn
   requiredFlags?: string[];      // ALL must be present on character
   forbiddenFlags?: string[];     // ANY present skips the card
@@ -30,6 +30,8 @@ Every card in `packages/game-engine/src/events/` must conform to `EventCard` fro
   lifelineFor?: string[];        // which variables it helps recover
   // Congressional session
   isLaw?: boolean;               // triggers congressional minigame instead of normal choice UI
+  // External forces
+  isExogenous?: boolean;         // foreign wars, pandemics, IMF pressure — draw weight ignores the state-aware category multiplier
 }
 ```
 
@@ -100,7 +102,7 @@ Use `minTurn`/`maxTurn` to place cards in the right phase:
 | 1–5 | Establishment | Low stakes, introduce characters, no crisis |
 | 6–12 | Complication | Consequences arrive, character arcs progress |
 | 13–20 | Crisis | High pressure, compounding effects, character betrayals |
-| 20+ | Survival | Brutal — no easy lifelines |
+| 21+ | Survival | Brutal — no easy lifelines |
 
 Cards without `minTurn`/`maxTurn` are drawn throughout the run. Character cards use `requiredFlags` + `forbiddenFlags` to advance their arc regardless of turn.
 

@@ -7,3 +7,14 @@ dist/
 coverage/
 .DS_Store
 *.log
+
+# Compiled output must never live next to sources
+apps/web/src/**/*.js
+apps/web/src/**/*.js.map
+apps/web/src/**/*.d.ts
+apps/web/src/**/*.d.ts.map
+packages/game-engine/src/**/*.js
+packages/game-engine/src/**/*.js.map
+packages/game-engine/src/**/*.d.ts
+packages/game-engine/src/**/*.d.ts.map
+!apps/web/src/vite-env.d.ts

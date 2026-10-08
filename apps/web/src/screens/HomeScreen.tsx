@@ -15,16 +15,37 @@ import { BuyButton } from '../components/BuyButton.js';
 import { PaywallModal } from '../components/PaywallModal.js';
 import { ScenarioCard } from '../components/ScenarioCard.js';
 import { trackGameStarted } from '../lib/analytics.js';
+import { usePrefetchLeaderboard } from '../hooks/useLeaderboard.js';
 
 gsap.registerPlugin(useGSAP);
 
 type AuthMode = 'menu' | 'login' | 'register';
 
 const DIFFICULTIES: { id: Difficulty; label: string; flavor: string; color: string }[] = [
-  { id: 'easy', label: 'Fácil', flavor: 'El viento sopla a tu favor. Por ahora.', color: 'border-emerald-500 hover:bg-emerald-900/30' },
-  { id: 'normal', label: 'Normal', flavor: 'La república tiembla. Tú decides si cae.', color: 'border-blue-500 hover:bg-blue-900/30' },
-  { id: 'hard', label: 'Difícil', flavor: 'El abismo te mira. ¿Lo mirarás tú también?', color: 'border-orange-500 hover:bg-orange-900/30' },
-  { id: 'crisis', label: 'Crisis', flavor: 'Todo está en llamas. Bienvenido.', color: 'border-crimson-500 hover:bg-crimson-900/30' },
+  {
+    id: 'easy',
+    label: 'Fácil',
+    flavor: 'El viento sopla a tu favor. Por ahora.',
+    color: 'border-emerald-500 hover:bg-emerald-900/30',
+  },
+  {
+    id: 'normal',
+    label: 'Normal',
+    flavor: 'La república tiembla. Tú decides si cae.',
+    color: 'border-blue-500 hover:bg-blue-900/30',
+  },
+  {
+    id: 'hard',
+    label: 'Difícil',
+    flavor: 'El abismo te mira. ¿Lo mirarás tú también?',
+    color: 'border-orange-500 hover:bg-orange-900/30',
+  },
+  {
+    id: 'crisis',
+    label: 'Crisis',
+    flavor: 'Todo está en llamas. Bienvenido.',
+    color: 'border-crimson-500 hover:bg-crimson-900/30',
+  },
 ];
 
 function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => void }) {
@@ -45,11 +66,21 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
     try {
       if (mode === 'login') {
         const { error: err } = await signIn(email, password);
-        if (err) { setError(err.message); return; }
+        if (err) {
+          setError(err.message);
+          return;
+        }
       } else {
-        if (!username.trim()) { setError('El nombre de usuario es requerido'); setLoading(false); return; }
+        if (!username.trim()) {
+          setError('El nombre de usuario es requerido');
+          setLoading(false);
+          return;
+        }
         const { error: err } = await signUp(email, password, username);
-        if (err) { setError(err.message); return; }
+        if (err) {
+          setError(err.message);
+          return;
+        }
       }
       startNewGame(selectedDifficulty);
       navigate('/president');
@@ -61,28 +92,29 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 40 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -40 }}
-    >
-      <button onClick={onBack} className="text-smoke-500 font-mono text-xs mb-6 hover:text-smoke-300 flex items-center gap-1">
+    <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }}>
+      <button
+        onClick={onBack}
+        className="text-smoke-500 hover:text-smoke-300 mb-6 flex items-center gap-1 font-mono text-xs"
+      >
         ← Volver
       </button>
-      <h2 className="font-serif text-2xl text-smoke-100 font-bold mb-6">
+      <h2 className="mb-6 font-serif text-2xl font-bold text-smoke-100">
         {mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta'}
       </h2>
 
       {/* Difficulty selector */}
       <div className="mb-6">
-        <p className="text-smoke-400 font-mono text-xs uppercase tracking-widest mb-3">Dificultad</p>
+        <p className="mb-3 font-mono text-xs uppercase tracking-widest text-smoke-400">Dificultad</p>
         <div className="grid grid-cols-2 gap-2">
           {DIFFICULTIES.map((d) => (
             <button
               key={d.id}
               onClick={() => setSelectedDifficulty(d.id)}
-              className={`p-3 border-2 rounded-lg text-left text-xs transition-colors ${d.color} ${
-                selectedDifficulty === d.id ? 'bg-navy-700 ring-2 ring-gold-400' : 'border-navy-600 bg-navy-800'
+              className={`rounded-lg border-2 p-3 text-left text-xs transition-colors ${d.color} ${
+                selectedDifficulty === d.id
+                  ? 'bg-navy-700 ring-2 ring-gold-400'
+                  : 'border-navy-600 bg-navy-800'
               }`}
             >
               <div className="font-serif font-bold text-smoke-100">{d.label}</div>
@@ -91,14 +123,19 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
         </div>
       </div>
 
-      <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-4">
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(e);
+        }}
+        className="space-y-4"
+      >
         {mode === 'register' && (
           <input
             type="text"
             placeholder="Nombre de usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full bg-navy-800 border border-navy-600 text-smoke-100 font-mono text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-gold-500"
+            className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500 focus:outline-none"
           />
         )}
         <input
@@ -106,20 +143,20 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full bg-navy-800 border border-navy-600 text-smoke-100 font-mono text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-gold-500"
+          className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500 focus:outline-none"
         />
         <input
           type="password"
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full bg-navy-800 border border-navy-600 text-smoke-100 font-mono text-sm px-4 py-3 rounded-lg focus:outline-none focus:border-gold-500"
+          className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500 focus:outline-none"
         />
-        {error && <p className="text-crimson-400 font-mono text-xs">{error}</p>}
+        {error && <p className="font-mono text-xs text-crimson-400">{error}</p>}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-gold-500 hover:bg-gold-400 text-navy-900 font-serif font-bold py-3 px-6 rounded-lg transition-colors disabled:opacity-50"
+          className="w-full rounded-lg bg-gold-500 px-6 py-3 font-serif font-bold text-navy-900 transition-colors hover:bg-gold-400 disabled:opacity-50"
         >
           {loading ? 'Cargando...' : mode === 'login' ? 'Entrar' : 'Registrarse'}
         </button>
@@ -130,6 +167,7 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
 
 export default function HomeScreen() {
   const navigate = useNavigate();
+  const prefetchLeaderboard = usePrefetchLeaderboard();
   const { t } = useTranslation();
   const startNewGame = useGameStore((s) => s.startNewGame);
   const gameState = useGameStore((s) => s.gameState);
@@ -145,25 +183,47 @@ export default function HomeScreen() {
   const homeContainerRef = useRef<HTMLDivElement>(null);
 
   // ── GSAP: title entry + tab-switch card stagger ───────────────────────────
-  useGSAP(() => {
-    if (!homeContainerRef.current) return;
-    // Title + subtitle cascade in on first mount
-    gsap.from('.home-title-line', {
-      y: -24, autoAlpha: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out',
-    });
-    gsap.from('.home-subtitle', {
-      y: 10, autoAlpha: 0, duration: 0.4, delay: 0.3, ease: 'power1.out',
-    });
-  }, { scope: homeContainerRef });
+  useGSAP(
+    () => {
+      if (!homeContainerRef.current) return;
+      // Title + subtitle cascade in on first mount
+      gsap.from('.home-title-line', {
+        y: -24,
+        autoAlpha: 0,
+        duration: 0.5,
+        stagger: 0.12,
+        ease: 'power2.out',
+      });
+      gsap.from('.home-subtitle', {
+        y: 10,
+        autoAlpha: 0,
+        duration: 0.4,
+        delay: 0.3,
+        ease: 'power1.out',
+      });
+    },
+    { scope: homeContainerRef },
+  );
 
-  useGSAP(() => {
-    if (!homeContainerRef.current) return;
-    // Tab content fades + cards stagger in whenever homeMode switches
-    gsap.fromTo('.home-tab-cards > *',
-      { y: 18, autoAlpha: 0 },
-      { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.055, ease: 'back.out(1.4)', clearProps: 'transform,opacity' },
-    );
-  }, { scope: homeContainerRef, dependencies: [homeMode] });
+  useGSAP(
+    () => {
+      if (!homeContainerRef.current) return;
+      // Tab content fades + cards stagger in whenever homeMode switches
+      gsap.fromTo(
+        '.home-tab-cards > *',
+        { y: 18, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.3,
+          stagger: 0.055,
+          ease: 'back.out(1.4)',
+          clearProps: 'transform,opacity',
+        },
+      );
+    },
+    { scope: homeContainerRef, dependencies: [homeMode] },
+  );
 
   const dailyRemaining = getDailyRunsRemaining();
   const dailyLimitReached = !hasPremium && dailyRemaining <= 0;
@@ -190,29 +250,33 @@ export default function HomeScreen() {
 
   const handleGuest = () => startGame(selectedDifficulty);
   const handleLoggedInStart = () => startGame(selectedDifficulty);
-  const handleContinue = () => { navigate('/game'); };
-  const handleLogout = () => { void signOut(); };
+  const handleContinue = () => {
+    navigate('/game');
+  };
+  const handleLogout = () => {
+    void signOut();
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden p-6">
       {/* Background effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-navy-900 to-navy-900 pointer-events-none z-10" />
+      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-transparent via-navy-900 to-navy-900" />
 
       {/* Main content */}
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative z-20 max-w-2xl w-full"
+        className="relative z-20 w-full max-w-2xl"
       >
         {/* User menu (top right) */}
-        <div className="flex justify-end mb-4">
+        <div className="mb-4 flex justify-end">
           <UserMenu />
         </div>
 
         {/* Logo */}
-        <div ref={homeContainerRef} className="text-center mb-10">
-          <div className="fire-container mx-auto w-48 h-16 mb-4">
+        <div ref={homeContainerRef} className="mb-10 text-center">
+          <div className="fire-container mx-auto mb-4 h-16 w-48">
             <div className="fire-particle" />
             <div className="fire-particle" />
             <div className="fire-particle" />
@@ -223,33 +287,28 @@ export default function HomeScreen() {
             <div className="smoke-particle" />
             <div className="smoke-particle" />
           </div>
-          <h1 className="font-serif text-5xl font-black text-smoke-100 leading-none">
-            <span className="home-title-line block text-crimson-400 text-shadow-crimson">República</span>
-            <span className="home-title-line block text-gold-400 text-shadow-gold">en Llamas</span>
+          <h1 className="font-serif text-5xl font-black leading-none text-smoke-100">
+            <span className="home-title-line text-shadow-crimson block text-crimson-400">República</span>
+            <span className="home-title-line text-shadow-gold block text-gold-400">en Llamas</span>
           </h1>
-          <p className="home-subtitle text-smoke-400 mt-3 font-mono text-sm tracking-wider uppercase">
+          <p className="home-subtitle mt-3 font-mono text-sm uppercase tracking-wider text-smoke-400">
             Simulador de Decisiones Políticas
           </p>
         </div>
 
         <AnimatePresence mode="wait">
           {authMode === 'menu' ? (
-            <motion.div
-              key="menu"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
+            <motion.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               {/* Logged-in user header */}
               {!authLoading && user && (
-                <div className="flex items-center justify-between mb-6 bg-navy-800 border border-navy-600 rounded-lg px-4 py-3">
+                <div className="mb-6 flex items-center justify-between rounded-lg border border-navy-600 bg-navy-800 px-4 py-3">
                   <div>
-                    <p className="text-smoke-400 font-mono text-xs">Sesión activa</p>
-                    <p className="text-gold-400 font-mono text-sm font-bold">{user.email}</p>
+                    <p className="font-mono text-xs text-smoke-400">Sesión activa</p>
+                    <p className="font-mono text-sm font-bold text-gold-400">{user.email}</p>
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="text-smoke-500 hover:text-smoke-300 font-mono text-xs border border-navy-500 px-3 py-1 rounded"
+                    className="text-smoke-500 hover:text-smoke-300 rounded border border-navy-500 px-3 py-1 font-mono text-xs"
                   >
                     Cerrar sesión
                   </button>
@@ -257,45 +316,55 @@ export default function HomeScreen() {
               )}
 
               {/* Mode tab switcher */}
-              <div className="flex mb-4" style={{ borderBottom: '2px solid var(--night-blue)' }}>
+              <div className="mb-4 flex" style={{ borderBottom: '2px solid var(--night-blue)' }}>
                 <button
                   onClick={() => setHomeMode('clasico')}
-                  className={`font-serif text-[8px] px-4 py-2 transition-colors ${homeMode === 'clasico' ? 'text-gold-400' : 'text-smoke-500'}`}
-                  style={{ borderBottom: homeMode === 'clasico' ? '2px solid var(--gold)' : '2px solid transparent' }}
+                  className={`px-4 py-2 font-serif text-[8px] transition-colors ${homeMode === 'clasico' ? 'text-gold-400' : 'text-smoke-500'}`}
+                  style={{
+                    borderBottom: homeMode === 'clasico' ? '2px solid var(--gold)' : '2px solid transparent',
+                  }}
                 >
                   CLÁSICO
                 </button>
                 <button
                   onClick={() => setHomeMode('historico')}
-                  className={`font-serif text-[8px] px-4 py-2 transition-colors ${homeMode === 'historico' ? 'text-gold-400' : 'text-smoke-500'}`}
-                  style={{ borderBottom: homeMode === 'historico' ? '2px solid var(--gold)' : '2px solid transparent' }}
+                  className={`px-4 py-2 font-serif text-[8px] transition-colors ${homeMode === 'historico' ? 'text-gold-400' : 'text-smoke-500'}`}
+                  style={{
+                    borderBottom:
+                      homeMode === 'historico' ? '2px solid var(--gold)' : '2px solid transparent',
+                  }}
                 >
                   HISTÓRICO
                 </button>
               </div>
 
               {homeMode === 'clasico' ? (
-                <div className="home-tab-cards grid grid-cols-2 gap-3 mb-8">
+                <div className="home-tab-cards mb-8 grid grid-cols-2 gap-3">
                   {DIFFICULTIES.map((d) => (
                     <motion.button
                       key={d.id}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setSelectedDifficulty(d.id)}
-                      className={`p-4 border-2 text-left transition-colors duration-200 ${d.color} ${
+                      className={`border-2 p-4 text-left transition-colors duration-200 ${d.color} ${
                         selectedDifficulty === d.id
                           ? 'bg-navy-700 ring-2 ring-gold-400'
                           : 'border-navy-600 bg-navy-800'
                       }`}
                     >
-                      <div className="font-serif font-bold text-smoke-100 mb-1">{d.label}</div>
-                      <div className="text-xs text-smoke-400 italic">{d.flavor}</div>
+                      <div className="mb-1 font-serif font-bold text-smoke-100">{d.label}</div>
+                      <div className="text-xs italic text-smoke-400">{d.flavor}</div>
                     </motion.button>
                   ))}
                 </div>
               ) : (
-                <div ref={scenarioGridRef} className="home-tab-cards grid grid-cols-2 gap-3 mb-8">
-                  {(Object.entries(HISTORICAL_SCENARIOS) as [ScenarioId, typeof HISTORICAL_SCENARIOS[ScenarioId]][]).map(([id, cfg], i) => {
+                <div ref={scenarioGridRef} className="home-tab-cards mb-8 grid grid-cols-2 gap-3">
+                  {(
+                    Object.entries(HISTORICAL_SCENARIOS) as [
+                      ScenarioId,
+                      (typeof HISTORICAL_SCENARIOS)[ScenarioId],
+                    ][]
+                  ).map(([id, cfg], i) => {
                     const locked = !hasEntitlement(cfg.entitlementRequired);
                     return (
                       <ScenarioCard
@@ -316,61 +385,66 @@ export default function HomeScreen() {
               {/* Auth / Start buttons */}
               {/* Daily run limit banner */}
               {dailyLimitReached && (
-                <div className="mb-4 bg-crimson-900/40 border border-crimson-700 rounded-xl p-4 text-center">
-                  <p className="text-crimson-300 font-mono text-sm font-bold mb-1">⏰ Límite diario alcanzado (3/3)</p>
-                  <p className="text-smoke-400 font-mono text-xs mb-3">Volvé mañana o desbloqueá acceso ilimitado</p>
+                <div className="bg-crimson-900/40 mb-4 rounded-xl border border-crimson-700 p-4 text-center">
+                  <p className="text-crimson-300 mb-1 font-mono text-sm font-bold">
+                    ⏰ Límite diario alcanzado (3/3)
+                  </p>
+                  <p className="mb-3 font-mono text-xs text-smoke-400">
+                    Volvé mañana o desbloqueá acceso ilimitado
+                  </p>
                   <BuyButton entitlement="full_access" label="Acceso Total — $5.99" className="mx-auto" />
                 </div>
               )}
 
               <div className="space-y-3">
-                {!dailyLimitReached && (user ? (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleLoggedInStart}
-                    className="w-full bg-crimson-600 hover:bg-crimson-500 text-smoke-100 font-serif font-bold py-4 px-8 rounded-lg text-xl transition-colors uppercase tracking-wider shadow-lg"
-                  >
-                    Nueva Partida
-                  </motion.button>
-                ) : (
-                  <>
-                    {!isOfflineMode && (
-                      <>
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setAuthMode('login')}
-                          className="w-full bg-crimson-600 hover:bg-crimson-500 text-smoke-100 font-serif font-bold py-4 px-8 rounded-lg text-xl transition-colors uppercase tracking-wider shadow-lg"
-                        >
-                          Iniciar sesión
-                        </motion.button>
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setAuthMode('register')}
-                          className="w-full bg-navy-700 hover:bg-navy-600 border border-gold-600 text-gold-400 font-serif font-bold py-3 px-8 rounded-lg transition-colors"
-                        >
-                          Crear cuenta
-                        </motion.button>
-                      </>
-                    )}
+                {!dailyLimitReached &&
+                  (user ? (
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={handleGuest}
-                      className={`w-full ${isOfflineMode ? 'bg-crimson-600 hover:bg-crimson-500 text-smoke-100 font-serif font-bold py-4 text-xl shadow-lg' : 'bg-navy-800 hover:bg-navy-700 border border-navy-500 text-smoke-400'} font-bold py-3 px-8 rounded-lg transition-colors`}
+                      onClick={handleLoggedInStart}
+                      className="w-full rounded-lg bg-crimson-600 px-8 py-4 font-serif text-xl font-bold uppercase tracking-wider text-smoke-100 shadow-lg transition-colors hover:bg-crimson-500"
                     >
-                      {isOfflineMode ? 'Nueva Partida' : 'Jugar como invitado'}
+                      Nueva Partida
                     </motion.button>
-                  </>
-                ))}
+                  ) : (
+                    <>
+                      {!isOfflineMode && (
+                        <>
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => setAuthMode('login')}
+                            className="w-full rounded-lg bg-crimson-600 px-8 py-4 font-serif text-xl font-bold uppercase tracking-wider text-smoke-100 shadow-lg transition-colors hover:bg-crimson-500"
+                          >
+                            Iniciar sesión
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => setAuthMode('register')}
+                            className="w-full rounded-lg border border-gold-600 bg-navy-700 px-8 py-3 font-serif font-bold text-gold-400 transition-colors hover:bg-navy-600"
+                          >
+                            Crear cuenta
+                          </motion.button>
+                        </>
+                      )}
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleGuest}
+                        className={`w-full ${isOfflineMode ? 'bg-crimson-600 py-4 font-serif text-xl font-bold text-smoke-100 shadow-lg hover:bg-crimson-500' : 'border border-navy-500 bg-navy-800 text-smoke-400 hover:bg-navy-700'} rounded-lg px-8 py-3 font-bold transition-colors`}
+                      >
+                        {isOfflineMode ? 'Nueva Partida' : 'Jugar como invitado'}
+                      </motion.button>
+                    </>
+                  ))}
 
                 {gameState && !gameState.isGameOver && (
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     onClick={handleContinue}
-                    className="w-full bg-navy-700 hover:bg-navy-600 border border-navy-500 text-smoke-200 font-serif font-bold py-3 px-8 rounded-lg transition-colors"
+                    className="w-full rounded-lg border border-navy-500 bg-navy-700 px-8 py-3 font-serif font-bold text-smoke-200 transition-colors hover:bg-navy-600"
                   >
                     Continuar Partida — Turno {gameState.turn}
                   </motion.button>
@@ -378,7 +452,9 @@ export default function HomeScreen() {
 
                 <button
                   onClick={() => navigate('/leaderboard')}
-                  className="w-full bg-transparent hover:bg-navy-800 border border-navy-600 text-smoke-400 font-mono py-3 px-8 rounded-lg transition-colors text-sm"
+                  onMouseEnter={prefetchLeaderboard}
+                  onFocus={prefetchLeaderboard}
+                  className="w-full rounded-lg border border-navy-600 bg-transparent px-8 py-3 font-mono text-sm text-smoke-400 transition-colors hover:bg-navy-800"
                 >
                   Tabla de Líderes
                 </button>
@@ -391,9 +467,7 @@ export default function HomeScreen() {
           )}
         </AnimatePresence>
 
-        <p className="text-center text-smoke-600 font-mono text-xs mt-8">
-          v0.3.0 — República en Llamas
-        </p>
+        <p className="mt-8 text-center font-mono text-xs text-smoke-600">v0.3.0 — República en Llamas</p>
       </motion.div>
 
       {paywallScenario && (
