@@ -57,6 +57,10 @@ export default tseslint.config(
         'error',
         { patterns: [{ group: ['react', 'react-*', '@supabase/*', 'posthog-js'], message: 'game-engine must stay pure: no UI or IO imports.' }] },
       ],
+      'no-restricted-properties': [
+        'error',
+        { object: 'Math', property: 'random', message: 'Use createRng(seed) so runs stay replayable.' },
+      ],
     },
   },
   {
