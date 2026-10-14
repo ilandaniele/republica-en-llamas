@@ -21,11 +21,11 @@ Add a new `EventCard` to República en Llamas.
 ### 1. EventCard object
 
 Add to the correct array file based on category (see game-engine instructions). The card must have:
-- `id`: `"${cardId}"`
+- `id`: `"${input:cardId}"`
 - `category`: matching the category chosen
-- `titleKey`: `"event.${cardId}.title"`
-- `bodyKey`: `"event.${cardId}.body"`
-- `choices`: each with `id: "${cardId}_a"` … `"_d"`, `textKey: "event.${cardId}.choice_a"` … `choice_d`, and balanced `effects`
+- `titleKey`: `"event.${input:cardId}.title"`
+- `bodyKey`: `"event.${input:cardId}.body"`
+- `choices`: each with `id: "${input:cardId}_a"` … `"_d"`, `textKey: "event.${input:cardId}.choice_a"` … `choice_d`, and balanced `effects`
 - `weight`: suggest 5–8 for standard cards
 
 Balance the effects:
@@ -37,10 +37,10 @@ Balance the effects:
 ### 2. i18n keys for `packages/game-engine/src/i18n/es.ts`
 
 ```ts
-'event.${cardId}.title': '${titleEs}',
-'event.${cardId}.body': '${bodyEs}',
-'event.${cardId}.choice_a': '${choiceAEs}',
-'event.${cardId}.choice_b': '${choiceBEs}',
+'event.${input:cardId}.title': '${input:titleEs}',
+'event.${input:cardId}.body': '${input:bodyEs}',
+'event.${input:cardId}.choice_a': '${input:choiceAEs}',
+'event.${input:cardId}.choice_b': '${input:choiceBEs}',
 // choice_c and choice_d if provided
 ```
 
