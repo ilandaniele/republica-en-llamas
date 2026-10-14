@@ -1,0 +1,468 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { m, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { useGameStore } from '../../stores/gameStore.js';
+import { VariablesPanel } from './VariablesPanel.js';
+import { EventCardComponent } from './EventCardComponent.js';
+import { CrisisAlert } from './CrisisAlert.js';
+import { TensionMeter } from './TensionMeter.js';
+import { TutorialOverlay } from './TutorialOverlay.js';
+import { OfflineBanner } from '../../components/OfflineBanner.js';
+import { TurnTransitionScreen } from './TurnTransitionScreen.js';
+import { DecisionDiary } from './DecisionDiary.js';
+import { PixelPortrait } from '../../components/illustrations/PixelPortrait.js';
+import { CongressSession } from './CongressSession.js';
+import type { PortraitMood } from '../../components/illustrations/PixelPortrait.js';
+import { UserMenu } from '../../components/UserMenu.js';
+import {
+  getFeatureFlag,
+  trackCongressSession,
+  trackExperimentStarted,
+  trackTurnCompleted,
+} from '../../lib/analytics.js';
+import { BuenosAiresBackground } from '../../components/illustrations/BuenosAiresBackground.js';
+import { AnibalTicker } from './AnibalTicker.js';
+import { PixelDolar } from '../../components/illustrations/PixelDolar.js';
+import { PaywallModal } from '../../components/PaywallModal.js';
+import { useTransientValue } from '../../hooks/useTransientValue.js';
+import { useEntitlements } from '../../hooks/useEntitlements.js';
+
+const DIFFICULTY_LABELS: Record<string, string> = {
+  easy: 'Fácil',
+  normal: 'Normal',
+  hard: 'Difícil',
+  crisis: 'Crisis',
+};
+
+export default function GameScreen() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const gameState = useGameStore((s) => s.gameState);
+  const currentCard = useGameStore((s) => s.currentCard);
+  const pendingChoiceIndex = useGameStore((s) => s.pendingChoiceIndex);
+  const isAnimating = useGameStore((s) => s.isAnimating);
+  const showTransition = useGameStore((s) => s.showTransition);
+  const transitionData = useGameStore((s) => s.transitionData);
+  const selectChoice = useGameStore((s) => s.selectChoice);
+  const confirmChoice = useGameStore((s) => s.confirmChoice);
+  const resolveCongressSession = useGameStore((s) => s.resolveCongressSession);
+  const dismissTransition = useGameStore((s) => s.dismissTransition);
+  const presidentId = useGameStore((s) => s.presidentId);
+  const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
+  const timeoutSelection = useGameStore((s) => s.timeoutSelection);
+  const [showDiary, setShowDiary] = useState(false);
+  const [crisisTimeLeft, setCrisisTimeLeft] = useState(45);
+  const [cardShaking, setCardShaking] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Easter egg states
+  const [idlePresidentMood, showIdlePresidentMood, hideIdlePresidentMood] =
+    useTransientValue<PortraitMood | null>(null);
+  const [showMidGamePaywall, setShowMidGamePaywall] = useState(false);
+  const { hasEntitlement } = useEntitlements();
+  const paywallTimingVariant = getFeatureFlag('paywall_timing') ?? 'after_game_over';
+  const [showDolarFloat, flashDolarFloat] = useTransientValue(false);
+  const [showCrowd, flashCrowd] = useTransientValue(false);
+  const [showConfetti, flashConfetti] = useTransientValue(false);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevInflationRef = useRef<number | null>(null);
+  const prevLawsPassedRef = useRef<number>(0);
+
+  // Reset countdown when a new card appears
+  useEffect(() => {
+    if (!isCrisisExpress) return;
+    setCrisisTimeLeft(45);
+  }, [currentCard?.id, isCrisisExpress]);
+
+  // Countdown tick
+  useEffect(() => {
+    if (!isCrisisExpress || !currentCard || isAnimating) {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      return;
+    }
+    timerRef.current = setInterval(() => {
+      setCrisisTimeLeft((t) => {
+        if (t <= 1) {
+          clearInterval(timerRef.current!);
+          timerRef.current = null;
+          timeoutSelection();
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [currentCard?.id, isCrisisExpress, isAnimating, timeoutSelection]);
+
+  React.useEffect(() => {
+    if (!gameState) {
+      navigate('/');
+      return;
+    }
+  }, [gameState, navigate]);
+
+  useEffect(() => {
+    trackExperimentStarted({ experiment: 'paywall_timing', variant: paywallTimingVariant });
+  }, [paywallTimingVariant]);
+
+  useEffect(() => {
+    if (paywallTimingVariant === 'at_turn_5' && gameState?.turn === 5 && !hasEntitlement('full_access')) {
+      setShowMidGamePaywall(true);
+    }
+  }, [gameState?.turn, paywallTimingVariant, hasEntitlement]);
+
+  React.useEffect(() => {
+    if (currentCard?.category === 'crisis') {
+      setCardShaking(true);
+      const t = setTimeout(() => setCardShaking(false), 500);
+      return () => clearTimeout(t);
+    }
+  }, [currentCard?.id]);
+
+  // Easter egg: idle 10s → president panics
+  useEffect(() => {
+    const resetIdle = () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      hideIdlePresidentMood();
+      idleTimerRef.current = setTimeout(() => showIdlePresidentMood('panic', 2000), 10000);
+    };
+    resetIdle();
+    window.addEventListener('mousemove', resetIdle);
+    window.addEventListener('keydown', resetIdle);
+    return () => {
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      window.removeEventListener('mousemove', resetIdle);
+      window.removeEventListener('keydown', resetIdle);
+    };
+  }, [hideIdlePresidentMood, showIdlePresidentMood]);
+
+  // Easter egg: inflation ≥50 → floating dollar
+  useEffect(() => {
+    if (!gameState) return;
+    const curr = gameState.economic.inflation;
+    if (prevInflationRef.current !== null && prevInflationRef.current < 50 && curr >= 50) {
+      flashDolarFloat(true, 2000);
+    }
+    prevInflationRef.current = curr;
+  }, [gameState?.economic.inflation]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Easter egg: popularity = 0 → crowd torches
+  useEffect(() => {
+    if (!gameState) return;
+    if (gameState.political.popularity <= 0) {
+      flashCrowd(true, 2000);
+    }
+  }, [gameState?.political.popularity]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Easter egg: law passed → confetti
+  useEffect(() => {
+    if (!gameState) return;
+    const curr = gameState.congress.lawsPassedThisRun ?? 0;
+    if (curr > prevLawsPassedRef.current) {
+      flashConfetti(true, 1500);
+    }
+    prevLawsPassedRef.current = curr;
+  }, [gameState?.congress.lawsPassedThisRun]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Milestone toasts at turns 10, 20, 30, 40
+  const [milestoneToast, showMilestoneToast] = useTransientValue<string | null>(null);
+  const shownMilestonesRef = useRef<Set<number>>(new Set());
+  const MILESTONE_MESSAGES: Record<number, string> = {
+    10: '¡Sobreviviste el primer mes de gobierno!',
+    20: 'Mitad del mandato. El pueblo te juzga.',
+    30: 'Los medios no paran de hablar de vos.',
+    40: 'Se vienen las elecciones. ¿Llegás?',
+  };
+  useEffect(() => {
+    if (!gameState) return;
+    const turn = gameState.turn;
+    if (MILESTONE_MESSAGES[turn] && !shownMilestonesRef.current.has(turn)) {
+      shownMilestonesRef.current.add(turn);
+      showMilestoneToast(MILESTONE_MESSAGES[turn]!, 4000);
+    }
+  }, [gameState?.turn]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Keyboard: 1-4 or A-D to select choice; Enter to confirm
+  useEffect(() => {
+    if (isAnimating || showTransition || !currentCard || currentCard.isLaw) return;
+    const onKey = (e: KeyboardEvent) => {
+      const map: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3, a: 0, b: 1, c: 2, d: 3 };
+      const idx = map[e.key.toLowerCase()];
+      if (idx !== undefined && idx < (currentCard.choices?.length ?? 0)) {
+        e.preventDefault();
+        selectChoice(currentCard.id, idx);
+        return;
+      }
+      if (e.key === 'Enter' && pendingChoiceIndex !== null) {
+        e.preventDefault();
+        confirmChoice();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isAnimating, showTransition, currentCard, pendingChoiceIndex, selectChoice, confirmChoice]);
+
+  if (!gameState || !currentCard) return null;
+
+  const hasCrisis = gameState.activeCrises.length > 0;
+  const anyBelowTen = [
+    gameState.political.popularity,
+    gameState.political.socialStability,
+    gameState.economic.marketConfidence,
+    gameState.economic.currencyStrength,
+    gameState.economic.foreignReserves,
+  ].some((v) => v < 10);
+  const presidentMood: PortraitMood =
+    hasCrisis || anyBelowTen ? 'panic' : gameState.political.popularity > 65 ? 'victory' : 'neutral';
+
+  return (
+    <div
+      className={`relative min-h-screen bg-[var(--night-blue)] transition-colors duration-500 ${anyBelowTen ? 'animate-pulse' : ''}`}
+    >
+      {/* Buenos Aires pixel background */}
+      <BuenosAiresBackground />
+
+      <OfflineBanner />
+
+      {/* Milestone toast */}
+      <AnimatePresence>
+        {milestoneToast && (
+          <m.div
+            key="milestone-toast"
+            initial={{ y: -60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -60, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+            className="pixel-border-gold fixed left-1/2 top-4 z-50 bg-navy-900 px-4 py-3 text-center text-gold-400"
+            style={{
+              transform: 'translateX(-50%)',
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: '7px',
+              maxWidth: '80vw',
+            }}
+          >
+            ⭐ {milestoneToast}
+          </m.div>
+        )}
+      </AnimatePresence>
+
+      {/* Decision Diary (slide-in from left) */}
+      <DecisionDiary isOpen={showDiary} onClose={() => setShowDiary(false)} />
+
+      <div className={`p-4 ${hasCrisis || cardShaking ? 'animate-screen-shake' : ''}`}>
+        {hasCrisis && <div className="crisis-vignette" />}
+
+        <TutorialOverlay />
+
+        {/* Turn transition overlay */}
+        <AnimatePresence>
+          {showTransition && transitionData && (
+            <TurnTransitionScreen data={transitionData} onDismiss={dismissTransition} />
+          )}
+        </AnimatePresence>
+
+        {/* Header */}
+        <m.header
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className={`mb-4 flex items-center justify-between border-b pb-4 ${hasCrisis ? 'border-crimson-800' : 'border-navy-700'}`}
+        >
+          <div className="flex items-center gap-3">
+            <div className="pixel-border h-12 w-12 overflow-hidden">
+              <PixelPortrait
+                id={presidentId as import('../../components/illustrations/PixelPortrait.js').PortraitId}
+                mood={idlePresidentMood ?? presidentMood}
+                px={48}
+              />
+            </div>
+            <div>
+              <h1 className="font-serif text-base font-bold uppercase leading-tight text-gold-400">
+                República en Llamas
+              </h1>
+              <span className="bg-navy-800 px-2 py-0.5 font-mono text-sm text-smoke-400">
+                {DIFFICULTY_LABELS[gameState.difficulty] ?? gameState.difficulty}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <UserMenu />
+            {/* Diary button */}
+            <button
+              onClick={() => setShowDiary(true)}
+              className="flex items-center gap-1 rounded border border-navy-600 bg-navy-800 px-3 py-2 font-mono text-sm text-smoke-400 hover:bg-navy-700"
+              title="Diario de Gestión"
+            >
+              📋 Diario
+            </button>
+            {isCrisisExpress && (
+              <div
+                className={`pixel-border flex flex-col items-center px-3 py-1 font-mono ${
+                  crisisTimeLeft <= 10
+                    ? 'bg-crimson-900/70 text-crimson-300 animate-[shake_0.3s_ease-in-out_infinite]'
+                    : 'text-smoke-300 bg-navy-800'
+                }`}
+              >
+                <p className="text-sm">⚡ EXPRESS</p>
+                <p className="text-lg font-bold leading-none">{crisisTimeLeft}s</p>
+              </div>
+            )}
+            <div className="text-right">
+              <p className="text-smoke-500 font-mono text-sm">Turno</p>
+              <p className="font-mono font-bold text-gold-400">
+                {gameState.turn}/{isCrisisExpress ? 15 : 50}
+              </p>
+            </div>
+            {gameState.currentMonth != null && gameState.currentYear != null && (
+              <div className="text-right">
+                <p className="text-smoke-500 font-mono text-sm">{t(`month.${gameState.currentMonth}`)}</p>
+                <p className="font-mono font-bold text-celeste">{gameState.currentYear}</p>
+              </div>
+            )}
+            <div className="text-right">
+              <p className="text-smoke-500 font-mono text-sm">Puntaje</p>
+              <p className="font-mono font-bold text-gold-400">{gameState.score.toLocaleString()}</p>
+            </div>
+            <button
+              onClick={() => navigate('/')}
+              className="font-mono text-xs text-smoke-600 hover:text-smoke-400"
+            >
+              ← Salir
+            </button>
+          </div>
+        </m.header>
+
+        {/* Tension meter */}
+        <div className="mb-4">
+          <TensionMeter state={gameState} />
+        </div>
+
+        {/* Main layout: mobile = card on top, indicators below; desktop = sidebar left */}
+        <div className="flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[320px_1fr]">
+          {/* Left: Variables panel */}
+          <aside>
+            <VariablesPanel state={gameState} />
+          </aside>
+
+          {/* Right: Event card + choices */}
+          <main>
+            <AnimatePresence mode="wait">
+              {!isAnimating && currentCard?.isLaw ? (
+                <CongressSession
+                  key={currentCard.id}
+                  card={currentCard}
+                  gameState={gameState}
+                  presidentId={presidentId}
+                  onComplete={(decisions) => {
+                    trackCongressSession({ law: currentCard.id, turn: gameState.turn });
+                    resolveCongressSession(currentCard.id, decisions);
+                  }}
+                />
+              ) : !isAnimating ? (
+                <EventCardComponent
+                  key={currentCard.id}
+                  card={currentCard}
+                  selectedIndex={pendingChoiceIndex}
+                  onSelect={selectChoice}
+                  onConfirm={() => {
+                    if (pendingChoiceIndex !== null && currentCard) {
+                      trackTurnCompleted({
+                        turn_number: gameState.turn,
+                        event_category: currentCard.category,
+                        choice_index: pendingChoiceIndex,
+                      });
+                    }
+                    confirmChoice();
+                  }}
+                  disabled={isAnimating}
+                  presidentId={presidentId}
+                  gameState={gameState}
+                />
+              ) : null}
+            </AnimatePresence>
+
+            {isAnimating && !showTransition && (
+              <m.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex h-64 items-center justify-center"
+              >
+                <p className="animate-pulse font-mono text-2xl text-gold-400">Aplicando decisión...</p>
+              </m.div>
+            )}
+          </main>
+        </div>
+
+        {/* Bottom: Crisis alerts */}
+        {hasCrisis && (
+          <div className="mt-6">
+            <CrisisAlert crises={gameState.activeCrises} />
+          </div>
+        )}
+
+        {/* Shock notification */}
+        {gameState.activeShocks.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {gameState.activeShocks.map((shock) => (
+              <span
+                key={shock.id}
+                className="pixel-border bg-orange-900/50 px-3 py-1 font-mono text-xs text-orange-300"
+              >
+                ⚡ {shock.name} ({shock.turnsRemaining} turnos)
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* Fixed overlays */}
+      <AnibalTicker isCrisis={hasCrisis} />
+      {showDolarFloat && (
+        <div className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center">
+          <PixelDolar floating />
+        </div>
+      )}
+      {showCrowd && (
+        <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-40 flex items-end justify-around pb-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="pixel-crowd-torches h-8 w-2 bg-orange-500"
+              style={{ animationDelay: `${i * 0.12}s` }}
+            />
+          ))}
+        </div>
+      )}
+      {showConfetti && (
+        <div className="pointer-events-none fixed inset-0 z-40">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
+              key={i}
+              className="pixel-confetti-piece absolute"
+              style={{
+                left: `${5 + i * 9}%`,
+                top: `${15 + (i % 4) * 8}%`,
+                background: i % 2 === 0 ? 'var(--celeste)' : 'white',
+                animationDelay: `${i * 0.08}s`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+      {showMidGamePaywall && (
+        <PaywallModal
+          entitlement="full_access"
+          triggerPoint="mid_game_turn_5"
+          onClose={() => setShowMidGamePaywall(false)}
+        />
+      )}
+    </div>
+  );
+}

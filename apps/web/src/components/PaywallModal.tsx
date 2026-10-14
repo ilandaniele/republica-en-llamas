@@ -1,5 +1,5 @@
 ﻿import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { ENTITLEMENT_PRODUCTS } from '@republica/game-engine';
 import type { EntitlementId } from '@republica/game-engine';
 import { BuyButton } from './BuyButton.js';
@@ -37,7 +37,7 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
 
   return (
     <AnimatePresence>
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -45,7 +45,7 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
         style={{ background: 'rgba(0,0,0,0.75)' }}
         onClick={onClose}
       >
-        <motion.div
+        <m.div
           initial={{ scale: 0.9, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 20 }}
@@ -88,8 +88,8 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
           >
             Tal vez despues
           </button>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
     </AnimatePresence>
   );
 }
