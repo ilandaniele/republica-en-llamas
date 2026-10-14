@@ -18,7 +18,7 @@ Add a new playable president to República en Llamas.
 
 ### 1. `PortraitId` type update — `apps/web/src/components/illustrations/PixelPortrait.tsx`
 
-Add `'${characterId}'` to the `PortraitId` union type.
+Add `'${input:characterId}'` to the `PortraitId` union type.
 
 ### 2. New portrait function — same file
 
@@ -30,17 +30,17 @@ Create `function XxxPortrait({ mood }: { mood: PortraitMood })` returning a `<g>
 - Eyes as small rects or tiny circles
 - Mood variants: `neutral` (default expression), `panic` (stress marks/sweat), `victory` (smile/raised hands feel)
 
-In `PixelPortrait`, add `{base === '${characterId}' && <XxxPortrait mood={mood} />}` next to the existing portrait lines.
+In `PixelPortrait`, add `{base === '${input:characterId}' && <XxxPortrait mood={mood} />}` next to the existing portrait lines.
 
 ### 3. `entitlements.ts` — `packages/game-engine/src/entitlements.ts`
 
-If the president is NOT free tier, add `'${characterId}'` to the `unlocks` array of the `${entitlementId}` product. If `entitlementId` is `"free"`, add to `FREE_TIER.presidents` array instead.
+If the president is NOT free tier, add `'${input:characterId}'` to the `unlocks` array of the `${input:entitlementId}` product. If `entitlementId` is `"free"`, add to `FREE_TIER.presidents` array instead.
 
 ### 4. `PRESIDENT_NAMES` map — `apps/web/src/screens/GameOverScreen.tsx`
 
 Add:
 ```ts
-${characterId}: '${fullName}',
+${input:characterId}: '${input:fullName}',
 ```
 to the `PRESIDENT_NAMES` record.
 
