@@ -100,22 +100,21 @@ npm run build
 
 ## Supabase Edge Functions
 
+`submit-run` saves a finished run. It replays the seed and the player's decisions with the
+game engine and stores the score it computes, so the client never sends a score. The function
+imports a bundle of the engine that `npm run bundle:engine` writes to
+`supabase/functions/_shared/game-engine.js` (gitignored).
+
 ### Serve locally
 ```bash
-supabase functions serve validate-score --env-file .env
-```
-
-### Test
-```bash
-curl -X POST http://localhost:54321/functions/v1/validate-score \
-  -H "Authorization: Bearer <user-jwt>" \
-  -H "Content-Type: application/json" \
-  -d '{"runId": "<run-id>", "claimedScore": 5000}'
+npm run bundle:engine
+supabase functions serve submit-run --env-file .env
 ```
 
 ### Deploy
 ```bash
-supabase functions deploy validate-score
+supabase db push
+npm run deploy:submit-run
 ```
 
 ---
@@ -148,7 +147,7 @@ republica-en-llamas/
 │   └── mobile/           # Expo SDK 51
 └── supabase/
     ├── migrations/001_initial.sql
-    └── functions/validate-score/
+    └── functions/        (submit-run, create-checkout, ...)
 ```
 
 ---
