@@ -19,7 +19,7 @@ Before starting, read `HISTORICAL_SCENARIOS` in `packages/game-engine/src/consta
 
 ### 1. `ScenarioId` and `HISTORICAL_SCENARIOS`
 
-Add `'${scenarioId}'` to the `ScenarioId` union in `packages/game-engine/src/types.ts`, then add a `HistoricalScenarioConfig` entry to `HISTORICAL_SCENARIOS` in `packages/game-engine/src/constants.ts`. Follow the existing entries: `labelKey`, `periodKey`, `descriptionKey`, `entitlementRequired`, and the starting stats. Base the starting stats on real data where possible — they should tell the story before the first card is drawn.
+Add `'${input:scenarioId}'` to the `ScenarioId` union in `packages/game-engine/src/types.ts`, then add a `HistoricalScenarioConfig` entry to `HISTORICAL_SCENARIOS` in `packages/game-engine/src/constants.ts`. Follow the existing entries: `labelKey`, `periodKey`, `descriptionKey`, `entitlementRequired`, and the starting stats. Base the starting stats on real data where possible — they should tell the story before the first card is drawn.
 
 ### 2. Calendar and narrative arc — `packages/game-engine/src/constants.ts`
 
@@ -36,7 +36,7 @@ Historical card design rules:
 
 ### 4. i18n keys
 
-Add `scenario.${scenarioId}.label`, `scenario.${scenarioId}.period`, `scenario.${scenarioId}.description`, and all card strings to `i18n/es.ts` and `i18n/en.ts`. English translations should read like foreign press coverage of Argentina (Financial Times / BBC style).
+Add `scenario.${input:scenarioId}.label`, `scenario.${input:scenarioId}.period`, `scenario.${input:scenarioId}.description`, and all card strings to `i18n/es.ts` and `i18n/en.ts`. English translations should read like foreign press coverage of Argentina (Financial Times / BBC style).
 
 ### 5. Scenario picker
 

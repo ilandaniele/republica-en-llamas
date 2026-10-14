@@ -44,7 +44,7 @@ Always fire `$experiment_started` on component mount when a flag is read. Test o
 ## Paywall UI Rules
 
 - Always show `full_access` product first and visually largest — anchoring effect
-- Pricing order guideline: `full_access ($5.99)` → `presidents_pack ($2.99)` → individual packs ($1.99)
+- Pricing order guideline: `full_access` → `presidents_pack` → individual packs (highest price first)
 - The `ENTITLEMENT_PRODUCTS` record in `packages/game-engine/src/entitlements.ts` is the source of truth for prices and `stripePriceId`
 
 ## KPIs to Keep Instrumented
