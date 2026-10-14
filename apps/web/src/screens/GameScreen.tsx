@@ -361,9 +361,9 @@ export default function GameScreen() {
                   card={currentCard}
                   gameState={gameState}
                   presidentId={presidentId}
-                  onComplete={(choiceIdx, negEffects) => {
+                  onComplete={(decisions) => {
                     trackCongressSession({ law: currentCard.id, turn: gameState.turn });
-                    resolveCongressSession(choiceIdx, currentCard.id, negEffects);
+                    resolveCongressSession(currentCard.id, decisions);
                   }}
                 />
               ) : !isAnimating ? (
