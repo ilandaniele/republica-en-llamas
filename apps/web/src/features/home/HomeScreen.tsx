@@ -6,16 +6,16 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { Difficulty, ScenarioId } from '@republica/game-engine';
 import { HISTORICAL_SCENARIOS } from '@republica/game-engine';
-import { useGameStore } from '../stores/gameStore.js';
-import { useAuth } from '../hooks/useAuth.js';
-import { isOfflineMode } from '../lib/supabase.js';
-import { UserMenu } from '../components/UserMenu.js';
-import { useEntitlements, getDailyRunsRemaining, consumeDailyRun } from '../hooks/useEntitlements.js';
-import { BuyButton } from '../components/BuyButton.js';
-import { PaywallModal } from '../components/PaywallModal.js';
-import { ScenarioCard } from '../components/ScenarioCard.js';
-import { trackGameStarted } from '../lib/analytics.js';
-import { usePrefetchLeaderboard } from '../hooks/useLeaderboard.js';
+import { useGameStore } from '../../stores/gameStore.js';
+import { useAuth } from '../../hooks/useAuth.js';
+import { isOfflineMode } from '../../lib/supabase.js';
+import { UserMenu } from '../../components/UserMenu.js';
+import { useEntitlements, getDailyRunsRemaining, consumeDailyRun } from '../../hooks/useEntitlements.js';
+import { BuyButton } from '../../components/BuyButton.js';
+import { PaywallModal } from '../../components/PaywallModal.js';
+import { ScenarioCard } from './ScenarioCard.js';
+import { trackGameStarted } from '../../lib/analytics.js';
+import { usePrefetchLeaderboard } from '../../hooks/useLeaderboard.js';
 
 gsap.registerPlugin(useGSAP);
 

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { m } from 'framer-motion';
-import { useAuth } from '../hooks/useAuth.js';
+import { useAuth } from '../../hooks/useAuth.js';
 import {
   supabase,
   isOfflineMode,
   missingEnvVars,
   signInWithGoogle,
   translateAuthError,
-} from '../lib/supabase.js';
-import { useGameStore } from '../stores/gameStore.js';
+} from '../../lib/supabase.js';
+import { useGameStore } from '../../stores/gameStore.js';
 import type { Difficulty } from '@republica/game-engine';
 
 export default function LoginScreen() {

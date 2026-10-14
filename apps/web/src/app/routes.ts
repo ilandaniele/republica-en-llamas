@@ -2,17 +2,17 @@ import { lazy } from 'react';
 
 // Single source for route chunks, so React.lazy and prefetching share one import() per screen.
 export const routeLoaders = {
-  home: () => import('../screens/HomeScreen.js'),
-  game: () => import('../screens/GameScreen.js'),
-  crisis: () => import('../screens/CrisisScreen.js'),
-  gameOver: () => import('../screens/GameOverScreen.js'),
-  leaderboard: () => import('../screens/LeaderboardScreen.js'),
-  history: () => import('../screens/HistoryScreen.js'),
-  presidentSelect: () => import('../screens/PresidentSelectScreen.js'),
-  auth: () => import('../screens/AuthScreen.js'),
-  register: () => import('../screens/RegisterScreen.js'),
-  login: () => import('../screens/LoginScreen.js'),
-  profile: () => import('../screens/ProfileScreen.js'),
+  home: () => import('../features/home/HomeScreen.js'),
+  game: () => import('../features/game/GameScreen.js'),
+  crisis: () => import('../features/game/CrisisScreen.js'),
+  gameOver: () => import('../features/game-over/GameOverScreen.js'),
+  leaderboard: () => import('../features/leaderboard/LeaderboardScreen.js'),
+  history: () => import('../features/history/HistoryScreen.js'),
+  presidentSelect: () => import('../features/president-select/PresidentSelectScreen.js'),
+  auth: () => import('../features/auth/AuthScreen.js'),
+  register: () => import('../features/auth/RegisterScreen.js'),
+  login: () => import('../features/auth/LoginScreen.js'),
+  profile: () => import('../features/auth/ProfileScreen.js'),
 };
 
 export type RouteName = keyof typeof routeLoaders;

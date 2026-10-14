@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useGameStore } from '../stores/gameStore.js';
+import { useGameStore } from '../../stores/gameStore.js';
 import { getAnibalLine } from '@republica/game-engine';
 import type { GameState } from '@republica/game-engine';
 
@@ -127,10 +127,18 @@ export function AnibalTicker({ text, isCrisis = false }: Props) {
     lineTimerRef.current = setTimeout(() => {
       setCurrentLine(getDynamicLine(gameState));
     }, 18000);
-    return () => { if (lineTimerRef.current) clearTimeout(lineTimerRef.current); };
-  }, [gameState?.turn, gameState?.activeCrises.length, gameState?.economic.inflation, gameState?.political.popularity]); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => {
+      if (lineTimerRef.current) clearTimeout(lineTimerRef.current);
+    };
+  }, [
+    gameState?.turn,
+    gameState?.activeCrises.length,
+    gameState?.economic.inflation,
+    gameState?.political.popularity,
+  ]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const displayText = text ?? (gameState ? `📻 Aníbal (AM 1010): "${currentLine || getDynamicLine(gameState)}"` : '');
+  const displayText =
+    text ?? (gameState ? `📻 Aníbal (AM 1010): "${currentLine || getDynamicLine(gameState)}"` : '');
 
   if (!displayText) return null;
 

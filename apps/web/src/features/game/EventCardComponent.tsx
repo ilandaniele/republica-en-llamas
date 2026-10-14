@@ -1,16 +1,16 @@
 import React, { useCallback, useRef } from 'react';
-import { useTransientValue } from '../hooks/useTransientValue.js';
+import { useTransientValue } from '../../hooks/useTransientValue.js';
 import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { EventCard, GameState } from '@republica/game-engine';
 import { getSafestChoiceIndex } from '@republica/game-engine';
-import { CharacterPortrait } from './illustrations/characters/CharacterPortrait.js';
-import { EventIllustration } from './illustrations/EventIllustration.js';
-import { PixelPortrait } from './illustrations/PixelPortrait.js';
-import type { PortraitId } from './illustrations/PixelPortrait.js';
-import imageManifest from '../assets/image-manifest.json';
+import { CharacterPortrait } from '../../components/illustrations/characters/CharacterPortrait.js';
+import { EventIllustration } from '../../components/illustrations/EventIllustration.js';
+import { PixelPortrait } from '../../components/illustrations/PixelPortrait.js';
+import type { PortraitId } from '../../components/illustrations/PixelPortrait.js';
+import imageManifest from '../../assets/image-manifest.json';
 
 gsap.registerPlugin(useGSAP);
 

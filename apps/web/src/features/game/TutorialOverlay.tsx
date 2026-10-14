@@ -1,6 +1,6 @@
 import React from 'react';
 import { m, AnimatePresence } from 'framer-motion';
-import { useGameStore } from '../stores/gameStore.js';
+import { useGameStore } from '../../stores/gameStore.js';
 
 const TUTORIAL_STEPS = [
   {

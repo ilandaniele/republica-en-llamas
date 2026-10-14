@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m } from 'framer-motion';
-import { useLeaderboard } from '../hooks/useLeaderboard.js';
-import { useAuth } from '../hooks/useAuth.js';
+import { useLeaderboard } from '../../hooks/useLeaderboard.js';
+import { useAuth } from '../../hooks/useAuth.js';
 
 const DIFFICULTY_FILTERS = [
   { id: '', label: 'Todos' },

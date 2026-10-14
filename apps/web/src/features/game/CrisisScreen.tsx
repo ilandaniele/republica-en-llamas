@@ -1,6 +1,6 @@
 import React from 'react';
 import { m } from 'framer-motion';
-import { useGameStore } from '../stores/gameStore.js';
+import { useGameStore } from '../../stores/gameStore.js';
 
 const CRISIS_INFO: Record<string, { title: string; description: string; icon: string }> = {
   debtCrisis: {

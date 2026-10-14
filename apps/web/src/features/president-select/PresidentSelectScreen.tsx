@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m } from 'framer-motion';
-import { useGameStore } from '../stores/gameStore.js';
-import { useEntitlements } from '../hooks/useEntitlements.js';
-import imageManifest from '../assets/image-manifest.json';
-import { PaywallModal } from '../components/PaywallModal.js';
+import { useGameStore } from '../../stores/gameStore.js';
+import { useEntitlements } from '../../hooks/useEntitlements.js';
+import imageManifest from '../../assets/image-manifest.json';
+import { PaywallModal } from '../../components/PaywallModal.js';
 import { HISTORICAL_SCENARIOS } from '@republica/game-engine';
 import { useTranslation } from 'react-i18next';
 

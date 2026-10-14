@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../hooks/useAuth.js';
-import { useRunHistory } from '../hooks/useRunHistory.js';
+import { useAuth } from '../../hooks/useAuth.js';
+import { useRunHistory } from './useRunHistory.js';
 import { getCard } from '@republica/game-engine';
 
 export default function HistoryScreen() {

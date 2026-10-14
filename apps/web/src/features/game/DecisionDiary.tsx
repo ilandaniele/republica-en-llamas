@@ -1,7 +1,7 @@
 import React from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import type { TurnEvent } from '@republica/game-engine';
-import { useGameStore } from '../stores/gameStore.js';
+import { useGameStore } from '../../stores/gameStore.js';
 
 const EFFECT_SUMMARIES: Record<string, (val: number) => string> = {
   popularityDelta: (v) => `Popularidad ${v > 0 ? '+' : ''}${Math.round(v)}%`,

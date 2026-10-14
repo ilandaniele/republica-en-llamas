@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import type { GameState } from '@republica/game-engine';
-import { useGameStore } from '../stores/gameStore.js';
+import { useGameStore } from '../../stores/gameStore.js';
 import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
-import { PixelFuego } from './illustrations/PixelFuego.js';
+import { PixelFuego } from '../../components/illustrations/PixelFuego.js';
 
 // Inline mini Casa Rosada for the Termómetro Nacional section
 function CasaRosadaMini({ tense = false }: { tense?: boolean }) {

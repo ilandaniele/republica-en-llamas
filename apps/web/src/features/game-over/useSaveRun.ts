@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { supabase, isOfflineMode } from '../lib/supabase.js';
+import { supabase, isOfflineMode } from '../../lib/supabase.js';
 import type { RunConfig, TurnDecision } from '@republica/game-engine';
 
 interface SavedRun {

@@ -1,6 +1,6 @@
 # República en Llamas — Propuesta de arquitectura y plan de refactor
 
-Estado: **opción C elegida** (ver sección 5). La estructura todavía no se refactorizó.
+Estado: **opción C elegida** (ver sección 5). Fase 1 hecha: pantallas en `apps/web/src/features/<feature>/` con la regla `import/no-restricted-paths`, y `replayRun` validando puntajes en la edge function `submit-run`. Lo usado por dos o más features (store del juego, `PaywallModal`, `BuyButton`, `UserMenu`, `useLeaderboard`, `useAuth`, `useEntitlements`) queda en las carpetas compartidas.
 
 ## 1. Punto de partida
 
