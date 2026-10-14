@@ -8,6 +8,7 @@ import type {
   ScenarioId,
   CongressDecisions,
   TurnDecision,
+  RunConfig,
 } from '@republica/game-engine';
 import { trackTurnCompleted, trackCrisisTriggered } from '../lib/analytics.js';
 import { initGame, drawNextCard, applyNegotiation, resolveTurn, endTurn } from '@republica/game-engine';
@@ -57,6 +58,8 @@ interface GameStore {
   userId: string | null;
   isCrisisExpress: boolean;
   scenarioId: ScenarioId | null;
+  runConfig: RunConfig | null;
+  decisions: TurnDecision[];
 
   // Actions
   resolveCongressSession: (cardId: string, decisions: CongressDecisions) => void;
@@ -205,16 +208,31 @@ export const useGameStore = create<GameStore>()(
       userId: null,
       isCrisisExpress: false,
       scenarioId: null,
+      runConfig: null,
+      decisions: [],
 
       resolveCongressSession: (cardId, decisions) => {
         get().commitDecision({ kind: 'congress', cardId, decisions });
       },
 
       startNewGame: (difficulty, seed) => {
-        const s = seed ?? Math.floor(Math.random() * 1_000_000);
-        const state = initGame(difficulty, s, get().language, get().scenarioId ?? undefined);
+        const runConfig: RunConfig = {
+          seed: seed ?? Math.floor(Math.random() * 1_000_000),
+          difficulty,
+          language: get().language,
+          scenarioId: get().scenarioId,
+          crisisExpress: get().isCrisisExpress,
+        };
+        const state = initGame(
+          runConfig.difficulty,
+          runConfig.seed,
+          runConfig.language,
+          runConfig.scenarioId ?? undefined,
+        );
         const card = drawNextCard(state);
         set({
+          runConfig,
+          decisions: [],
           gameState: state,
           currentCard: card,
           pendingCardId: null,
@@ -276,6 +294,7 @@ export const useGameStore = create<GameStore>()(
 
         set({
           gameState: stateWithScore,
+          decisions: [...get().decisions, decision],
           pendingCardId: null,
           pendingChoiceIndex: null,
           isAnimating: true,
@@ -345,6 +364,8 @@ export const useGameStore = create<GameStore>()(
 
       resetGame: () =>
         set({
+          runConfig: null,
+          decisions: [],
           gameState: null,
           currentCard: null,
           pendingCardId: null,
@@ -397,6 +418,8 @@ export const useGameStore = create<GameStore>()(
         soundEnabled: s.soundEnabled,
         language: s.language,
         gameState: s.gameState,
+        runConfig: s.runConfig,
+        decisions: s.decisions,
         currentCard: s.currentCard,
         personalBest: s.personalBest,
         presidentId: s.presidentId,

@@ -12,7 +12,7 @@ function firstChoiceDecision(card: EventCard): TurnDecision {
 
 function playUntilOver(config: RunConfig, maxTurns = 100): TurnDecision[] {
   const crisisExpress = config.crisisExpress ?? false;
-  let state = initGame(config.difficulty, config.seed, config.language, config.scenarioId);
+  let state = initGame(config.difficulty, config.seed, config.language, config.scenarioId ?? undefined);
   const decisions: TurnDecision[] = [];
   while (!state.isGameOver && decisions.length < maxTurns) {
     const card = drawNextCard(state);
