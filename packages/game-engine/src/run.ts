@@ -18,7 +18,7 @@ export interface RunConfig {
   seed: number;
   difficulty: Difficulty;
   language?: Language;
-  scenarioId?: ScenarioId;
+  scenarioId?: ScenarioId | null;
   crisisExpress?: boolean;
 }
 
@@ -140,7 +140,7 @@ export function endTurn(state: GameState, crisisExpress = false): GameState {
 
 export function replayRun(config: RunConfig, decisions: TurnDecision[]): GameState {
   const crisisExpress = config.crisisExpress ?? false;
-  let state = initGame(config.difficulty, config.seed, config.language, config.scenarioId);
+  let state = initGame(config.difficulty, config.seed, config.language, config.scenarioId ?? undefined);
   for (const decision of decisions) {
     if (state.isGameOver) throw new Error('Decision after game over');
     const card = drawNextCard(state);

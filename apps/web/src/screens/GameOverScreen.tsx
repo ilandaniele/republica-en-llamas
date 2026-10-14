@@ -94,6 +94,8 @@ export default function GameOverScreen() {
   const updatePersonalBest = useGameStore((s) => s.updatePersonalBest);
   const presidentId = useGameStore((s) => s.presidentId);
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
+  const runConfig = useGameStore((s) => s.runConfig);
+  const decisions = useGameStore((s) => s.decisions);
   const { user } = useAuth();
   const { mutate: saveRun, isPending: isSaving, isSuccess: isSaved } = useSaveRun();
   const [copied, flashCopied] = useTransientValue(false);
@@ -170,8 +172,8 @@ export default function GameOverScreen() {
     .join(' ');
 
   const handleSaveScore = () => {
-    if (!user || isSaving || isSaved) return;
-    saveRun({ state: gameState, userId: user.id });
+    if (!user || !runConfig || isSaving || isSaved) return;
+    saveRun({ config: runConfig, decisions });
   };
 
   const handleCopyText = () => {
