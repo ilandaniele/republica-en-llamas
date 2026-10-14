@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { createRng } from '@republica/game-engine';
-import type { EventCard, GameState, ChoiceEffect } from '@republica/game-engine';
+import { CONGRESS_ACTIONS, resolveCongressSession } from '@republica/game-engine';
+import type {
+  EventCard,
+  GameState,
+  CongressActionId,
+  CongressDecisions,
+  SwingChoice,
+  SwingLegislatorId,
+} from '@republica/game-engine';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -18,31 +25,27 @@ interface Seat {
 }
 
 interface SwingSen {
-  id: string;
+  id: SwingLegislatorId;
   name: string;
   province: string;
   bloc: string;
   demand: string;
   costLabel: string;
-  effects: ChoiceEffect;
 }
 
-interface NegAction {
-  id: string;
+interface NegActionText {
+  id: CongressActionId;
   icon: string;
   label: string;
-  voteRange: [number, number];
   preview: string;
   costLabel: string;
-  effects: ChoiceEffect;
-  isDecree?: boolean;
 }
 
 interface Props {
   card: EventCard;
   gameState: GameState;
   presidentId: string;
-  onComplete: (choiceIndex: number, negEffects: ChoiceEffect) => void;
+  onComplete: (decisions: CongressDecisions) => void;
 }
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -76,7 +79,6 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'Interbloque Federal',
     demand: '"Presidente, necesito que me garantice la obra del puente sobre el río Bermejo."',
     costLabel: '+2% déficit',
-    effects: { deficitDelta: 2 },
   },
   {
     id: 'ferreyra',
@@ -85,7 +87,6 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'Movimiento Popular',
     demand: '"El sector minero salteño necesita ese subsidio. Sin él, no puedo acompañar."',
     costLabel: '+2% déficit, −3 popularidad',
-    effects: { deficitDelta: 2, popularityDelta: -3 },
   },
   {
     id: 'dominguez',
@@ -94,7 +95,6 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'Federal Productivo',
     demand: '"El campo entrerriano no aguanta más retenciones. Necesito una garantía escrita."',
     costLabel: '+3% déficit',
-    effects: { deficitDelta: 3 },
   },
   {
     id: 'paz',
@@ -103,7 +103,6 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'MPN',
     demand: '"Las regalías petroleras de Neuquén tienen que actualizarse urgente."',
     costLabel: '−4 reservas',
-    effects: { foreignReservesDelta: -4 },
   },
   {
     id: 'villegas',
@@ -112,7 +111,6 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'PJ Federal',
     demand: '"El fondo universitario de Tucumán tiene que estar garantizado en el texto."',
     costLabel: '+2% déficit, +5 popularidad',
-    effects: { deficitDelta: 2, popularityDelta: 5 },
   },
   {
     id: 'rios',
@@ -121,7 +119,6 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'Encuentro Liberal',
     demand: '"La obra hídrica del Iberá no puede esperar. Es lo único que le pido."',
     costLabel: '+2% déficit',
-    effects: { deficitDelta: 2 },
   },
   {
     id: 'medina',
@@ -130,7 +127,6 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'Productivos del Centro',
     demand: '"Los beneficios al litio son innegociables para San Juan. Sin eso, no."',
     costLabel: '+5 mercados, +1% déficit',
-    effects: { marketConfidenceDelta: 5, deficitDelta: 1 },
   },
   {
     id: 'torres',
@@ -139,7 +135,6 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'Fuerza Fueguina',
     demand: '"La zona franca fueguina es lo único que sostenemos. Extiéndala."',
     costLabel: '+3% déficit',
-    effects: { deficitDelta: 3 },
   },
   {
     id: 'blanco',
@@ -148,7 +143,6 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'PJ Riojano',
     demand: '"La ruta 40 cruza mi provincia. Sin plata para obras, no tengo cómo justificar mi voto."',
     costLabel: '+2% déficit',
-    effects: { deficitDelta: 2 },
   },
   {
     id: 'caceres',
@@ -157,71 +151,52 @@ const SWING_POOL: SwingSen[] = [
     bloc: 'Renovación Misionera',
     demand: '"El turismo de Misiones necesita fondos ahora. Las Cataratas no pueden esperar."',
     costLabel: '+1% déficit, +3 popularidad',
-    effects: { deficitDelta: 1, popularityDelta: 3 },
   },
 ];
 
 // ── Negotiation actions ──────────────────────────────────────────────────────
 
-const NEG_ACTIONS: NegAction[] = [
+const NEG_ACTION_TEXT: NegActionText[] = [
   {
     id: 'radical',
     icon: '📞',
     label: 'Llamar al bloque radical',
-    voteRange: [8, 12],
     preview: 'Convocás a los radicales disidentes. Suman votos pero hay costos políticos.',
     costLabel: '−5 popularidad',
-    effects: { popularityDelta: -5 },
   },
   {
     id: 'presupuesto',
     icon: '💰',
     label: 'Ofrecer partida presupuestaria',
-    voteRange: [10, 15],
     preview: 'Comprás votos con fondos públicos. Efectivo pero costoso.',
     costLabel: '+3% déficit',
-    effects: { deficitDelta: 3 },
   },
   {
     id: 'cadena',
     icon: '📺',
     label: 'Cadena nacional',
-    voteRange: [3, 7],
     preview: 'Presión mediática sobre legisladores indecisos. Rinde menos de lo esperado.',
     costLabel: '−8 credibilidad mediática',
-    effects: { mediaCredibilityDelta: -8 },
   },
   {
     id: 'gobernadores',
     icon: '🤝',
     label: 'Negociar con gobernadores',
-    voteRange: [6, 10],
     preview: 'Alianza territorial a cambio de obra pública. Moderado pero real.',
     costLabel: '−2 reservas, −3 popularidad',
-    effects: { foreignReservesDelta: -2, popularityDelta: -3 },
   },
   {
     id: 'decreto',
     icon: '⚡',
     label: 'Amenazar con decreto',
-    voteRange: [0, 0],
     preview: 'Saltás el Congreso. La ley pasa pero la oposición y la prensa te destruyen.',
     costLabel: '+15 inestabilidad, −12 credibilidad',
-    effects: { stabilityDelta: -15, mediaCredibilityDelta: -12, emergencyDecreeDelta: 1 },
-    isDecree: true,
   },
 ];
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+const NEG_ACTIONS = NEG_ACTION_TEXT.map((text) => ({ ...text, ...CONGRESS_ACTIONS[text.id] }));
 
-function mergeEffects(a: ChoiceEffect, b: ChoiceEffect): ChoiceEffect {
-  const keys = new Set([...Object.keys(a), ...Object.keys(b)]) as Set<keyof ChoiceEffect>;
-  const result: ChoiceEffect = {};
-  for (const k of keys) {
-    result[k] = ((a[k] as number) ?? 0) + ((b[k] as number) ?? 0);
-  }
-  return result;
-}
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function playTick(freq = 220) {
   try {
@@ -291,31 +266,26 @@ function computeSeats(congress: GameState['congress']): Seat[] {
 export function CongressSession({ card, gameState, onComplete }: Props) {
   const { t } = useTranslation();
   const congress = gameState.congress;
-  const TOTAL_REAL = congress.governmentSeats + congress.oppositionSeats + congress.independentSeats;
-  const REQUIRED_REAL = Math.floor(TOTAL_REAL / 2) + 1;
 
   // ── Phase state ────────────────────────────────────────────────────────────
   const [phase, setPhase] = useState<Phase>('negotiation');
-  const [actionsUsed, setActionsUsed] = useState<string[]>([]);
-  const [actionPoints, setActionPoints] = useState(3);
-  const [negBonusVotes, setNegBonusVotes] = useState(0); // extra YES votes (real count)
-  const [negEffects, setNegEffects] = useState<ChoiceEffect>({});
-  const [usedDecree, setUsedDecree] = useState(false);
+  const [decisions, setDecisions] = useState<CongressDecisions>({ actions: [], swingChoices: [] });
   const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
   // Vote animation
   const [seatVotes, setSeatVotes] = useState<VoteStatus[]>(() => new Array(VISUAL_SEATS).fill('pending'));
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const rngRef = useRef(createRng(gameState.seed + gameState.turn));
 
-  // Swing senators (phase 4)
-  const [swingSens, setSwingSens] = useState<SwingSen[]>([]);
-  const [swingIdx, setSwingIdx] = useState(0);
-  const [swingExtraYes, setSwingExtraYes] = useState(0);
-  const [swingExtraNo, setSwingExtraNo] = useState(0);
-
-  // Result
-  const [finalYesReal, setFinalYesReal] = useState(0);
+  const outcome = useMemo(() => resolveCongressSession(gameState, decisions), [gameState, decisions]);
+  const TOTAL_REAL = outcome.totalSeats;
+  const REQUIRED_REAL = outcome.requiredVotes;
+  const actionsUsed = decisions.actions;
+  const actionPoints = outcome.actionPointsLeft;
+  const swingSens = useMemo(
+    () => outcome.swingCandidates.flatMap((id) => SWING_POOL.filter((sen) => sen.id === id)),
+    [outcome.swingCandidates],
+  );
+  const swingIdx = decisions.swingChoices.length;
 
   // Seat layout (memoized)
   const seats = useMemo(
@@ -324,14 +294,8 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
   );
 
   // ── Derived vote counts ────────────────────────────────────────────────────
-  const indYesPercent = Math.min(
-    100,
-    (congress.independentSupportBonus ?? 0) +
-      Math.round((negBonusVotes / Math.max(1, congress.independentSeats)) * 100),
-  );
-  const baseYesReal =
-    congress.governmentSeats + Math.floor((congress.independentSeats * indYesPercent) / 100);
-  const projectedYes = baseYesReal;
+  const indYesPercent = outcome.independentYesPercent;
+  const projectedYes = outcome.votingYes;
   const projectedNo = TOTAL_REAL - projectedYes;
 
   // Current live vote count (from animated visual dots)
@@ -350,27 +314,12 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
 
   // ── Negotiation handler ────────────────────────────────────────────────────
   const handleAction = useCallback(
-    (action: NegAction) => {
+    (action: (typeof NEG_ACTIONS)[number]) => {
       if (actionsUsed.includes(action.id) || actionPoints <= 0) return;
-
-      if (action.isDecree) {
-        setUsedDecree(true);
-        setNegEffects((prev) => mergeEffects(prev, action.effects));
-        setActionsUsed((prev) => [...prev, action.id]);
-        // Skip to result immediately
-        setPhase('result');
-        setFinalYesReal(TOTAL_REAL); // decree passes regardless
-        return;
-      }
-
-      const bonus =
-        action.voteRange[0] + Math.floor(rngRef.current() * (action.voteRange[1] - action.voteRange[0] + 1));
-      setNegBonusVotes((prev) => prev + bonus);
-      setNegEffects((prev) => mergeEffects(prev, action.effects));
-      setActionsUsed((prev) => [...prev, action.id]);
-      setActionPoints((prev) => prev - 1);
+      setDecisions((prev) => ({ ...prev, actions: [...prev.actions, action.id] }));
+      if (action.isDecree) setPhase('result');
     },
-    [actionsUsed, actionPoints, TOTAL_REAL],
+    [actionsUsed, actionPoints],
   );
 
   // ── Start voting animation ─────────────────────────────────────────────────
@@ -461,56 +410,25 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
     // Compute final result
     ts.push(
       setTimeout(() => {
-        const realYes = Math.max(0, Math.round(baseYesReal));
-        setFinalYesReal(realYes);
-        const margin = Math.abs(realYes - REQUIRED_REAL);
-
-        if (margin <= 5 && SWING_POOL.length > 0) {
-          // Select 3 random swing senators
-          const shuffled = [...SWING_POOL].sort(() => rngRef.current() - 0.5).slice(0, 3);
-          setSwingSens(shuffled);
-          setSwingIdx(0);
-          setPhase('swing');
-        } else {
-          setPhase('result');
-        }
+        setPhase(outcome.swingCandidates.length > 0 ? 'swing' : 'result');
       }, delay + 600),
     );
 
     timeoutsRef.current = ts;
-  }, [seats, indYesPercent, baseYesReal, negBonusVotes, congress, REQUIRED_REAL]);
+  }, [seats, indYesPercent, outcome.swingCandidates]);
 
   // ── Swing senator decisions ────────────────────────────────────────────────
   const handleSwingChoice = useCallback(
-    (choice: 'accept' | 'refuse' | 'decide') => {
-      const sen = swingSens[swingIdx];
-      if (!sen) return;
-
-      if (choice === 'accept') {
-        setNegEffects((prev) => mergeEffects(prev, sen.effects));
-        setSwingExtraYes((prev) => prev + 1);
-      } else if (choice === 'refuse') {
-        setSwingExtraNo((prev) => prev + 1);
-      } else {
-        // Random 50/50
-        if (rngRef.current() < 0.5) setSwingExtraYes((prev) => prev + 1);
-        else setSwingExtraNo((prev) => prev + 1);
-      }
-
-      const next = swingIdx + 1;
-      if (next >= swingSens.length) {
-        setPhase('result');
-      } else {
-        setSwingIdx(next);
-      }
+    (choice: SwingChoice) => {
+      if (swingIdx >= swingSens.length) return;
+      setDecisions((prev) => ({ ...prev, swingChoices: [...prev.swingChoices, choice] }));
+      if (swingIdx + 1 >= swingSens.length) setPhase('result');
     },
     [swingSens, swingIdx],
   );
 
   // ── Result computation ─────────────────────────────────────────────────────
-  const finalYes = finalYesReal + swingExtraYes - swingExtraNo;
-  const lawPassed = usedDecree || finalYes >= REQUIRED_REAL;
-  const resultChoiceIdx = usedDecree ? 2 : lawPassed ? 0 : 1;
+  const { finalYes, usedDecree, passed: lawPassed, choiceIndex: resultChoiceIdx } = outcome;
   const margin = Math.abs(finalYes - REQUIRED_REAL);
 
   // ── Render helpers ─────────────────────────────────────────────────────────
@@ -823,11 +741,9 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
 
         {/* Current count */}
         <div className="text-center font-mono text-sm">
-          <span className="text-emerald-400">{finalYesReal + swingExtraYes} SÍ</span>
+          <span className="text-emerald-400">{finalYes} SÍ</span>
           <span className="mx-2 text-smoke-600">—</span>
-          <span className="text-crimson-400">
-            {TOTAL_REAL - finalYesReal - swingExtraYes + swingExtraNo} NO
-          </span>
+          <span className="text-crimson-400">{TOTAL_REAL - finalYes} NO</span>
           <span className="text-smoke-500 ml-3 text-xs">({REQUIRED_REAL} para mayoría)</span>
         </div>
 
@@ -1006,7 +922,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
 
         {/* Continue button */}
         <button
-          onClick={() => onComplete(resultChoiceIdx, negEffects)}
+          onClick={() => onComplete(decisions)}
           className={`w-full rounded-md px-6 py-3 font-serif font-bold uppercase tracking-wider transition-colors ${
             lawPassed || usedDecree
               ? 'bg-gold-500 text-navy-900 hover:bg-gold-400'

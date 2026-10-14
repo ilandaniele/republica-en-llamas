@@ -7,6 +7,7 @@ import type {
   NegotiationType,
   GameOverReason,
   ScenarioId,
+  CongressDecisions,
 } from '@republica/game-engine';
 import { trackTurnCompleted, trackCrisisTriggered } from '../lib/analytics.js';
 import {
@@ -17,6 +18,7 @@ import {
   applyNegotiation,
   applyChoiceEffects,
   calculateScore,
+  resolveCongressSession as resolveCongressOutcome,
 } from '@republica/game-engine';
 import type { EventCard } from '@republica/game-engine';
 
@@ -112,11 +114,7 @@ interface GameStore {
   scenarioId: ScenarioId | null;
 
   // Actions
-  resolveCongressSession: (
-    choiceIndex: number,
-    cardId: string,
-    negEffects: import('@republica/game-engine').ChoiceEffect,
-  ) => void;
+  resolveCongressSession: (cardId: string, decisions: CongressDecisions) => void;
   startNewGame: (difficulty: Difficulty, seed?: number) => void;
   setUserId: (id: string | null) => void;
   setCrisisExpress: (val: boolean) => void;
@@ -262,12 +260,12 @@ export const useGameStore = create<GameStore>()(
       isCrisisExpress: false,
       scenarioId: null,
 
-      resolveCongressSession: (choiceIndex, cardId, negEffects) => {
+      resolveCongressSession: (cardId, decisions) => {
         const { gameState, isCrisisExpress } = get();
         if (!gameState) return;
+        const { choiceIndex, effects } = resolveCongressOutcome(gameState, decisions);
         // Apply negotiation side-effects (costs from actions taken)
-        const withNeg =
-          Object.keys(negEffects).length > 0 ? applyChoiceEffects(gameState, negEffects) : gameState;
+        const withNeg = Object.keys(effects).length > 0 ? applyChoiceEffects(gameState, effects) : gameState;
         // Apply law outcome
         let afterChoice = applyChoice(withNeg, cardId, choiceIndex);
         if (isCrisisExpress) afterChoice = applyCrisisExpressMultiplier(withNeg, afterChoice);
