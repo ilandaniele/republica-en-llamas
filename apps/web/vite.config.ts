@@ -5,7 +5,6 @@ import path from 'path';
 // Stable vendor chunks: cached across deploys and fetched only by screens that need them.
 const VENDOR_CHUNKS: Record<string, string[]> = {
   'vendor-react': ['react', 'react-dom', 'react-router-dom', 'scheduler'],
-  'vendor-motion': ['framer-motion'],
   'vendor-gsap': ['gsap', '@gsap/react'],
   'vendor-supabase': ['@supabase/'],
   'vendor-query': ['@tanstack/'],
