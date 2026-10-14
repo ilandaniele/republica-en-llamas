@@ -1,6 +1,6 @@
 # República en Llamas — Propuesta de arquitectura y plan de refactor
 
-Estado: **opción C elegida** (ver sección 5). La estructura todavía no se refactorizó.
+Estado: **opción C elegida** (ver sección 5). Fase 1 hecha: pantallas en `apps/web/src/features/<feature>/` con la regla `import/no-restricted-paths`, y `replayRun` validando puntajes en la edge function `submit-run`. Lo usado por dos o más features (store del juego, `PaywallModal`, `BuyButton`, `UserMenu`, `useLeaderboard`, `useAuth`, `useEntitlements`) queda en las carpetas compartidas.
 
 ## 1. Punto de partida
 
@@ -107,6 +107,8 @@ Cada fase termina con: `npm run lint` sin errores, type-check de ambos workspace
 7. **Guardado duplicado de runs.** Idempotencia por `run_id` (upsert) y guardia en el cliente.
 
 Estado (rama `fix/phase0-security`): resueltos 4, 5 (migración `005_username_available.sql`, función `security definer` que solo devuelve existencia), 6 (se quitó `country` del cliente) y la guardia de cliente de 7. En 2, las tiradas de `CongressSession` que afectan el resultado usan `createRng(seed + turn)`. Quedan 1 y 3, que requieren replay completo del motor en una edge function (incluyendo las acciones de negociación en `run_events`), y la idempotencia de 7 en servidor, que conviene resolver junto con 1.
+
+Estado (rama `refactor/phase1-structure`): resueltos 1, 3 y 7. El store registra `runConfig` y las decisiones de cada turno; la edge function `submit-run` las reproduce con `replayRun` (bundle del motor generado con `npm run bundle:engine`) y guarda el puntaje que calcula el servidor. La migración `006_server_validated_runs.sql` quita los permisos de insert/update del cliente y agrega un índice único por usuario, semilla y decisiones. Se eliminó `validate-score`. Límite conocido: la semilla todavía la elige el cliente, así que un jugador puede probar semillas hasta encontrar una favorable.
 
 ### Fase 1 — Estructura base
 

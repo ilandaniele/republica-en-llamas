@@ -1,5 +1,5 @@
 ---
-applyTo: "apps/web/src/lib/analytics.ts, apps/web/src/components/PaywallModal.tsx, apps/web/src/components/BuyButton.tsx, apps/web/src/hooks/useEntitlements.ts, apps/web/src/screens/GameOverScreen.tsx"
+applyTo: "apps/web/src/lib/analytics.ts, apps/web/src/components/PaywallModal.tsx, apps/web/src/components/BuyButton.tsx, apps/web/src/hooks/useEntitlements.ts, apps/web/src/features/game-over/GameOverScreen.tsx"
 ---
 
 # Analytics & Monetization — Contributor Instructions

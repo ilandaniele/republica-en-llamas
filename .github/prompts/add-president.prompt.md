@@ -36,7 +36,7 @@ In `PixelPortrait`, add `{base === '${input:characterId}' && <XxxPortrait mood={
 
 If the president is NOT free tier, add `'${input:characterId}'` to the `unlocks` array of the `${input:entitlementId}` product. If `entitlementId` is `"free"`, add to `FREE_TIER.presidents` array instead.
 
-### 4. `PRESIDENT_NAMES` map — `apps/web/src/screens/GameOverScreen.tsx`
+### 4. `PRESIDENT_NAMES` map — `apps/web/src/features/game-over/GameOverScreen.tsx`
 
 Add:
 ```ts
@@ -44,7 +44,7 @@ ${input:characterId}: '${input:fullName}',
 ```
 to the `PRESIDENT_NAMES` record.
 
-### 5. President select screen — `apps/web/src/screens/PresidentSelectScreen.tsx`
+### 5. President select screen — `apps/web/src/features/president-select/PresidentSelectScreen.tsx`
 
 Check if the president needs to be added to the president list rendered there (read the file first to understand the data structure).
 

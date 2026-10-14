@@ -106,6 +106,9 @@ export type Tables = {
     is_win: boolean;
     final_state: unknown;
     language: string;
+    crisis_express: boolean;
+    scenario_id: string | null;
+    decisions: unknown;
     created_at: string;
     completed_at: string | null;
   };
