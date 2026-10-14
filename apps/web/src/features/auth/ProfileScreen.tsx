@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../hooks/useAuth.js';
-import { supabase, isOfflineMode } from '../lib/supabase.js';
-import { useGameStore } from '../stores/gameStore.js';
-import type { Tables } from '../lib/supabase.js';
+import { useAuth } from '../../hooks/useAuth.js';
+import { supabase, isOfflineMode } from '../../lib/supabase.js';
+import { useGameStore } from '../../stores/gameStore.js';
+import type { Tables } from '../../lib/supabase.js';
 
 type GameRun = Tables['game_runs'];
 

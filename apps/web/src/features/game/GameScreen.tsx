@@ -2,31 +2,31 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useGameStore } from '../stores/gameStore.js';
-import { VariablesPanel } from '../components/VariablesPanel.js';
-import { EventCardComponent } from '../components/EventCardComponent.js';
-import { CrisisAlert } from '../components/CrisisAlert.js';
-import { TensionMeter } from '../components/TensionMeter.js';
-import { TutorialOverlay } from '../components/TutorialOverlay.js';
-import { OfflineBanner } from '../components/OfflineBanner.js';
-import { TurnTransitionScreen } from '../components/TurnTransitionScreen.js';
-import { DecisionDiary } from '../components/DecisionDiary.js';
-import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
-import { CongressSession } from '../components/CongressSession.js';
-import type { PortraitMood } from '../components/illustrations/PixelPortrait.js';
-import { UserMenu } from '../components/UserMenu.js';
+import { useGameStore } from '../../stores/gameStore.js';
+import { VariablesPanel } from './VariablesPanel.js';
+import { EventCardComponent } from './EventCardComponent.js';
+import { CrisisAlert } from './CrisisAlert.js';
+import { TensionMeter } from './TensionMeter.js';
+import { TutorialOverlay } from './TutorialOverlay.js';
+import { OfflineBanner } from '../../components/OfflineBanner.js';
+import { TurnTransitionScreen } from './TurnTransitionScreen.js';
+import { DecisionDiary } from './DecisionDiary.js';
+import { PixelPortrait } from '../../components/illustrations/PixelPortrait.js';
+import { CongressSession } from './CongressSession.js';
+import type { PortraitMood } from '../../components/illustrations/PixelPortrait.js';
+import { UserMenu } from '../../components/UserMenu.js';
 import {
   getFeatureFlag,
   trackCongressSession,
   trackExperimentStarted,
   trackTurnCompleted,
-} from '../lib/analytics.js';
-import { BuenosAiresBackground } from '../components/illustrations/BuenosAiresBackground.js';
-import { AnibalTicker } from '../components/AnibalTicker.js';
-import { PixelDolar } from '../components/illustrations/PixelDolar.js';
-import { PaywallModal } from '../components/PaywallModal.js';
-import { useTransientValue } from '../hooks/useTransientValue.js';
-import { useEntitlements } from '../hooks/useEntitlements.js';
+} from '../../lib/analytics.js';
+import { BuenosAiresBackground } from '../../components/illustrations/BuenosAiresBackground.js';
+import { AnibalTicker } from './AnibalTicker.js';
+import { PixelDolar } from '../../components/illustrations/PixelDolar.js';
+import { PaywallModal } from '../../components/PaywallModal.js';
+import { useTransientValue } from '../../hooks/useTransientValue.js';
+import { useEntitlements } from '../../hooks/useEntitlements.js';
 
 const DIFFICULTY_LABELS: Record<string, string> = {
   easy: 'Fácil',
@@ -279,7 +279,7 @@ export default function GameScreen() {
           <div className="flex items-center gap-3">
             <div className="pixel-border h-12 w-12 overflow-hidden">
               <PixelPortrait
-                id={presidentId as import('../components/illustrations/PixelPortrait.js').PortraitId}
+                id={presidentId as import('../../components/illustrations/PixelPortrait.js').PortraitId}
                 mood={idlePresidentMood ?? presidentMood}
                 px={48}
               />

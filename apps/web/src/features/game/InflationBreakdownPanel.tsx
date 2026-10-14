@@ -27,41 +27,45 @@ export function InflationBreakdownPanel({ breakdown }: Props) {
   ].filter((f) => Math.abs(f.value) >= 0.1);
 
   return (
-    <div className="bg-navy-900 border border-navy-600 rounded-lg p-4 text-xs font-mono">
+    <div className="rounded-lg border border-navy-600 bg-navy-900 p-4 font-mono text-xs">
       {isDeflation && (
-        <p className="text-crimson-400 font-bold uppercase tracking-widest mb-2 text-[9px] animate-pulse">
+        <p className="mb-2 animate-pulse text-[9px] font-bold uppercase tracking-widest text-crimson-400">
           ⚠️ DEFLACIÓN PELIGROSA
         </p>
       )}
-      <p className="text-smoke-500 uppercase tracking-widest mb-3 text-[10px]">
+      <p className="text-smoke-500 mb-3 text-[10px] uppercase tracking-widest">
         Desglose Inflacionario — Turno
       </p>
 
-      <div className="space-y-2 mb-3">
+      <div className="mb-3 space-y-2">
         {factors.map((f) => (
           <div key={f.label} className="flex items-center justify-between">
-            <span className="text-smoke-400 flex items-center gap-1">
+            <span className="flex items-center gap-1 text-smoke-400">
               <span>{f.emoji}</span>
               <span>{f.label}</span>
             </span>
             <span className={`font-bold ${f.value > 0 ? 'text-crimson-400' : 'text-emerald-400'}`}>
-              {f.value > 0 ? '+' : ''}{f.value.toFixed(1)}%
+              {f.value > 0 ? '+' : ''}
+              {f.value.toFixed(1)}%
             </span>
           </div>
         ))}
       </div>
 
-      <div className="border-t border-navy-600 pt-2 flex justify-between">
+      <div className="flex justify-between border-t border-navy-600 pt-2">
         <span className="text-smoke-300 font-bold">Total nueva inflación</span>
-        <span className={`font-bold text-sm ${breakdown.delta > 2 ? 'text-crimson-400' : breakdown.delta > 0 ? 'text-gold-400' : 'text-emerald-400'}`}>
+        <span
+          className={`text-sm font-bold ${breakdown.delta > 2 ? 'text-crimson-400' : breakdown.delta > 0 ? 'text-gold-400' : 'text-emerald-400'}`}
+        >
           {breakdown.newInflation.toFixed(1)}%
-          <span className="text-xs ml-1 opacity-70">
-            ({breakdown.delta > 0 ? '+' : ''}{breakdown.delta.toFixed(1)})
+          <span className="ml-1 text-xs opacity-70">
+            ({breakdown.delta > 0 ? '+' : ''}
+            {breakdown.delta.toFixed(1)})
           </span>
         </span>
       </div>
 
-      <div className="mt-3 bg-navy-800 border border-navy-700 rounded px-3 py-2 italic text-smoke-500 text-[10px]">
+      <div className="text-smoke-500 mt-3 rounded border border-navy-700 bg-navy-800 px-3 py-2 text-[10px] italic">
         💼 "{quote}" — <span className="not-italic">Luis Caputo, Min. Economía</span>
       </div>
     </div>

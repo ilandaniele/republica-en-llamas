@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { ScenarioId } from '@republica/game-engine';
-import { ScenarioIllustration } from './illustrations/ScenarioIllustration.js';
-import { useGameStore } from '../stores/gameStore.js';
+import { ScenarioIllustration } from '../../components/illustrations/ScenarioIllustration.js';
+import { useGameStore } from '../../stores/gameStore.js';
 
 gsap.registerPlugin(useGSAP);
 
@@ -13,21 +13,21 @@ interface Props {
   period: string;
   description: string;
   locked: boolean;
-  index: number;        // stagger position
+  index: number; // stagger position
   onClick: () => void;
 }
 
 // Pixel-era "scan-line" colour per scenario era
 const ERA_ACCENT: Record<string, string> = {
-  hiperinflacion_1989:  '#CC2200',  // crisis red
-  corralito_2001:       '#CC2200',
-  convertibilidad:      '#74ACDF',  // celeste — stable era
-  rodrigazo_1975:       '#F6B40E',  // gold — social unrest
-  malvinas_1982:        '#74ACDF',
-  kirchnerismo_boom:    '#2e7d32',  // green — boom
+  hiperinflacion_1989: '#CC2200', // crisis red
+  corralito_2001: '#CC2200',
+  convertibilidad: '#74ACDF', // celeste — stable era
+  rodrigazo_1975: '#F6B40E', // gold — social unrest
+  malvinas_1982: '#74ACDF',
+  kirchnerismo_boom: '#2e7d32', // green — boom
   libertad_avanza_2023: '#CC2200',
-  guerra_ucrania_2022:  '#ffd500',  // Ukrainian yellow
-  conflicto_iran_2024:  '#ff9900',  // orange — oil/conflict
+  guerra_ucrania_2022: '#ffd500', // Ukrainian yellow
+  conflicto_iran_2024: '#ff9900', // orange — oil/conflict
 };
 
 export function ScenarioCard({ id, label, period, description, locked, index, onClick }: Props) {
@@ -44,52 +44,55 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
   const targetYear = parseInt(period.slice(0, 4), 10);
 
   // ── Enter animation: stagger reveal + year counter ──────────────────────
-  useGSAP(() => {
-    if (!cardRef.current) return;
+  useGSAP(
+    () => {
+      if (!cardRef.current) return;
 
-    const delay = index * 0.08;
+      const delay = index * 0.08;
 
-    // Card slides up from below with clip-path reveal
-    gsap.fromTo(
-      cardRef.current,
-      { autoAlpha: 0, y: 24, clipPath: 'inset(100% 0% 0% 0%)' },
-      {
-        autoAlpha: 1,
-        y: 0,
-        clipPath: 'inset(0% 0% 0% 0%)',
-        duration: 0.5,
-        delay,
-        ease: 'power3.out',
-        immediateRender: false,
-      }
-    );
-
-    // Label and description stagger inside the card
-    if (labelRef.current && descRef.current) {
+      // Card slides up from below with clip-path reveal
       gsap.fromTo(
-        [labelRef.current, descRef.current],
-        { autoAlpha: 0, x: -8 },
-        { autoAlpha: 1, x: 0, duration: 0.35, delay: delay + 0.3, stagger: 0.08, ease: 'power2.out' }
+        cardRef.current,
+        { autoAlpha: 0, y: 24, clipPath: 'inset(100% 0% 0% 0%)' },
+        {
+          autoAlpha: 1,
+          y: 0,
+          clipPath: 'inset(0% 0% 0% 0%)',
+          duration: 0.5,
+          delay,
+          ease: 'power3.out',
+          immediateRender: false,
+        },
       );
-    }
 
-    // Year counter animation
-    if (!isNaN(targetYear) && yearRef.current) {
-      const startYear = targetYear - 12;
-      const counter = { val: startYear };
-      gsap.to(counter, {
-        val: targetYear,
-        duration: 0.7,
-        delay: delay + 0.15,
-        ease: 'power2.inOut',
-        snap: { val: 1 },
-        onUpdate: () => setYearDisplay(String(Math.round(counter.val))),
-        onComplete: () => setYearDisplay(period),
-      });
-    } else {
-      setYearDisplay(period);
-    }
-  }, { scope: cardRef, dependencies: [index] });
+      // Label and description stagger inside the card
+      if (labelRef.current && descRef.current) {
+        gsap.fromTo(
+          [labelRef.current, descRef.current],
+          { autoAlpha: 0, x: -8 },
+          { autoAlpha: 1, x: 0, duration: 0.35, delay: delay + 0.3, stagger: 0.08, ease: 'power2.out' },
+        );
+      }
+
+      // Year counter animation
+      if (!isNaN(targetYear) && yearRef.current) {
+        const startYear = targetYear - 12;
+        const counter = { val: startYear };
+        gsap.to(counter, {
+          val: targetYear,
+          duration: 0.7,
+          delay: delay + 0.15,
+          ease: 'power2.inOut',
+          snap: { val: 1 },
+          onUpdate: () => setYearDisplay(String(Math.round(counter.val))),
+          onComplete: () => setYearDisplay(period),
+        });
+      } else {
+        setYearDisplay(period);
+      }
+    },
+    { scope: cardRef, dependencies: [index] },
+  );
 
   // ── Hover: scanline sweep across the card ───────────────────────────────
   const { contextSafe } = useGSAP({ scope: cardRef });
@@ -99,7 +102,7 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
     gsap.fromTo(
       scanRef.current,
       { scaleY: 0, autoAlpha: 0.6, top: 0 },
-      { scaleY: 1, autoAlpha: 0, top: '100%', duration: 0.4, ease: 'power1.inOut', overwrite: true }
+      { scaleY: 1, autoAlpha: 0, top: '100%', duration: 0.4, ease: 'power1.inOut', overwrite: true },
     );
     gsap.to(cardRef.current, {
       boxShadow: `0 0 0 2px ${accent}, 0 0 12px ${accent}44`,
@@ -125,13 +128,13 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="border-2 border-navy-600 bg-navy-800 text-left relative overflow-hidden"
+      className="relative overflow-hidden border-2 border-navy-600 bg-navy-800 text-left"
       style={{ willChange: 'transform, opacity', display: 'block', width: '100%' }}
     >
       {/* Scanline sweep overlay */}
       <div
         ref={scanRef}
-        className="absolute inset-x-0 pointer-events-none"
+        className="pointer-events-none absolute inset-x-0"
         style={{
           height: '100%',
           background: `linear-gradient(to bottom, transparent, ${accent}33, transparent)`,
@@ -143,8 +146,8 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
 
       {/* Lock overlay */}
       {locked && (
-        <div className="absolute inset-0 bg-navy-900/70 flex items-center justify-center z-10">
-          <span className="text-gold-400 font-serif text-[8px]">🔒 PRO</span>
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-navy-900/70">
+          <span className="font-serif text-[8px] text-gold-400">🔒 PRO</span>
         </div>
       )}
 
@@ -159,31 +162,24 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
       {/* Text content */}
       <div className="p-3">
         {/* Year badge */}
-        <div className="font-mono text-xs mb-1" style={{ color: accent }}>
+        <div className="mb-1 font-mono text-xs" style={{ color: accent }}>
           <span ref={yearRef}>{yearDisplay}</span>
         </div>
 
         {/* Label */}
-        <div
-          ref={labelRef}
-          className="font-serif text-smoke-100 font-bold mb-1"
-          style={{ fontSize: '8px' }}
-        >
+        <div ref={labelRef} className="mb-1 font-serif font-bold text-smoke-100" style={{ fontSize: '8px' }}>
           {label}
         </div>
 
         {/* Description */}
-        <div
-          ref={descRef}
-          className="text-smoke-400 font-mono text-xs leading-tight"
-        >
+        <div ref={descRef} className="font-mono text-xs leading-tight text-smoke-400">
           {description}
         </div>
       </div>
 
       {/* Bottom accent stripe */}
       <div
-        className="absolute bottom-0 inset-x-0 h-[2px]"
+        className="absolute inset-x-0 bottom-0 h-[2px]"
         style={{ background: locked ? '#334155' : accent, opacity: locked ? 0.3 : 0.6 }}
       />
     </button>

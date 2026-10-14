@@ -81,7 +81,7 @@ Check `index.ts` for the current list of components before creating a new one.
 ## Component Conventions
 
 - Framer Motion is used for enter/exit animations. Use `<AnimatePresence mode="wait">` around card transitions.
-- Screen components live in `apps/web/src/screens/`. Route-level lazy loading and idle/hover prefetch live in `apps/web/src/app/routes.ts`.
+- Screens live in `apps/web/src/features/<feature>/`; code shared by two or more features stays in `components/`, `hooks/`, `stores/` and `lib/`. A feature never imports another feature (ESLint `import/no-restricted-paths`). Route-level lazy loading and idle/hover prefetch live in `apps/web/src/app/routes.ts`.
 - `useAuth` → Supabase session. `useEntitlements` → IAP unlock status. Both are in `apps/web/src/hooks/`.
 
 ## Narrative Arc

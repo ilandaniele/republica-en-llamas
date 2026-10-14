@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m } from 'framer-motion';
-import { useGameStore } from '../stores/gameStore.js';
-import { useAuth } from '../hooks/useAuth.js';
-import { useSaveRun } from '../hooks/useSupabase.js';
-import { useTransientValue } from '../hooks/useTransientValue.js';
+import { useGameStore } from '../../stores/gameStore.js';
+import { useAuth } from '../../hooks/useAuth.js';
+import { useSaveRun } from './useSaveRun.js';
+import { useTransientValue } from '../../hooks/useTransientValue.js';
 import {
   getFatalDecision,
   getCounterfactual,
   getBestMomentTurn,
   getAnibalLine,
 } from '@republica/game-engine';
-import { PixelPortrait } from '../components/illustrations/PixelPortrait.js';
-import { trackGameOver, trackShareClicked } from '../lib/analytics.js';
-import { ShareImageCard } from '../components/ShareImageCard.js';
+import { PixelPortrait } from '../../components/illustrations/PixelPortrait.js';
+import { trackGameOver, trackShareClicked } from '../../lib/analytics.js';
+import { ShareImageCard } from './ShareImageCard.js';
 
 const HEADLINES: Record<string, string> = {
   hyperinflation: 'LA HIPERINFLACIÓN DERRUMBA LA REPÚBLICA',
@@ -359,7 +359,7 @@ export default function GameOverScreen() {
               )}
               <div className="pixel-border shrink-0">
                 <PixelPortrait
-                  id={presidentId as import('../components/illustrations/PixelPortrait.js').PortraitId}
+                  id={presidentId as import('../../components/illustrations/PixelPortrait.js').PortraitId}
                   mood={isWin ? 'victory' : 'panic'}
                   px={96}
                 />

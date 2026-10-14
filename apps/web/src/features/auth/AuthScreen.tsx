@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { m } from 'framer-motion';
-import { isOfflineMode, signInWithGoogle } from '../lib/supabase.js';
-import { useGameStore } from '../stores/gameStore.js';
+import { isOfflineMode, signInWithGoogle } from '../../lib/supabase.js';
+import { useGameStore } from '../../stores/gameStore.js';
 import type { Difficulty } from '@republica/game-engine';
 
 const DIFFICULTIES: { id: Difficulty; label: string; flavor: string; color: string }[] = [

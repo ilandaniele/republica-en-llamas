@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { m } from 'framer-motion';
-import type { TransitionData } from '../stores/gameStore.js';
+import type { TransitionData } from '../../stores/gameStore.js';
 import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
-import { useGameStore } from '../stores/gameStore.js';
-import imageManifest from '../assets/image-manifest.json';
+import { useGameStore } from '../../stores/gameStore.js';
+import imageManifest from '../../assets/image-manifest.json';
 
 const CASA_IMAGE: Record<string, string> = {
   guard: 'casa_rosada_normal',
