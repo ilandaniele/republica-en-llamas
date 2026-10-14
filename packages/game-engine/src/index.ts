@@ -78,3 +78,13 @@ export type {
   CongressOutcome,
 } from './congressSession.js';
 export { getAnibalLine } from './anibal.js';
+export {
+  replayRun,
+  resolveTurn,
+  endTurn,
+  applyCrisisExpressMultiplier,
+  findWorstChoiceIndex,
+  CRISIS_EXPRESS_TURNS,
+  TIMEOUT_POPULARITY_PENALTY,
+} from './run.js';
+export type { TurnDecision, TurnResult, RunConfig } from './run.js';
