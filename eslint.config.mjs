@@ -5,6 +5,29 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
+import importPlugin from 'eslint-plugin-import';
+import { readdirSync } from 'node:fs';
+
+const WEB_SRC = './apps/web/src';
+const FEATURES = readdirSync(`${WEB_SRC}/features`, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name);
+const SHARED_DIRS = ['components', 'hooks', 'lib', 'stores'];
+
+// A feature never imports another feature; shared code never imports a feature.
+const featureBoundaryZones = [
+  ...FEATURES.map((feature) => ({
+    target: `${WEB_SRC}/features/${feature}`,
+    from: `${WEB_SRC}/features`,
+    except: [`./${feature}`],
+    message: 'Features are independent. Move shared code to components/, hooks/, stores/ or lib/.',
+  })),
+  {
+    target: SHARED_DIRS.map((dir) => `${WEB_SRC}/${dir}`),
+    from: `${WEB_SRC}/features`,
+    message: 'Shared code must not depend on a feature.',
+  },
+];
 
 export default tseslint.config(
   {
@@ -26,7 +49,8 @@ export default tseslint.config(
   {
     files: ['apps/web/src/**/*.{ts,tsx}'],
     languageOptions: { globals: globals.browser },
-    plugins: { 'react-hooks': reactHooks, 'react-refresh': reactRefresh },
+    plugins: { 'react-hooks': reactHooks, 'react-refresh': reactRefresh, import: importPlugin },
+    settings: { 'import/resolver': { typescript: { project: './apps/web/tsconfig.json' } } },
     rules: {
       ...reactHooks.configs.recommended.rules,
       // React Compiler rules: legacy code violates them; warn until each screen is refactored.
@@ -35,6 +59,7 @@ export default tseslint.config(
       'react-hooks/purity': 'warn',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'max-lines-per-function': 'off',
+      'import/no-restricted-paths': ['error', { zones: featureBoundaryZones }],
       'no-restricted-imports': [
         'error',
         {
@@ -56,6 +81,10 @@ export default tseslint.config(
       'no-restricted-imports': [
         'error',
         { patterns: [{ group: ['react', 'react-*', '@supabase/*', 'posthog-js'], message: 'game-engine must stay pure: no UI or IO imports.' }] },
+      ],
+      'no-restricted-properties': [
+        'error',
+        { object: 'Math', property: 'random', message: 'Use createRng(seed) so runs stay replayable.' },
       ],
     },
   },

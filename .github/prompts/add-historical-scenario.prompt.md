@@ -40,4 +40,4 @@ Add `scenario.${input:scenarioId}.label`, `scenario.${input:scenarioId}.period`,
 
 ### 5. Scenario picker
 
-`apps/web/src/screens/HomeScreen.tsx` lists scenarios from `HISTORICAL_SCENARIOS`. Confirm the new entry renders and starts through `startHistoricalScenario`; no separate registry is needed.
+`apps/web/src/features/home/HomeScreen.tsx` lists scenarios from `HISTORICAL_SCENARIOS`. Confirm the new entry renders and starts through `startHistoricalScenario`; no separate registry is needed.

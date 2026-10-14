@@ -28,6 +28,7 @@ Before calling a task done: lint (0 errors), type-check both workspaces, tests p
 - Analytics: only through `apps/web/src/lib/analytics.ts` (`track*`, `getFeatureFlag`). posthog-js is lazy-loaded; never import it elsewhere.
 - Server data: TanStack Query with `queryOptions` factories (see `hooks/useLeaderboard.ts`). Explicit column lists, never `select *`.
 - Screens are lazy routes in `apps/web/src/app/routes.ts`; prefetch with `prefetchRoute` on hover/focus.
+- Web code is grouped by feature in `apps/web/src/features/<feature>/`. A feature never imports another feature, and `components/`, `hooks/`, `stores/`, `lib/` never import a feature (`import/no-restricted-paths`). Code used by two or more features goes in those shared folders.
 - Security-sensitive values (prices, entitlements, scores) are decided server-side; never trust the client body in edge functions.
 - New DB access patterns need an index in a new migration; RLS policies use `(select auth.uid())` and `to authenticated`.
 
