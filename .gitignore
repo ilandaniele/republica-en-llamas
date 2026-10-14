@@ -18,3 +18,6 @@ packages/game-engine/src/**/*.js.map
 packages/game-engine/src/**/*.d.ts
 packages/game-engine/src/**/*.d.ts.map
 !apps/web/src/vite-env.d.ts
+
+# Engine bundle for edge functions (npm run bundle:engine)
+supabase/functions/_shared/game-engine.js

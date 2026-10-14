@@ -81,16 +81,7 @@ Titles use ALL CAPS in Spanish. Body text is present-tense journalism style. Cho
 
 ## Crises
 
-Crises are detected automatically in `crises.ts` via `detectCrises()`. The thresholds are in `constants.ts`:
-```ts
-CRISIS_THRESHOLDS = {
-  debtCrisis:            { publicDeficit: 70, marketConfidence: 30 },
-  hyperinflationSpiral:  { inflation: 40, currencyStrength: 25 },
-  socialUnrest:          { socialStability: 20, popularity: 15 },
-  legislativeRebellion:  { governmentSeats: 80, socialStability: 30 },
-  impeachmentAttempt:    { popularity: 10, mediaCredibility: 20, socialStability: 25 },
-}
-```
+Crises are detected automatically in `crises.ts` via `detectCrises()`. The thresholds are in `CRISIS_THRESHOLDS` in `constants.ts`.
 Do not trigger crises programmatically from card effects. They auto-trigger from threshold checks.
 
 ## Narrative Arc — Turn Pacing
@@ -116,11 +107,7 @@ Cards without `minTurn`/`maxTurn` are drawn throughout the run. Character cards 
 
 ## Difficulty Modifiers
 
-`DIFFICULTY_MODIFIERS` in `constants.ts` scales negative effects at runtime. Cards should be balanced for `normal` difficulty — the multipliers handle the rest:
-- easy: 0.5× negative effects
-- normal: 1.0×
-- hard: 1.3×
-- crisis: 1.6×
+`DIFFICULTY_MODIFIERS` in `constants.ts` scales negative effects at runtime. Cards should be balanced for `normal` difficulty (multiplier 1.0) — read the other values there.
 
 ## Testing
 
