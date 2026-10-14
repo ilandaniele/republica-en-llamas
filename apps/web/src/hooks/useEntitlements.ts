@@ -5,7 +5,10 @@ import type { EntitlementId } from '@republica/game-engine';
 
 const DAILY_KEY = 'rep_daily_runs';
 
-interface DailyRuns { date: string; count: number }
+interface DailyRuns {
+  date: string;
+  count: number;
+}
 
 function getTodayStr() {
   return new Date().toISOString().slice(0, 10);
@@ -28,15 +31,24 @@ export function consumeDailyRun() {
     const raw = localStorage.getItem(DAILY_KEY);
     const today = getTodayStr();
     const d: DailyRuns = raw ? (JSON.parse(raw) as DailyRuns) : { date: today, count: 0 };
-    if (d.date !== today) { localStorage.setItem(DAILY_KEY, JSON.stringify({ date: today, count: 1 })); return; }
+    if (d.date !== today) {
+      localStorage.setItem(DAILY_KEY, JSON.stringify({ date: today, count: 1 }));
+      return;
+    }
     localStorage.setItem(DAILY_KEY, JSON.stringify({ date: today, count: d.count + 1 }));
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 export function useEntitlements() {
   const { user } = useAuth();
 
-  const { data: entitlements = [], isLoading, refetch } = useQuery({
+  const {
+    data: entitlements = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['entitlements', user?.id],
     queryFn: async () => {
       if (!user) return [] as EntitlementId[];
@@ -56,7 +68,7 @@ export function useEntitlements() {
     return entitlements.includes(id as EntitlementId);
   }
 
-  const hasPremium = entitlements.length > 0;
+  const hasPremium = entitlements.includes('full_access');
 
   return { entitlements, hasEntitlement, hasPremium, isLoading, refetch };
 }

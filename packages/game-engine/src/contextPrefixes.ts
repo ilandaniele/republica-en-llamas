@@ -38,10 +38,14 @@ const CONTEXT_PREFIXES: Record<CardCategory, string[]> = {
   ],
 };
 
-export function getContextPrefix(prevCategory: CardCategory | null, nextCategory: CardCategory): string | null {
+export function getContextPrefix(
+  prevCategory: CardCategory | null,
+  nextCategory: CardCategory,
+  rng: () => number,
+): string | null {
   if (!prevCategory || prevCategory === nextCategory) return null;
   const prefixes = CONTEXT_PREFIXES[nextCategory];
   if (!prefixes || prefixes.length === 0) return null;
-  const idx = Math.floor(Math.random() * prefixes.length);
+  const idx = Math.floor(rng() * prefixes.length);
   return prefixes[idx] ?? null;
 }
