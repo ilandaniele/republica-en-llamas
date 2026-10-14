@@ -1,0 +1,7 @@
+{
+  "{apps/web/src,packages/game-engine/src}/**/*.{ts,tsx}": [
+    "eslint --fix --no-warn-ignored",
+    "prettier --write"
+  ],
+  "*.{json,css,yml,yaml}": ["prettier --write"]
+}

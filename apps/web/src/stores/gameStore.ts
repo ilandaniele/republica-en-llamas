@@ -1,17 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { GameState, Difficulty, Language, NegotiationType, GameOverReason, ScenarioId } from '@republica/game-engine';
-import { isOfflineMode } from '../lib/supabase.js';
-import { trackTurnCompleted, trackCrisisTriggered } from '../lib/analytics.js';
-import {
-  initGame,
-  applyChoice,
-  advanceTurn,
-  drawNextCard,
-  applyNegotiation,
-  applyChoiceEffects,
-  calculateScore,
+import type {
+  GameState,
+  Difficulty,
+  Language,
+  NegotiationType,
+  ScenarioId,
+  CongressDecisions,
+  TurnDecision,
+  RunConfig,
 } from '@republica/game-engine';
+import { trackTurnCompleted, trackCrisisTriggered } from '../lib/analytics.js';
+import { initGame, drawNextCard, applyNegotiation, resolveTurn, endTurn } from '@republica/game-engine';
 import type { EventCard } from '@republica/game-engine';
 
 export interface TransitionData {
@@ -37,43 +37,6 @@ export interface VarSnapshot {
   publicDeficit: number;
 }
 
-function applyCrisisExpressMultiplier(before: GameState, after: GameState): GameState {
-  const amp = (b: number, a: number) => {
-    const d = a - b;
-    return d < 0 ? Math.max(0, b + d * 1.5) : a;
-  };
-  return {
-    ...after,
-    political: {
-      ...after.political,
-      popularity: amp(before.political.popularity, after.political.popularity),
-      socialStability: amp(before.political.socialStability, after.political.socialStability),
-    },
-    economic: {
-      ...after.economic,
-      marketConfidence: amp(before.economic.marketConfidence, after.economic.marketConfidence),
-      currencyStrength: amp(before.economic.currencyStrength, after.economic.currencyStrength),
-      foreignReserves: amp(before.economic.foreignReserves, after.economic.foreignReserves),
-      inflation: after.economic.inflation > before.economic.inflation
-        ? before.economic.inflation + (after.economic.inflation - before.economic.inflation) * 1.5
-        : after.economic.inflation,
-    },
-  };
-}
-
-function findWorstChoiceIndex(card: EventCard): number {
-  let worstIdx = 0;
-  let worstScore = Infinity;
-  card.choices.forEach((choice, i) => {
-    const e = choice.effects;
-    const score = (e.popularityDelta ?? 0) + (e.stabilityDelta ?? 0)
-      + (e.marketConfidenceDelta ?? 0) + (e.currencyStrengthDelta ?? 0)
-      + (e.foreignReservesDelta ?? 0) - (e.inflationDelta ?? 0) - (e.deficitDelta ?? 0);
-    if (score < worstScore) { worstScore = score; worstIdx = i; }
-  });
-  return worstIdx;
-}
-
 interface GameStore {
   // State
   gameState: GameState | null;
@@ -95,9 +58,11 @@ interface GameStore {
   userId: string | null;
   isCrisisExpress: boolean;
   scenarioId: ScenarioId | null;
+  runConfig: RunConfig | null;
+  decisions: TurnDecision[];
 
   // Actions
-  resolveCongressSession: (choiceIndex: number, cardId: string, negEffects: import('@republica/game-engine').ChoiceEffect) => void;
+  resolveCongressSession: (cardId: string, decisions: CongressDecisions) => void;
   startNewGame: (difficulty: Difficulty, seed?: number) => void;
   setUserId: (id: string | null) => void;
   setCrisisExpress: (val: boolean) => void;
@@ -105,6 +70,7 @@ interface GameStore {
   selectChoice: (cardId: string, choiceIndex: number) => void;
   applyNegotiationAction: (type: NegotiationType) => void;
   confirmChoice: () => void;
+  commitDecision: (decision: TurnDecision) => void;
   dismissCrisisScreen: () => void;
   dismissTransition: () => void;
   setAnimating: (val: boolean) => void;
@@ -120,30 +86,60 @@ interface GameStore {
 }
 
 const SHOCK_NAMES_ES: Record<string, string> = {
-  'shock.oilPriceSpike':      'SUBA DEL PETRÓLEO',
-  'shock.globalRecession':    'RECESIÓN GLOBAL',
-  'shock.currencyAttack':     'ATAQUE A LA MONEDA',
-  'shock.tradeWar':           'GUERRA COMERCIAL',
-  'shock.pandemic':           'PANDEMIA',
-  'shock.naturalDisaster':    'DESASTRE NATURAL',
-  'shock.techBoom':           'BOOM TECNOLÓGICO',
-  'shock.foreignInvestment':  'INVERSIÓN EXTRANJERA',
+  'shock.oilPriceSpike': 'SUBA DEL PETRÓLEO',
+  'shock.globalRecession': 'RECESIÓN GLOBAL',
+  'shock.currencyAttack': 'ATAQUE A LA MONEDA',
+  'shock.tradeWar': 'GUERRA COMERCIAL',
+  'shock.pandemic': 'PANDEMIA',
+  'shock.naturalDisaster': 'DESASTRE NATURAL',
+  'shock.techBoom': 'BOOM TECNOLÓGICO',
+  'shock.foreignInvestment': 'INVERSIÓN EXTRANJERA',
 };
 
 const CATEGORY_HEADLINES: Record<string, string[]> = {
-  economic:      ['MERCADOS EN VILO', 'EL PESO TIEMBLA', 'RESERVAS BAJO PRESIÓN', 'CRISIS FISCAL EN MARCHA'],
-  political:     ['EL EJECUTIVO SE MUEVE', 'LA GRIETA SE PROFUNDIZA', 'CONGRESO EN SESIÓN', 'JUEGO POLÍTICO INTERNO'],
-  social:        ['LAS CALLES HABLAN', 'TENSIÓN SOCIAL CRECE', 'EL PUEBLO REACCIONA', 'CONFLICTO EN LAS BASES'],
-  international: ['CANCILLERÍA EN ALERTA', 'PRESIÓN EXTERNA', 'EL MUNDO MIRA A ARGENTINA', 'NEGOCIACIÓN CRUCIAL'],
-  crisis:        ['🚨 CRISIS EN MARCHA', '⚠ SITUACIÓN LÍMITE', 'AL BORDE DEL ABISMO', 'EMERGENCIA NACIONAL'],
+  economic: ['MERCADOS EN VILO', 'EL PESO TIEMBLA', 'RESERVAS BAJO PRESIÓN', 'CRISIS FISCAL EN MARCHA'],
+  political: [
+    'EL EJECUTIVO SE MUEVE',
+    'LA GRIETA SE PROFUNDIZA',
+    'CONGRESO EN SESIÓN',
+    'JUEGO POLÍTICO INTERNO',
+  ],
+  social: ['LAS CALLES HABLAN', 'TENSIÓN SOCIAL CRECE', 'EL PUEBLO REACCIONA', 'CONFLICTO EN LAS BASES'],
+  international: [
+    'CANCILLERÍA EN ALERTA',
+    'PRESIÓN EXTERNA',
+    'EL MUNDO MIRA A ARGENTINA',
+    'NEGOCIACIÓN CRUCIAL',
+  ],
+  crisis: ['🚨 CRISIS EN MARCHA', '⚠ SITUACIÓN LÍMITE', 'AL BORDE DEL ABISMO', 'EMERGENCIA NACIONAL'],
 };
 
 const CATEGORY_HOOKS: Record<string, string[]> = {
-  economic:      ['Los mercados abren mañana. Todo puede cambiar.', 'El FMI sigue de cerca cada movimiento.', 'Los ahorristas miran el dólar blue con miedo.'],
-  political:     ['La oposición ya prepara su respuesta.', 'Los medios amplifican cada palabra.', 'Las encuestas captarán esto en días.'],
-  social:        ['Las calles tienen memoria larga.', 'La CGT monitora la situación.', 'El malestar social no desaparece solo.'],
-  international: ['Washington tomó nota.', 'El FMI revisa los números.', 'Cancillerías extranjeras esperan resultados.'],
-  crisis:        ['El país aguanta la respiración.', 'No hay margen para errores ahora.', 'La historia juzgará esta decisión.'],
+  economic: [
+    'Los mercados abren mañana. Todo puede cambiar.',
+    'El FMI sigue de cerca cada movimiento.',
+    'Los ahorristas miran el dólar blue con miedo.',
+  ],
+  political: [
+    'La oposición ya prepara su respuesta.',
+    'Los medios amplifican cada palabra.',
+    'Las encuestas captarán esto en días.',
+  ],
+  social: [
+    'Las calles tienen memoria larga.',
+    'La CGT monitora la situación.',
+    'El malestar social no desaparece solo.',
+  ],
+  international: [
+    'Washington tomó nota.',
+    'El FMI revisa los números.',
+    'Cancillerías extranjeras esperan resultados.',
+  ],
+  crisis: [
+    'El país aguanta la respiración.',
+    'No hay margen para errores ahora.',
+    'La historia juzgará esta decisión.',
+  ],
 };
 
 function buildTransitionData(
@@ -163,7 +159,8 @@ function buildTransitionData(
 
   if (Math.abs(polDelta) >= 1) deltas.push({ label: 'Popularidad', delta: polDelta, emoji: '★' });
   if (Math.abs(stabDelta) >= 1) deltas.push({ label: 'Estabilidad', delta: stabDelta, emoji: '⚖' });
-  if (Math.abs(infDelta) >= 1) deltas.push({ label: 'Inflación', delta: infDelta, emoji: '💸', inverse: true });
+  if (Math.abs(infDelta) >= 1)
+    deltas.push({ label: 'Inflación', delta: infDelta, emoji: '💸', inverse: true });
   if (Math.abs(mktDelta) >= 1) deltas.push({ label: 'Mercados', delta: mktDelta, emoji: '📈' });
 
   const cat = cardCategory ?? 'political';
@@ -211,43 +208,31 @@ export const useGameStore = create<GameStore>()(
       userId: null,
       isCrisisExpress: false,
       scenarioId: null,
+      runConfig: null,
+      decisions: [],
 
-      resolveCongressSession: (choiceIndex, cardId, negEffects) => {
-        const { gameState, isCrisisExpress } = get();
-        if (!gameState) return;
-        // Apply negotiation side-effects (costs from actions taken)
-        const withNeg = Object.keys(negEffects).length > 0
-          ? applyChoiceEffects(gameState, negEffects)
-          : gameState;
-        // Apply law outcome
-        let afterChoice = applyChoice(withNeg, cardId, choiceIndex);
-        if (isCrisisExpress) afterChoice = applyCrisisExpressMultiplier(withNeg, afterChoice);
-        let score = calculateScore(afterChoice);
-        if (isCrisisExpress) score = Math.round(score * 2);
-        const stateWithScore = { ...afterChoice, score };
-        const newShock = stateWithScore.activeShocks.find(
-          (s) => !gameState.activeShocks.some((old) => old.id === s.id)
-        );
-        const transitionData = buildTransitionData(
-          gameState, stateWithScore, cardId, choiceIndex,
-          get().currentCard?.category,
-          newShock?.name,
-        );
-        set({
-          gameState: stateWithScore,
-          pendingCardId: null,
-          pendingChoiceIndex: null,
-          isAnimating: true,
-          showTransition: true,
-          transitionData,
-        });
+      resolveCongressSession: (cardId, decisions) => {
+        get().commitDecision({ kind: 'congress', cardId, decisions });
       },
 
       startNewGame: (difficulty, seed) => {
-        const s = seed ?? Math.floor(Math.random() * 1_000_000);
-        const state = initGame(difficulty, s, get().language, get().scenarioId ?? undefined);
+        const runConfig: RunConfig = {
+          seed: seed ?? Math.floor(Math.random() * 1_000_000),
+          difficulty,
+          language: get().language,
+          scenarioId: get().scenarioId,
+          crisisExpress: get().isCrisisExpress,
+        };
+        const state = initGame(
+          runConfig.difficulty,
+          runConfig.seed,
+          runConfig.language,
+          runConfig.scenarioId ?? undefined,
+        );
         const card = drawNextCard(state);
         set({
+          runConfig,
+          decisions: [],
           gameState: state,
           currentCard: card,
           pendingCardId: null,
@@ -271,35 +256,45 @@ export const useGameStore = create<GameStore>()(
       },
 
       confirmChoice: () => {
-        const { gameState, pendingCardId, pendingChoiceIndex, isCrisisExpress } = get();
-        if (!gameState || pendingCardId === null || pendingChoiceIndex === null) return;
+        const { pendingCardId, pendingChoiceIndex } = get();
+        if (pendingCardId === null || pendingChoiceIndex === null) return;
+        get().commitDecision({ kind: 'choice', cardId: pendingCardId, choiceIndex: pendingChoiceIndex });
+      },
 
-        let afterChoice = applyChoice(gameState, pendingCardId, pendingChoiceIndex);
-        if (isCrisisExpress) afterChoice = applyCrisisExpressMultiplier(gameState, afterChoice);
-        let score = calculateScore(afterChoice);
-        if (isCrisisExpress) score = Math.round(score * 2);
-        const stateWithScore = { ...afterChoice, score };
+      commitDecision: (decision) => {
+        const { gameState, currentCard, isCrisisExpress } = get();
+        if (!gameState || !currentCard) return;
+
+        const { state: stateWithScore, choiceIndex } = resolveTurn(
+          gameState,
+          currentCard,
+          decision,
+          isCrisisExpress,
+        );
 
         const newShock = stateWithScore.activeShocks.find(
-          (s) => !gameState.activeShocks.some((old) => old.id === s.id)
+          (s) => !gameState.activeShocks.some((old) => old.id === s.id),
         );
         const transitionData = buildTransitionData(
           gameState,
           stateWithScore,
-          pendingCardId,
-          pendingChoiceIndex,
-          get().currentCard?.category,
+          currentCard.id,
+          choiceIndex,
+          currentCard.category,
           newShock?.name,
         );
 
-        trackTurnCompleted({
-          turn_number: gameState.turn,
-          event_category: get().currentCard?.category ?? 'unknown',
-          choice_index: pendingChoiceIndex,
-        });
+        if (decision.kind !== 'congress') {
+          trackTurnCompleted({
+            turn_number: gameState.turn,
+            event_category: currentCard.category,
+            choice_index: choiceIndex,
+          });
+        }
 
         set({
           gameState: stateWithScore,
+          decisions: [...get().decisions, decision],
           pendingCardId: null,
           pendingChoiceIndex: null,
           isAnimating: true,
@@ -328,13 +323,10 @@ export const useGameStore = create<GameStore>()(
           publicDeficit: gameState.economic.publicDeficit,
         };
 
-        let next = advanceTurn(gameState);
-        // Crisis Express: force game over after 15 turns
-        if (get().isCrisisExpress && next.turn > 15 && !next.isGameOver) {
-          next = { ...next, isGameOver: true, gameOverReason: 'term_complete' as GameOverReason };
-        }
+        const next = endTurn(gameState, get().isCrisisExpress);
         const hasCrisis = next.activeCrises.length > gameState.activeCrises.length;
-        const crisisResolved = gameState.activeCrises.length > 0 && next.activeCrises.length < gameState.activeCrises.length;
+        const crisisResolved =
+          gameState.activeCrises.length > 0 && next.activeCrises.length < gameState.activeCrises.length;
         if (hasCrisis && next.activeCrises[0]) {
           trackCrisisTriggered({ crisis_type: next.activeCrises[0].type, turn: next.turn });
         }
@@ -370,16 +362,19 @@ export const useGameStore = create<GameStore>()(
 
       setAnimating: (val) => set({ isAnimating: val }),
 
-      resetGame: () => set({
-        gameState: null,
-        currentCard: null,
-        pendingCardId: null,
-        pendingChoiceIndex: null,
-        isAnimating: false,
-        showCrisisScreen: false,
-        showTransition: false,
-        transitionData: null,
-      }),
+      resetGame: () =>
+        set({
+          runConfig: null,
+          decisions: [],
+          gameState: null,
+          currentCard: null,
+          pendingCardId: null,
+          pendingChoiceIndex: null,
+          isAnimating: false,
+          showCrisisScreen: false,
+          showTransition: false,
+          transitionData: null,
+        }),
 
       setLanguage: (lang) => {
         localStorage.setItem('language', lang);
@@ -388,8 +383,7 @@ export const useGameStore = create<GameStore>()(
 
       setSoundEnabled: (val) => set({ soundEnabled: val }),
 
-      completeTutorialStep: () =>
-        set((s) => ({ tutorialStep: s.tutorialStep + 1 })),
+      completeTutorialStep: () => set((s) => ({ tutorialStep: s.tutorialStep + 1 })),
 
       completeTutorial: () => set({ tutorialComplete: true }),
 
@@ -411,20 +405,9 @@ export const useGameStore = create<GameStore>()(
       setCrisisExpress: (val: boolean) => set({ isCrisisExpress: val }),
 
       timeoutSelection: () => {
-        const { currentCard, gameState } = get();
-        if (!currentCard || !gameState) return;
-        // Apply -10 popularity timeout penalty
-        const penalized: GameState = {
-          ...gameState,
-          political: {
-            ...gameState.political,
-            popularity: Math.max(0, gameState.political.popularity - 10),
-          },
-        };
-        set({ gameState: penalized });
-        const worstIdx = findWorstChoiceIndex(currentCard);
-        set({ pendingCardId: currentCard.id, pendingChoiceIndex: worstIdx });
-        get().confirmChoice();
+        const { currentCard } = get();
+        if (!currentCard) return;
+        get().commitDecision({ kind: 'timeout', cardId: currentCard.id });
       },
     }),
     {
@@ -435,11 +418,13 @@ export const useGameStore = create<GameStore>()(
         soundEnabled: s.soundEnabled,
         language: s.language,
         gameState: s.gameState,
+        runConfig: s.runConfig,
+        decisions: s.decisions,
         currentCard: s.currentCard,
         personalBest: s.personalBest,
         presidentId: s.presidentId,
         isCrisisExpress: s.isCrisisExpress,
       }),
-    }
-  )
+    },
+  ),
 );

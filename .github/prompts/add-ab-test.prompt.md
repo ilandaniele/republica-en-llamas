@@ -20,17 +20,14 @@ Add a PostHog A/B test to República en Llamas.
 
 Understand its current render logic before adding any branching.
 
-### 2. Feature flag read + $experiment_started capture
+### 2. Feature flag read + experiment exposure
 
-Inside the component, after existing hooks, add:
+Inside the component, after existing hooks, add the code below. Unassigned users fall back to variant A and are logged as control.
 ```ts
-const abVariant = posthog.getFeatureFlag('${input:flagName}') ?? '${input:variantA}';
+const abVariant = getFeatureFlag('${input:flagName}') ?? '${input:variantA}';
 
 useEffect(() => {
-  posthog.capture('$experiment_started', {
-    experiment: '${input:flagName}',
-    variant: abVariant,
-  });
+  trackExperimentStarted({ experiment: '${input:flagName}', variant: abVariant });
 }, [abVariant]);
 ```
 
@@ -53,12 +50,12 @@ Keep the control branch identical to the pre-test code — no refactoring.
 
 ### 4. Update the relevant track call
 
-If the test is paywall-related, update `trackPaywallShown` to include the variant:
+If the test is paywall-related, pass the variant through the existing `trackPaywallShown` call (its signature already has an optional `ab_variant`; `entitlement` and `trigger_point` stay required):
 ```ts
-trackPaywallShown({ ab_variant: abVariant });
+trackPaywallShown({ entitlement, trigger_point, ab_variant: abVariant });
 ```
 
-Check `apps/web/src/lib/analytics.ts` to confirm the function signature accepts extra properties before adding them.
+For any other track function, read its signature in `apps/web/src/lib/analytics.ts` and add a typed optional property there before passing the variant.
 
 ### 5. PostHog dashboard reminder (output as a comment in the PR)
 
@@ -73,4 +70,4 @@ Check `apps/web/src/lib/analytics.ts` to confirm the function signature accepts 
 - Test **one variable** at a time. If the description mentions multiple changes, split into separate tests.
 - Do NOT read `localStorage` or `Math.random()` for bucketing.
 - Do NOT hardcode variant strings more than once; assign `abVariant` once and reuse.
-- Imports needed: `import posthog from 'posthog-js'` and `import { useEffect } from 'react'` (check if already present).
+- Imports needed: `import { useEffect } from 'react'` and `getFeatureFlag`, `trackExperimentStarted` from `../lib/analytics.js` (check if already present).

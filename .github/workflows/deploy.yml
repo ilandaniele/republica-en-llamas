@@ -1,25 +1,63 @@
-name: Deploy to Fly.io
+name: CI and deploy
 
 on:
+  pull_request:
   push:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
+  verify:
+    name: Lint, type-check, test
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: 0
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        run: |
+          npm run type-check --workspace=packages/game-engine
+          npm run type-check --workspace=apps/web
+
+      - name: Test
+        run: |
+          npm test --workspace=packages/game-engine
+          npm test --workspace=apps/web
+
   deploy:
     name: Deploy
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     concurrency: deploy-production
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Fly CLI
-        uses: superfly/flyctl-actions/setup-flyctl@master
+        # Pinned to the v1 / 1.6 tag commit instead of the moving master branch.
+        uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1
 
       - name: Deploy
+        # Repo secrets were created as VITA_*; accept both names.
         run: |
           flyctl deploy --remote-only \
-            --build-arg VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
-            --build-arg VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}"
+            --build-arg VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL || secrets.VITA_SUPABASE_URL }}" \
+            --build-arg VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY || secrets.VITA_SUPABASE_ANON_KEY }}" \
+            --build-arg VITE_POSTHOG_KEY="${{ secrets.VITE_POSTHOG_KEY }}"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
