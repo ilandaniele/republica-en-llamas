@@ -16,7 +16,7 @@ export default function SceneSocStrike() {
           <rect key={`${c}${r}`} x={c * P} y={r * P} width={2 * P} height={2 * P} fill={P_YL} />
         )),
       )}
-      {/* Gate â€” vertical bars */}
+      {/* Gate — vertical bars */}
       {[12, 13, 14].map((c) => (
         <rect key={c} x={c * P} y={5 * P} width={P} height={12 * P} fill={P_BK} />
       ))}

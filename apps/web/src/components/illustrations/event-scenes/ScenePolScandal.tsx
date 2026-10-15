@@ -6,7 +6,7 @@ export default function ScenePolScandal({ presidentId: _p }: { presidentId: stri
     <g>
       {/* Night background */}
       {px(0, 0, 40, 20, P_BK)}
-      {/* Spotlight beam (wide light column) â€” animated */}
+      {/* Spotlight beam (wide light column) — animated */}
       <g className="gsap-primary">
         {px(14, 0, 12, 20, P_YL)}
         {/* Gradient darkening via semi-transparent overlay strips */}
@@ -23,7 +23,7 @@ export default function ScenePolScandal({ presidentId: _p }: { presidentId: stri
       {px(3, 10, 6, 1, P_GR2)}
       {px(3, 11, 7, 1, P_GR2)}
       {px(3, 12, 5, 1, P_GR2)}
-      {/* Camera at right â€” lens square + body */}
+      {/* Camera at right — lens square + body */}
       {px(28, 5, 4, 3, P_GR)}
       {px(29, 4, 2, 1, P_GR2)}
       {px(32, 5, 3, 2, P_GR2)}
@@ -32,7 +32,7 @@ export default function ScenePolScandal({ presidentId: _p }: { presidentId: stri
       {[25, 27].map((c) => (
         <rect key={c} x={c * P} y={4 * P} width={P} height={P} fill={P_YL} />
       ))}
-      {lbl('ESCÃNDALO POLÃTICO')}
+      {lbl('ESCÁNDALO POLÍTICO')}
     </g>
   );
 }

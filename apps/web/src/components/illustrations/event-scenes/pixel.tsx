@@ -6,9 +6,9 @@ export interface SceneProps {
   gameState: GameState | null;
 }
 
-// ViewBox: 320Ã—180. Each "pixel" = 8 SVG units â†’ 40Ã—22 grid.
+// ViewBox: 320×180. Each "pixel" = 8 SVG units → 40×22 grid.
 export const P = 8;
-// px(col, row, wCols, hRows, fill) â†’ single rect on the 8px grid
+// px(col, row, wCols, hRows, fill) → single rect on the 8px grid
 export function px(col: number, row: number, wCols: number, hRows: number, fill: string): React.ReactElement {
   return <rect x={col * P} y={row * P} width={wCols * P} height={hRows * P} fill={fill} />;
 }
@@ -41,7 +41,7 @@ export function lbl(text: string, col = '#ECE8E0'): React.ReactElement {
   );
 }
 
-// â”€â”€ Pixel palette (design-token aligned) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Pixel palette (design-token aligned) ────────────────────────────────────
 export const P_BG = '#0D1B2A'; // night-blue (background)
 export const P_NAV = '#162032'; // deep navy
 export const P_SLT = '#2A3D52'; // slate panel

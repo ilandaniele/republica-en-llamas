@@ -64,7 +64,7 @@ export function EventIllustration({ eventCategory, presidentId, eventId = '', ga
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label={`IlustraciÃ³n: ${eventCategory}`}
+        aria-label={`Ilustración: ${eventCategory}`}
       >
         {aiUrl ? (
           <>

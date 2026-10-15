@@ -3,7 +3,7 @@ import { P_BK, P_BR, P_GD, P_GN, P_GR, P_GR2, P_OR, P_RD, P_SLT, P_WH, P_YL, px 
 export default function SceneIntConflictoIran() {
   return (
     <g>
-      {/* Desert sunset â€” horizontal bands */}
+      {/* Desert sunset — horizontal bands */}
       {px(0, 0, 40, 4, P_OR)}
       {px(0, 4, 40, 4, P_RD)}
       {px(0, 8, 40, 4, '#CC4400')}
@@ -15,7 +15,7 @@ export default function SceneIntConflictoIran() {
       {px(24, 3, 10, 2, P_BK)}
       {px(26, 1, 6, 3, P_BK)}
       {px(27, 0, 4, 1, P_BK)}
-      {/* Flame atop derrick â€” animated */}
+      {/* Flame atop derrick — animated */}
       <g className="gsap-secondary">
         {px(28, 3, 2, 3, P_OR)}
         {px(29, 1, 1, 2, P_YL)}
@@ -34,7 +34,7 @@ export default function SceneIntConflictoIran() {
       {px(2, 2, 3, 3, P_BK)}
       {/* cutout to make crescent shape */}
       {px(2, 3, 2, 2, P_GN)}
-      {/* Missile â€” animated */}
+      {/* Missile — animated */}
       <g className="gsap-primary">
         {px(16, 10, 4, 2, P_GR2)}
         {px(17, 9, 2, 1, P_GR)}
@@ -51,7 +51,7 @@ export default function SceneIntConflictoIran() {
         fontFamily="'Press Start 2P'"
         style={{ imageRendering: 'pixelated' as const }}
       >
-        CONFLICTO IRÃN 2024
+        CONFLICTO IRÁN 2024
       </text>
     </g>
   );

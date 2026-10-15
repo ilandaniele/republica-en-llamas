@@ -12,7 +12,7 @@ export default function SceneCrisis({ presidentId }: { presidentId: string }) {
       {px(6, 10, 5, 10, P_NAV)}
       {px(30, 6, 5, 14, P_NAV)}
       {px(35, 9, 5, 11, P_NAV)}
-      {/* 3 tall fire columns â€” animated */}
+      {/* 3 tall fire columns — animated */}
       <g className="gsap-explosion">
         {/* Col 1 */}
         {px(9, 8, 6, 10, P_OR)}
@@ -27,7 +27,7 @@ export default function SceneCrisis({ presidentId }: { presidentId: string }) {
         {px(26, 6, 4, 3, P_YL)}
         {px(27, 4, 2, 2, P_WH)}
       </g>
-      {/* President silhouette (distressed) â€” center */}
+      {/* President silhouette (distressed) — center */}
       <g className="gsap-primary">
         <PixPerson c={19} r={13} suit={P_SLT} skin={P_SK} hair={hair} />
         {/* Arms raised in panic */}
@@ -46,7 +46,7 @@ export default function SceneCrisis({ presidentId }: { presidentId: string }) {
       {px2(72, 29, 2, 2, P_YL)}
       {/* Smoke overlay */}
       {px(0, 0, 40, 4, 'rgba(30,0,0,0.6)')}
-      {lbl('âš  CRISIS DE GOBIERNO', P_CR)}
+      {lbl('⚠ CRISIS DE GOBIERNO', P_CR)}
     </g>
   );
 }
