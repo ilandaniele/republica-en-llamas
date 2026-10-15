@@ -182,3 +182,23 @@ La guía publicada coincide: FSD se recomienda para apps medianas y grandes con 
 - Antes de eso hay que quitar `Math.random()` de `contextPrefixes.ts` para que el motor sea determinista de punta a punta.
 
 Orden: terminar el merge de los PRs abiertos, después Fase 1 (estructura y reglas ESLint) y luego Fase 2, una PR por feature.
+
+## 6. Estado de la Fase 2 (2026-10-14)
+
+Una PR por feature, todas apuntando a `main`:
+
+| PR | Rama | Alcance |
+|---|---|---|
+| #9 | `refactor/phase2-auth` | `ProfileScreen`, `RegisterScreen` |
+| #10 | `refactor/phase2-game-over` | `GameOverScreen` dividido en componentes |
+| #11 | `refactor/phase2-congress` | `CongressSession` + `useCongressVote` |
+| #12 | `refactor/phase2-game` | `AnibalTicker`, `EventCardComponent`, `TurnTransitionScreen` |
+| #13 | `refactor/phase2-home` | pantalla de inicio |
+| #14 | `refactor/phase2-illustrations` | `EventIllustration` (un archivo por escena, lazy), `PixelPortrait` (un archivo por personaje, lazy), `PresidentAvatar` por tablas |
+
+Cierre (PR apilada sobre #9–#14): `react-hooks/set-state-in-effect`, `refs` y `purity` vuelven a `error`; `npm run lint` da 0 errores.
+
+Pendiente fuera de la Fase 2:
+- Advertencias de complejidad en el motor (`gameLoop.ts`, `crises.ts`, `events/index.ts`, `congress.ts`).
+- Código muerto: `components/illustrations/presidents/{Bullrich,Massa,Milei}Caricature.tsx` y el barrel `components/illustrations/index.ts` no se importan.
+- Texto con mojibake (`IlustraciÃ³n`) en `EventIllustration` y comentarios de escenas.
