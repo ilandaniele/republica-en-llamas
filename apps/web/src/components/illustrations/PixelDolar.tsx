@@ -20,57 +20,57 @@ export function PixelDolar({ floating = false, width = 60, height = 80 }: Props)
       }}
     >
       {/* Bill outer shadow */}
-      <rect x="4"  y="14" width="54" height="52" fill="#1B5E20" />
+      <rect x="4" y="14" width="54" height="52" fill="#1B5E20" />
       {/* Bill background */}
-      <rect x="2"  y="12" width="54" height="52" fill="#2E7D32" />
+      <rect x="2" y="12" width="54" height="52" fill="#2E7D32" />
       {/* Bill inner lighter face */}
-      <rect x="6"  y="16" width="46" height="44" fill="#388E3C" />
+      <rect x="6" y="16" width="46" height="44" fill="#388E3C" />
       {/* Inner ornate border — 4 sides */}
-      <rect x="8"  y="18" width="42" height="2"  fill="#2B6E30" />
-      <rect x="8"  y="56" width="42" height="2"  fill="#2B6E30" />
-      <rect x="8"  y="18" width="2"  height="40" fill="#2B6E30" />
-      <rect x="48" y="18" width="2"  height="40" fill="#2B6E30" />
+      <rect x="8" y="18" width="42" height="2" fill="#2B6E30" />
+      <rect x="8" y="56" width="42" height="2" fill="#2B6E30" />
+      <rect x="8" y="18" width="2" height="40" fill="#2B6E30" />
+      <rect x="48" y="18" width="2" height="40" fill="#2B6E30" />
       {/* Corner rosette ornaments */}
-      <rect x="8"  y="18" width="6"  height="4"  fill="#1B5E20" />
-      <rect x="44" y="18" width="6"  height="4"  fill="#1B5E20" />
-      <rect x="8"  y="54" width="6"  height="4"  fill="#1B5E20" />
-      <rect x="44" y="54" width="6"  height="4"  fill="#1B5E20" />
+      <rect x="8" y="18" width="6" height="4" fill="#1B5E20" />
+      <rect x="44" y="18" width="6" height="4" fill="#1B5E20" />
+      <rect x="8" y="54" width="6" height="4" fill="#1B5E20" />
+      <rect x="44" y="54" width="6" height="4" fill="#1B5E20" />
       {/* Serial number strip — top */}
-      <rect x="10" y="20" width="18" height="4"  fill="#1E6B22" />
-      <rect x="30" y="20" width="18" height="4"  fill="#1E6B22" />
+      <rect x="10" y="20" width="18" height="4" fill="#1E6B22" />
+      <rect x="30" y="20" width="18" height="4" fill="#1E6B22" />
       {/* Eagle silhouette (simplified pixel eagle) */}
       {/* Body */}
-      <rect x="24" y="24" width="10" height="8"  fill="#1B5E20" />
+      <rect x="24" y="24" width="10" height="8" fill="#1B5E20" />
       {/* Head */}
-      <rect x="26" y="20" width="6"  height="4"  fill="#1B5E20" />
-      <rect x="28" y="18" width="4"  height="2"  fill="#1B5E20" />
+      <rect x="26" y="20" width="6" height="4" fill="#1B5E20" />
+      <rect x="28" y="18" width="4" height="2" fill="#1B5E20" />
       {/* Beak */}
-      <rect x="30" y="20" width="4"  height="2"  fill="#1B5E20" />
+      <rect x="30" y="20" width="4" height="2" fill="#1B5E20" />
       {/* Left wing */}
-      <rect x="12" y="26" width="12" height="4"  fill="#1B5E20" />
-      <rect x="10" y="28" width="14" height="2"  fill="#1B5E20" />
+      <rect x="12" y="26" width="12" height="4" fill="#1B5E20" />
+      <rect x="10" y="28" width="14" height="2" fill="#1B5E20" />
       {/* Right wing */}
-      <rect x="34" y="26" width="12" height="4"  fill="#1B5E20" />
-      <rect x="34" y="28" width="14" height="2"  fill="#1B5E20" />
+      <rect x="34" y="26" width="12" height="4" fill="#1B5E20" />
+      <rect x="34" y="28" width="14" height="2" fill="#1B5E20" />
       {/* Talons */}
-      <rect x="22" y="32" width="4"  height="2"  fill="#1B5E20" />
-      <rect x="32" y="32" width="4"  height="2"  fill="#1B5E20" />
+      <rect x="22" y="32" width="4" height="2" fill="#1B5E20" />
+      <rect x="32" y="32" width="4" height="2" fill="#1B5E20" />
       {/* $ sign — pixel art, centered */}
       {/* Center vertical bar */}
-      <rect x="28" y="36" width="4"  height="16" fill="#1B5E20" />
+      <rect x="28" y="36" width="4" height="16" fill="#1B5E20" />
       {/* Top S curve */}
-      <rect x="22" y="36" width="16" height="4"  fill="#1B5E20" />
-      <rect x="22" y="40" width="4"  height="4"  fill="#1B5E20" />
-      <rect x="22" y="44" width="16" height="4"  fill="#1B5E20" />
+      <rect x="22" y="36" width="16" height="4" fill="#1B5E20" />
+      <rect x="22" y="40" width="4" height="4" fill="#1B5E20" />
+      <rect x="22" y="44" width="16" height="4" fill="#1B5E20" />
       {/* Bottom S curve */}
-      <rect x="34" y="48" width="4"  height="4"  fill="#1B5E20" />
-      <rect x="22" y="52" width="16" height="4"  fill="#1B5E20" />
+      <rect x="34" y="48" width="4" height="4" fill="#1B5E20" />
+      <rect x="22" y="52" width="16" height="4" fill="#1B5E20" />
       {/* Serial number strip — bottom */}
-      <rect x="10" y="52" width="18" height="4"  fill="#1E6B22" />
-      <rect x="30" y="52" width="18" height="4"  fill="#1E6B22" />
+      <rect x="10" y="52" width="18" height="4" fill="#1E6B22" />
+      <rect x="30" y="52" width="18" height="4" fill="#1E6B22" />
       {/* White highlight sheen */}
-      <rect x="6"  y="16" width="2"  height="8"  fill="white" opacity="0.12" />
-      <rect x="6"  y="16" width="22" height="2"  fill="white" opacity="0.12" />
+      <rect x="6" y="16" width="2" height="8" fill="white" opacity="0.12" />
+      <rect x="6" y="16" width="22" height="2" fill="white" opacity="0.12" />
     </svg>
   );
 }

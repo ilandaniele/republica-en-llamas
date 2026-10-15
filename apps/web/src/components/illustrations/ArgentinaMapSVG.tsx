@@ -6,7 +6,7 @@ import React from 'react';
 export function ArgentinaMapSVG() {
   return (
     <svg
-      className="fixed inset-0 w-full h-full z-0 pointer-events-none"
+      className="pointer-events-none fixed inset-0 z-0 h-full w-full"
       style={{ opacity: 0.04 }}
       viewBox="0 0 400 800"
       xmlns="http://www.w3.org/2000/svg"

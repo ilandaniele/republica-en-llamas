@@ -1,31 +1,13 @@
-import React, { createContext, useContext, useRef, useState, useCallback } from 'react';
-
-interface SoundCtx {
-  soundEnabled: boolean;
-  toggleSound: () => void;
-  playCardFlip: () => void;
-  playCrisisAlert: () => void;
-  playGameOver: () => void;
-  playVictoryTick: () => void;
-}
-
-const SoundContext = createContext<SoundCtx>({
-  soundEnabled: false,
-  toggleSound: () => {},
-  playCardFlip: () => {},
-  playCrisisAlert: () => {},
-  playGameOver: () => {},
-  playVictoryTick: () => {},
-});
-
-export function useSounds() {
-  return useContext(SoundContext);
-}
+import React, { useRef, useState, useCallback } from 'react';
+import { SoundContext } from '../hooks/useSounds.js';
 
 function getCtx(ref: React.MutableRefObject<AudioContext | null>): AudioContext | null {
   try {
     if (!ref.current) {
-      ref.current = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      ref.current = new (
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+      )();
     }
     if (ref.current.state === 'suspended') ref.current.resume();
     return ref.current;
@@ -49,9 +31,7 @@ function tone(ctx: AudioContext, type: OscillatorType, freq: number, dur: number
 }
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
-  const [soundEnabled, setSoundEnabled] = useState(() =>
-    localStorage.getItem('soundEnabled') !== 'false'
-  );
+  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('soundEnabled') !== 'false');
   const ctxRef = useRef<AudioContext | null>(null);
 
   const toggleSound = useCallback(() => {
@@ -82,7 +62,9 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     if (!soundEnabled) return;
     const ctx = getCtx(ctxRef);
     if (!ctx) return;
-    [440, 370, 311, 261, 220].forEach((f, i) => tone(ctx, 'triangle', f, 0.3, 0.3, ctx.currentTime + i * 0.22));
+    [440, 370, 311, 261, 220].forEach((f, i) =>
+      tone(ctx, 'triangle', f, 0.3, 0.3, ctx.currentTime + i * 0.22),
+    );
   }, [soundEnabled]);
 
   const playVictoryTick = useCallback(() => {
@@ -93,11 +75,13 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   }, [soundEnabled]);
 
   return (
-    <SoundContext.Provider value={{ soundEnabled, toggleSound, playCardFlip, playCrisisAlert, playGameOver, playVictoryTick }}>
+    <SoundContext.Provider
+      value={{ soundEnabled, toggleSound, playCardFlip, playCrisisAlert, playGameOver, playVictoryTick }}
+    >
       {children}
       <button
         onClick={toggleSound}
-        className="fixed top-3 right-14 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-navy-800/80 border border-navy-600 text-sm hover:bg-navy-700 transition-colors"
+        className="fixed right-14 top-3 z-50 flex h-8 w-8 items-center justify-center rounded-full border border-navy-600 bg-navy-800/80 text-sm transition-colors hover:bg-navy-700"
         title={soundEnabled ? 'Silenciar' : 'Activar sonido'}
       >
         {soundEnabled ? '🔊' : '🔇'}
