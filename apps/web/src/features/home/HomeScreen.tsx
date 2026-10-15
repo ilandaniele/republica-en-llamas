@@ -165,6 +165,74 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
   );
 }
 
+type HomeMode = 'clasico' | 'historico';
+
+function ModeTabs({ homeMode, onChange }: { homeMode: HomeMode; onChange: (mode: HomeMode) => void }) {
+  return (
+    <div className="mb-4 flex" style={{ borderBottom: '2px solid var(--night-blue)' }}>
+      <button
+        onClick={() => onChange('clasico')}
+        className={`px-4 py-2 font-serif text-[8px] transition-colors ${homeMode === 'clasico' ? 'text-gold-400' : 'text-smoke-500'}`}
+        style={{
+          borderBottom: homeMode === 'clasico' ? '2px solid var(--gold)' : '2px solid transparent',
+        }}
+      >
+        CLÁSICO
+      </button>
+      <button
+        onClick={() => onChange('historico')}
+        className={`px-4 py-2 font-serif text-[8px] transition-colors ${homeMode === 'historico' ? 'text-gold-400' : 'text-smoke-500'}`}
+        style={{
+          borderBottom: homeMode === 'historico' ? '2px solid var(--gold)' : '2px solid transparent',
+        }}
+      >
+        HISTÓRICO
+      </button>
+    </div>
+  );
+}
+
+interface GuestStartButtonsProps {
+  onLogin: () => void;
+  onRegister: () => void;
+  onGuest: () => void;
+}
+
+function GuestStartButtons({ onLogin, onRegister, onGuest }: GuestStartButtonsProps) {
+  return (
+    <>
+      {!isOfflineMode && (
+        <>
+          <m.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onLogin}
+            className="w-full rounded-lg bg-crimson-600 px-8 py-4 font-serif text-xl font-bold uppercase tracking-wider text-smoke-100 shadow-lg transition-colors hover:bg-crimson-500"
+          >
+            Iniciar sesión
+          </m.button>
+          <m.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onRegister}
+            className="w-full rounded-lg border border-gold-600 bg-navy-700 px-8 py-3 font-serif font-bold text-gold-400 transition-colors hover:bg-navy-600"
+          >
+            Crear cuenta
+          </m.button>
+        </>
+      )}
+      <m.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={onGuest}
+        className={`w-full ${isOfflineMode ? 'bg-crimson-600 py-4 font-serif text-xl font-bold text-smoke-100 shadow-lg hover:bg-crimson-500' : 'border border-navy-500 bg-navy-800 text-smoke-400 hover:bg-navy-700'} rounded-lg px-8 py-3 font-bold transition-colors`}
+      >
+        {isOfflineMode ? 'Nueva Partida' : 'Jugar como invitado'}
+      </m.button>
+    </>
+  );
+}
+
 export default function HomeScreen() {
   const navigate = useNavigate();
   const prefetchLeaderboard = usePrefetchLeaderboard();
@@ -177,7 +245,7 @@ export default function HomeScreen() {
   const { hasEntitlement, hasPremium } = useEntitlements();
   const [authMode, setAuthMode] = useState<AuthMode>('menu');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('normal');
-  const [homeMode, setHomeMode] = useState<'clasico' | 'historico'>('clasico');
+  const [homeMode, setHomeMode] = useState<HomeMode>('clasico');
   const [paywallScenario, setPaywallScenario] = useState<ScenarioId | null>(null);
   const scenarioGridRef = useRef<HTMLDivElement>(null);
   const homeContainerRef = useRef<HTMLDivElement>(null);
@@ -315,28 +383,7 @@ export default function HomeScreen() {
                 </div>
               )}
 
-              {/* Mode tab switcher */}
-              <div className="mb-4 flex" style={{ borderBottom: '2px solid var(--night-blue)' }}>
-                <button
-                  onClick={() => setHomeMode('clasico')}
-                  className={`px-4 py-2 font-serif text-[8px] transition-colors ${homeMode === 'clasico' ? 'text-gold-400' : 'text-smoke-500'}`}
-                  style={{
-                    borderBottom: homeMode === 'clasico' ? '2px solid var(--gold)' : '2px solid transparent',
-                  }}
-                >
-                  CLÁSICO
-                </button>
-                <button
-                  onClick={() => setHomeMode('historico')}
-                  className={`px-4 py-2 font-serif text-[8px] transition-colors ${homeMode === 'historico' ? 'text-gold-400' : 'text-smoke-500'}`}
-                  style={{
-                    borderBottom:
-                      homeMode === 'historico' ? '2px solid var(--gold)' : '2px solid transparent',
-                  }}
-                >
-                  HISTÓRICO
-                </button>
-              </div>
+              <ModeTabs homeMode={homeMode} onChange={setHomeMode} />
 
               {homeMode === 'clasico' ? (
                 <div className="home-tab-cards mb-8 grid grid-cols-2 gap-3">
@@ -408,36 +455,11 @@ export default function HomeScreen() {
                       Nueva Partida
                     </m.button>
                   ) : (
-                    <>
-                      {!isOfflineMode && (
-                        <>
-                          <m.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => setAuthMode('login')}
-                            className="w-full rounded-lg bg-crimson-600 px-8 py-4 font-serif text-xl font-bold uppercase tracking-wider text-smoke-100 shadow-lg transition-colors hover:bg-crimson-500"
-                          >
-                            Iniciar sesión
-                          </m.button>
-                          <m.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => setAuthMode('register')}
-                            className="w-full rounded-lg border border-gold-600 bg-navy-700 px-8 py-3 font-serif font-bold text-gold-400 transition-colors hover:bg-navy-600"
-                          >
-                            Crear cuenta
-                          </m.button>
-                        </>
-                      )}
-                      <m.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={handleGuest}
-                        className={`w-full ${isOfflineMode ? 'bg-crimson-600 py-4 font-serif text-xl font-bold text-smoke-100 shadow-lg hover:bg-crimson-500' : 'border border-navy-500 bg-navy-800 text-smoke-400 hover:bg-navy-700'} rounded-lg px-8 py-3 font-bold transition-colors`}
-                      >
-                        {isOfflineMode ? 'Nueva Partida' : 'Jugar como invitado'}
-                      </m.button>
-                    </>
+                    <GuestStartButtons
+                      onLogin={() => setAuthMode('login')}
+                      onRegister={() => setAuthMode('register')}
+                      onGuest={handleGuest}
+                    />
                   ))}
 
                 {gameState && !gameState.isGameOver && (
