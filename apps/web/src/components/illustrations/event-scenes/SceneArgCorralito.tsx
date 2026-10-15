@@ -24,7 +24,7 @@ export default function SceneArgCorralito() {
         fontFamily="'Press Start 2P'"
         style={{ imageRendering: 'pixelated' as const }}
       >
-        BANCO â–¡
+        BANCO □
       </text>
       {/* Metal bars blocking entrance (vertical rects) */}
       {[8, 9, 10, 11, 12, 13, 14, 15].map((c) => (

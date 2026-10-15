@@ -48,13 +48,13 @@ export default function SceneArgMundial() {
       {px(18, 14, 4, 1, P_WH)}
       {px(17, 11, 1, 5, P_WH)}
       {px(22, 11, 1, 5, P_WH)}
-      {/* Trophy (gold) â€” center */}
+      {/* Trophy (gold) — center */}
       {px(18, 4, 4, 6, P_GD)}
       {px(17, 9, 6, 1, P_GD)}
       {px(16, 10, 8, 1, P_GD)}
       {px(19, 3, 2, 1, P_WH)}
       {/* star */}
-      {/* Confetti â€” animated */}
+      {/* Confetti — animated */}
       <g className="gsap-secondary">
         {[
           [3, 1, P_RD],
@@ -77,7 +77,7 @@ export default function SceneArgMundial() {
           />
         ))}
       </g>
-      {lbl('ARGENTINA CAMPEÃ“N âš½', P_GD)}
+      {lbl('ARGENTINA CAMPEÓN ⚽', P_GD)}
     </g>
   );
 }

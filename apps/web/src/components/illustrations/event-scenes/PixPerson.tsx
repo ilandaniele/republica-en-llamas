@@ -1,7 +1,7 @@
 import type React from 'react';
 import { P_BK, P_NAV, P_SK, px } from './pixel.js';
 
-// â”€â”€ Reusable pixel-person (2 wide Ã— 5 tall, col/row top-left of head) â”€â”€â”€â”€â”€â”€â”€
+// ── Reusable pixel-person (2 wide × 5 tall, col/row top-left of head) ───────
 export function PixPerson({
   c,
   r,

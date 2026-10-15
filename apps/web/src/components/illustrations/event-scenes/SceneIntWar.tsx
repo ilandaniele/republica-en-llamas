@@ -4,7 +4,7 @@ import { PixPerson } from './PixPerson.js';
 export default function SceneIntWar() {
   return (
     <g>
-      {/* Radar room â€” dark */}
+      {/* Radar room — dark */}
       {px(0, 0, 40, 20, P_BK)}
       {/* Radar screen */}
       {px(2, 1, 16, 16, P_DG)}
@@ -15,12 +15,12 @@ export default function SceneIntWar() {
       {[4, 8, 12].map((r) => (
         <rect key={r} x={2 * P} y={(1 + r) * P} width={16 * P} height={P / 4} fill={P_GN} />
       ))}
-      {/* Radar sweep (bright line) â€” animated */}
+      {/* Radar sweep (bright line) — animated */}
       <g className="gsap-primary">
         {px(10, 1, 2, 8, P_GN)}
         {px(10, 9, 8, 2, P_GN)}
       </g>
-      {/* Blip (enemy position) â€” animated */}
+      {/* Blip (enemy position) — animated */}
       <g className="gsap-explosion">
         {px(14, 5, 2, 2, P_RD)}
         {px(13, 5, 1, 1, P_OR)}

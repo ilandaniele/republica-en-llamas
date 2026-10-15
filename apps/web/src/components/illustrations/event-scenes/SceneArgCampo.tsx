@@ -33,7 +33,7 @@ export default function SceneArgCampo() {
       {/* red roof */}
       {px(28, 10, 2, 3, P_BR)}
       {/* door */}
-      {/* Tractor (animated â€” moves across field) */}
+      {/* Tractor (animated — moves across field) */}
       <g className="gsap-primary">
         {px(3, 12, 8, 4, P_RD)}
         {px(2, 13, 2, 2, P_BK)}

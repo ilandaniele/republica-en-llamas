@@ -20,7 +20,7 @@ export default function SceneEcoGrowth() {
           <rect key={`${c}${r}`} x={c * P} y={r * P} width={2 * P} height={2 * P} fill={P_GD} />
         )),
       )}
-      {/* Smoke from chimneys â€” animated */}
+      {/* Smoke from chimneys — animated */}
       <g className="gsap-secondary">
         {[3, 7].map((c) =>
           [1, 2, 3].map((r) => (
@@ -35,7 +35,7 @@ export default function SceneEcoGrowth() {
           )),
         )}
       </g>
-      {/* Bar chart (growth) â€” animated */}
+      {/* Bar chart (growth) — animated */}
       <g className="gsap-primary">
         {[
           { c: 22, h: 3, f: P_RD },
@@ -52,7 +52,7 @@ export default function SceneEcoGrowth() {
           <rect key={i} x={(23 + i * 3) * P} y={(16 - i * 2) * P} width={P} height={P} fill={P_GD} />
         ))}
       </g>
-      {lbl('CRECIMIENTO ECONÃ“MICO')}
+      {lbl('CRECIMIENTO ECONÓMICO')}
     </g>
   );
 }

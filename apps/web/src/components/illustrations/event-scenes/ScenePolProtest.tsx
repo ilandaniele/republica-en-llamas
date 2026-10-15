@@ -32,7 +32,7 @@ export default function ScenePolProtest() {
       ))}
       {/* Barricade line */}
       {px(0, 16, 40, 1, P_BR)}
-      {/* Crowd â€” mix of pixel people with raised arms/signs */}
+      {/* Crowd — mix of pixel people with raised arms/signs */}
       {[1, 4, 7, 10, 13, 17, 20, 23, 26, 29, 32, 35].map((c, i) => (
         <PixPerson
           key={c}

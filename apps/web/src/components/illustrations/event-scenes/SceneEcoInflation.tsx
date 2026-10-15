@@ -65,7 +65,7 @@ export default function SceneEcoInflation() {
       ].map(([c, f], i) => (
         <rect key={i} x={(c as number) * P} y={13 * P} width={2 * P} height={P} fill={f as string} />
       ))}
-      {/* Inflation arrow (staircase going up-right) â€” animated */}
+      {/* Inflation arrow (staircase going up-right) — animated */}
       <g className="gsap-primary">
         {[0, 1, 2, 3, 4, 5, 6].map((i) => (
           <rect key={i} x={(23 + i) * P} y={(17 - i * 2) * P} width={2 * P} height={2 * P} fill={P_RD} />
@@ -93,7 +93,7 @@ export default function SceneEcoInflation() {
       {px2(65, 1, 10, 1, P_GR2)}
       {/* Shopper near bottom shelf */}
       <PixPerson c={5} r={15} suit={P_SLT} skin={P_SK} hair={P_BR} />
-      {lbl('INFLACIÃ“N')}
+      {lbl('INFLACIÓN')}
     </g>
   );
 }

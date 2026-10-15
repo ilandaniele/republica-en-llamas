@@ -8,7 +8,7 @@ export default function SceneIntGuerraUcrania() {
       {px(0, 11, 40, 9, P_GD)}
       {/* Night overlay */}
       {px(0, 0, 40, 20, 'rgba(0,0,40,0.5)')}
-      {/* City silhouette â€”blocks only */}
+      {/* City silhouette —blocks only */}
       {px(0, 7, 5, 13, P_BK)}
       {px(5, 9, 4, 11, P_BK)}
       {px(9, 5, 5, 15, P_BK)}
@@ -30,19 +30,19 @@ export default function SceneIntGuerraUcrania() {
       ).map(([c, r]) => (
         <rect key={`${c}${r}`} x={c * P} y={r * P} width={P} height={P} fill={P_YL} />
       ))}
-      {/* Explosion glow â€” animated */}
+      {/* Explosion glow — animated */}
       <g className="gsap-explosion">
         {px(16, 6, 8, 5, P_OR)}
         {px(18, 4, 4, 3, P_YL)}
         {px(19, 2, 2, 2, P_WH)}
       </g>
-      {/* Smoke column â€” animated */}
+      {/* Smoke column — animated */}
       <g className="gsap-secondary">
         {[16, 18, 20, 16, 19].map((c, i) => (
           <rect key={i} x={c * P} y={(6 - i) * P} width={3 * P} height={P} fill="#546e7a" />
         ))}
       </g>
-      {/* Tank (pixel art) â€” animated */}
+      {/* Tank (pixel art) — animated */}
       <g className="gsap-primary">
         {px(8, 14, 12, 4, P_DG)}
         {px(7, 16, 14, 2, P_DG)}
