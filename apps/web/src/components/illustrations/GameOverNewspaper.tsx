@@ -5,11 +5,10 @@ interface Props {
   isWin?: boolean;
 }
 
-// Simulated article lines below the headline.
 const FILLER_LINES = [
   { y: 130, width: 372 },
-  { y: 142, width: 318 },
-  { y: 154, width: 351 },
+  { y: 142, width: 336 },
+  { y: 154, width: 308 },
 ];
 
 export function GameOverNewspaper({ title, isWin = false }: Props) {
