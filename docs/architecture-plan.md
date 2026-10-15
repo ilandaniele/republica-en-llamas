@@ -198,10 +198,9 @@ Una PR por feature, todas apuntando a `main`:
 
 Cierre (PR apilada sobre #9–#14): `react-hooks/set-state-in-effect`, `refs` y `purity` vuelven a `error`; `npm run lint` da 0 errores.
 
-Pendiente fuera de la Fase 2:
-- Advertencias de complejidad en el motor (`gameLoop.ts`, `crises.ts`, `events/index.ts`, `congress.ts`).
-- Código muerto: `components/illustrations/presidents/{Bullrich,Massa,Milei}Caricature.tsx` y el barrel `components/illustrations/index.ts` no se importan.
-- Texto con mojibake (`IlustraciÃ³n`) en `EventIllustration` y comentarios de escenas.
+Pendientes fuera de la Fase 2, resueltos:
+- #20: se borraron las caricaturas sin uso (`components/illustrations/presidents/*Caricature.tsx`) y el barrel `components/illustrations/index.ts`; se corrigió el mojibake de `EventIllustration` y de las escenas.
+- #21: se dividieron las funciones complejas del motor (`gameLoop.ts`, `crises.ts`, `events/index.ts`, `congress.ts`) sin cambiar el comportamiento. Una simulación de 1000 partidas da el mismo hash de estado antes y después, así que `submit-run` no necesita redeploy.
 
 ## 7. Estado de la Fase 3 (2026-10-15)
 
