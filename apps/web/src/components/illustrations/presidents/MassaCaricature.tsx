@@ -32,9 +32,15 @@ export function MassaCaricature({ state, width = 280, height = 320 }: Props) {
       {/* Stars when good (campaign-mode) */}
       {isGood && (
         <>
-          <text x="22" y="55" fontSize="14" opacity="0.5">⭐</text>
-          <text x="235" y="55" fontSize="14" opacity="0.5">⭐</text>
-          <text x="245" y="90" fontSize="10" opacity="0.3">⭐</text>
+          <text x="22" y="55" fontSize="14" opacity="0.5">
+            ⭐
+          </text>
+          <text x="235" y="55" fontSize="14" opacity="0.5">
+            ⭐
+          </text>
+          <text x="245" y="90" fontSize="10" opacity="0.3">
+            ⭐
+          </text>
         </>
       )}
 
@@ -43,10 +49,15 @@ export function MassaCaricature({ state, width = 280, height = 320 }: Props) {
       {/* Shirt */}
       <rect x="122" y="238" width="36" height="44" fill="#eceff1" rx="3" />
       {/* Tie — slightly loosened when bad */}
-      {isBad
-        ? <path d="M140,242 Q146,262 142,282 Q138,270 137,260 Q138,250 140,242 Z" fill="#1565c0" opacity="0.9" />
-        : <polygon points="140,242 135,268 140,274 145,268" fill="#1565c0" />
-      }
+      {isBad ? (
+        <path
+          d="M140,242 Q146,262 142,282 Q138,270 137,260 Q138,250 140,242 Z"
+          fill="#1565c0"
+          opacity="0.9"
+        />
+      ) : (
+        <polygon points="140,242 135,268 140,274 145,268" fill="#1565c0" />
+      )}
       <polygon points="122,240 108,262 122,252" fill={suitColor} opacity="0.9" />
       <polygon points="158,240 172,262 158,252" fill={suitColor} opacity="0.9" />
       {/* Neck */}
@@ -61,13 +72,19 @@ export function MassaCaricature({ state, width = 280, height = 320 }: Props) {
       {isGood ? (
         // Perfect candidate hair
         <>
-          <path d="M86,128 Q95,98 140,92 Q185,98 194,128 Q188,112 140,106 Q92,112 86,128 Z" fill={hairColor} />
+          <path
+            d="M86,128 Q95,98 140,92 Q185,98 194,128 Q188,112 140,106 Q92,112 86,128 Z"
+            fill={hairColor}
+          />
           <path d="M86,128 Q90,115 98,118" fill={hairColor} />
         </>
       ) : isBad ? (
         // Disheveled, stressed
         <>
-          <path d="M86,130 Q95,98 140,92 Q185,98 194,130 Q188,112 140,106 Q92,112 86,130 Z" fill={hairColor} />
+          <path
+            d="M86,130 Q95,98 140,92 Q185,98 194,130 Q188,112 140,106 Q92,112 86,130 Z"
+            fill={hairColor}
+          />
           <path d="M88,120 Q83,108 86,100" stroke={hairColor} strokeWidth="4" fill="none" />
           <path d="M152,96 Q158,88 164,92" stroke={hairColor} strokeWidth="3" fill="none" />
         </>
@@ -110,19 +127,54 @@ export function MassaCaricature({ state, width = 280, height = 320 }: Props) {
       )}
 
       {/* Eyebrows — expressive */}
-      <path d="M108,140 Q118,135 128,139" stroke={hairColor} strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <path d="M152,139 Q162,134 172,140" stroke={hairColor} strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path
+        d="M108,140 Q118,135 128,139"
+        stroke={hairColor}
+        strokeWidth="2.5"
+        fill="none"
+        strokeLinecap="round"
+      />
+      <path
+        d="M152,139 Q162,134 172,140"
+        stroke={hairColor}
+        strokeWidth="2.5"
+        fill="none"
+        strokeLinecap="round"
+      />
 
       {/* Nose */}
-      <path d="M140,160 Q136,172 130,177 Q138,179 140,177 Q142,179 150,177 Q144,172 140,160 Z" fill="#dda070" opacity="0.8" />
+      <path
+        d="M140,160 Q136,172 130,177 Q138,179 140,177 Q142,179 150,177 Q144,172 140,160 Z"
+        fill="#dda070"
+        opacity="0.8"
+      />
 
       {/* Mouth — big campaign smile or stressed grimace */}
-      {isGood
-        ? <path d="M118,192 Q140,208 162,192" stroke="#a0522d" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-        : isBad
-          ? <path d="M120,196 Q140,190 160,196" stroke="#a0522d" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          : <path d="M118,194 Q140,204 162,194" stroke="#a0522d" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      }
+      {isGood ? (
+        <path
+          d="M118,192 Q140,208 162,192"
+          stroke="#a0522d"
+          strokeWidth="2.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      ) : isBad ? (
+        <path
+          d="M120,196 Q140,190 160,196"
+          stroke="#a0522d"
+          strokeWidth="2.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      ) : (
+        <path
+          d="M118,194 Q140,204 162,194"
+          stroke="#a0522d"
+          strokeWidth="2.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      )}
 
       {/* Microphone — signature prop */}
       <g transform={`translate(${isBad ? '58' : '50'}, ${isBad ? '215' : '200'})`}>
@@ -138,8 +190,12 @@ export function MassaCaricature({ state, width = 280, height = 320 }: Props) {
         <g>
           <rect x="20" y="92" width="120" height="28" rx="8" fill="#fff" opacity="0.9" />
           <path d="M 52,120 L 58,130 L 64,120" fill="#fff" opacity="0.9" />
-          <text x="80" y="111" textAnchor="middle" fontSize="9" fill="#333" fontFamily="sans-serif">Estamos</text>
-          <text x="80" y="122" textAnchor="middle" fontSize="9" fill="#333" fontFamily="sans-serif">trabajando</text>
+          <text x="80" y="111" textAnchor="middle" fontSize="9" fill="#333" fontFamily="sans-serif">
+            Estamos
+          </text>
+          <text x="80" y="122" textAnchor="middle" fontSize="9" fill="#333" fontFamily="sans-serif">
+            trabajando
+          </text>
         </g>
       )}
 
@@ -152,7 +208,15 @@ export function MassaCaricature({ state, width = 280, height = 320 }: Props) {
       )}
 
       {/* Name label */}
-      <text x="140" y="310" textAnchor="middle" fontSize="12" fill="#ffe082" fontFamily="serif" fontWeight="bold">
+      <text
+        x="140"
+        y="310"
+        textAnchor="middle"
+        fontSize="12"
+        fill="#ffe082"
+        fontFamily="serif"
+        fontWeight="bold"
+      >
         Sergio Massa
       </text>
     </svg>

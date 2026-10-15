@@ -34,16 +34,44 @@ export function MileiCaricature({ state, width = 280, height = 320 }: Props) {
       {isCrisis && (
         <>
           <ellipse cx="40" cy="300" rx="25" ry="40" fill="#ff6600" opacity="0.7">
-            <animateTransform attributeName="transform" type="scale" values="1,1;1.1,0.9;1,1" dur="0.8s" repeatCount="indefinite" additive="sum" />
+            <animateTransform
+              attributeName="transform"
+              type="scale"
+              values="1,1;1.1,0.9;1,1"
+              dur="0.8s"
+              repeatCount="indefinite"
+              additive="sum"
+            />
           </ellipse>
           <ellipse cx="80" cy="295" rx="20" ry="35" fill="#ff4400" opacity="0.6">
-            <animateTransform attributeName="transform" type="scale" values="1,1;0.9,1.1;1,1" dur="1s" repeatCount="indefinite" additive="sum" />
+            <animateTransform
+              attributeName="transform"
+              type="scale"
+              values="1,1;0.9,1.1;1,1"
+              dur="1s"
+              repeatCount="indefinite"
+              additive="sum"
+            />
           </ellipse>
           <ellipse cx="200" cy="300" rx="22" ry="38" fill="#ff6600" opacity="0.7">
-            <animateTransform attributeName="transform" type="scale" values="1,1;1.05,0.95;1,1" dur="0.9s" repeatCount="indefinite" additive="sum" />
+            <animateTransform
+              attributeName="transform"
+              type="scale"
+              values="1,1;1.05,0.95;1,1"
+              dur="0.9s"
+              repeatCount="indefinite"
+              additive="sum"
+            />
           </ellipse>
           <ellipse cx="240" cy="295" rx="18" ry="32" fill="#ff4400" opacity="0.6">
-            <animateTransform attributeName="transform" type="scale" values="1,1;0.95,1.05;1,1" dur="1.1s" repeatCount="indefinite" additive="sum" />
+            <animateTransform
+              attributeName="transform"
+              type="scale"
+              values="1,1;0.95,1.05;1,1"
+              dur="1.1s"
+              repeatCount="indefinite"
+              additive="sum"
+            />
           </ellipse>
         </>
       )}
@@ -51,8 +79,12 @@ export function MileiCaricature({ state, width = 280, height = 320 }: Props) {
       {/* Small lions (good state) */}
       {isGood && (
         <>
-          <text x="20" y="90" fontSize="18" opacity="0.4">🦁</text>
-          <text x="235" y="90" fontSize="18" opacity="0.4">🦁</text>
+          <text x="20" y="90" fontSize="18" opacity="0.4">
+            🦁
+          </text>
+          <text x="235" y="90" fontSize="18" opacity="0.4">
+            🦁
+          </text>
         </>
       )}
 
@@ -61,10 +93,15 @@ export function MileiCaricature({ state, width = 280, height = 320 }: Props) {
       {/* Shirt */}
       <rect x="122" y="240" width="36" height="42" fill="#f5f5f5" rx="3" />
       {/* Tie - loose when bad */}
-      {isBad
-        ? <path d="M140,245 Q148,265 143,285 Q138,275 137,265 Q139,255 140,245 Z" fill="#cc0000" opacity="0.8" />
-        : <polygon points="140,244 135,270 140,276 145,270" fill="#cc0000" />
-      }
+      {isBad ? (
+        <path
+          d="M140,245 Q148,265 143,285 Q138,275 137,265 Q139,255 140,245 Z"
+          fill="#cc0000"
+          opacity="0.8"
+        />
+      ) : (
+        <polygon points="140,244 135,270 140,276 145,270" fill="#cc0000" />
+      )}
       {/* Lapels */}
       <polygon points="122,242 108,265 122,255" fill={suitColor} opacity="0.9" />
       <polygon points="158,242 172,265 158,255" fill={suitColor} opacity="0.9" />
@@ -135,19 +172,54 @@ export function MileiCaricature({ state, width = 280, height = 320 }: Props) {
       )}
 
       {/* Eyebrows — sharp, intense */}
-      <path d="M108,143 Q118,138 128,142" stroke={hairColor} strokeWidth="3" fill="none" strokeLinecap="round" />
-      <path d="M152,142 Q162,137 172,143" stroke={hairColor} strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path
+        d="M108,143 Q118,138 128,142"
+        stroke={hairColor}
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+      />
+      <path
+        d="M152,142 Q162,137 172,143"
+        stroke={hairColor}
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+      />
 
       {/* Nose */}
-      <path d="M140,162 Q136,175 130,180 Q138,182 140,180 Q142,182 150,180 Q144,175 140,162 Z" fill="#dda070" opacity="0.8" />
+      <path
+        d="M140,162 Q136,175 130,180 Q138,182 140,180 Q142,182 150,180 Q144,175 140,162 Z"
+        fill="#dda070"
+        opacity="0.8"
+      />
 
       {/* Mouth */}
-      {isGood
-        ? <path d="M122,195 Q140,208 158,195" stroke="#a0522d" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-        : isBad
-          ? <path d="M122,200 Q140,192 158,200" stroke="#a0522d" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          : <path d="M122,196 Q140,202 158,196" stroke="#a0522d" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      }
+      {isGood ? (
+        <path
+          d="M122,195 Q140,208 158,195"
+          stroke="#a0522d"
+          strokeWidth="2.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      ) : isBad ? (
+        <path
+          d="M122,200 Q140,192 158,200"
+          stroke="#a0522d"
+          strokeWidth="2.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      ) : (
+        <path
+          d="M122,196 Q140,202 158,196"
+          stroke="#a0522d"
+          strokeWidth="2.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      )}
 
       {/* Chainsaw (motosierra) — signature prop */}
       {isGood ? (
@@ -189,7 +261,15 @@ export function MileiCaricature({ state, width = 280, height = 320 }: Props) {
       )}
 
       {/* Name label */}
-      <text x="140" y="310" textAnchor="middle" fontSize="12" fill="#ffe082" fontFamily="serif" fontWeight="bold">
+      <text
+        x="140"
+        y="310"
+        textAnchor="middle"
+        fontSize="12"
+        fill="#ffe082"
+        fontFamily="serif"
+        fontWeight="bold"
+      >
         Javier Milei
       </text>
     </svg>

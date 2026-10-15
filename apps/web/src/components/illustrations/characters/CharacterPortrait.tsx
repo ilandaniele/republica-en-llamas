@@ -2,13 +2,12 @@ import React from 'react';
 import { PixelCharacter } from '../PixelCharacter.js';
 
 const CHARACTER_PIXEL_ID: Record<string, string> = {
-  ministro:    'caputo',
-  sindicalista:'moyano',
-  periodista:  'periodista',
-  embajador:   'embajador',
+  ministro: 'caputo',
+  sindicalista: 'moyano',
+  periodista: 'periodista',
+  embajador: 'embajador',
   gobernadora: 'kicillof',
 };
-
 
 interface Props {
   characterId: string;

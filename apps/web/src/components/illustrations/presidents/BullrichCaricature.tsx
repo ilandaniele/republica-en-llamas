@@ -31,7 +31,9 @@ export function BullrichCaricature({ state, width = 280, height = 320 }: Props) 
 
       {/* Eagle (PRO symbol) when good */}
       {isGood && (
-        <text x="230" y="75" fontSize="22" opacity="0.4">🦅</text>
+        <text x="230" y="75" fontSize="22" opacity="0.4">
+          🦅
+        </text>
       )}
 
       {/* Body / blazer */}
@@ -54,7 +56,10 @@ export function BullrichCaricature({ state, width = 280, height = 320 }: Props) 
         <path d="M88,132 Q95,98 140,90 Q185,98 192,132 Q185,108 140,103 Q95,108 88,132 Z" fill={hairColor} />
       ) : isBad ? (
         <>
-          <path d="M88,132 Q95,98 140,90 Q185,98 192,132 Q185,108 140,103 Q95,108 88,132 Z" fill={hairColor} />
+          <path
+            d="M88,132 Q95,98 140,90 Q185,98 192,132 Q185,108 140,103 Q95,108 88,132 Z"
+            fill={hairColor}
+          />
           <path d="M90,125 Q85,112 88,105" stroke={hairColor} strokeWidth="3" fill="none" />
         </>
       ) : (
@@ -76,32 +81,67 @@ export function BullrichCaricature({ state, width = 280, height = 320 }: Props) 
       )}
 
       {/* Eyebrows — firm, stern */}
-      <path d={isGood ? "M109,139 Q119,134 128,138" : "M109,138 Q119,132 128,136"} stroke={hairColor} strokeWidth="3" fill="none" strokeLinecap="round" />
-      <path d={isGood ? "M152,138 Q162,133 171,139" : "M152,136 Q162,131 171,137"} stroke={hairColor} strokeWidth="3" fill="none" strokeLinecap="round" />
+      <path
+        d={isGood ? 'M109,139 Q119,134 128,138' : 'M109,138 Q119,132 128,136'}
+        stroke={hairColor}
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+      />
+      <path
+        d={isGood ? 'M152,138 Q162,133 171,139' : 'M152,136 Q162,131 171,137'}
+        stroke={hairColor}
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+      />
 
       {/* Nose */}
-      <path d="M140,160 Q136,172 130,177 Q138,179 140,177 Q142,179 150,177 Q144,172 140,160 Z" fill="#dda070" opacity="0.8" />
+      <path
+        d="M140,160 Q136,172 130,177 Q138,179 140,177 Q142,179 150,177 Q144,172 140,160 Z"
+        fill="#dda070"
+        opacity="0.8"
+      />
 
       {/* Mouth — stern straight line or thin smile */}
-      {isGood
-        ? <path d="M122,194 Q140,204 158,194" stroke="#a0522d" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-        : isBad
-          ? <path d="M122,196 Q140,190 158,196" stroke="#a0522d" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-          : <line x1="122" y1="195" x2="158" y2="195" stroke="#a0522d" strokeWidth="2.5" strokeLinecap="round" />
-      }
+      {isGood ? (
+        <path
+          d="M122,194 Q140,204 158,194"
+          stroke="#a0522d"
+          strokeWidth="2.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      ) : isBad ? (
+        <path
+          d="M122,196 Q140,190 158,196"
+          stroke="#a0522d"
+          strokeWidth="2.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      ) : (
+        <line x1="122" y1="195" x2="158" y2="195" stroke="#a0522d" strokeWidth="2.5" strokeLinecap="round" />
+      )}
 
       {/* Badge / ID card — mano dura prop */}
       {!isBad && (
         <g transform="translate(80, 248)">
           <rect x="0" y="0" width="28" height="20" rx="3" fill="#fff9c4" stroke="#ffd54f" strokeWidth="1.5" />
-          <text x="14" y="8" textAnchor="middle" fontSize="5" fill="#555">SEGURIDAD</text>
-          <text x="14" y="15" textAnchor="middle" fontSize="5" fill="#333">PATRICIA B.</text>
+          <text x="14" y="8" textAnchor="middle" fontSize="5" fill="#555">
+            SEGURIDAD
+          </text>
+          <text x="14" y="15" textAnchor="middle" fontSize="5" fill="#333">
+            PATRICIA B.
+          </text>
         </g>
       )}
 
       {/* Fist raised (good state) */}
       {isGood && (
-        <text x="188" y="248" fontSize="22" opacity="0.7">✊</text>
+        <text x="188" y="248" fontSize="22" opacity="0.7">
+          ✊
+        </text>
       )}
 
       {/* Sweat drops when bad */}
@@ -113,7 +153,15 @@ export function BullrichCaricature({ state, width = 280, height = 320 }: Props) 
       )}
 
       {/* Name label */}
-      <text x="140" y="310" textAnchor="middle" fontSize="12" fill="#ffe082" fontFamily="serif" fontWeight="bold">
+      <text
+        x="140"
+        y="310"
+        textAnchor="middle"
+        fontSize="12"
+        fill="#ffe082"
+        fontFamily="serif"
+        fontWeight="bold"
+      >
         Patricia Bullrich
       </text>
     </svg>
