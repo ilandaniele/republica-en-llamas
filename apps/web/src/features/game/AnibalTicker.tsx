@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { useGameStore } from '../../stores/gameStore.js';
 import { getAnibalLine } from '@republica/game-engine';
 import type { GameState } from '@republica/game-engine';
@@ -117,28 +117,7 @@ function getDynamicLine(state: GameState): string {
 
 export function AnibalTicker({ text, isCrisis = false }: Props) {
   const gameState = useGameStore((s) => s.gameState);
-  const [currentLine, setCurrentLine] = useState<string>('');
-  const lineTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Rotate headlines every 18s so the ticker feels live
-  useEffect(() => {
-    if (!gameState) return;
-    setCurrentLine(getDynamicLine(gameState));
-    lineTimerRef.current = setTimeout(() => {
-      setCurrentLine(getDynamicLine(gameState));
-    }, 18000);
-    return () => {
-      if (lineTimerRef.current) clearTimeout(lineTimerRef.current);
-    };
-  }, [
-    gameState?.turn,
-    gameState?.activeCrises.length,
-    gameState?.economic.inflation,
-    gameState?.political.popularity,
-  ]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const displayText =
-    text ?? (gameState ? `📻 Aníbal (AM 1010): "${currentLine || getDynamicLine(gameState)}"` : '');
+  const displayText = text ?? (gameState ? `📻 Aníbal (AM 1010): "${getDynamicLine(gameState)}"` : '');
 
   if (!displayText) return null;
 
