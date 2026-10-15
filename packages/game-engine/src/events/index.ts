@@ -44,9 +44,7 @@ export const ALL_CARDS: EventCard[] = [
   ...MALVINAS_CARDS,
 ];
 
-export const CARD_REGISTRY = new Map<string, EventCard>(
-  ALL_CARDS.map((card) => [card.id, card])
-);
+export const CARD_REGISTRY = new Map<string, EventCard>(ALL_CARDS.map((card) => [card.id, card]));
 
 export function getCard(id: string): EventCard {
   const card = CARD_REGISTRY.get(id);
@@ -73,6 +71,33 @@ function isCharacterCardEligible(card: EventCard, state: GameState): boolean {
   return true;
 }
 
+// Scores a variable 1 (healthy), 0.5 (strained) or 0 (critical).
+function scoreBelow(value: number, healthyBelow: number, strainedBelow: number): number {
+  if (value < healthyBelow) return 1;
+  return value < strainedBelow ? 0.5 : 0;
+}
+
+function scoreAbove(value: number, healthyAbove: number, strainedAbove: number): number {
+  if (value > healthyAbove) return 1;
+  return value > strainedAbove ? 0.5 : 0;
+}
+
+// 0 = collapse, 1 = fully healthy
+function economicHealth({ economic }: GameState): number {
+  const scores = [
+    scoreBelow(economic.inflation, 20, 45),
+    scoreBelow(economic.publicDeficit, 30, 55),
+    scoreAbove(economic.marketConfidence, 55, 35),
+    scoreAbove(economic.foreignReserves, 50, 25),
+    scoreAbove(economic.currencyStrength, 50, 25),
+  ];
+  return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+}
+
+function politicalHealth({ political }: GameState): number {
+  return (scoreAbove(political.popularity, 55, 30) + scoreAbove(political.socialStability, 55, 30)) / 2;
+}
+
 /**
  * Returns a state-aware weight multiplier for a card category based on current game health.
  *
@@ -86,20 +111,8 @@ function stateAwareMultiplier(state: GameState, card: EventCard): number {
   // Never adjust exogenous events, lifelines, or crisis-gated cards
   if (card.isExogenous || card.isLifeline || card.category === 'crisis') return 1.0;
 
-  const { political, economic } = state;
-
-  // econHealth ∈ [0, 1]: 0 = collapse, 1 = fully healthy
-  const infScore  = economic.inflation < 20   ? 1 : economic.inflation < 45  ? 0.5 : 0;
-  const defScore  = economic.publicDeficit < 30 ? 1 : economic.publicDeficit < 55 ? 0.5 : 0;
-  const confScore = economic.marketConfidence > 55 ? 1 : economic.marketConfidence > 35 ? 0.5 : 0;
-  const resScore  = economic.foreignReserves > 50  ? 1 : economic.foreignReserves > 25  ? 0.5 : 0;
-  const curScore  = economic.currencyStrength > 50 ? 1 : economic.currencyStrength > 25 ? 0.5 : 0;
-  const econHealth = (infScore + defScore + confScore + resScore + curScore) / 5;
-
-  // polHealth ∈ [0, 1]
-  const popScore  = political.popularity > 55       ? 1 : political.popularity > 30       ? 0.5 : 0;
-  const stabScore = political.socialStability > 55  ? 1 : political.socialStability > 30  ? 0.5 : 0;
-  const polHealth  = (popScore + stabScore) / 2;
+  const econHealth = economicHealth(state);
+  const polHealth = politicalHealth(state);
 
   // Overall weighted health (economy counts 3, politics counts 2)
   const overallHealth = (econHealth * 3 + polHealth * 2) / 5;
@@ -107,23 +120,49 @@ function stateAwareMultiplier(state: GameState, card: EventCard): number {
   switch (card.category) {
     // Economic chaos cards: rare at 5% inflation, dominant at 90%
     case 'economic':
-      return 0.25 + (1 - econHealth) * 1.75;       // range [0.25, 2.0]
+      return 0.25 + (1 - econHealth) * 1.75; // range [0.25, 2.0]
 
     // Social unrest cards: rare when popular, dominant when hated
     case 'social':
-      return 0.25 + (1 - polHealth) * 1.75;         // range [0.25, 2.0]
+      return 0.25 + (1 - polHealth) * 1.75; // range [0.25, 2.0]
 
     // Political cards: always relevant, slightly more in crisis
     case 'political':
-      return 0.5 + (1 - overallHealth) * 1.0;       // range [0.5, 1.5]
+      return 0.5 + (1 - overallHealth) * 1.0; // range [0.5, 1.5]
 
     // International cards: slightly more diplomatic activity when stable
     case 'international':
-      return 0.7 + overallHealth * 0.6;             // range [0.7, 1.3]
+      return 0.7 + overallHealth * 0.6; // range [0.7, 1.3]
 
     default:
       return 1.0;
   }
+}
+
+function isWithinTurnAndDifficulty(card: EventCard, state: GameState): boolean {
+  if (card.minTurn !== undefined && state.turn < card.minTurn) return false;
+  if (card.maxTurn !== undefined && state.turn > card.maxTurn) return false;
+  return card.minDifficulty === undefined || difficultyAtLeast(state.difficulty, card.minDifficulty);
+}
+
+function meetsRequirements(card: EventCard, state: GameState, activeCrisisTypes: Set<CrisisType>): boolean {
+  if (state.drawnCardIds.includes(card.id)) return false;
+  if (card.requiredCrisis !== undefined && !activeCrisisTypes.has(card.requiredCrisis)) return false;
+  if (card.category === 'crisis' && card.requiredCrisis === undefined) return false;
+  if (!isCharacterCardEligible(card, state)) return false;
+  return Boolean(card.characterId) || hasRequiredFlags(card, state);
+}
+
+// Non-character chained cards need every requiredFlag in some character's memoryFlags.
+function hasRequiredFlags(card: EventCard, state: GameState): boolean {
+  if (!card.requiredFlags || card.requiredFlags.length === 0) return true;
+  const allFlags = state.characters.flatMap((c) => c.memoryFlags);
+  return card.requiredFlags.every((f) => allFlags.includes(f));
+}
+
+function isOnCooldown(card: EventCard, turn: number, cooldowns: Record<string, number>): boolean {
+  const lastFiredTurn = cooldowns[card.id];
+  return lastFiredTurn !== undefined && turn - lastFiredTurn < CARD_COOLDOWN_TURNS;
 }
 
 /**
@@ -138,29 +177,16 @@ export function drawCard(state: GameState, rng: () => number, forceLifeline = fa
   const cooldowns = state.cardCooldowns ?? {};
 
   // Eligible cards (base filter + cooldown)
-  const eligible = ALL_CARDS.filter((card) => {
-    if (state.drawnCardIds.includes(card.id)) return false;
-    if (card.minTurn !== undefined && state.turn < card.minTurn) return false;
-    if (card.maxTurn !== undefined && state.turn > card.maxTurn) return false;
-    if (card.requiredCrisis !== undefined && !activeCrisisTypes.has(card.requiredCrisis)) return false;
-    if (card.category === 'crisis' && card.requiredCrisis === undefined) return false;
-    if (card.minDifficulty !== undefined && !difficultyAtLeast(state.difficulty, card.minDifficulty)) return false;
-    if (!isCharacterCardEligible(card, state)) return false;
-    // For non-character chained cards: requiredFlags must appear in any character's memoryFlags
-    if (!card.characterId && card.requiredFlags && card.requiredFlags.length > 0) {
-      const allFlags = state.characters.flatMap((c) => c.memoryFlags);
-      if (card.requiredFlags.some((f) => !allFlags.includes(f))) return false;
-    }
-    // Cooldown: skip if fired too recently
-    const lastFiredTurn = cooldowns[card.id];
-    if (lastFiredTurn !== undefined && (state.turn - lastFiredTurn) < CARD_COOLDOWN_TURNS) return false;
-    return true;
-  });
+  const eligible = ALL_CARDS.filter(
+    (card) =>
+      isWithinTurnAndDifficulty(card, state) &&
+      meetsRequirements(card, state, activeCrisisTypes) &&
+      !isOnCooldown(card, state.turn, cooldowns),
+  );
 
   if (eligible.length === 0) {
     const fallback = ALL_CARDS.filter(
-      (c) => c.category !== 'crisis' &&
-      (c.minTurn === undefined || state.turn >= c.minTurn)
+      (c) => c.category !== 'crisis' && (c.minTurn === undefined || state.turn >= c.minTurn),
     );
     const idx = Math.floor(rng() * fallback.length);
     return fallback[idx] ?? ALL_CARDS[0]!;
@@ -179,7 +205,7 @@ export function drawCard(state: GameState, rng: () => number, forceLifeline = fa
   const effectiveWeight = (card: EventCard): number => {
     const lastFiredTurn = cooldowns[card.id];
     let w = card.weight;
-    if (lastFiredTurn !== undefined && (state.turn - lastFiredTurn) < CARD_WEIGHT_DECAY_WINDOW) {
+    if (lastFiredTurn !== undefined && state.turn - lastFiredTurn < CARD_WEIGHT_DECAY_WINDOW) {
       w *= 0.3;
     }
     // State-aware: shift category weights based on current game health

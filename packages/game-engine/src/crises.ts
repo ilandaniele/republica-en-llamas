@@ -1,66 +1,36 @@
 import type { GameState, Crisis, CrisisType } from './types.js';
 import { CRISIS_THRESHOLDS, CRISIS_RESOLVE_TURNS, DIFFICULTY_MODIFIERS } from './constants.js';
 
-export function detectCrises(state: GameState): Crisis[] {
-  const newCrises: Crisis[] = [];
-  const existingTypes = new Set(state.activeCrises.map((c) => c.type));
-  const mod = DIFFICULTY_MODIFIERS[state.difficulty] ?? DIFFICULTY_MODIFIERS['normal']!;
+type CrisisTrigger = (state: GameState) => boolean;
 
-  const { political, economic, congress } = state;
-  const turn = state.turn;
-
-  // Debt crisis
-  if (
-    !existingTypes.has('debtCrisis') &&
-    turn >= mod.crisisMinTurn &&
+const CRISIS_TRIGGERS: Record<CrisisType, CrisisTrigger> = {
+  debtCrisis: ({ economic }) =>
     economic.publicDeficit >= CRISIS_THRESHOLDS.debtCrisis['publicDeficit']! &&
-    economic.marketConfidence <= CRISIS_THRESHOLDS.debtCrisis['marketConfidence']!
-  ) {
-    newCrises.push(makeCrisis('debtCrisis', turn));
-  }
-
-  // Hyperinflation spiral
-  if (
-    !existingTypes.has('hyperinflationSpiral') &&
-    turn >= mod.crisisMinTurn &&
+    economic.marketConfidence <= CRISIS_THRESHOLDS.debtCrisis['marketConfidence']!,
+  hyperinflationSpiral: ({ economic }) =>
     economic.inflation >= CRISIS_THRESHOLDS.hyperinflationSpiral['inflation']! &&
-    economic.currencyStrength <= CRISIS_THRESHOLDS.hyperinflationSpiral['currencyStrength']!
-  ) {
-    newCrises.push(makeCrisis('hyperinflationSpiral', turn));
-  }
-
-  // Social unrest
-  if (
-    !existingTypes.has('socialUnrest') &&
-    turn >= mod.crisisMinTurn &&
+    economic.currencyStrength <= CRISIS_THRESHOLDS.hyperinflationSpiral['currencyStrength']!,
+  socialUnrest: ({ political }) =>
     political.socialStability <= CRISIS_THRESHOLDS.socialUnrest['socialStability']! &&
-    political.popularity <= CRISIS_THRESHOLDS.socialUnrest['popularity']!
-  ) {
-    newCrises.push(makeCrisis('socialUnrest', turn));
-  }
-
-  // Legislative rebellion
-  if (
-    !existingTypes.has('legislativeRebellion') &&
-    turn >= mod.crisisMinTurn &&
+    political.popularity <= CRISIS_THRESHOLDS.socialUnrest['popularity']!,
+  legislativeRebellion: ({ political, congress }) =>
     congress.governmentSeats <= CRISIS_THRESHOLDS.legislativeRebellion['governmentSeats']! &&
-    political.socialStability <= CRISIS_THRESHOLDS.legislativeRebellion['socialStability']!
-  ) {
-    newCrises.push(makeCrisis('legislativeRebellion', turn));
-  }
-
-  // Impeachment attempt (has its own separate min-turn guard)
-  if (
-    !existingTypes.has('impeachmentAttempt') &&
-    turn >= mod.impeachmentMinTurn &&
+    political.socialStability <= CRISIS_THRESHOLDS.legislativeRebellion['socialStability']!,
+  impeachmentAttempt: ({ political }) =>
     political.popularity <= CRISIS_THRESHOLDS.impeachmentAttempt['popularity']! &&
     political.mediaCredibility <= CRISIS_THRESHOLDS.impeachmentAttempt['mediaCredibility']! &&
-    political.socialStability <= CRISIS_THRESHOLDS.impeachmentAttempt['socialStability']!
-  ) {
-    newCrises.push(makeCrisis('impeachmentAttempt', turn));
-  }
+    political.socialStability <= CRISIS_THRESHOLDS.impeachmentAttempt['socialStability']!,
+};
 
-  return newCrises;
+export function detectCrises(state: GameState): Crisis[] {
+  const existingTypes = new Set(state.activeCrises.map((c) => c.type));
+  const mod = DIFFICULTY_MODIFIERS[state.difficulty] ?? DIFFICULTY_MODIFIERS['normal']!;
+  const minTurn = (type: CrisisType) =>
+    type === 'impeachmentAttempt' ? mod.impeachmentMinTurn : mod.crisisMinTurn;
+
+  return (Object.keys(CRISIS_TRIGGERS) as CrisisType[])
+    .filter((type) => !existingTypes.has(type) && state.turn >= minTurn(type) && CRISIS_TRIGGERS[type](state))
+    .map((type) => makeCrisis(type, state.turn));
 }
 
 function makeCrisis(type: CrisisType, turn: number): Crisis {
