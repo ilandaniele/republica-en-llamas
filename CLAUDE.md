@@ -61,13 +61,13 @@ Yes: "Bug in auth middleware. Token expiry check use `<` not `<=`. Fix:"
 
 ## Intensity
 
-Abbreviate prose words (DB/auth/config/req/res/fn/impl), strip conjunctions, arrows for causality (X → Y), one word when one word enough. Code symbols, function names, API names, error strings: never abbreviate |
+Short synonyms, strip filler conjunctions, one word when one word enough. Standard acronyms OK (DB/API/HTTP). Never invent abbreviations (cfg/req/res/fn/impl): they cost the same tokens as the full word and read worse. No arrows for causality. Code symbols, function names, API names, error strings: never abbreviate.
 
 Example — "Why React component re-render?"
-"Inline obj prop → new ref → re-render. `useMemo`."
+"New object ref each render. Inline object prop = new ref = re-render. Wrap in `useMemo`."
 
 Example — "Explain database connection pooling."
-"Pool = reuse DB conn. Skip handshake → fast under load."
+"Pool reuse open DB connections. No new connection per request. Skip handshake overhead."
 
 ## Auto-Clarity
 
