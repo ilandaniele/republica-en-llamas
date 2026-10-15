@@ -97,30 +97,32 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
   // ── Hover: scanline sweep across the card ───────────────────────────────
   const { contextSafe } = useGSAP({ scope: cardRef });
 
-  const handleMouseEnter = contextSafe(() => {
-    if (!scanRef.current || locked) return;
-    gsap.fromTo(
-      scanRef.current,
-      { scaleY: 0, autoAlpha: 0.6, top: 0 },
-      { scaleY: 1, autoAlpha: 0, top: '100%', duration: 0.4, ease: 'power1.inOut', overwrite: true },
-    );
-    gsap.to(cardRef.current, {
-      boxShadow: `0 0 0 2px ${accent}, 0 0 12px ${accent}44`,
-      duration: 0.2,
-      ease: 'power2.out',
-    });
-    // Parallax lift on illustration
-    gsap.to('.scenario-illus', { scale: 1.04, duration: 0.35, ease: 'power2.out', overwrite: true });
-  });
+  const handleMouseEnter = () =>
+    contextSafe(() => {
+      if (!scanRef.current || locked) return;
+      gsap.fromTo(
+        scanRef.current,
+        { scaleY: 0, autoAlpha: 0.6, top: 0 },
+        { scaleY: 1, autoAlpha: 0, top: '100%', duration: 0.4, ease: 'power1.inOut', overwrite: true },
+      );
+      gsap.to(cardRef.current, {
+        boxShadow: `0 0 0 2px ${accent}, 0 0 12px ${accent}44`,
+        duration: 0.2,
+        ease: 'power2.out',
+      });
+      // Parallax lift on illustration
+      gsap.to('.scenario-illus', { scale: 1.04, duration: 0.35, ease: 'power2.out', overwrite: true });
+    })();
 
-  const handleMouseLeave = contextSafe(() => {
-    gsap.to(cardRef.current, {
-      boxShadow: '0 0 0 2px transparent',
-      duration: 0.3,
-      ease: 'power2.out',
-    });
-    gsap.to('.scenario-illus', { scale: 1, duration: 0.3, ease: 'power2.out', overwrite: true });
-  });
+  const handleMouseLeave = () =>
+    contextSafe(() => {
+      gsap.to(cardRef.current, {
+        boxShadow: '0 0 0 2px transparent',
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+      gsap.to('.scenario-illus', { scale: 1, duration: 0.3, ease: 'power2.out', overwrite: true });
+    })();
 
   return (
     <button
