@@ -8,6 +8,7 @@ import type { EventCard, GameState } from '@republica/game-engine';
 import { getSafestChoiceIndex } from '@republica/game-engine';
 import { CharacterPortrait } from '../../components/illustrations/characters/CharacterPortrait.js';
 import { EventIllustration } from '../../components/illustrations/EventIllustration.js';
+import { CardParticles } from './event-card/CardParticles.js';
 import { PixelPortrait } from '../../components/illustrations/PixelPortrait.js';
 import type { PortraitId } from '../../components/illustrations/PixelPortrait.js';
 import imageManifest from '../../assets/image-manifest.json';
@@ -53,7 +54,13 @@ interface Props {
 }
 
 // Category styles: left border color, badge color, icon
-const CATEGORY_STYLES: Record<string, { border: string; badge: string; icon: string }> = {
+interface CategoryStyle {
+  border: string;
+  badge: string;
+  icon: string;
+}
+
+const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   political: { border: 'border-l-[#1a237e]', badge: 'text-blue-400', icon: '🏛' },
   economic: { border: 'border-l-[#1b5e20]', badge: 'text-yellow-400', icon: '💰' },
   social: { border: 'border-l-[#e65100]', badge: 'text-emerald-400', icon: '✊' },
@@ -68,6 +75,48 @@ const CATEGORY_LABELS: Record<string, string> = {
   international: 'INTERNACIONAL',
   crisis: '⚠ CRISIS',
 };
+
+interface CardHeadingProps {
+  card: EventCard;
+  contextPrefix: string | null | undefined;
+  style: CategoryStyle;
+}
+
+function CardHeading({ card, contextPrefix, style }: CardHeadingProps) {
+  const { t } = useTranslation();
+  const isCrisis = card.category === 'crisis';
+  return (
+    <div className="px-6 pb-3 pt-5">
+      {contextPrefix && <p className="text-smoke-500 mb-2 font-mono text-xs italic">{contextPrefix}</p>}
+      {/* Consequence chain indicator — shown when this card was triggered by a prior decision */}
+      {card.requiredFlags && card.requiredFlags.length > 0 && (
+        <div
+          className="pixel-border text-celeste-400 mb-2 flex items-center gap-1 px-2 py-1"
+          style={{ fontFamily: "'Press Start 2P'", fontSize: '6px', display: 'inline-flex' }}
+        >
+          <span>↩</span>
+          <span>CONSECUENCIA DE DECISIÓN PREVIA</span>
+        </div>
+      )}
+      <div
+        className={`mb-3 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest ${style.badge}`}
+      >
+        <span className="text-base">{style.icon}</span>
+        <span>{CATEGORY_LABELS[card.category] ?? card.category.toUpperCase()}</span>
+      </div>
+      <h2
+        style={{
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: isCrisis ? '9px' : '10px',
+          lineHeight: '1.6',
+        }}
+        className={`uppercase ${isCrisis ? 'text-shadow-crimson text-crimson-400' : 'text-smoke-100'}`}
+      >
+        {t(card.titleKey)}
+      </h2>
+    </div>
+  );
+}
 
 export function EventCardComponent({
   card,
@@ -200,127 +249,8 @@ export function EventCardComponent({
         />
       )}
 
-      {/* Economic: floating $ particles */}
-      {card.category === 'economic' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '30%',
-            left: 0,
-            width: '100%',
-            height: '60%',
-            pointerEvents: 'none',
-            zIndex: 1,
-            overflow: 'hidden',
-          }}
-        >
-          {[12, 28, 46, 64, 80].map((x, i) => (
-            <span
-              key={i}
-              className="card-particle"
-              style={{
-                position: 'absolute',
-                left: `${x}%`,
-                top: 0,
-                color: i % 2 === 0 ? '#2e7d32' : '#f9a825',
-                fontFamily: "'Press Start 2P', monospace",
-                fontSize: '9px',
-                userSelect: 'none',
-              }}
-            >
-              $
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Social: smoke wisps */}
-      {card.category === 'social' && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '20%',
-            left: 0,
-            width: '100%',
-            height: '40%',
-            pointerEvents: 'none',
-            zIndex: 1,
-            overflow: 'hidden',
-          }}
-        >
-          {[18, 42, 70].map((x, i) => (
-            <div
-              key={i}
-              className="card-particle"
-              style={{
-                position: 'absolute',
-                left: `${x}%`,
-                bottom: 0,
-                width: 14 + i * 4,
-                height: 14 + i * 4,
-                borderRadius: '50%',
-                background: 'rgba(120,144,156,0.25)',
-              }}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* International: radar pulse */}
-      {card.category === 'international' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 12,
-            right: 12,
-            width: 18,
-            height: 18,
-            pointerEvents: 'none',
-            zIndex: 1,
-          }}
-        >
-          <div
-            className="card-radar"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              borderRadius: '50%',
-              border: '2px solid #7c4dff',
-              transformOrigin: '50% 50%',
-            }}
-          />
-        </div>
-      )}
-      {/* Header: context prefix + category badge + title */}
-      <div className="px-6 pb-3 pt-5">
-        {contextPrefix && <p className="text-smoke-500 mb-2 font-mono text-xs italic">{contextPrefix}</p>}
-        {/* Consequence chain indicator — shown when this card was triggered by a prior decision */}
-        {card.requiredFlags && card.requiredFlags.length > 0 && (
-          <div
-            className="pixel-border text-celeste-400 mb-2 flex items-center gap-1 px-2 py-1"
-            style={{ fontFamily: "'Press Start 2P'", fontSize: '6px', display: 'inline-flex' }}
-          >
-            <span>↩</span>
-            <span>CONSECUENCIA DE DECISIÓN PREVIA</span>
-          </div>
-        )}
-        <div
-          className={`mb-3 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest ${style.badge}`}
-        >
-          <span className="text-base">{style.icon}</span>
-          <span>{CATEGORY_LABELS[card.category] ?? card.category.toUpperCase()}</span>
-        </div>
-        <h2
-          style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: isCrisis ? '9px' : '10px',
-            lineHeight: '1.6',
-          }}
-          className={`uppercase ${isCrisis ? 'text-shadow-crimson text-crimson-400' : 'text-smoke-100'}`}
-        >
-          {t(card.titleKey)}
-        </h2>
-      </div>
+      <CardParticles category={card.category} />
+      <CardHeading card={card} contextPrefix={contextPrefix} style={style} />
 
       {/* Full-bleed illustration — no horizontal padding */}
       {(() => {

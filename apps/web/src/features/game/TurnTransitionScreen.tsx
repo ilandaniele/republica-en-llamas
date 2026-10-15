@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { m } from 'framer-motion';
+import type { GameState } from '@republica/game-engine';
 import type { TransitionData } from '../../stores/gameStore.js';
 import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
 import { useGameStore } from '../../stores/gameStore.js';
@@ -419,6 +420,70 @@ function CasaRosadaScene({ state }: { state: CasaState }) {
   );
 }
 
+function hasIgnoredNukeThreat(gameState: GameState | null): boolean {
+  return !!gameState?.characters?.[0]?.memoryFlags?.includes('ignored_nuke_threat');
+}
+
+// First matching rule wins; ordered from worst to best mood.
+const CASA_RULES: [CasaState, (pop: number, stab: number) => boolean][] = [
+  ['chaos', (pop, stab) => pop < 20 || stab < 20],
+  ['riot', (pop, stab) => pop < 35 || stab < 30],
+  ['protest', (pop, stab) => pop < 50 || stab < 45],
+  ['guard', (pop, stab) => pop >= 80 && stab >= 75],
+  ['mate', (pop, stab) => pop >= 65 && stab >= 65],
+];
+
+function getCasaState(gameState: GameState | null): CasaState {
+  if (hasIgnoredNukeThreat(gameState)) return 'nuke';
+  const pop = gameState?.political.popularity ?? 70;
+  const stab = gameState?.political.socialStability ?? 70;
+  return CASA_RULES.find(([, matches]) => matches(pop, stab))?.[0] ?? 'quiet';
+}
+
+function CasaRosadaBanner({ casaState }: { casaState: CasaState }) {
+  const imageUrl = (imageManifest as Record<string, string>)[CASA_IMAGE[casaState] ?? 'casa_rosada_normal'];
+  return (
+    <m.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.1 }}
+      className="pixel-border mb-4 w-full overflow-hidden rounded"
+    >
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={`Casa Rosada — ${casaState}`}
+          className="w-full object-cover"
+          style={{ maxHeight: '200px' }}
+        />
+      ) : (
+        <CasaRosadaScene state={casaState} />
+      )}
+    </m.div>
+  );
+}
+
+function StatDeltas({ deltas }: { deltas: TransitionData['statDeltas'] }) {
+  return (
+    <div className="pixel-border mb-4 grid grid-cols-2 gap-2 bg-navy-800 p-4">
+      {deltas.map((d) => {
+        const isGood = d.inverse ? d.delta < 0 : d.delta > 0;
+        const impact = Math.round(Math.abs(d.delta));
+        return (
+          <div key={d.label} className="flex items-center justify-between bg-navy-900/60 px-3 py-2">
+            <span className="font-mono text-xs text-smoke-400">
+              {d.emoji} {d.label}
+            </span>
+            <span className={`font-mono text-sm font-bold ${isGood ? 'text-green-400' : 'text-crimson-400'}`}>
+              {isGood ? `▲ +${impact}` : `▼ -${impact}`}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 interface Props {
   data: TransitionData;
   onDismiss: () => void;
@@ -447,22 +512,7 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
     return () => window.removeEventListener('keydown', onKey);
   }, [clicked]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const pop = gameState?.political.popularity ?? 70;
-  const stab = gameState?.political.socialStability ?? 70;
-  const hasNuke = !!gameState?.characters?.[0]?.memoryFlags?.includes('ignored_nuke_threat');
-  const casaState: CasaState = hasNuke
-    ? 'nuke'
-    : pop < 20 || stab < 20
-      ? 'chaos'
-      : pop < 35 || stab < 30
-        ? 'riot'
-        : pop < 50 || stab < 45
-          ? 'protest'
-          : pop >= 80 && stab >= 75
-            ? 'guard'
-            : pop >= 65 && stab >= 65
-              ? 'mate'
-              : 'quiet';
+  const casaState = getCasaState(gameState);
 
   return (
     <m.div
@@ -473,24 +523,7 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
       className="fixed inset-0 z-50 overflow-y-auto bg-navy-900/95"
     >
       <div className="mx-auto w-full max-w-xl px-4 py-4">
-        {/* Casa Rosada — AI image with SVG fallback */}
-        <m.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="pixel-border mb-4 w-full overflow-hidden rounded"
-        >
-          {(imageManifest as Record<string, string>)[CASA_IMAGE[casaState] ?? 'casa_rosada_normal'] ? (
-            <img
-              src={(imageManifest as Record<string, string>)[CASA_IMAGE[casaState] ?? 'casa_rosada_normal']!}
-              alt={`Casa Rosada — ${casaState}`}
-              className="w-full object-cover"
-              style={{ maxHeight: '200px' }}
-            />
-          ) : (
-            <CasaRosadaScene state={casaState} />
-          )}
-        </m.div>
+        <CasaRosadaBanner casaState={casaState} />
 
         {/* Turn counter */}
         <div className="mb-4 text-center">
@@ -503,26 +536,7 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
         </div>
 
         {/* Stat deltas */}
-        {data.statDeltas.length > 0 && (
-          <div className="pixel-border mb-4 grid grid-cols-2 gap-2 bg-navy-800 p-4">
-            {data.statDeltas.map((d) => {
-              const isGood = d.inverse ? d.delta < 0 : d.delta > 0;
-              const impact = Math.round(Math.abs(d.delta));
-              return (
-                <div key={d.label} className="flex items-center justify-between bg-navy-900/60 px-3 py-2">
-                  <span className="font-mono text-xs text-smoke-400">
-                    {d.emoji} {d.label}
-                  </span>
-                  <span
-                    className={`font-mono text-sm font-bold ${isGood ? 'text-green-400' : 'text-crimson-400'}`}
-                  >
-                    {isGood ? `▲ +${impact}` : `▼ -${impact}`}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        )}
+        {data.statDeltas.length > 0 && <StatDeltas deltas={data.statDeltas} />}
 
         {/* Newspaper headline */}
         <m.div
