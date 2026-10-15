@@ -1,7 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useGameStore } from '../../stores/gameStore.js';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useSaveRun } from './useSaveRun.js';
+import { prefetchOnIntent } from '../../app/routes.js';
 
 function saveButtonLabel(isSaving: boolean, isSaved: boolean) {
   if (isSaving) return 'GUARDANDO...';
@@ -58,6 +59,7 @@ export function GameOverActions() {
         )}
         <button
           onClick={() => navigate('/history')}
+          {...prefetchOnIntent('history')}
           className="pixel-border px-6 py-3 transition-colors hover:bg-navy-800"
           style={{
             fontFamily: "'Press Start 2P', monospace",

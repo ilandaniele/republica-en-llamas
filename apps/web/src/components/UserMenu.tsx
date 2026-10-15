@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useAuth } from '../hooks/useAuth.js';
 import { useGameStore } from '../stores/gameStore.js';
+import { prefetchOnIntent } from '../app/routes.js';
 
 export function UserMenu() {
   const navigate = useNavigate();
@@ -26,13 +27,15 @@ export function UserMenu() {
       <div className="flex items-center gap-2">
         <button
           onClick={() => navigate('/login')}
-          className="bg-navy-700 hover:bg-navy-600 border border-navy-500 text-smoke-300 font-mono text-sm px-3 py-1.5 rounded transition-colors"
+          {...prefetchOnIntent('login')}
+          className="text-smoke-300 rounded border border-navy-500 bg-navy-700 px-3 py-1.5 font-mono text-sm transition-colors hover:bg-navy-600"
         >
           Iniciar sesión
         </button>
         <button
           onClick={() => navigate('/register')}
-          className="bg-gold-600 hover:bg-gold-500 text-navy-900 font-mono text-sm px-3 py-1.5 rounded font-bold transition-colors"
+          {...prefetchOnIntent('register')}
+          className="rounded bg-gold-600 px-3 py-1.5 font-mono text-sm font-bold text-navy-900 transition-colors hover:bg-gold-500"
         >
           Crear cuenta
         </button>
@@ -40,42 +43,49 @@ export function UserMenu() {
     );
   }
 
-  const displayName = (user.user_metadata?.['username'] as string | undefined) ?? user.email?.split('@')[0] ?? '?';
+  const displayName =
+    (user.user_metadata?.['username'] as string | undefined) ?? user.email?.split('@')[0] ?? '?';
 
   return (
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 bg-navy-800 hover:bg-navy-700 border border-navy-600 text-smoke-300 font-mono text-xs px-3 py-1.5 rounded-lg transition-colors"
+        className="text-smoke-300 flex items-center gap-2 rounded-lg border border-navy-600 bg-navy-800 px-3 py-1.5 font-mono text-xs transition-colors hover:bg-navy-700"
       >
-        {personalBest && (
-          <span className="text-gold-400">🏆 {personalBest.score.toLocaleString()}</span>
-        )}
+        {personalBest && <span className="text-gold-400">🏆 {personalBest.score.toLocaleString()}</span>}
         <span>👤 {displayName}</span>
         <span className="text-smoke-600">{open ? '▴' : '▾'}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-navy-800 border border-navy-600 rounded-lg shadow-xl z-50 min-w-[160px] py-1">
+        <div className="absolute right-0 top-full z-50 mt-1 min-w-[160px] rounded-lg border border-navy-600 bg-navy-800 py-1 shadow-xl">
           <button
-            onClick={() => { setOpen(false); navigate('/profile'); }}
-            className="w-full text-left px-4 py-2 text-smoke-300 font-mono text-xs hover:bg-navy-700 transition-colors"
+            onClick={() => {
+              setOpen(false);
+              navigate('/profile');
+            }}
+            {...prefetchOnIntent('profile')}
+            className="text-smoke-300 w-full px-4 py-2 text-left font-mono text-xs transition-colors hover:bg-navy-700"
           >
             👤 Mi Perfil
           </button>
           <button
-            onClick={() => { setOpen(false); navigate('/history'); }}
-            className="w-full text-left px-4 py-2 text-smoke-300 font-mono text-xs hover:bg-navy-700 transition-colors"
+            onClick={() => {
+              setOpen(false);
+              navigate('/history');
+            }}
+            {...prefetchOnIntent('history')}
+            className="text-smoke-300 w-full px-4 py-2 text-left font-mono text-xs transition-colors hover:bg-navy-700"
           >
             📋 Mis Partidas
           </button>
-          <div className="border-t border-navy-600 my-1" />
+          <div className="my-1 border-t border-navy-600" />
           <button
             onClick={() => {
               setOpen(false);
               void signOut().then(() => setUserId(null));
             }}
-            className="w-full text-left px-4 py-2 text-crimson-400 font-mono text-xs hover:bg-navy-700 transition-colors"
+            className="w-full px-4 py-2 text-left font-mono text-xs text-crimson-400 transition-colors hover:bg-navy-700"
           >
             Cerrar sesión
           </button>

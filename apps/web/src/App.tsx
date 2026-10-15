@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router';
 import { useGameStore } from './stores/gameStore.js';
 import { SoundProvider } from './components/SoundManager.js';
 import { initAnalytics } from './lib/analytics.js';
