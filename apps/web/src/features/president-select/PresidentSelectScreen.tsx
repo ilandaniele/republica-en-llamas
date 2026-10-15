@@ -146,6 +146,8 @@ function ArchetypeCard({
           return charUrl ? (
             <img
               src={charUrl}
+              loading="lazy"
+              decoding="async"
               width={120}
               height={120}
               style={{ imageRendering: 'pixelated', display: 'block' }}

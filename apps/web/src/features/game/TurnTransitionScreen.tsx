@@ -452,6 +452,8 @@ function CasaRosadaBanner({ casaState }: { casaState: CasaState }) {
       {imageUrl ? (
         <img
           src={imageUrl}
+          loading="lazy"
+          decoding="async"
           alt={`Casa Rosada — ${casaState}`}
           className="w-full object-cover"
           style={{ maxHeight: '200px' }}

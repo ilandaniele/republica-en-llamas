@@ -8,6 +8,12 @@ interface ShareSectionProps {
   shareCardRef: RefObject<HTMLDivElement | null>;
 }
 
+// Shrinking the canvas frees its pixel buffer (about 4 MB at scale 2) without waiting for GC.
+function releaseCanvas(canvas: HTMLCanvasElement) {
+  canvas.width = 0;
+  canvas.height = 0;
+}
+
 export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
   const [copied, flashCopied] = useTransientValue(false);
   const [sharingImage, setSharingImage] = useState(false);
@@ -38,6 +44,7 @@ export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
       const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(shareCardRef.current, { useCORS: true, scale: 2 });
       canvas.toBlob(async (blob) => {
+        releaseCanvas(canvas);
         if (!blob) return;
         const file = new File([blob], 'republica-en-llamas.png', { type: 'image/png' });
         if (navigator.canShare?.({ files: [file] })) {
