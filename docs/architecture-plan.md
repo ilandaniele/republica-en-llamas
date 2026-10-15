@@ -202,3 +202,14 @@ Pendiente fuera de la Fase 2:
 - Advertencias de complejidad en el motor (`gameLoop.ts`, `crises.ts`, `events/index.ts`, `congress.ts`).
 - Código muerto: `components/illustrations/presidents/{Bullrich,Massa,Milei}Caricature.tsx` y el barrel `components/illustrations/index.ts` no se importan.
 - Texto con mojibake (`IlustraciÃ³n`) en `EventIllustration` y comentarios de escenas.
+
+## 7. Estado de la Fase 3 (2026-10-15)
+
+| PR | Rama | Alcance |
+|---|---|---|
+| (anterior) | — | framer-motion `LazyMotion` + `m` en `main.tsx`, features cargadas desde `lib/motionFeatures.ts` |
+| #16 | `perf/vite-8` | Vite 8 (Rolldown), plugin-react 6, Vitest 4; chunks de vendors con `codeSplitting.groups`; `resolve.dedupe` de React (la raíz trae React 18 de `apps/mobile`) |
+| #17 | `perf/react-19` | React 19 + React Router 7 (modo declarativo, imports desde `react-router`); `prefetchOnIntent` en `routes.ts` para precargar pantallas en hover/focus |
+| #18 | `perf/memory` | Imágenes con `loading="lazy"` y `decoding="async"`; el canvas de `html2canvas` se libera después de `toBlob` |
+
+Medición de memoria (build de producción, partida automática): el heap de JS se mantiene en 8–11 MB por turno, sin tendencia a crecer, y el DOM vuelve a ~80 elementos al salir de la partida. Muy por debajo del objetivo de 150 MB. La partida terminó en el turno 18, no en el 40. GSAP ya usaba `useGSAP` con revert automático; los dos timers sin `clear` (prefetch en idle y re-render de 2 s en `gameStore`) son de una sola vez.
