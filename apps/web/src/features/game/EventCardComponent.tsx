@@ -312,6 +312,8 @@ export function EventCardComponent({
             >
               <img
                 src={charUrl}
+                loading="lazy"
+                decoding="async"
                 alt={charLabel}
                 width={48}
                 height={48}
