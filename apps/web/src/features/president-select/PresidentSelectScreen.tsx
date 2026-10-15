@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore.js';
 import { useEntitlements } from '../../hooks/useEntitlements.js';

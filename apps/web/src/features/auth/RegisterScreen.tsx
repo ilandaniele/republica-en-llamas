@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import { m } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
 import { MIN_USERNAME_LENGTH, useUsernameAvailability } from './useUsernameAvailability.js';

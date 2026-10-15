@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { getAnibalLine } from '@republica/game-engine';
 import { useGameStore } from '../../stores/gameStore.js';

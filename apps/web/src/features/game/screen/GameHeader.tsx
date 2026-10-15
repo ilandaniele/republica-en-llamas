@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import type { GameState } from '@republica/game-engine';

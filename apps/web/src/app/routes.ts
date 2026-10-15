@@ -35,6 +35,12 @@ export function prefetchRoute(name: RouteName) {
   void routeLoaders[name]();
 }
 
+// Spread on a navigation control so its screen chunk loads on hover or focus, before the click.
+export function prefetchOnIntent(name: RouteName) {
+  const prefetch = () => prefetchRoute(name);
+  return { onMouseEnter: prefetch, onFocus: prefetch };
+}
+
 export function prefetchRoutesWhenIdle(names: RouteName[]) {
   const run = () => names.forEach(prefetchRoute);
   if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout: 3000 });

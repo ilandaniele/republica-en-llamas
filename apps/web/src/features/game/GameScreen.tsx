@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
 import type { GameState } from '@republica/game-engine';
 import { useGameStore } from '../../stores/gameStore.js';

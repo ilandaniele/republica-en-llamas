@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { isOfflineMode, signInWithGoogle } from '../../lib/supabase.js';
 import { useGameStore } from '../../stores/gameStore.js';

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { m, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { gsap } from 'gsap';
