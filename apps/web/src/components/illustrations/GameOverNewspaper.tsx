@@ -5,6 +5,13 @@ interface Props {
   isWin?: boolean;
 }
 
+// Simulated article lines below the headline.
+const FILLER_LINES = [
+  { y: 130, width: 372 },
+  { y: 142, width: 318 },
+  { y: 154, width: 351 },
+];
+
 export function GameOverNewspaper({ title, isWin = false }: Props) {
   return (
     <svg width="100%" height="180" viewBox="0 0 600 180" xmlns="http://www.w3.org/2000/svg">
@@ -12,7 +19,13 @@ export function GameOverNewspaper({ title, isWin = false }: Props) {
         {/* Crumpled paper filter */}
         <filter id="paper-crumple">
           <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale="4"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
         </filter>
         <filter id="paper-shadow">
           <feDropShadow dx="2" dy="3" stdDeviation="4" floodColor="#00000040" />
@@ -33,17 +46,32 @@ export function GameOverNewspaper({ title, isWin = false }: Props) {
 
       {/* Masthead */}
       <rect x="0" y="0" width="600" height="32" fill="#1a1a1a" />
-      <text x="300" y="20" fontSize="14" fill="#f5f0e8" textAnchor="middle" fontFamily="Georgia, serif" fontWeight="bold" letterSpacing="6">
+      <text
+        x="300"
+        y="20"
+        fontSize="14"
+        fill="#f5f0e8"
+        textAnchor="middle"
+        fontFamily="Georgia, serif"
+        fontWeight="bold"
+        letterSpacing="6"
+      >
         LA GACETA DE LA REPÚBLICA
       </text>
       <line x1="0" y1="32" x2="600" y2="32" stroke="#8b7355" strokeWidth="2" />
 
       {/* Date and edition */}
       <text x="12" y="44" fontSize="8" fill="#666" fontFamily="monospace">
-        {new Date().toLocaleDateString('es', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }).toUpperCase()}
+        {new Date()
+          .toLocaleDateString('es', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
+          .toUpperCase()}
       </text>
-      <text x="300" y="44" fontSize="8" fill="#666" textAnchor="middle" fontFamily="monospace">EDICIÓN ESPECIAL · PRECIO: PRICELESS</text>
-      <text x="588" y="44" fontSize="8" fill="#666" textAnchor="end" fontFamily="monospace">Nro. 1</text>
+      <text x="300" y="44" fontSize="8" fill="#666" textAnchor="middle" fontFamily="monospace">
+        EDICIÓN ESPECIAL · PRECIO: PRICELESS
+      </text>
+      <text x="588" y="44" fontSize="8" fill="#666" textAnchor="end" fontFamily="monospace">
+        Nro. 1
+      </text>
       <line x1="0" y1="48" x2="600" y2="48" stroke="#8b7355" strokeWidth="1" />
 
       {/* Decorative separator lines */}
@@ -51,7 +79,16 @@ export function GameOverNewspaper({ title, isWin = false }: Props) {
       <line x1="12" y1="56" x2="588" y2="56" stroke="#1a1a1a" strokeWidth="1" />
 
       {/* Headline box */}
-      <rect x="12" y="62" width="420" height="95" fill={isWin ? '#e8f5e9' : '#fce4ec'} stroke={isWin ? '#2e7d32' : '#c62828'} strokeWidth="2" rx="2" />
+      <rect
+        x="12"
+        y="62"
+        width="420"
+        height="95"
+        fill={isWin ? '#e8f5e9' : '#fce4ec'}
+        stroke={isWin ? '#2e7d32' : '#c62828'}
+        strokeWidth="2"
+        rx="2"
+      />
       <text
         x="222"
         y="117"
@@ -66,8 +103,8 @@ export function GameOverNewspaper({ title, isWin = false }: Props) {
       </text>
 
       {/* Filler text lines (simulated article) */}
-      {[130, 142, 154].map((y) => (
-        <rect key={y} x="20" y={y} width={Math.random() * 100 + 300} height="6" rx="2" fill="#bbb" opacity="0.5" />
+      {FILLER_LINES.map(({ y, width }) => (
+        <rect key={y} x="20" y={y} width={width} height="6" rx="2" fill="#bbb" opacity="0.5" />
       ))}
 
       {/* Fallen president avatar (right side) */}
@@ -98,8 +135,12 @@ export function GameOverNewspaper({ title, isWin = false }: Props) {
         {/* Face */}
         <circle cx="70" cy="38" r="6" fill="#ffb74d" />
         {/* X eyes */}
-        <text x="66" y="41" fontSize="8" fill="#333">x</text>
-        <text x="72" y="41" fontSize="8" fill="#333">x</text>
+        <text x="66" y="41" fontSize="8" fill="#333">
+          x
+        </text>
+        <text x="72" y="41" fontSize="8" fill="#333">
+          x
+        </text>
       </g>
     </svg>
   );

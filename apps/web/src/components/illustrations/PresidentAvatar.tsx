@@ -1,4 +1,3 @@
-﻿import React from 'react';
 import type { GameState } from '@republica/game-engine';
 
 interface Props {
@@ -6,26 +5,168 @@ interface Props {
   size?: number;
 }
 
+type Mood = 'happy' | 'tired' | 'panic';
+
 // P=4: 30x30 tile grid in 120x120 viewBox
-function px4(c: number, r: number, w: number, h: number, fill: string, opacity?: number): React.ReactElement {
-  return opacity != null
-    ? <rect x={c * 4} y={r * 4} width={w * 4} height={h * 4} fill={fill} opacity={opacity} />
-    : <rect x={c * 4} y={r * 4} width={w * 4} height={h * 4} fill={fill} />;
+type PixelRect = [c: number, r: number, w: number, h: number, fill: string, opacity?: number];
+
+interface Palette {
+  suit: string;
+  dark: string;
+  skin: string;
+  tie: string;
+}
+
+const HAIR = '#4a2c0a';
+const PUPIL = '#1a0a00';
+const LIP = '#a0522d';
+
+const PALETTES: Record<Mood, Palette> = {
+  happy: { suit: '#1a237e', dark: '#0d1545', skin: '#ffe0b2', tie: '#c62828' },
+  tired: { suit: '#37474f', dark: '#263238', skin: '#ffe0b2', tie: '#c62828' },
+  panic: { suit: '#4a0000', dark: '#2a0000', skin: '#ffccbc', tie: '#cc0000' },
+};
+
+const CRISIS_SMOKE: PixelRect[] = [
+  [1, 1, 4, 3, '#444', 0.55],
+  [4, 3, 3, 2, '#555', 0.4],
+  [22, 1, 4, 3, '#444', 0.55],
+  [25, 2, 3, 3, '#333', 0.35],
+];
+
+const HAIR_RECTS: Record<Mood, PixelRect[]> = {
+  happy: [
+    [9, 3, 12, 3, HAIR],
+    [7, 5, 2, 2, HAIR],
+    [21, 5, 2, 2, HAIR],
+  ],
+  tired: [
+    [9, 3, 12, 2, HAIR],
+    [18, 2, 4, 3, HAIR],
+    [7, 5, 2, 2, HAIR],
+    [21, 5, 2, 2, HAIR],
+  ],
+  panic: [
+    [9, 2, 3, 4, HAIR],
+    [12, 1, 3, 5, HAIR],
+    [15, 2, 3, 4, HAIR],
+    [18, 1, 3, 5, HAIR],
+    [7, 3, 2, 4, HAIR],
+    [21, 2, 2, 5, HAIR],
+  ],
+};
+
+const CALM_EYEBROWS: PixelRect[] = [
+  [10, 8, 4, 1, HAIR],
+  [16, 8, 4, 1, HAIR],
+];
+
+const EYEBROW_RECTS: Record<Mood, PixelRect[]> = {
+  happy: CALM_EYEBROWS,
+  tired: CALM_EYEBROWS,
+  panic: [
+    [10, 7, 4, 1, HAIR],
+    [16, 7, 4, 1, HAIR],
+    [10, 8, 1, 1, HAIR],
+    [19, 8, 1, 1, HAIR],
+  ],
+};
+
+const EYE_WHITES: PixelRect[] = [
+  [10, 9, 4, 3, '#ffffff'],
+  [16, 9, 4, 3, '#ffffff'],
+];
+
+const EYELID_RECTS: Record<Mood, PixelRect[]> = {
+  happy: [],
+  tired: [
+    [10, 9, 4, 1, PALETTES.tired.skin],
+    [16, 9, 4, 1, PALETTES.tired.skin],
+  ],
+  panic: [],
+};
+
+const PUPIL_RECTS: Record<Mood, PixelRect[]> = {
+  happy: [
+    [11, 10, 2, 2, PUPIL],
+    [17, 10, 2, 2, PUPIL],
+    [12, 10, 1, 1, '#ffffff', 0.7],
+    [18, 10, 1, 1, '#ffffff', 0.7],
+  ],
+  tired: [
+    [11, 11, 2, 2, PUPIL],
+    [17, 11, 2, 2, PUPIL],
+  ],
+  panic: [
+    [10, 9, 2, 3, PUPIL],
+    [17, 9, 2, 3, PUPIL],
+    [12, 10, 1, 1, '#cc0000', 0.55],
+    [18, 10, 1, 1, '#cc0000', 0.55],
+  ],
+};
+
+const NOSE: PixelRect[] = [[14, 12, 2, 3, '#cc8855']];
+
+const MOUTH_RECTS: Record<Mood, PixelRect[]> = {
+  happy: [
+    [11, 15, 1, 1, LIP],
+    [12, 14, 5, 1, LIP],
+    [17, 15, 1, 1, LIP],
+  ],
+  tired: [[11, 15, 8, 1, LIP]],
+  panic: [
+    [11, 14, 1, 1, LIP],
+    [12, 15, 5, 1, LIP],
+    [17, 14, 1, 1, LIP],
+  ],
+};
+
+const FLOATING_MONEY: PixelRect[] = [
+  [1, 7, 4, 2, '#4caf50'],
+  [2, 8, 2, 1, '#1b5e20'],
+  [24, 8, 4, 2, '#4caf50'],
+  [25, 9, 2, 1, '#1b5e20'],
+  [0, 12, 3, 2, '#81c784', 0.7],
+  [26, 13, 3, 2, '#81c784', 0.7],
+];
+
+function bodyRects({ suit, dark, skin, tie }: Palette): PixelRect[] {
+  return [
+    // Suit
+    [3, 17, 24, 13, suit],
+    [3, 17, 8, 9, dark],
+    [19, 17, 8, 9, dark],
+    [11, 17, 8, 8, '#eceff1'],
+    [13, 17, 4, 8, tie],
+    [12, 17, 6, 2, tie],
+    // Neck
+    [12, 15, 6, 3, skin],
+    // Head + ears
+    [9, 3, 12, 13, skin],
+    [7, 6, 3, 4, skin],
+    [20, 6, 3, 4, skin],
+  ];
+}
+
+function moodFor(popularity: number): Mood {
+  if (popularity > 60) return 'happy';
+  return popularity >= 30 ? 'tired' : 'panic';
+}
+
+function PixelRects({ rects }: { rects: PixelRect[] }) {
+  return (
+    <>
+      {rects.map(([c, r, w, h, fill, opacity], i) => (
+        <rect key={i} x={c * 4} y={r * 4} width={w * 4} height={h * 4} fill={fill} opacity={opacity} />
+      ))}
+    </>
+  );
 }
 
 export function PresidentAvatar({ state, size = 120 }: Props) {
-  const pop       = state.political.popularity;
-  const inf       = state.economic.inflation;
+  const mood = moodFor(state.political.popularity);
   const hasCrisis = state.activeCrises.length > 0;
-
-  const mood = pop > 60 ? 0 : pop >= 30 ? 1 : 2; // 0=happy 1=tired 2=panic
-
-  const SUIT = mood === 0 ? '#1a237e' : mood === 1 ? '#37474f' : '#4a0000';
-  const DARK = mood === 0 ? '#0d1545' : mood === 1 ? '#263238' : '#2a0000';
-  const SKIN = mood === 2 ? '#ffccbc' : '#ffe0b2';
-  const HAIR = '#4a2c0a';
-  const TIE  = mood === 2 ? '#cc0000' : '#c62828';
-  const BG   = hasCrisis  ? '#7f0000' : '#0d1b2a';
+  const background: PixelRect = [0, 0, 30, 30, hasCrisis ? '#7f0000' : '#0d1b2a'];
 
   return (
     <svg
@@ -35,114 +176,19 @@ export function PresidentAvatar({ state, size = 120 }: Props) {
       xmlns="http://www.w3.org/2000/svg"
       style={{ imageRendering: 'pixelated', display: 'block' }}
     >
-      {px4(0, 0, 30, 30, BG)}
-
-      {hasCrisis && (
-        <>
-          {px4( 1,  1, 4, 3, '#444', 0.55)}
-          {px4( 4,  3, 3, 2, '#555', 0.40)}
-          {px4(22,  1, 4, 3, '#444', 0.55)}
-          {px4(25,  2, 3, 3, '#333', 0.35)}
-        </>
-      )}
-
-      {/* Suit */}
-      {px4( 3, 17, 24, 13, SUIT)}
-      {px4( 3, 17,  8,  9, DARK)}
-      {px4(19, 17,  8,  9, DARK)}
-      {px4(11, 17,  8,  8, '#eceff1')}
-      {px4(13, 17,  4,  8, TIE)}
-      {px4(12, 17,  6,  2, TIE)}
-
-      {/* Neck */}
-      {px4(12, 15, 6, 3, SKIN)}
-
-      {/* Head + ears */}
-      {px4( 9,  3, 12, 13, SKIN)}
-      {px4( 7,  6,  3,  4, SKIN)}
-      {px4(20,  6,  3,  4, SKIN)}
-
-      {/* Hair */}
-      {mood === 0 && (
-        <>
-          {px4( 9, 3, 12, 3, HAIR)}
-          {px4( 7, 5,  2, 2, HAIR)}
-          {px4(21, 5,  2, 2, HAIR)}
-        </>
-      )}
-      {mood === 1 && (
-        <>
-          {px4( 9, 3, 12, 2, HAIR)}
-          {px4(18, 2,  4, 3, HAIR)}
-          {px4( 7, 5,  2, 2, HAIR)}
-          {px4(21, 5,  2, 2, HAIR)}
-        </>
-      )}
-      {mood === 2 && (
-        <>
-          {px4( 9, 2, 3, 4, HAIR)}
-          {px4(12, 1, 3, 5, HAIR)}
-          {px4(15, 2, 3, 4, HAIR)}
-          {px4(18, 1, 3, 5, HAIR)}
-          {px4( 7, 3, 2, 4, HAIR)}
-          {px4(21, 2, 2, 5, HAIR)}
-        </>
-      )}
-
-      {/* Eyebrows */}
-      {mood < 2 ? (
-        <>{px4(10, 8, 4, 1, HAIR)}{px4(16, 8, 4, 1, HAIR)}</>
-      ) : (
-        <>{px4(10, 7, 4, 1, HAIR)}{px4(16, 7, 4, 1, HAIR)}{px4(10, 8, 1, 1, HAIR)}{px4(19, 8, 1, 1, HAIR)}</>
-      )}
-
-      {/* Eye whites */}
-      {px4(10, 9, 4, 3, '#ffffff')}
-      {px4(16, 9, 4, 3, '#ffffff')}
-      {mood === 1 && <>{px4(10, 9, 4, 1, SKIN)}{px4(16, 9, 4, 1, SKIN)}</>}
-
-      {/* Pupils */}
-      {mood === 0 && (
-        <>
-          {px4(11, 10, 2, 2, '#1a0a00')}
-          {px4(17, 10, 2, 2, '#1a0a00')}
-          {px4(12, 10, 1, 1, '#ffffff', 0.7)}
-          {px4(18, 10, 1, 1, '#ffffff', 0.7)}
-        </>
-      )}
-      {mood === 1 && (
-        <>{px4(11, 11, 2, 2, '#1a0a00')}{px4(17, 11, 2, 2, '#1a0a00')}</>
-      )}
-      {mood === 2 && (
-        <>
-          {px4(10,  9, 2, 3, '#1a0a00')}
-          {px4(17,  9, 2, 3, '#1a0a00')}
-          {px4(12, 10, 1, 1, '#cc0000', 0.55)}
-          {px4(18, 10, 1, 1, '#cc0000', 0.55)}
-        </>
-      )}
-
-      {/* Nose */}
-      {px4(14, 12, 2, 3, '#cc8855')}
-
-      {/* Mouth */}
-      {mood === 0 && (
-        <>{px4(11, 15, 1, 1, '#a0522d')}{px4(12, 14, 5, 1, '#a0522d')}{px4(17, 15, 1, 1, '#a0522d')}</>
-      )}
-      {mood === 1 && px4(11, 15, 8, 1, '#a0522d')}
-      {mood === 2 && (
-        <>{px4(11, 14, 1, 1, '#a0522d')}{px4(12, 15, 5, 1, '#a0522d')}{px4(17, 14, 1, 1, '#a0522d')}</>
-      )}
-
-      {/* Floating money at high inflation */}
-      {inf > 50 && (
+      <PixelRects rects={[background]} />
+      {hasCrisis && <PixelRects rects={CRISIS_SMOKE} />}
+      <PixelRects rects={bodyRects(PALETTES[mood])} />
+      <PixelRects rects={HAIR_RECTS[mood]} />
+      <PixelRects rects={EYEBROW_RECTS[mood]} />
+      <PixelRects rects={EYE_WHITES} />
+      <PixelRects rects={EYELID_RECTS[mood]} />
+      <PixelRects rects={PUPIL_RECTS[mood]} />
+      <PixelRects rects={NOSE} />
+      <PixelRects rects={MOUTH_RECTS[mood]} />
+      {state.economic.inflation > 50 && (
         <g className="gsap-primary">
-          {px4( 1,  7, 4, 2, '#4caf50')}
-          {px4( 2,  8, 2, 1, '#1b5e20')}
-          {px4(24,  8, 4, 2, '#4caf50')}
-          {px4(25,  9, 2, 1, '#1b5e20')}
-          {px4( 0, 12, 3, 2, '#81c784', 0.7)}
-          {px4(26, 13, 3, 2, '#81c784', 0.7)}
+          <PixelRects rects={FLOATING_MONEY} />
         </g>
       )}
     </svg>

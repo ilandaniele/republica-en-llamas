@@ -27,16 +27,16 @@ const basePalette = {
 // ─── MILEI sprites ────────────────────────────────────────────────────────────
 const mileiPalette: Palette = {
   ...basePalette,
-  H: '#3d1f00',  // wild dark brown hair
-  J: '#5c2d00',  // lighter hair
-  T: '#0d0d0d',  // black suit
-  X: '#888888',  // chainsaw metal
-  R: '#cc0000',  // red detail
-  G: '#1a1a1a',  // dark suit shadow
-  E: '#222222',  // eyes
-  M: '#cc8844',  // mouth/nose
-  B: '#4a2800',  // hair base
-  Y: '#ffaa33',  // sweat/panic yellow
+  H: '#3d1f00', // wild dark brown hair
+  J: '#5c2d00', // lighter hair
+  T: '#0d0d0d', // black suit
+  X: '#888888', // chainsaw metal
+  R: '#cc0000', // red detail
+  G: '#1a1a1a', // dark suit shadow
+  E: '#222222', // eyes
+  M: '#cc8844', // mouth/nose
+  B: '#4a2800', // hair base
+  Y: '#ffaa33', // sweat/panic yellow
 };
 
 // Normal: wild hair, suit, chainsaw
@@ -150,15 +150,15 @@ const mileiVictory: SpriteRows = [
 // ─── MASSA sprites ────────────────────────────────────────────────────────────
 const massaPalette: Palette = {
   ...basePalette,
-  H: '#1a1a1a',  // black hair, side-parted
-  T: '#1a2e6b',  // dark blue suit
-  C: '#cc1111',  // red tie
-  N: '#ccaa88',  // neck/ear
-  E: '#222222',  // eyes
-  M: '#aa6644',  // mouth
-  P: '#888888',  // microphone
-  L: '#cccccc',  // mic shine
-  Y: '#ffaa33',  // sweat drop yellow
+  H: '#1a1a1a', // black hair, side-parted
+  T: '#1a2e6b', // dark blue suit
+  C: '#cc1111', // red tie
+  N: '#ccaa88', // neck/ear
+  E: '#222222', // eyes
+  M: '#aa6644', // mouth
+  P: '#888888', // microphone
+  L: '#cccccc', // mic shine
+  Y: '#ffaa33', // sweat drop yellow
 };
 
 const massaNormal: SpriteRows = [
@@ -270,14 +270,14 @@ const massaVictory: SpriteRows = [
 // ─── BULLRICH sprites ─────────────────────────────────────────────────────────
 const bullrichPalette: Palette = {
   ...basePalette,
-  H: '#c8a050',  // blonde short hair
-  T: '#2196a4',  // turquoise blazer
-  N: '#ccaa88',  // neck
-  E: '#333333',  // eyes
-  M: '#aa6644',  // mouth
-  C: '#ffffff',  // collar/shirt
-  A: '#1a7a85',  // blazer shadow
-  Y: '#ffaa33',  // sweat drop yellow
+  H: '#c8a050', // blonde short hair
+  T: '#2196a4', // turquoise blazer
+  N: '#ccaa88', // neck
+  E: '#333333', // eyes
+  M: '#aa6644', // mouth
+  C: '#ffffff', // collar/shirt
+  A: '#1a7a85', // blazer shadow
+  Y: '#ffaa33', // sweat drop yellow
 };
 
 const bullrichNormal: SpriteRows = [
@@ -390,13 +390,13 @@ const bullrichVictory: SpriteRows = [
 // ─── CAPUTO portrait (character) ──────────────────────────────────────────────
 const caputoPalette: Palette = {
   ...basePalette,
-  H: '#888888',  // grey hair
-  T: '#555555',  // grey suit
-  C: '#cc0000',  // red tie
-  E: '#222222',  // eyes
-  M: '#aa6644',  // mouth
-  N: '#ccaa88',  // neck
-  G: '#333333',  // suit dark
+  H: '#888888', // grey hair
+  T: '#555555', // grey suit
+  C: '#cc0000', // red tie
+  E: '#222222', // eyes
+  M: '#aa6644', // mouth
+  N: '#ccaa88', // neck
+  G: '#333333', // suit dark
 };
 
 const caputoNormal: SpriteRows = [
@@ -439,12 +439,12 @@ const caputoPanic: SpriteRows = caputoNormal;
 // ─── MOYANO portrait ──────────────────────────────────────────────────────────
 const moyanoPalette: Palette = {
   ...basePalette,
-  H: '#1a1a1a',  // black hair
-  T: '#1a3a8c',  // union blue shirt
-  E: '#222222',  // eyes
-  M: '#aa5533',  // mouth
-  U: '#cc2222',  // union red detail
-  B: '#2a2a2a',  // mustache
+  H: '#1a1a1a', // black hair
+  T: '#1a3a8c', // union blue shirt
+  E: '#222222', // eyes
+  M: '#aa5533', // mouth
+  U: '#cc2222', // union red detail
+  B: '#2a2a2a', // mustache
 };
 
 const moyanoNormal: SpriteRows = [
@@ -487,12 +487,12 @@ const moyanoPanic: SpriteRows = moyanoNormal;
 // ─── CRISTINA PÉREZ portrait (journalist) ─────────────────────────────────────
 const cristinaPPalette: Palette = {
   ...basePalette,
-  H: '#2a1a00',  // dark brown hair with wave
-  T: '#1a1a4a',  // dark professional top
-  E: '#222222',  // eyes
-  M: '#cc4444',  // red lipstick
-  P: '#888888',  // microphone
-  L: '#eeeeee',  // mic shine
+  H: '#2a1a00', // dark brown hair with wave
+  T: '#1a1a4a', // dark professional top
+  E: '#222222', // eyes
+  M: '#cc4444', // red lipstick
+  P: '#888888', // microphone
+  L: '#eeeeee', // mic shine
 };
 
 const cristinaPNormal: SpriteRows = [
@@ -535,13 +535,13 @@ const cristinaPPanic: SpriteRows = cristinaPNormal;
 // ─── KRISTALINA portrait (FMI) ────────────────────────────────────────────────
 const kristalinaPortraitPalette: Palette = {
   ...basePalette,
-  H: '#cccccc',  // silver/white hair
-  T: '#1a2a6b',  // IMF navy suit
-  E: '#333333',  // eyes (with glasses)
-  G: '#aaaaaa',  // glasses frames
-  M: '#888866',  // neutral mouth
-  F: '#ffffff',  // FMI badge
-  N: '#ffddcc',  // paler skin
+  H: '#cccccc', // silver/white hair
+  T: '#1a2a6b', // IMF navy suit
+  E: '#333333', // eyes (with glasses)
+  G: '#aaaaaa', // glasses frames
+  M: '#888866', // neutral mouth
+  F: '#ffffff', // FMI badge
+  N: '#ffddcc', // paler skin
 };
 
 const kristalinaPortraitNormal: SpriteRows = [
@@ -584,13 +584,13 @@ const kristalinaPortraitPanic: SpriteRows = kristalinaPortraitNormal;
 // ─── KICILLOF portrait ────────────────────────────────────────────────────────
 const kicillofPalette: Palette = {
   ...basePalette,
-  H: '#2a1a00',  // dark curly hair
-  T: '#1a4a1a',  // green/Peronist pullover
-  E: '#222222',  // eyes
-  M: '#aa6644',  // mouth
-  B: '#2a1a00',  // beard
-  R: '#ffffff',  // badge text
-  L: '#1a3a1a',  // darker sweater
+  H: '#2a1a00', // dark curly hair
+  T: '#1a4a1a', // green/Peronist pullover
+  E: '#222222', // eyes
+  M: '#aa6644', // mouth
+  B: '#2a1a00', // beard
+  R: '#ffffff', // badge text
+  L: '#1a3a1a', // darker sweater
 };
 
 const kicillofNormal: SpriteRows = [
@@ -665,7 +665,11 @@ const SPRITES: Record<string, SpriteSet> = {
   },
   embajador: {
     palette: kristalinaPortraitPalette,
-    sprites: { normal: kristalinaPortraitNormal, panic: kristalinaPortraitPanic, victory: kristalinaPortraitNormal },
+    sprites: {
+      normal: kristalinaPortraitNormal,
+      panic: kristalinaPortraitPanic,
+      victory: kristalinaPortraitNormal,
+    },
   },
   kicillof: {
     palette: kicillofPalette,
@@ -698,7 +702,7 @@ export function PixelCharacter({ id, size = 128, mood = 'normal' }: PixelCharact
       const color = palette[key];
       if (!color || color === 'transparent') continue;
       rects.push(
-        <rect key={`${x}-${y}`} x={x * CELL} y={y * CELL} width={CELL} height={CELL} fill={color} />
+        <rect key={`${x}-${y}`} x={x * CELL} y={y * CELL} width={CELL} height={CELL} fill={color} />,
       );
     }
   }
