@@ -424,16 +424,20 @@ function hasIgnoredNukeThreat(gameState: GameState | null): boolean {
   return !!gameState?.characters?.[0]?.memoryFlags?.includes('ignored_nuke_threat');
 }
 
+// First matching rule wins; ordered from worst to best mood.
+const CASA_RULES: [CasaState, (pop: number, stab: number) => boolean][] = [
+  ['chaos', (pop, stab) => pop < 20 || stab < 20],
+  ['riot', (pop, stab) => pop < 35 || stab < 30],
+  ['protest', (pop, stab) => pop < 50 || stab < 45],
+  ['guard', (pop, stab) => pop >= 80 && stab >= 75],
+  ['mate', (pop, stab) => pop >= 65 && stab >= 65],
+];
+
 function getCasaState(gameState: GameState | null): CasaState {
   if (hasIgnoredNukeThreat(gameState)) return 'nuke';
   const pop = gameState?.political.popularity ?? 70;
   const stab = gameState?.political.socialStability ?? 70;
-  if (pop < 20 || stab < 20) return 'chaos';
-  if (pop < 35 || stab < 30) return 'riot';
-  if (pop < 50 || stab < 45) return 'protest';
-  if (pop >= 80 && stab >= 75) return 'guard';
-  if (pop >= 65 && stab >= 65) return 'mate';
-  return 'quiet';
+  return CASA_RULES.find(([, matches]) => matches(pop, stab))?.[0] ?? 'quiet';
 }
 
 function CasaRosadaBanner({ casaState }: { casaState: CasaState }) {

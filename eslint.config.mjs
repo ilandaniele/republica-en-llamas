@@ -53,10 +53,9 @@ export default tseslint.config(
     settings: { 'import/resolver': { typescript: { project: './apps/web/tsconfig.json' } } },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      // React Compiler rules: legacy code violates them; warn until each screen is refactored.
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/purity': 'warn',
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/refs': 'error',
+      'react-hooks/purity': 'error',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'max-lines-per-function': 'off',
       'import/no-restricted-paths': ['error', { zones: featureBoundaryZones }],
