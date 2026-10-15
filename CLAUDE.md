@@ -3,7 +3,7 @@
 Argentine political-survival card game. Turborepo + npm workspaces.
 
 - `packages/game-engine/` — pure TypeScript domain core (no React, no IO). Vitest tests in `src/__tests__/`.
-- `apps/web/` — React 18 + Vite + Tailwind + Zustand + TanStack Query + Supabase. Deployed to Fly.io (nginx).
+- `apps/web/` — React 19 + Vite + Tailwind + Zustand + TanStack Query + Supabase. Deployed to Fly.io (nginx).
 - `apps/mobile/` — Expo. Do not modify unless explicitly asked.
 - `supabase/` — SQL migrations (append-only, numbered) and Deno edge functions.
 
