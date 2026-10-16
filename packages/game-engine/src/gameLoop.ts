@@ -7,6 +7,7 @@ import type {
   RecurringCharacter,
   ScenarioId,
   ScenarioCalendar,
+  Shock,
 } from './types.js';
 import {
   DIFFICULTY_PRESETS,
@@ -23,6 +24,7 @@ import { calculateScore } from './scoring.js';
 import { detectCrises, tickCrises } from './crises.js';
 import { checkGameOver } from './gameOver.js';
 import { rollInternationalShock, tickShocks } from './shocks.js';
+import { SCENARIO_OPENING_SHOCKS } from './scenarioShocks.js';
 import { tickMediaEffects } from './media.js';
 import { drawCard, getCard, CARD_REGISTRY } from './events/index.js';
 import { createRng, clamp, generateId } from './utils.js';
@@ -160,190 +162,8 @@ const INITIAL_CHARACTERS: RecurringCharacter[] = [
   },
 ];
 
-function getScenarioOpeningShocks(scenarioId: ScenarioId): import('./types.js').Shock[] {
-  const shockMap: Record<ScenarioId, import('./types.js').Shock[]> = {
-    hiperinflacion_1989: [
-      {
-        id: 'shock_hiper_saqueos',
-        name: 'shock.hiper.saqueos',
-        turnsRemaining: 3,
-        inflationMod: 8,
-        marketConfidenceMod: -20,
-        deficitMod: 5,
-        popularityMod: -25,
-      },
-      {
-        id: 'shock_hiper_alfonsinexit',
-        name: 'shock.hiper.alfonsinexit',
-        turnsRemaining: 2,
-        inflationMod: 5,
-        marketConfidenceMod: -25,
-        deficitMod: 5,
-        popularityMod: -30,
-      },
-    ],
-    corralito_2001: [
-      {
-        id: 'shock_corralito_freeze',
-        name: 'shock.corralito.freeze',
-        turnsRemaining: 4,
-        inflationMod: 3,
-        marketConfidenceMod: -30,
-        deficitMod: 5,
-        popularityMod: -20,
-      },
-      {
-        id: 'shock_corralito_default',
-        name: 'shock.corralito.default',
-        turnsRemaining: 3,
-        inflationMod: 2,
-        marketConfidenceMod: -35,
-        deficitMod: 0,
-        popularityMod: -25,
-      },
-    ],
-    convertibilidad: [
-      {
-        id: 'shock_convertib_overvalued',
-        name: 'shock.convertib.overvalued',
-        turnsRemaining: 3,
-        inflationMod: -5,
-        marketConfidenceMod: 10,
-        deficitMod: 8,
-        popularityMod: 0,
-      },
-      {
-        id: 'shock_convertib_recession',
-        name: 'shock.convertib.recession',
-        turnsRemaining: 3,
-        inflationMod: 0,
-        marketConfidenceMod: -10,
-        deficitMod: 10,
-        popularityMod: -15,
-      },
-    ],
-    rodrigazo_1975: [
-      {
-        id: 'shock_rodrigazo_huelga',
-        name: 'shock.rodrigazo.huelga',
-        turnsRemaining: 2,
-        inflationMod: 0,
-        marketConfidenceMod: -10,
-        deficitMod: 5,
-        popularityMod: -20,
-      },
-      {
-        id: 'shock_rodrigazo_tarifazo',
-        name: 'shock.rodrigazo.tarifazo',
-        turnsRemaining: 1,
-        inflationMod: 30,
-        marketConfidenceMod: -20,
-        deficitMod: 0,
-        popularityMod: -25,
-      },
-    ],
-    malvinas_1982: [
-      {
-        id: 'shock_malvinas_guerra',
-        name: 'shock.malvinas.guerra',
-        turnsRemaining: 5,
-        inflationMod: 5,
-        marketConfidenceMod: -15,
-        deficitMod: 10,
-        popularityMod: 10,
-      },
-      {
-        id: 'shock_malvinas_derrota',
-        name: 'shock.malvinas.derrota',
-        turnsRemaining: 3,
-        inflationMod: 10,
-        marketConfidenceMod: -25,
-        deficitMod: 8,
-        popularityMod: -40,
-      },
-    ],
-    kirchnerismo_boom: [
-      {
-        id: 'shock_kirchner_vientocola',
-        name: 'shock.kirchner.vientocola',
-        turnsRemaining: 8,
-        inflationMod: 3,
-        marketConfidenceMod: 20,
-        deficitMod: -5,
-        popularityMod: 15,
-      },
-      {
-        id: 'shock_kirchner_inflsubestimada',
-        name: 'shock.kirchner.inflsubestimada',
-        turnsRemaining: 4,
-        inflationMod: 25,
-        marketConfidenceMod: -20,
-        deficitMod: 5,
-        popularityMod: 0,
-      },
-    ],
-    libertad_avanza_2023: [
-      {
-        id: 'shock_lla_herencia',
-        name: 'shock.lla.herencia',
-        turnsRemaining: 4,
-        inflationMod: 15,
-        marketConfidenceMod: -15,
-        deficitMod: 5,
-        popularityMod: -10,
-      },
-      {
-        id: 'shock_lla_devaluacion',
-        name: 'shock.lla.devaluacion',
-        turnsRemaining: 3,
-        inflationMod: 20,
-        marketConfidenceMod: 10,
-        deficitMod: -5,
-        popularityMod: -20,
-      },
-    ],
-    guerra_ucrania_2022: [
-      {
-        id: 'shock_ucrania_invasion',
-        name: 'shock.ucrania.invasion',
-        turnsRemaining: 5,
-        inflationMod: 8,
-        marketConfidenceMod: -25,
-        deficitMod: 8,
-        popularityMod: -5,
-      },
-      {
-        id: 'shock_ucrania_energia',
-        name: 'shock.ucrania.energia',
-        turnsRemaining: 4,
-        inflationMod: 6,
-        marketConfidenceMod: -15,
-        deficitMod: 5,
-        popularityMod: -10,
-      },
-    ],
-    conflicto_iran_2024: [
-      {
-        id: 'shock_iran_petroleo',
-        name: 'shock.iran.petroleo',
-        turnsRemaining: 4,
-        inflationMod: 10,
-        marketConfidenceMod: -20,
-        deficitMod: 6,
-        popularityMod: -8,
-      },
-      {
-        id: 'shock_iran_misiles',
-        name: 'shock.iran.misiles',
-        turnsRemaining: 3,
-        inflationMod: 5,
-        marketConfidenceMod: -30,
-        deficitMod: 4,
-        popularityMod: -15,
-      },
-    ],
-  };
-  return shockMap[scenarioId] ?? [];
+function getScenarioOpeningShocks(scenarioId: ScenarioId): Shock[] {
+  return (SCENARIO_OPENING_SHOCKS[scenarioId] ?? []).map((shock) => ({ ...shock }));
 }
 
 function withEconomic(s: GameState, economic: Partial<GameState['economic']>): GameState {

@@ -222,6 +222,8 @@ Cierra el límite conocido de la Fase 0: el cliente ya no elige la semilla de un
 - `submit-run` exige un `ticketId` del mismo usuario con la misma semilla, y guarda como máximo una partida por ticket.
 - Web: `startNewGame` pide el ticket (`lib/runTicket.ts`). Invitados, modo offline o un error de `start-run` usan una semilla local, y esas partidas no se pueden guardar.
 
-Despliegue: `supabase db push`, `supabase functions deploy start-run` y `npm run deploy:submit-run`.
+Desplegado el 2026-10-16. Producción no tenía historial de migraciones (el esquema se aplicó a mano): 001, 002, 003 y 006 se marcaron con `supabase migration repair --status applied`, y `supabase db push --include-all` aplicó 004, 005 y 007. Luego `supabase functions deploy start-run` y `npm run deploy:submit-run`.
+
+`HomeScreen` ignora un segundo clic mientras la partida arranca, así que no se consume dos veces la partida diaria.
 
 Límite que queda: un jugador puede abandonar una partida al ver el primer turno y pedir otro ticket. Para cerrarlo hace falta limitar tickets por usuario o puntuar las partidas abandonadas.

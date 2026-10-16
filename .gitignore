@@ -21,3 +21,4 @@ packages/game-engine/src/**/*.d.ts.map
 
 # Engine bundle for edge functions (npm run bundle:engine)
 supabase/functions/_shared/game-engine.js
+supabase/.temp/
