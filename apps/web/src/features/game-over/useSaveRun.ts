@@ -11,16 +11,18 @@ interface SavedRun {
 export function useSaveRun() {
   return useMutation({
     mutationFn: async ({
+      ticketId,
       config,
       decisions,
     }: {
+      ticketId: string;
       config: RunConfig;
       decisions: TurnDecision[];
     }): Promise<SavedRun | null> => {
       if (isOfflineMode) return null;
 
       const { data, error } = await supabase.functions.invoke<SavedRun>('submit-run', {
-        body: { config, decisions },
+        body: { ticketId, config, decisions },
       });
       if (error) throw error;
       return data;

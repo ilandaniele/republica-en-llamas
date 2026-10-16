@@ -1,13 +1,12 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2?target=deno';
 import { replayRun } from '../_shared/game-engine.js';
-import { authenticatedUserId, corsHeaders, jsonResponder, SUPABASE_URL } from '../_shared/http.ts';
+import { adminClient, authenticatedUserId, corsHeaders, jsonResponder } from '../_shared/http.ts';
 
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 const MAX_DECISIONS = 200;
 const UNIQUE_VIOLATION = '23505';
 const DIFFICULTIES = new Set(['easy', 'normal', 'hard', 'crisis']);
 const LANGUAGES = new Set(['es', 'en']);
 const SWING_CHOICES = new Set(['accept', 'refuse', 'decide']);
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 type Json = Record<string, unknown>;
 
@@ -50,9 +49,11 @@ function isValidDecision(decision: unknown): boolean {
   }
 }
 
-function isValidSubmission(body: unknown): body is { config: Json; decisions: Json[] } {
+function isValidSubmission(body: unknown): body is { ticketId: string; config: Json; decisions: Json[] } {
   return (
     isObject(body) &&
+    typeof body.ticketId === 'string' &&
+    UUID_PATTERN.test(body.ticketId) &&
     isValidConfig(body.config) &&
     Array.isArray(body.decisions) &&
     body.decisions.length <= MAX_DECISIONS &&
@@ -70,7 +71,16 @@ Deno.serve(async (req: Request) => {
 
   const body = await req.json().catch(() => null);
   if (!isValidSubmission(body)) return json({ error: 'Malformed run' }, 400);
-  const { config, decisions } = body;
+  const { ticketId, config, decisions } = body;
+
+  const admin = adminClient();
+  const { data: ticket } = await admin
+    .from('run_tickets')
+    .select('seed')
+    .eq('id', ticketId)
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (!ticket || ticket.seed !== config.seed) return json({ error: 'Invalid run ticket' }, 403);
 
   let finalState;
   try {
@@ -81,11 +91,11 @@ Deno.serve(async (req: Request) => {
   }
   if (!finalState.isGameOver) return json({ error: 'Run is not finished' }, 422);
 
-  const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const { data: run, error: runError } = await admin
     .from('game_runs')
     .insert({
       user_id: userId,
+      ticket_id: ticketId,
       difficulty: finalState.difficulty,
       seed: finalState.seed,
       score: finalState.score,

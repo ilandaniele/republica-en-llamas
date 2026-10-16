@@ -13,13 +13,14 @@ export function GameOverActions() {
   const navigate = useNavigate();
   const resetGame = useGameStore((s) => s.resetGame);
   const runConfig = useGameStore((s) => s.runConfig);
+  const runTicketId = useGameStore((s) => s.runTicketId);
   const decisions = useGameStore((s) => s.decisions);
   const { user } = useAuth();
   const { mutate: saveRun, isPending: isSaving, isSuccess: isSaved } = useSaveRun();
 
   const handleSaveScore = () => {
-    if (!user || !runConfig || isSaving || isSaved) return;
-    saveRun({ config: runConfig, decisions });
+    if (!runTicketId || !runConfig || isSaving || isSaved) return;
+    saveRun({ ticketId: runTicketId, config: runConfig, decisions });
   };
 
   const handlePlayAgain = () => {
@@ -42,7 +43,7 @@ export function GameOverActions() {
         >
           UNA MÁS ▶
         </button>
-        {user && (
+        {user && runTicketId && (
           <button
             onClick={handleSaveScore}
             disabled={isSaving || isSaved}

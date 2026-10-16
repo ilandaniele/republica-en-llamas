@@ -39,8 +39,7 @@ export default function AuthScreen() {
   const [selectedDifficulty, setSelectedDifficulty] = React.useState<Difficulty>('normal');
 
   const handleGuest = () => {
-    startNewGame(selectedDifficulty);
-    navigate('/president');
+    void startNewGame(selectedDifficulty).then(() => navigate('/president'));
   };
 
   return (
