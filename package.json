@@ -18,7 +18,7 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "bundle:engine": "esbuild packages/game-engine/src/index.ts --bundle --format=esm --platform=neutral --outfile=supabase/functions/_shared/game-engine.js",
-    "deploy:submit-run": "npm run bundle:engine && supabase functions deploy submit-run"
+    "deploy:submit-run": "npm run bundle:engine && npx supabase functions deploy submit-run"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

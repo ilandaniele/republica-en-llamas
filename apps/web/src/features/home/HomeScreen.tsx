@@ -296,12 +296,22 @@ export default function HomeScreen() {
   const dailyRemaining = getDailyRunsRemaining();
   const dailyLimitReached = !hasPremium && dailyRemaining <= 0;
 
-  const startGame = async (difficulty: Difficulty) => {
-    consumeDailyRun();
-    await startNewGame(difficulty);
-    trackGameStarted({ difficulty, president: presidentId, mode: 'normal' });
-    navigate('/president');
+  const isStartingRef = useRef(false);
+
+  const launchRun = async (difficulty: Difficulty, mode: 'normal' | 'historical') => {
+    if (isStartingRef.current) return;
+    isStartingRef.current = true;
+    try {
+      consumeDailyRun();
+      await startNewGame(difficulty);
+      trackGameStarted({ difficulty, president: presidentId, mode });
+      navigate('/president');
+    } finally {
+      isStartingRef.current = false;
+    }
   };
+
+  const startGame = (difficulty: Difficulty) => launchRun(difficulty, 'normal');
 
   const startHistoricalScenario = async (scenarioId: ScenarioId) => {
     const config = HISTORICAL_SCENARIOS[scenarioId];
@@ -310,10 +320,7 @@ export default function HomeScreen() {
       return;
     }
     setScenario(scenarioId);
-    consumeDailyRun();
-    await startNewGame('hard');
-    trackGameStarted({ difficulty: 'hard', president: presidentId, mode: 'historical' });
-    navigate('/president');
+    await launchRun('hard', 'historical');
   };
 
   const handleGuest = () => void startGame(selectedDifficulty);
