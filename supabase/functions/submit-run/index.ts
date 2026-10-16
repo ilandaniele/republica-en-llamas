@@ -1,12 +1,11 @@
 import { replayRun } from '../_shared/game-engine.js';
-import { adminClient, authenticatedUserId, corsHeaders, jsonResponder } from '../_shared/http.ts';
+import { adminClient, authenticatedUser, corsHeaders, isUuid, jsonResponder } from '../_shared/http.ts';
 
 const MAX_DECISIONS = 200;
 const UNIQUE_VIOLATION = '23505';
 const DIFFICULTIES = new Set(['easy', 'normal', 'hard', 'crisis']);
 const LANGUAGES = new Set(['es', 'en']);
 const SWING_CHOICES = new Set(['accept', 'refuse', 'decide']);
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 type Json = Record<string, unknown>;
 
@@ -52,8 +51,7 @@ function isValidDecision(decision: unknown): boolean {
 function isValidSubmission(body: unknown): body is { ticketId: string; config: Json; decisions: Json[] } {
   return (
     isObject(body) &&
-    typeof body.ticketId === 'string' &&
-    UUID_PATTERN.test(body.ticketId) &&
+    isUuid(body.ticketId) &&
     isValidConfig(body.config) &&
     Array.isArray(body.decisions) &&
     body.decisions.length <= MAX_DECISIONS &&
@@ -66,8 +64,10 @@ Deno.serve(async (req: Request) => {
   const json = jsonResponder(headers);
   if (req.method === 'OPTIONS') return new Response('ok', { headers });
 
-  const userId = await authenticatedUserId(req);
-  if (!userId) return json({ error: 'Unauthorized' }, 401);
+  const user = await authenticatedUser(req);
+  if (!user) return json({ error: 'Unauthorized' }, 401);
+  if (user.isAnonymous) return json({ error: 'Sign in to save runs' }, 403);
+  const userId = user.id;
 
   const body = await req.json().catch(() => null);
   if (!isValidSubmission(body)) return json({ error: 'Malformed run' }, 400);

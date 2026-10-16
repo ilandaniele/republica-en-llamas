@@ -1,7 +1,7 @@
 import { adminClient, authenticatedUserId, corsHeaders, jsonResponder } from '../_shared/http.ts';
+import { DAILY_TICKET_LIMIT } from '../_shared/runTickets.ts';
 
 const SEED_RANGE = 1_000_000;
-const DAILY_TICKET_LIMIT = 30;
 
 function randomSeed(): number {
   return crypto.getRandomValues(new Uint32Array(1))[0] % SEED_RANGE;

@@ -228,4 +228,11 @@ Desplegado el 2026-10-16. Producción no tenía historial de migraciones (el esq
 
 Tope diario (`008_run_ticket_daily_limit.sql`): `start-run` llama a `issue_run_ticket`, que emite como máximo 30 tickets por usuario en 24 horas y si no responde 429. Abandonar partidas para buscar una semilla favorable queda acotado a ese tope; al superarlo la partida usa una semilla local y no se puede guardar.
 
-Por diseño: una partida empezada como invitado no se puede guardar aunque el jugador inicie sesión a mitad de partida, porque su semilla la eligió el cliente.
+Invitados (`009_anonymous_guests.sql`): un invitado juega con una sesión anónima de Supabase, así que su semilla también la emite el servidor.
+
+- `handle_new_user` no crea perfil para usuarios anónimos; `run_tickets.user_id` ahora referencia `auth.users`.
+- `submit-run` rechaza usuarios anónimos (403).
+- En game over el invitado ve "INICIÁ SESIÓN PARA GUARDAR". Login y registro con `keepRun` guardan el token anónimo antes de autenticar y llaman a `claim-run-ticket`, que mueve el ticket a la cuenta real con `claim_run_ticket` (respeta el tope diario de la cuenta).
+- La web trata la sesión anónima como sesión cerrada (`AuthProvider`).
+- Requiere activar "Allow anonymous sign-ins" en el dashboard de Supabase. Sin eso, `signInAnonymously` falla y la partida usa una semilla local que no se puede guardar.
+- Límites: Google OAuth y registro con confirmación por email no transfieren la partida. Buscar semillas con muchas cuentas anónimas solo lo acota el rate limit por IP de Supabase y el tope diario al reclamar.

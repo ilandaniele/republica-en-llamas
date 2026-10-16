@@ -67,6 +67,7 @@ interface GameStore {
   resolveCongressSession: (cardId: string, decisions: CongressDecisions) => void;
   startNewGame: (difficulty: Difficulty) => Promise<void>;
   setUserId: (id: string | null) => void;
+  clearRunTicket: () => void;
   setCrisisExpress: (val: boolean) => void;
   timeoutSelection: () => void;
   selectChoice: (cardId: string, choiceIndex: number) => void;
@@ -407,6 +408,8 @@ export const useGameStore = create<GameStore>()(
       setScenario: (id: ScenarioId | null) => set({ scenarioId: id }),
 
       setUserId: (id: string | null) => set({ userId: id }),
+
+      clearRunTicket: () => set({ runTicketId: null }),
 
       setCrisisExpress: (val: boolean) => set({ isCrisisExpress: val }),
 

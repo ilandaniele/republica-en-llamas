@@ -23,6 +23,8 @@ export function GameOverActions() {
     saveRun({ ticketId: runTicketId, config: runConfig, decisions });
   };
 
+  const handleSignInToSave = () => navigate('/login', { state: { keepRun: true } });
+
   const handlePlayAgain = () => {
     resetGame();
     navigate('/');
@@ -43,9 +45,10 @@ export function GameOverActions() {
         >
           UNA MÁS ▶
         </button>
-        {user && runTicketId && (
+        {runTicketId && (
           <button
-            onClick={handleSaveScore}
+            onClick={user ? handleSaveScore : handleSignInToSave}
+            {...(user ? {} : prefetchOnIntent('login'))}
             disabled={isSaving || isSaved}
             className="pixel-border-gold px-6 py-3 transition-colors disabled:opacity-50"
             style={{
@@ -55,7 +58,7 @@ export function GameOverActions() {
               color: 'var(--night-blue)',
             }}
           >
-            {saveButtonLabel(isSaving, isSaved)}
+            {user ? saveButtonLabel(isSaving, isSaved) : '🔑 INICIÁ SESIÓN PARA GUARDAR'}
           </button>
         )}
         <button
