@@ -48,7 +48,7 @@ export default function RegisterScreen() {
 
     // A session exists immediately only when email confirmation is disabled
     if (data.session) {
-      startNewGame(difficulty);
+      await startNewGame(difficulty);
       navigate('/president');
     } else {
       setConfirmationSent(true);

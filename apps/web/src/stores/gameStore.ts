@@ -11,6 +11,7 @@ import type {
   RunConfig,
 } from '@republica/game-engine';
 import { trackTurnCompleted, trackCrisisTriggered } from '../lib/analytics.js';
+import { requestRunTicket } from '../lib/runTicket.js';
 import { initGame, drawNextCard, applyNegotiation, resolveTurn, endTurn } from '@republica/game-engine';
 import type { EventCard } from '@republica/game-engine';
 
@@ -59,11 +60,12 @@ interface GameStore {
   isCrisisExpress: boolean;
   scenarioId: ScenarioId | null;
   runConfig: RunConfig | null;
+  runTicketId: string | null;
   decisions: TurnDecision[];
 
   // Actions
   resolveCongressSession: (cardId: string, decisions: CongressDecisions) => void;
-  startNewGame: (difficulty: Difficulty, seed?: number) => void;
+  startNewGame: (difficulty: Difficulty) => Promise<void>;
   setUserId: (id: string | null) => void;
   setCrisisExpress: (val: boolean) => void;
   timeoutSelection: () => void;
@@ -209,15 +211,17 @@ export const useGameStore = create<GameStore>()(
       isCrisisExpress: false,
       scenarioId: null,
       runConfig: null,
+      runTicketId: null,
       decisions: [],
 
       resolveCongressSession: (cardId, decisions) => {
         get().commitDecision({ kind: 'congress', cardId, decisions });
       },
 
-      startNewGame: (difficulty, seed) => {
+      startNewGame: async (difficulty) => {
+        const ticket = await requestRunTicket();
         const runConfig: RunConfig = {
-          seed: seed ?? Math.floor(Math.random() * 1_000_000),
+          seed: ticket?.seed ?? Math.floor(Math.random() * 1_000_000),
           difficulty,
           language: get().language,
           scenarioId: get().scenarioId,
@@ -232,6 +236,7 @@ export const useGameStore = create<GameStore>()(
         const card = drawNextCard(state);
         set({
           runConfig,
+          runTicketId: ticket?.id ?? null,
           decisions: [],
           gameState: state,
           currentCard: card,
@@ -365,6 +370,7 @@ export const useGameStore = create<GameStore>()(
       resetGame: () =>
         set({
           runConfig: null,
+          runTicketId: null,
           decisions: [],
           gameState: null,
           currentCard: null,
@@ -419,6 +425,7 @@ export const useGameStore = create<GameStore>()(
         language: s.language,
         gameState: s.gameState,
         runConfig: s.runConfig,
+        runTicketId: s.runTicketId,
         decisions: s.decisions,
         currentCard: s.currentCard,
         personalBest: s.personalBest,

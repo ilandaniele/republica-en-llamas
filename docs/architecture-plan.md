@@ -212,3 +212,16 @@ Pendientes fuera de la Fase 2, resueltos:
 | #18 | `perf/memory` | Imágenes con `loading="lazy"` y `decoding="async"`; el canvas de `html2canvas` se libera después de `toBlob` |
 
 Medición de memoria (build de producción, partida automática): el heap de JS se mantiene en 8–11 MB por turno, sin tendencia a crecer, y el DOM vuelve a ~80 elementos al salir de la partida. Muy por debajo del objetivo de 150 MB. La partida terminó en el turno 18, no en el 40. GSAP ya usaba `useGSAP` con revert automático; los dos timers sin `clear` (prefetch en idle y re-render de 2 s en `gameStore`) son de una sola vez.
+
+## 8. Fase 4 — Semilla del servidor (2026-10-15)
+
+Cierra el límite conocido de la Fase 0: el cliente ya no elige la semilla de una partida que se puede guardar.
+
+- Migración `007_run_tickets.sql`: tabla `run_tickets` (solo la usan las edge functions, RLS sin políticas) y `game_runs.ticket_id` con índice único.
+- Edge function `start-run`: con sesión iniciada, emite un ticket con una semilla aleatoria del servidor.
+- `submit-run` exige un `ticketId` del mismo usuario con la misma semilla, y guarda como máximo una partida por ticket.
+- Web: `startNewGame` pide el ticket (`lib/runTicket.ts`). Invitados, modo offline o un error de `start-run` usan una semilla local, y esas partidas no se pueden guardar.
+
+Despliegue: `supabase db push`, `supabase functions deploy start-run` y `npm run deploy:submit-run`.
+
+Límite que queda: un jugador puede abandonar una partida al ver el primer turno y pedir otro ticket. Para cerrarlo hace falta limitar tickets por usuario o puntuar las partidas abandonadas.

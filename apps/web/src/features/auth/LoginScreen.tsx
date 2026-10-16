@@ -39,7 +39,7 @@ export default function LoginScreen() {
         return;
       }
       if (data.user) setUserId(data.user.id);
-      startNewGame(difficulty);
+      await startNewGame(difficulty);
       navigate('/president');
     } catch {
       setError('Error inesperado. Intentá de nuevo.');

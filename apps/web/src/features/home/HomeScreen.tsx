@@ -82,7 +82,7 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
           return;
         }
       }
-      startNewGame(selectedDifficulty);
+      await startNewGame(selectedDifficulty);
       navigate('/president');
     } catch {
       setError('Error inesperado. Intentá de nuevo.');
@@ -296,14 +296,14 @@ export default function HomeScreen() {
   const dailyRemaining = getDailyRunsRemaining();
   const dailyLimitReached = !hasPremium && dailyRemaining <= 0;
 
-  const startGame = (difficulty: Difficulty) => {
+  const startGame = async (difficulty: Difficulty) => {
     consumeDailyRun();
-    startNewGame(difficulty);
+    await startNewGame(difficulty);
     trackGameStarted({ difficulty, president: presidentId, mode: 'normal' });
     navigate('/president');
   };
 
-  const startHistoricalScenario = (scenarioId: ScenarioId) => {
+  const startHistoricalScenario = async (scenarioId: ScenarioId) => {
     const config = HISTORICAL_SCENARIOS[scenarioId];
     if (!hasEntitlement(config.entitlementRequired)) {
       setPaywallScenario(scenarioId);
@@ -311,13 +311,13 @@ export default function HomeScreen() {
     }
     setScenario(scenarioId);
     consumeDailyRun();
-    startNewGame('hard');
+    await startNewGame('hard');
     trackGameStarted({ difficulty: 'hard', president: presidentId, mode: 'historical' });
     navigate('/president');
   };
 
-  const handleGuest = () => startGame(selectedDifficulty);
-  const handleLoggedInStart = () => startGame(selectedDifficulty);
+  const handleGuest = () => void startGame(selectedDifficulty);
+  const handleLoggedInStart = () => void startGame(selectedDifficulty);
   const handleContinue = () => {
     navigate('/game');
   };
@@ -422,7 +422,7 @@ export default function HomeScreen() {
                         description={t(cfg.descriptionKey)}
                         locked={locked}
                         index={i}
-                        onClick={() => startHistoricalScenario(id)}
+                        onClick={() => void startHistoricalScenario(id)}
                       />
                     );
                   })}
