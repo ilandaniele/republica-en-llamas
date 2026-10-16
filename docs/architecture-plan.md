@@ -226,4 +226,6 @@ Desplegado el 2026-10-16. Producción no tenía historial de migraciones (el esq
 
 `HomeScreen` ignora un segundo clic mientras la partida arranca, así que no se consume dos veces la partida diaria.
 
-Límite que queda: un jugador puede abandonar una partida al ver el primer turno y pedir otro ticket. Para cerrarlo hace falta limitar tickets por usuario o puntuar las partidas abandonadas.
+Tope diario (`008_run_ticket_daily_limit.sql`): `start-run` llama a `issue_run_ticket`, que emite como máximo 30 tickets por usuario en 24 horas y si no responde 429. Abandonar partidas para buscar una semilla favorable queda acotado a ese tope; al superarlo la partida usa una semilla local y no se puede guardar.
+
+Por diseño: una partida empezada como invitado no se puede guardar aunque el jugador inicie sesión a mitad de partida, porque su semilla la eligió el cliente.
