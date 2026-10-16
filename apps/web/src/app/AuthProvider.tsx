@@ -5,8 +5,10 @@ import { ensureProfile, supabase } from '../lib/supabase.js';
 import { AuthContext } from './authContext.js';
 import type { AuthState } from './authContext.js';
 
+// Anonymous sessions only carry guest run tickets; the rest of the app treats guests as signed out.
 function stateFromSession(session: Session | null): AuthState {
-  return { user: session?.user ?? null, session, loading: false };
+  const signedIn = session && !session.user.is_anonymous ? session : null;
+  return { user: signedIn?.user ?? null, session: signedIn, loading: false };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {

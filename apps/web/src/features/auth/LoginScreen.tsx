@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
 import {
@@ -10,15 +10,13 @@ import {
   translateAuthError,
 } from '../../lib/supabase.js';
 import { useGameStore } from '../../stores/gameStore.js';
-import type { Difficulty } from '@republica/game-engine';
 import { GoogleIcon } from './GoogleIcon.js';
+import { useAuthDestination } from './useAuthDestination.js';
 
 export default function LoginScreen() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const difficulty: Difficulty = (location.state as { difficulty?: Difficulty })?.difficulty ?? 'normal';
+  const { routeState, captureGuestToken, continueAfterAuth } = useAuthDestination();
   const { signIn } = useAuth();
-  const startNewGame = useGameStore((s) => s.startNewGame);
   const setUserId = useGameStore((s) => s.setUserId);
 
   const [email, setEmail] = useState('');
@@ -33,14 +31,14 @@ export default function LoginScreen() {
     setError('');
     setLoading(true);
     try {
+      const guestToken = await captureGuestToken();
       const { data, error: err } = await signIn(email, password);
       if (err) {
         setError(translateAuthError(err.message));
         return;
       }
       if (data.user) setUserId(data.user.id);
-      await startNewGame(difficulty);
-      navigate('/president');
+      await continueAfterAuth(guestToken);
     } catch {
       setError('Error inesperado. Intentá de nuevo.');
     } finally {
@@ -179,7 +177,7 @@ export default function LoginScreen() {
             Olvidé mi contraseña
           </button>
           <button
-            onClick={() => navigate('/register', { state: { difficulty } })}
+            onClick={() => navigate('/register', { state: routeState })}
             className="font-mono text-xs text-gold-400 underline hover:text-gold-300"
           >
             Crear cuenta →
