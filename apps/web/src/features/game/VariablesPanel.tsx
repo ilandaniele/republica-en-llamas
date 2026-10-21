@@ -1,7 +1,6 @@
 import type { GameState } from '@republica/game-engine';
 import { useGameStore } from '../../stores/gameStore.js';
-import { PixelFuego } from '../../components/illustrations/PixelFuego.js';
-import { CasaRosadaMini } from './variables/CasaRosadaMini.js';
+import { CasaRosadaScene } from './casa-rosada/CasaRosadaScene.js';
 import { getTemperatura } from './variables/getTemperatura.js';
 import { useFlashMap } from './variables/useFlashMap.js';
 import { PoliticalSection } from './variables/PoliticalSection.js';
@@ -90,23 +89,11 @@ export function VariablesPanel({ state }: Props) {
   const prevSnapshot = useGameStore((s) => s.prevVarSnapshot);
   const flashMap = useFlashMap(state, prevSnapshot);
 
-  const hasAnyCrisis = [
-    political.popularity,
-    political.socialStability,
-    economic.marketConfidence,
-    economic.currencyStrength,
-    economic.foreignReserves,
-  ].some((v) => v < 30);
-  const isStable = political.socialStability > 50 && political.popularity > 50;
-
   return (
     <div className="pixel-border space-y-4 bg-navy-800 p-4">
       <PanelHeader positiveStreak={state.positiveStreak ?? 0} />
 
-      {/* Pixel decoration: fuego or Casa Rosada depending on state */}
-      <div className="flex justify-center py-1">
-        {hasAnyCrisis ? <PixelFuego size="sm" /> : <CasaRosadaMini tense={!isStable} />}
-      </div>
+      <CasaRosadaScene state={state} />
 
       <PoliticalSection political={political} prevSnapshot={prevSnapshot} flashMap={flashMap} />
       <EconomicSection
