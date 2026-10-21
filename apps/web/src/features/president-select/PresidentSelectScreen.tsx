@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore.js';
 import { useEntitlements } from '../../hooks/useEntitlements.js';
-import imageManifest from '../../assets/image-manifest.json';
+import { PixelPortrait, type PortraitId } from '../../components/illustrations/PixelPortrait.js';
 import { PaywallModal } from '../../components/PaywallModal.js';
 import { HISTORICAL_SCENARIOS } from '@republica/game-engine';
 import { useTranslation } from 'react-i18next';
 
 interface Archetype {
-  id: string;
+  id: PortraitId;
   name: string;
   lastName: string;
   title: string;
@@ -19,17 +19,7 @@ interface Archetype {
   bonusStat: string;
   weaknessStat: string;
   color: string;
-  emoji: string;
 }
-
-const ARCHETYPE_CHAR: Record<string, string> = {
-  ingeniero: 'char_milei',
-  populista: 'char_massa',
-  tecnocrata: 'char_bullrich',
-  izquierda: 'char_bregman',
-  federal: 'char_schiaretti',
-  corporativo: 'char_larreta',
-};
 
 const ARCHETYPES: Archetype[] = [
   {
@@ -44,7 +34,6 @@ const ARCHETYPES: Archetype[] = [
     bonusStat: 'marketConfidence',
     weaknessStat: 'popularity',
     color: 'border-blue-500',
-    emoji: '⚡',
   },
   {
     id: 'populista',
@@ -58,7 +47,6 @@ const ARCHETYPES: Archetype[] = [
     bonusStat: 'popularity',
     weaknessStat: 'marketConfidence',
     color: 'border-crimson-500',
-    emoji: '🎙',
   },
   {
     id: 'tecnocrata',
@@ -72,7 +60,6 @@ const ARCHETYPES: Archetype[] = [
     bonusStat: 'socialStability',
     weaknessStat: 'popularity',
     color: 'border-yellow-500',
-    emoji: '🦅',
   },
   {
     id: 'izquierda',
@@ -86,7 +73,6 @@ const ARCHETYPES: Archetype[] = [
     bonusStat: 'socialStability',
     weaknessStat: 'marketConfidence',
     color: 'border-red-600',
-    emoji: '✊',
   },
   {
     id: 'federal',
@@ -100,7 +86,6 @@ const ARCHETYPES: Archetype[] = [
     bonusStat: 'mediaCredibility',
     weaknessStat: 'popularity',
     color: 'border-blue-400',
-    emoji: '🌾',
   },
   {
     id: 'corporativo',
@@ -114,7 +99,6 @@ const ARCHETYPES: Archetype[] = [
     bonusStat: 'marketConfidence',
     weaknessStat: 'popularity',
     color: 'border-sky-400',
-    emoji: '📊',
   },
 ];
 
@@ -140,23 +124,7 @@ function ArchetypeCard({
     >
       {/* President portrait */}
       <div className="mb-3 flex justify-center">
-        {(() => {
-          const charKey = ARCHETYPE_CHAR[archetype.id];
-          const charUrl = charKey ? (imageManifest as Record<string, string>)[charKey] : null;
-          return charUrl ? (
-            <img
-              src={charUrl}
-              loading="lazy"
-              decoding="async"
-              width={120}
-              height={120}
-              style={{ imageRendering: 'pixelated', display: 'block' }}
-              alt={archetype.name}
-            />
-          ) : (
-            <span className="text-5xl">{archetype.emoji}</span>
-          );
-        })()}
+        <PixelPortrait id={archetype.id} px={120} />
       </div>
 
       {/* Name */}
