@@ -11,20 +11,10 @@ import { EventIllustration } from '../../components/illustrations/EventIllustrat
 import { CardParticles } from './event-card/CardParticles.js';
 import { PixelPortrait } from '../../components/illustrations/PixelPortrait.js';
 import type { PortraitId } from '../../components/illustrations/PixelPortrait.js';
-import imageManifest from '../../assets/image-manifest.json';
 
 gsap.registerPlugin(useGSAP);
 
 const PRESIDENT_IDS = new Set<string>(['milei', 'massa', 'bullrich', 'ingeniero', 'populista', 'tecnocrata']);
-
-const ARCHETYPE_CHAR: Record<string, string> = {
-  ingeniero: 'char_milei',
-  populista: 'char_massa',
-  tecnocrata: 'char_bullrich',
-  izquierda: 'char_bregman',
-  federal: 'char_schiaretti',
-  corporativo: 'char_larreta',
-};
 
 const ARCHETYPE_LABEL: Record<string, string> = {
   ingeniero: 'Pres. Milei',
@@ -33,13 +23,6 @@ const ARCHETYPE_LABEL: Record<string, string> = {
   izquierda: 'Dip. Bregman',
   federal: 'Gob. Schiaretti',
   corporativo: 'Jefe Larreta',
-};
-
-// Maps archetype → president slug used in scene image IDs
-const ARCHETYPE_PRES_SLUG: Record<string, string> = {
-  ingeniero: 'milei',
-  populista: 'massa',
-  tecnocrata: 'bullrich',
 };
 
 interface Props {
@@ -253,76 +236,42 @@ export function EventCardComponent({
       <CardHeading card={card} contextPrefix={contextPrefix} style={style} />
 
       {/* Full-bleed illustration — no horizontal padding */}
-      {(() => {
-        const presSlug = ARCHETYPE_PRES_SLUG[presidentId];
-        const sceneKey = presSlug ? `pres_${presSlug}_${card.category}` : null;
-        const sceneGifKey = sceneKey ? `${sceneKey}_anim` : null;
-        const manifest = imageManifest as Record<string, string>;
-        const sceneUrl = sceneKey ? manifest[sceneGifKey ?? ''] || manifest[sceneKey] || null : null;
-
-        return (
-          <div className="relative h-[180px] w-full overflow-hidden md:h-[260px] xl:h-[360px]">
-            {sceneUrl && !card.characterId ? (
-              <m.img
-                src={sceneUrl}
-                alt={`${presidentId} — ${card.category}`}
-                initial={{ scale: 1.06, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="h-full w-full object-cover object-top"
-              />
-            ) : card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
-              <div className="absolute inset-0 flex items-center justify-center border-y border-navy-700 bg-navy-800/60">
-                <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
-              </div>
-            ) : card.characterId ? (
-              <div className="absolute inset-0 flex items-center gap-3 border-y border-navy-600 bg-navy-800/60 px-4">
-                <CharacterPortrait characterId={card.characterId} size={72} />
-                <div className="font-mono text-xs italic text-smoke-400 opacity-70">Personaje recurrente</div>
-              </div>
-            ) : (
-              <EventIllustration
-                eventCategory={card.category}
-                presidentId={presidentId}
-                eventId={card.id}
-                gameState={gameState}
-              />
-            )}
-            {/* Bottom gradient overlay */}
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-12"
-              style={{ background: 'linear-gradient(to top, rgba(9,21,37,0.9) 0%, transparent 100%)' }}
-            />
+      <div className="relative h-[180px] w-full overflow-hidden md:h-[260px] xl:h-[360px]">
+        {card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
+          <div className="absolute inset-0 flex items-center justify-center border-y border-navy-700 bg-navy-800/60">
+            <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
           </div>
-        );
-      })()}
+        ) : card.characterId ? (
+          <div className="absolute inset-0 flex items-center gap-3 border-y border-navy-600 bg-navy-800/60 px-4">
+            <CharacterPortrait characterId={card.characterId} size={72} />
+            <div className="font-mono text-xs italic text-smoke-400 opacity-70">Personaje recurrente</div>
+          </div>
+        ) : (
+          <EventIllustration
+            eventCategory={card.category}
+            presidentId={presidentId}
+            eventId={card.id}
+            gameState={gameState}
+          />
+        )}
+        {/* Bottom gradient overlay */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-12"
+          style={{ background: 'linear-gradient(to top, rgba(9,21,37,0.9) 0%, transparent 100%)' }}
+        />
+      </div>
 
       {/* President strip — visual novel style, shown when no card-specific character */}
       {!card.characterId &&
         (() => {
-          const charKey =
-            ARCHETYPE_CHAR[presidentId] ?? (presidentId?.startsWith('char_') ? presidentId : null);
-          const charUrl = charKey ? ((imageManifest as Record<string, string>)[charKey] ?? null) : null;
-          const charLabel = ARCHETYPE_LABEL[presidentId] ?? presidentId;
-          if (!charUrl) return null;
+          const charLabel = ARCHETYPE_LABEL[presidentId];
+          if (!charLabel) return null;
           return (
             <div
               className="flex items-center gap-3 border-b border-navy-700 px-4 py-2"
               style={{ background: 'rgba(9,21,37,0.92)' }}
             >
-              <img
-                src={charUrl}
-                loading="lazy"
-                decoding="async"
-                alt={charLabel}
-                width={48}
-                height={48}
-                style={{
-                  imageRendering: 'pixelated',
-                  flexShrink: 0,
-                  border: '2px solid var(--celeste-dark)',
-                }}
-              />
+              <PixelPortrait id={presidentId as PortraitId} px={40} />
               <span
                 style={{
                   fontFamily: "'Press Start 2P', monospace",
