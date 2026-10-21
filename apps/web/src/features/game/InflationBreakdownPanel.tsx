@@ -22,8 +22,8 @@ export function InflationBreakdownPanel({ breakdown }: Props) {
     { label: 'Desconfianza Mercados', value: breakdown.marketDistrust, emoji: '📉' },
     { label: 'Moneda Débil', value: breakdown.currencyWeakness, emoji: '💵' },
     { label: 'Shocks Externos', value: breakdown.shockEffect, emoji: '⚡' },
-    { label: 'Efecto Inercia', value: breakdown.accelerationEffect, emoji: '🔥' },
-    { label: 'Estabilidad Económica', value: breakdown.naturalDecay ?? 0, emoji: '📈' },
+    { label: 'Expectativas', value: breakdown.accelerationEffect, emoji: '🔥' },
+    { label: 'Desaceleración natural', value: breakdown.naturalDecay, emoji: '📈' },
   ].filter((f) => Math.abs(f.value) >= 0.1);
 
   return (

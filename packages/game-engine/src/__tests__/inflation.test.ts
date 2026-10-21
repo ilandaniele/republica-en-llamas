@@ -1,64 +1,77 @@
 import { describe, it, expect } from 'vitest';
-import { calculateInflation } from '../inflation.js';
-import { initGame } from '../gameLoop.js';
+import { calculateInflation, calculateInflationBreakdown } from '../inflation.js';
+import { applyChoiceEffects, initGame } from '../gameLoop.js';
+import type { GameState } from '../types.js';
+
+function withEconomy(state: GameState, economic: Partial<GameState['economic']>): GameState {
+  return { ...state, economic: { ...state.economic, ...economic } };
+}
 
 describe('calculateInflation', () => {
-  it('returns base inflation when all factors are neutral', () => {
-    const state = initGame('easy', 42);
-    // base inflation = 5, monetary = (20/100)*8=1.6, confidence = (35/100)*6=2.1,
-    // currency = (30/100)*5=1.5, raw=10.2, no accel (10.2 < 15)
-    const result = calculateInflation(state);
-    expect(result).toBeGreaterThan(0);
-    expect(result).toBeLessThanOrEqual(200);
+  it('keeps the normal starting economy close to its current inflation', () => {
+    const state = initGame('normal', 42);
+    expect(Math.abs(calculateInflation(state) - state.economic.inflation)).toBeLessThan(2);
   });
 
-  it('applies acceleration factor when raw > 15', () => {
-    const state = {
-      ...initGame('crisis', 42),
-      economic: {
-        ...initGame('crisis', 42).economic,
-        inflation: 20,
-        publicDeficit: 80,
-        marketConfidence: 20,
-        currencyStrength: 20,
-      },
-    };
-    const result = calculateInflation(state);
-    // raw > 15 so acceleration applies
-    expect(result).toBeGreaterThan(20);
+  it('lowers inflation when the fundamentals are healthy', () => {
+    const state = withEconomy(initGame('normal', 42), {
+      inflation: 40,
+      publicDeficit: 10,
+      marketConfidence: 85,
+      currencyStrength: 85,
+    });
+    expect(calculateInflation(state)).toBeLessThan(40);
+  });
+
+  it('raises inflation when the fundamentals are broken', () => {
+    const state = withEconomy(initGame('crisis', 42), {
+      inflation: 20,
+      publicDeficit: 80,
+      marketConfidence: 20,
+      currencyStrength: 20,
+    });
+    expect(calculateInflation(state)).toBeGreaterThan(20);
+  });
+
+  it('adds expectations once the acceleration turn is reached', () => {
+    const state = withEconomy(initGame('crisis', 42), {
+      inflation: 20,
+      publicDeficit: 80,
+      marketConfidence: 20,
+      currencyStrength: 20,
+    });
+    expect(calculateInflationBreakdown({ ...state, turn: 0 }).accelerationEffect).toBe(0);
+    expect(calculateInflationBreakdown({ ...state, turn: 5 }).accelerationEffect).toBeGreaterThan(0);
+  });
+
+  it('breakdown factors add up to the turn delta', () => {
+    const b = calculateInflationBreakdown(initGame('hard', 42));
+    const sum =
+      b.deficitPressure +
+      b.marketDistrust +
+      b.currencyWeakness +
+      b.shockEffect +
+      b.naturalDecay +
+      b.accelerationEffect;
+    expect(sum).toBeCloseTo(b.delta);
   });
 
   it('clamps at 200', () => {
-    const state = {
-      ...initGame('crisis', 42),
-      economic: {
-        ...initGame('crisis', 42).economic,
-        inflation: 180,
-        publicDeficit: 100,
-        marketConfidence: 0,
-        currencyStrength: 0,
-      },
-    };
-    const result = calculateInflation(state);
-    expect(result).toBeLessThanOrEqual(200);
+    const state = withEconomy(initGame('crisis', 42), {
+      inflation: 200,
+      publicDeficit: 100,
+      marketConfidence: 0,
+      currencyStrength: 0,
+    });
+    expect(calculateInflation({ ...state, turn: 10 })).toBeLessThanOrEqual(200);
   });
 
   it('clamps at -20 minimum (deflation floor)', () => {
-    const state = {
-      ...initGame('easy', 42),
-      economic: {
-        ...initGame('easy', 42).economic,
-        inflation: 0,
-        publicDeficit: 0,
-        marketConfidence: 100,
-        currencyStrength: 100,
-      },
-    };
-    const result = calculateInflation(state);
-    expect(result).toBeGreaterThanOrEqual(-20);
+    const state = withEconomy(initGame('easy', 42), { inflation: -20 });
+    expect(calculateInflation(state)).toBeGreaterThanOrEqual(-20);
   });
 
-  it('shock multiplier increases inflation', () => {
+  it('shock increases inflation', () => {
     const baseState = initGame('normal', 42);
     const stateWithShock = {
       ...baseState,
@@ -74,8 +87,11 @@ describe('calculateInflation', () => {
         },
       ],
     };
-    const withShock = calculateInflation(stateWithShock);
-    const withoutShock = calculateInflation(baseState);
-    expect(withShock).toBeGreaterThan(withoutShock);
+    expect(calculateInflation(stateWithShock)).toBeGreaterThan(calculateInflation(baseState));
+  });
+
+  it('lets card effects push inflation below zero', () => {
+    const state = withEconomy(initGame('easy', 42), { inflation: 2 });
+    expect(applyChoiceEffects(state, { inflationDelta: -5 }).economic.inflation).toBe(-3);
   });
 });

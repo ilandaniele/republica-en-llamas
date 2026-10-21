@@ -537,7 +537,7 @@ function applyEffects(state: GameState, effects: ChoiceEffect): GameState {
     },
     economic: {
       ...state.economic,
-      inflation: clamp(state.economic.inflation + scalePos(effects.inflationDelta), 0, 200),
+      inflation: clamp(state.economic.inflation + scalePos(effects.inflationDelta), -20, 200),
       publicDeficit: clamp(state.economic.publicDeficit + scalePos(effects.deficitDelta), 0, 100),
       marketConfidence: clamp(
         state.economic.marketConfidence + kirchPos(scaleNeg(effects.marketConfidenceDelta)),
