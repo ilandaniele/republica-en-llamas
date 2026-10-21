@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
+import { GAME_OVER } from '@republica/game-engine';
 import type { GameState } from '@republica/game-engine';
 import type { VarSnapshot } from '../../../stores/gameStore.js';
 import { InflationBreakdownPanel } from '../InflationBreakdownPanel.js';
@@ -50,7 +51,7 @@ function InflationMeter({
       label={`INF${magnifier}`}
       value={inflation}
       prevValue={prevInflation}
-      max={200}
+      max={GAME_OVER.MAX_INFLATION}
       color="bg-orange-500"
       icon="💸"
       inverse
