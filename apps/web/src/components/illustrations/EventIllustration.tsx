@@ -3,7 +3,6 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { GameState } from '@republica/game-engine';
 import imageManifest from '../../assets/image-manifest.json';
-import { lbl } from './event-scenes/pixel.js';
 import { ParticleLayer } from './event-scenes/ParticleLayer.js';
 import { SceneAnimation } from './event-scenes/SceneAnimation.js';
 import { CATEGORY_ANIMATIONS } from './event-scenes/sceneAnimations.js';
@@ -77,7 +76,6 @@ export function EventIllustration({ eventCategory, presidentId, eventId = '', ga
               preserveAspectRatio="xMidYMid slice"
               style={{ imageRendering: 'pixelated' as const }}
             />
-            {lbl(scene.replace(/_/g, ' ').toUpperCase())}
             <SceneAnimation scene={scene} scope={containerRef} />
           </>
         ) : (

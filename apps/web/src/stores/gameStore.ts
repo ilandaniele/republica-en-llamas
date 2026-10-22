@@ -120,7 +120,7 @@ const CATEGORY_HOOKS: Record<string, string[]> = {
   ],
   social: [
     'Las calles tienen memoria larga.',
-    'La CGT monitora la situación.',
+    'La CGT monitorea la situación.',
     'El malestar social no desaparece solo.',
   ],
   international: [
