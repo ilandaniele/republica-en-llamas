@@ -1,5 +1,6 @@
 import React from 'react';
 import { PixelCharacter } from '../PixelCharacter.js';
+import { useGameImage } from '../../../hooks/useGameImage.js';
 
 const CHARACTER_PIXEL_ID: Record<string, string> = {
   ministro: 'caputo',
@@ -17,6 +18,18 @@ interface Props {
 
 export function CharacterPortrait({ characterId, size = 80, panic = false }: Props) {
   const pixelId = CHARACTER_PIXEL_ID[characterId];
+  const imageUrl = useGameImage(`char_${characterId}_${panic ? 'panic' : 'normal'}`);
+  if (imageUrl) {
+    return (
+      <img
+        src={imageUrl}
+        width={size}
+        height={size}
+        alt={characterId}
+        style={{ imageRendering: 'pixelated', display: 'block' }}
+      />
+    );
+  }
   if (!pixelId) return null;
   return <PixelCharacter id={pixelId} size={size} mood={panic ? 'panic' : 'normal'} />;
 }
