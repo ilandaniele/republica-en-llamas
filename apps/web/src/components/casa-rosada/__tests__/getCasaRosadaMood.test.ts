@@ -49,4 +49,15 @@ describe('getCasaRosadaMood', () => {
     const mood = getCasaRosadaMood({ ...state, economic: { ...state.economic, inflation: 90 } });
     expect(mood).toMatchObject({ dollarRain: true, label: 'CORRIDA CAMBIARIA' });
   });
+
+  it('sends fighter jets over the plaza during the war arc', () => {
+    const state = withState({ popularity: 55, socialStability: 65 });
+    const characters = state.characters.map((character, i) =>
+      i === 1 ? { ...character, memoryFlags: ['arg_en_guerra'] } : character,
+    );
+    expect(getCasaRosadaMood({ ...state, characters })).toMatchObject({
+      jets: true,
+      label: 'CAZAS SOBRE LA PLAZA',
+    });
+  });
 });

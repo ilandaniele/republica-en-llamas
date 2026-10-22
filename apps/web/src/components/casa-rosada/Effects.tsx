@@ -1,16 +1,7 @@
-import type React from 'react';
 import { px } from './px.js';
+import { Flicker } from './motion.js';
 
-function Flicker({ dur, children }: { dur: string; children: React.ReactNode }) {
-  return (
-    <g>
-      <animate attributeName="opacity" values="1;0.55;1" dur={dur} repeatCount="indefinite" />
-      {children}
-    </g>
-  );
-}
-
-function Barricade({ x }: { x: number }) {
+export function Barricade({ x }: { x: number }) {
   return (
     <g>
       {[0, 1, 2].map((i) => (
@@ -31,15 +22,6 @@ function Barricade({ x }: { x: number }) {
         {px(x + 2, 73, 4, 4, '#F39C12')}
         {px(x + 3, 71, 2, 3, '#F6D36B')}
       </Flicker>
-    </g>
-  );
-}
-
-export function FireLayer() {
-  return (
-    <g>
-      <Barricade x={20} />
-      <Barricade x={118} />
     </g>
   );
 }

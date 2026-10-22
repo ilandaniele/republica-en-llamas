@@ -11,6 +11,7 @@ import { buildViralText } from './gameOverCopy.js';
 import { NewspaperFront } from './newspaper/NewspaperFront.js';
 import { StatBoxes } from './newspaper/StatBoxes.js';
 import { ScoreReport } from './newspaper/ScoreReport.js';
+import { CasaRosadaScene } from '../../components/casa-rosada/CasaRosadaScene.js';
 
 export default function GameOverScreen() {
   const navigate = useNavigate();
@@ -58,6 +59,9 @@ export default function GameOverScreen() {
         style={{ background: 'var(--night-blue)' }}
       >
         <div className="w-full max-w-2xl">
+          <div className="pixel-border mb-4 overflow-hidden">
+            <CasaRosadaScene state={gameState} outcome={reason} />
+          </div>
           <div className="pixel-border overflow-hidden bg-[#f4f4f0] text-smoke-900">
             <NewspaperFront turn={gameState.turn} reason={reason} presidentId={presidentId} isWin={isWin} />
             <StatBoxes gameState={gameState} isWin={isWin} />
