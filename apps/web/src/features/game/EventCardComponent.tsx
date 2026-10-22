@@ -36,27 +36,26 @@ interface Props {
   gameState?: GameState | null;
 }
 
-// Category styles: left border color, badge color, icon
 interface CategoryStyle {
-  border: string;
   badge: string;
-  icon: string;
 }
 
 const CATEGORY_STYLES: Record<string, CategoryStyle> = {
-  political: { border: 'border-l-[#1a237e]', badge: 'text-blue-400', icon: '🏛' },
-  economic: { border: 'border-l-[#1b5e20]', badge: 'text-yellow-400', icon: '💰' },
-  social: { border: 'border-l-[#e65100]', badge: 'text-emerald-400', icon: '✊' },
-  international: { border: 'border-l-[#b71c1c]', badge: 'text-purple-400', icon: '🌐' },
-  crisis: { border: 'border-l-crimson-500', badge: 'text-crimson-400', icon: '⚠' },
+  political: { badge: 'bg-[#1a237e]' },
+  economic: { badge: 'bg-[#1b5e20]' },
+  social: { badge: 'bg-[#a33f00]' },
+  international: { badge: 'bg-[#5b2a86]' },
+  crisis: { badge: 'bg-[#8B0000]' },
 };
+
+const CHOICE_COLORS = ['choice-orange', 'choice-blue', 'choice-pink', 'choice-purple'];
 
 const CATEGORY_LABELS: Record<string, string> = {
   political: 'POLÍTICO',
   economic: 'ECONÓMICO',
   social: 'SOCIAL',
   international: 'INTERNACIONAL',
-  crisis: '⚠ CRISIS',
+  crisis: 'CRISIS',
 };
 
 interface CardHeadingProps {
@@ -70,30 +69,29 @@ function CardHeading({ card, contextPrefix, style }: CardHeadingProps) {
   const isCrisis = card.category === 'crisis';
   return (
     <div className="px-6 pb-3 pt-5">
-      {contextPrefix && <p className="text-smoke-500 mb-2 font-mono text-xs italic">{contextPrefix}</p>}
-      {/* Consequence chain indicator — shown when this card was triggered by a prior decision */}
+      {contextPrefix && <p className="mb-2 text-sm italic text-[#444]">{contextPrefix}</p>}
       {card.requiredFlags && card.requiredFlags.length > 0 && (
         <div
-          className="pixel-border text-celeste-400 mb-2 flex items-center gap-1 px-2 py-1"
+          className="mb-2 flex items-center gap-1 border-2 border-[#111] px-2 py-1 text-[#111]"
           style={{ fontFamily: "'Press Start 2P'", fontSize: '6px', display: 'inline-flex' }}
         >
           <span>↩</span>
           <span>CONSECUENCIA DE DECISIÓN PREVIA</span>
         </div>
       )}
-      <div
-        className={`mb-3 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest ${style.badge}`}
+      <span
+        className={`mb-3 inline-block px-2 py-1 text-white ${style.badge}`}
+        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
       >
-        <span className="text-base">{style.icon}</span>
-        <span>{CATEGORY_LABELS[card.category] ?? card.category.toUpperCase()}</span>
-      </div>
+        {CATEGORY_LABELS[card.category] ?? card.category.toUpperCase()}
+      </span>
       <h2
         style={{
           fontFamily: "'Press Start 2P', monospace",
           fontSize: isCrisis ? '9px' : '10px',
           lineHeight: '1.6',
         }}
-        className={`uppercase ${isCrisis ? 'text-shadow-crimson text-crimson-400' : 'text-smoke-100'}`}
+        className={`uppercase ${isCrisis ? 'text-[#8B0000]' : 'text-[#111]'}`}
       >
         {t(card.titleKey)}
       </h2>
@@ -209,11 +207,7 @@ export function EventCardComponent({
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -40, opacity: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      className={`event-card border-l-4 ${style.border} relative overflow-hidden !p-0`}
-      style={{
-        backgroundImage:
-          'repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(255,255,255,0.015) 24px)',
-      }}
+      className="event-card relative overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -236,7 +230,7 @@ export function EventCardComponent({
       <CardHeading card={card} contextPrefix={contextPrefix} style={style} />
 
       {/* Full-bleed illustration — no horizontal padding */}
-      <div className="relative h-[180px] w-full overflow-hidden md:h-[260px] xl:h-[360px]">
+      <div className="relative h-[180px] w-full overflow-hidden border-y-4 border-[#111] md:h-[260px] xl:h-[360px]">
         {card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
           <div className="absolute inset-0 flex items-center justify-center border-y border-navy-700 bg-navy-800/60">
             <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
@@ -254,11 +248,6 @@ export function EventCardComponent({
             gameState={gameState}
           />
         )}
-        {/* Bottom gradient overlay */}
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-12"
-          style={{ background: 'linear-gradient(to top, rgba(9,21,37,0.9) 0%, transparent 100%)' }}
-        />
       </div>
 
       {/* President strip — visual novel style, shown when no card-specific character */}
@@ -267,10 +256,7 @@ export function EventCardComponent({
           const charLabel = ARCHETYPE_LABEL[presidentId];
           if (!charLabel) return null;
           return (
-            <div
-              className="flex items-center gap-3 border-b border-navy-700 px-4 py-2"
-              style={{ background: 'rgba(9,21,37,0.92)' }}
-            >
+            <div className="flex items-center gap-3 border-b-4 border-[#111] bg-[#111] px-4 py-2">
               <PixelPortrait id={presidentId as PortraitId} px={40} />
               <span
                 style={{
@@ -287,12 +273,7 @@ export function EventCardComponent({
 
       {/* Body + choices + confirm */}
       <div className="px-6 pb-6 pt-4">
-        <p
-          className="text-smoke-300 mb-5 leading-relaxed"
-          style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }}
-        >
-          {t(card.bodyKey)}
-        </p>
+        <p className="mb-5 text-[19px] leading-snug text-[#222]">{t(card.bodyKey)}</p>
 
         <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-3">
           {Array.from({ length: 4 }).map((_, index) => {
@@ -313,14 +294,14 @@ export function EventCardComponent({
                 transition={{ duration: 0.2, delay: index * 0.05 }}
                 whileTap={!disabled ? { scale: 0.97 } : {}}
                 onClick={() => handleChoiceClick(index)}
-                className={`pixel-choice-card w-full text-left ${isSelected ? 'selected' : ''}`}
+                className={`pixel-choice-card ${CHOICE_COLORS[index]} w-full text-left ${isSelected ? 'selected' : ''}`}
               >
                 {ripplingChoice === index && <span className="choice-ripple" />}
                 <div className="mb-2 flex items-start gap-2">
                   <span
                     style={{
-                      background: isSelected ? 'var(--gold)' : 'var(--celeste-dark)',
-                      color: isSelected ? '#0D1B2A' : 'white',
+                      background: isSelected ? 'var(--gold)' : '#111',
+                      color: isSelected ? '#111' : 'white',
                       fontFamily: "'Press Start 2P', monospace",
                       fontSize: '8px',
                       padding: '3px 5px',
@@ -330,31 +311,22 @@ export function EventCardComponent({
                   >
                     {letter}
                   </span>
-                  <span
-                    style={{ fontFamily: "'VT323', monospace", fontSize: '16px', lineHeight: '1.3' }}
-                    className={isSelected ? 'text-smoke-100' : 'text-smoke-300'}
-                  >
-                    {t(choice.textKey)}
-                  </span>
+                  <span className="text-[17px] font-medium leading-tight">{t(choice.textKey)}</span>
                   {isEasy && index === safestIndex && (
-                    <span className="ml-auto shrink-0 text-xs text-gold-400" title="Opción más segura">
-                      ⭐
+                    <span
+                      className="ml-auto shrink-0 bg-[#111] px-1 text-[11px] text-gold-400"
+                      title="Opción más segura"
+                    >
+                      SEGURA
                     </span>
                   )}
                 </div>
                 {choice.requiresVote && (
                   <div
-                    className="pixel-border mt-2 flex items-center gap-1 px-2 py-1"
-                    style={{
-                      fontFamily: "'Press Start 2P', monospace",
-                      fontSize: '6px',
-                      color: 'var(--celeste)',
-                      borderColor: 'var(--celeste)',
-                      display: 'inline-flex',
-                    }}
+                    className="mt-2 inline-flex items-center border-2 border-white px-2 py-1"
+                    style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
                   >
-                    <span>🗳</span>
-                    <span>REQUIERE CONGRESO</span>
+                    REQUIERE CONGRESO
                   </div>
                 )}
               </m.button>
@@ -367,17 +339,12 @@ export function EventCardComponent({
             <button
               onClick={onConfirm}
               disabled={disabled}
-              className="pixel-border-gold w-full bg-gold-500 px-6 py-3 font-bold text-navy-900 transition-colors duration-200 hover:bg-gold-400 disabled:opacity-50"
+              className="w-full border-4 border-[#111] bg-[var(--gold)] px-6 py-3 font-bold text-[#111] shadow-[4px_4px_0_#111] hover:bg-gold-400 disabled:opacity-50"
               style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px' }}
             >
               CONFIRMAR TURNO ▶
             </button>
-            <p
-              style={{ fontFamily: "'VT323', monospace", fontSize: '14px' }}
-              className="mt-1 text-center text-smoke-600"
-            >
-              Podés cambiar tu opción antes de confirmar
-            </p>
+            <p className="mt-2 text-center text-sm text-[#444]">Podés cambiar tu opción antes de confirmar</p>
           </m.div>
         )}
       </div>

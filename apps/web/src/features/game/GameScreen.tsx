@@ -35,6 +35,12 @@ function isAnyVariableBelowTen(gameState: GameState): boolean {
   ].some((v) => v < 10);
 }
 
+function getMoodBackground(gameState: GameState): string {
+  if (gameState.activeCrises.length > 0) return '#7A2A20';
+  if (isAnyVariableBelowTen(gameState) || gameState.political.popularity < 35) return '#34507A';
+  return 'var(--celeste-dark)';
+}
+
 function getPresidentMood(gameState: GameState): PortraitMood {
   if (gameState.activeCrises.length > 0 || isAnyVariableBelowTen(gameState)) return 'panic';
   return gameState.political.popularity > 65 ? 'victory' : 'neutral';
@@ -95,11 +101,11 @@ export default function GameScreen() {
   if (!gameState || !currentCard) return null;
 
   const hasCrisis = gameState.activeCrises.length > 0;
-  const anyBelowTen = isAnyVariableBelowTen(gameState);
 
   return (
     <div
-      className={`relative min-h-screen bg-[var(--night-blue)] transition-colors duration-500 ${anyBelowTen ? 'animate-pulse' : ''}`}
+      className="relative min-h-screen transition-colors duration-700"
+      style={{ background: getMoodBackground(gameState) }}
     >
       <BuenosAiresBackground />
       <OfflineBanner />
