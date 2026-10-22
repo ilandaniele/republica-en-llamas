@@ -257,8 +257,8 @@ export const useGameStore = create<GameStore>()(
       },
 
       commitDecision: (decision) => {
-        const { gameState, currentCard, isCrisisExpress } = get();
-        if (!gameState || !currentCard) return;
+        const { gameState, currentCard, isCrisisExpress, showTransition } = get();
+        if (!gameState || !currentCard || showTransition) return;
 
         const { state: stateWithScore, choiceIndex } = resolveTurn(
           gameState,
