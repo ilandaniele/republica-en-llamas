@@ -1,5 +1,6 @@
 import { m, AnimatePresence } from 'framer-motion';
 import type { GameState } from '@republica/game-engine';
+import { shockLabel } from '../../../lib/shockLabel.js';
 import { PixelDolar } from '../../../components/illustrations/PixelDolar.js';
 
 export function MilestoneToast({ message: milestoneToast }: { message: string | null }) {
@@ -81,7 +82,8 @@ export function ActiveShocks({ shocks }: { shocks: GameState['activeShocks'] }) 
           key={shock.id}
           className="pixel-border bg-orange-900/50 px-3 py-1 font-mono text-xs text-orange-300"
         >
-          ⚡ {shock.name} ({shock.turnsRemaining} turnos)
+          ⚡ {shockLabel(shock.name)} ({shock.turnsRemaining}{' '}
+          {shock.turnsRemaining === 1 ? 'turno' : 'turnos'})
         </span>
       ))}
     </div>

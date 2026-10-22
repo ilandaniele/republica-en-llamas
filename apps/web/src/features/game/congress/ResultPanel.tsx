@@ -61,17 +61,18 @@ function EffectsList({ effects }: { effects: ChoiceEffect }) {
     { label: 'Mercados', delta: effects.marketConfidenceDelta },
     { label: 'Déficit', delta: effects.deficitDelta, lowerIsBetter: true, unit: '%' },
     { label: 'Reservas', delta: effects.foreignReservesDelta },
-  ];
+    { label: 'Inflación', delta: effects.inflationDelta, lowerIsBetter: true, unit: '%' },
+    { label: 'Credibilidad', delta: effects.mediaCredibilityDelta },
+    { label: 'PIB', delta: effects.gdpGrowthDelta, unit: '%' },
+  ].filter((line) => line.delta !== undefined && line.delta !== 0);
+  const lawPromulgated = (effects.lawsPassedDelta ?? 0) > 0;
+  if (lines.length === 0 && !lawPromulgated) return <p className="text-smoke-500">Sin efectos inmediatos</p>;
   return (
     <div className="space-y-1">
-      {lines.map(({ label, delta, lowerIsBetter, unit }) =>
-        delta === undefined ? null : (
-          <DeltaLine key={label} label={label} delta={delta} lowerIsBetter={lowerIsBetter} unit={unit} />
-        ),
-      )}
-      {effects.lawsPassedDelta !== undefined && effects.lawsPassedDelta > 0 && (
-        <p className="text-green-400">✓ Ley promulgada</p>
-      )}
+      {lines.map(({ label, delta, lowerIsBetter, unit }) => (
+        <DeltaLine key={label} label={label} delta={delta!} lowerIsBetter={lowerIsBetter} unit={unit} />
+      ))}
+      {lawPromulgated && <p className="text-green-400">✓ Ley promulgada</p>}
     </div>
   );
 }
