@@ -56,7 +56,7 @@ const config: Config = {
       fontFamily: {
         serif: ['Press Start 2P', 'monospace'],
         mono: ['VT323', 'monospace'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Pixelify Sans', 'system-ui', 'sans-serif'],
         classic: ['Playfair Display', 'Georgia', 'serif'],
         code: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },

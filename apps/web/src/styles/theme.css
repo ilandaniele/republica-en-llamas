@@ -9,19 +9,19 @@
     --color-gold: #d4af37;
     --color-smoke: #f0f0f0;
     /* ── Argentine Pixel Design System ── */
-    --celeste:        #74ACDF;
-    --celeste-dark:   #2E6DA4;
-    --celeste-light:  #B8D9F0;
-    --white:          #F4F4F0;
-    --gold:           #F6B40E;
-    --gold-dark:      #C8960C;
-    --crisis-red:     #CC2200;
-    --crisis-dark:    #8B0000;
-    --asado-brown:    #8B4513;
-    --mate-green:     #4A7C3F;
-    --peso-grey:      #888888;
-    --night-blue:     #0D1B2A;
-    --concrete:       #2A2A2A;
+    --celeste: #74acdf;
+    --celeste-dark: #2e6da4;
+    --celeste-light: #b8d9f0;
+    --white: #f4f4f0;
+    --gold: #f6b40e;
+    --gold-dark: #c8960c;
+    --crisis-red: #cc2200;
+    --crisis-dark: #8b0000;
+    --asado-brown: #8b4513;
+    --mate-green: #4a7c3f;
+    --peso-grey: #888888;
+    --night-blue: #0d1b2a;
+    --concrete: #2a2a2a;
   }
 
   * {
@@ -32,17 +32,24 @@
     border-radius: 0 !important;
   }
 
+  ::selection {
+    background: var(--gold);
+    color: #111;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
   html {
     height: 100%;
     overflow-x: hidden;
   }
 
   body {
-    @apply bg-navy-900 text-smoke-100 font-sans antialiased;
-    background-color: var(--night-blue);
-    background-image:
-      radial-gradient(ellipse at 20% 80%, rgba(204, 34, 34, 0.05) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(46, 109, 164, 0.15) 0%, transparent 50%);
+    @apply bg-navy-900 font-sans text-smoke-100 antialiased;
+    background-color: var(--celeste-dark);
     min-height: 100dvh;
     overflow-x: hidden;
   }
@@ -53,7 +60,9 @@
     flex-direction: column;
   }
 
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     @apply font-serif;
   }
 }
@@ -74,12 +83,36 @@
     background: linear-gradient(to top, #ff4400, #ff8800, #ffcc00);
   }
 
-  .fire-particle:nth-child(1) { left: 10%; height: 30px; animation-delay: 0s; }
-  .fire-particle:nth-child(2) { left: 25%; height: 45px; animation-delay: 0.15s; }
-  .fire-particle:nth-child(3) { left: 40%; height: 35px; animation-delay: 0.3s; }
-  .fire-particle:nth-child(4) { left: 55%; height: 50px; animation-delay: 0.1s; }
-  .fire-particle:nth-child(5) { left: 70%; height: 38px; animation-delay: 0.25s; }
-  .fire-particle:nth-child(6) { left: 85%; height: 28px; animation-delay: 0.4s; }
+  .fire-particle:nth-child(1) {
+    left: 10%;
+    height: 30px;
+    animation-delay: 0s;
+  }
+  .fire-particle:nth-child(2) {
+    left: 25%;
+    height: 45px;
+    animation-delay: 0.15s;
+  }
+  .fire-particle:nth-child(3) {
+    left: 40%;
+    height: 35px;
+    animation-delay: 0.3s;
+  }
+  .fire-particle:nth-child(4) {
+    left: 55%;
+    height: 50px;
+    animation-delay: 0.1s;
+  }
+  .fire-particle:nth-child(5) {
+    left: 70%;
+    height: 38px;
+    animation-delay: 0.25s;
+  }
+  .fire-particle:nth-child(6) {
+    left: 85%;
+    height: 28px;
+    animation-delay: 0.4s;
+  }
 
   .smoke-particle {
     position: absolute;
@@ -91,18 +124,29 @@
     animation: smoke-rise 3s ease-out infinite;
   }
 
-  .smoke-particle:nth-child(7) { left: 15%; animation-delay: 0.5s; }
-  .smoke-particle:nth-child(8) { left: 50%; animation-delay: 1.2s; }
-  .smoke-particle:nth-child(9) { left: 80%; animation-delay: 2s; }
+  .smoke-particle:nth-child(7) {
+    left: 15%;
+    animation-delay: 0.5s;
+  }
+  .smoke-particle:nth-child(8) {
+    left: 50%;
+    animation-delay: 1.2s;
+  }
+  .smoke-particle:nth-child(9) {
+    left: 80%;
+    animation-delay: 2s;
+  }
 
   /* ─── Card styles ─────────────────────────── */
   .event-card {
-    @apply bg-navy-800 border border-navy-600 p-6 shadow-2xl;
-    background-image: linear-gradient(135deg, rgba(30,58,95,0.9), rgba(9,21,37,0.95));
+    background: var(--white);
+    color: #111;
+    border: 4px solid #111;
+    box-shadow: 6px 6px 0 #111;
   }
 
   .choice-card {
-    @apply bg-navy-700 border border-navy-500 p-4 cursor-pointer;
+    @apply cursor-pointer border border-navy-500 bg-navy-700 p-4;
     transition: all 0.15s ease;
   }
 
@@ -165,64 +209,49 @@
     color: var(--crisis-red);
     animation: pulse-red 1.5s ease-in-out infinite;
   }
-  .pixel-bar-fill.bar-warning { color: var(--gold); }
-  .pixel-bar-fill.bar-good    { color: var(--mate-green); }
-
-  /* ─── Pixel choice cards ─────────────────── */
-  .pixel-choice-card {
-    background: #1a1a2e;
-    border: 2px solid #444;
-    padding: 12px;
-    cursor: pointer;
-    position: relative;
-    transition: border-color 0.15s, background 0.15s, transform 0.15s;
+  .pixel-bar-fill.bar-warning {
+    color: var(--gold);
+  }
+  .pixel-bar-fill.bar-good {
+    color: var(--mate-green);
   }
 
-  .pixel-choice-card:hover {
-    border-color: var(--celeste);
-    background: #0d2137;
-    transform: scale(1.02);
+  /* ─── Pixel choice buttons (flat, Impeached-style) ─── */
+  .pixel-choice-card {
+    color: #fff;
+    border: 3px solid #111;
+    padding: 12px 14px;
+    cursor: pointer;
+    position: relative;
+    transition:
+      transform 0.12s steps(2),
+      box-shadow 0.12s steps(2);
+  }
+
+  .pixel-choice-card:hover,
+  .pixel-choice-card:focus-visible {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 #111;
   }
 
   .pixel-choice-card.selected {
-    border-color: var(--gold);
-    background: #1a1500;
-    box-shadow: 0 0 12px rgba(246, 180, 14, 0.4), 0 0 24px rgba(246, 180, 14, 0.2);
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 #111;
+    outline: 3px solid var(--gold);
+    outline-offset: -7px;
   }
 
-  /* Pixel corner ornaments */
-  .pixel-choice-card::before,
-  .pixel-choice-card::after {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: var(--celeste);
+  .choice-orange {
+    background: #a8540a;
   }
-
-  .pixel-choice-card.selected::before,
-  .pixel-choice-card.selected::after {
-    background: var(--gold);
+  .choice-blue {
+    background: #2b5fb8;
   }
-
-  .pixel-choice-card::before {
-    top: 0;
-    left: 0;
-    box-shadow: 8px 0 0 var(--celeste-dark), 0 8px 0 var(--celeste-dark);
+  .choice-pink {
+    background: #b8234f;
   }
-
-  .pixel-choice-card::after {
-    bottom: 0;
-    right: 0;
-    box-shadow: -8px 0 0 var(--celeste-dark), 0 -8px 0 var(--celeste-dark);
-  }
-
-  .pixel-choice-card.selected::before {
-    box-shadow: 8px 0 0 var(--gold-dark), 0 8px 0 var(--gold-dark);
-  }
-
-  .pixel-choice-card.selected::after {
-    box-shadow: -8px 0 0 var(--gold-dark), 0 -8px 0 var(--gold-dark);
+  .choice-purple {
+    background: #7b2ba8;
   }
 
   /* ─── Choice ripple effect ────────────────── */
@@ -252,8 +281,14 @@
   }
 
   @keyframes ripple {
-    0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.5; }
-    100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+    0% {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(2.5);
+      opacity: 0;
+    }
   }
 
   /* ─── Variable meters ─────────────────────── */
@@ -262,7 +297,7 @@
   }
 
   .meter-bar {
-    @apply h-2 bg-navy-600 overflow-hidden;
+    @apply h-2 overflow-hidden bg-navy-600;
   }
 
   .meter-fill {
@@ -281,13 +316,13 @@
 
   /* ─── Newspaper layout (game over) ─────────── */
   .newspaper-header {
-    @apply border-b-4 border-smoke-800 pb-4 mb-6;
+    @apply mb-6 border-b-4 border-smoke-800 pb-4;
     background: repeating-linear-gradient(
       0deg,
       transparent,
       transparent 1px,
-      rgba(255,255,255,0.02) 1px,
-      rgba(255,255,255,0.02) 2px
+      rgba(255, 255, 255, 0.02) 1px,
+      rgba(255, 255, 255, 0.02) 2px
     );
   }
 
@@ -333,11 +368,11 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--night-blue);
+    background: var(--celeste-dark);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--celeste-dark);
+    background: #111;
   }
 
   ::-webkit-scrollbar-thumb:hover {
