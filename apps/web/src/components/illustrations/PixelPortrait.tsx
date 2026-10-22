@@ -2,7 +2,8 @@ import { Suspense, useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { MOOD_ANIMATIONS } from './portraits/moodAnimations.js';
-import { PORTRAITS } from './portraits/portraits.js';
+import { PORTRAITS, politicianFor } from './portraits/portraits.js';
+import { useGameImage } from '../../hooks/useGameImage.js';
 import type { PortraitId, PortraitMood } from './portraits/types.js';
 
 export type { PortraitId, PortraitMood } from './portraits/types.js';
@@ -20,6 +21,7 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
   const prevMood = useRef<PortraitMood>(mood);
   const Portrait = PORTRAITS[id];
   const svgH = Math.round((px * 240) / 200);
+  const imageUrl = useGameImage(`portrait_${politicianFor(id)}_${mood}`);
 
   // Idle: subtle float animation
   useGSAP(
@@ -46,21 +48,31 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
 
   return (
     <div ref={containerRef} style={{ display: 'inline-block', width: px, height: svgH, lineHeight: 0 }}>
-      <svg
-        width={px}
-        height={svgH}
-        viewBox="0 0 200 240"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ imageRendering: 'pixelated', display: 'block' }}
-        role="img"
-        aria-label={'Retrato de ' + id}
-      >
-        {Portrait && (
-          <Suspense fallback={null}>
-            <Portrait mood={mood} />
-          </Suspense>
-        )}
-      </svg>
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          width={px}
+          height={svgH}
+          alt={'Retrato de ' + id}
+          style={{ imageRendering: 'pixelated', display: 'block', objectFit: 'cover' }}
+        />
+      ) : (
+        <svg
+          width={px}
+          height={svgH}
+          viewBox="0 0 200 240"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ imageRendering: 'pixelated', display: 'block' }}
+          role="img"
+          aria-label={'Retrato de ' + id}
+        >
+          {Portrait && (
+            <Suspense fallback={null}>
+              <Portrait mood={mood} />
+            </Suspense>
+          )}
+        </svg>
+      )}
     </div>
   );
 }
