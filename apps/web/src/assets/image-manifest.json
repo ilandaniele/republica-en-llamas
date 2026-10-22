@@ -1,6 +1,6 @@
 {
-  "pol_congress": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/pol_congress.png",
-  "pol_scandal": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/pol_scandal.png",
+  "pol_congress": "/illustrations/pol_congress.webp",
+  "pol_scandal": "/illustrations/pol_scandal.webp",
   "pol_protest": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/pol_protest.png",
   "eco_inflation": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/eco_inflation.png",
   "eco_reserves": "https://djlamsrefnyforzhjeip.supabase.co/storage/v1/object/public/game-images/illustrations/eco_reserves.png",
