@@ -1,27 +1,11 @@
-import type React from 'react';
 import type { CrowdLevel } from './getCasaRosadaMood.js';
 import { px } from './px.js';
+import { Bob } from './motion.js';
 
 const CROWD_SIZE: Record<CrowdLevel, number> = { 0: 0, 1: 18, 2: 40, 3: 64 };
 const SHIRTS = ['#74ACDF', '#ECE8E0', '#C0392B', '#2E4A7A', '#6B8E23', '#8E44AD', '#D35400'];
 const SKINS = ['#E8C39E', '#C99A6E', '#A0714F'];
 const ROWS = 5;
-
-function Bob({ index, children }: { index: number; children: React.ReactNode }) {
-  return (
-    <g>
-      <animateTransform
-        attributeName="transform"
-        type="translate"
-        values="0 0;0 -1;0 0"
-        dur="0.7s"
-        begin={`${(index % 5) * 0.13}s`}
-        repeatCount="indefinite"
-      />
-      {children}
-    </g>
-  );
-}
 
 function Protester({ index, level }: { index: number; level: CrowdLevel }) {
   const row = index % ROWS;
@@ -31,7 +15,7 @@ function Protester({ index, level }: { index: number; level: CrowdLevel }) {
   const holdsSign = index % 7 === 0;
   const holdsPot = level >= 2 && index % 3 === 1;
   return (
-    <Bob index={index}>
+    <Bob dur="0.7s" begin={`${(index % 5) * 0.13}s`}>
       {holdsSign && (
         <g>
           {px(x, y - 4, 1, 4, '#7A5530')}
@@ -47,7 +31,7 @@ function Protester({ index, level }: { index: number; level: CrowdLevel }) {
   );
 }
 
-function PoliceLine() {
+export function PoliceLine() {
   return (
     <g>
       {Array.from({ length: 12 }, (_, i) => {
@@ -65,13 +49,12 @@ function PoliceLine() {
   );
 }
 
-export function CrowdLayer({ level, police }: { level: CrowdLevel; police: boolean }) {
+export function CrowdLayer({ level }: { level: CrowdLevel }) {
   const people = Array.from({ length: CROWD_SIZE[level] }, (_, i) => i).sort(
     (a, b) => (a % ROWS) - (b % ROWS),
   );
   return (
     <g>
-      {police && <PoliceLine />}
       {people.map((index) => (
         <Protester key={index} index={index} level={level} />
       ))}

@@ -27,6 +27,16 @@ Missing raw files are skipped. Pass ids to import only some: `... import portrai
 
 The game picks the images up by id. Portraits and characters fall back to the code-drawn SVGs until their image exists.
 
+## Casa Rosada diorama (`cr_*`)
+
+The Casa Rosada scene is assembled in code from separate sprite layers (island, crowd, police, fire, helicopter, jets, mushroom cloud, graves). Code places, stacks and animates them, so each layer is its own image.
+
+1. Generate `cr_island` first and use it as the style reference for every other `cr_*` sprite.
+2. Draw each sprite on a flat magenta `#FF00FF` background. Never use magenta inside the sprite itself.
+3. Save as `art/raw/cr_<id>.png` and run the import. Magenta becomes transparent.
+
+Until a sprite exists, the scene uses its code-drawn fallback.
+
 ## Changing prompts
 
 Edit `prompts.json`, then regenerate `PROMPTS.md`:

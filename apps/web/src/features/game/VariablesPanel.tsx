@@ -1,6 +1,6 @@
 import type { GameState } from '@republica/game-engine';
 import { useGameStore } from '../../stores/gameStore.js';
-import { CasaRosadaScene } from './casa-rosada/CasaRosadaScene.js';
+import { CasaRosadaScene } from '../../components/casa-rosada/CasaRosadaScene.js';
 import { getTemperatura } from './variables/getTemperatura.js';
 import { useFlashMap } from './variables/useFlashMap.js';
 import { PoliticalSection } from './variables/PoliticalSection.js';

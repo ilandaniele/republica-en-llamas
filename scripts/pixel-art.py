@@ -4,9 +4,11 @@ Usage (from repo root):
     uvx --with pillow python scripts/pixel-art.py prompts          # rewrite art/PROMPTS.md from art/prompts.json
     uvx --with pillow python scripts/pixel-art.py import [ids...]  # pixelate art/raw/<id>.png into the web app
 
-Import downsamples each raw image to its group grid, quantizes it to a small palette,
+Import downsamples each raw image to its grid, quantizes it to a small palette,
 scales it back up with nearest neighbour, writes apps/web/public/illustrations/<id>.webp
 and points apps/web/src/assets/image-manifest.json at the local file.
+Transparent groups (sprites) are drawn on flat magenta: import keys the magenta out,
+crops to the sprite and fits it inside its grid.
 """
 
 import json
@@ -21,7 +23,8 @@ OUT_DIR = ROOT / "apps" / "web" / "public" / "illustrations"
 MANIFEST = ROOT / "apps" / "web" / "src" / "assets" / "image-manifest.json"
 PALETTE_COLORS = 32
 UPSCALE = 4
-ID_PREFIX = {"presidents": "portrait_", "characters": "char_"}
+ID_PREFIX = {"presidents": "portrait_", "characters": "char_", "diorama": "cr_"}
+ALPHA_THRESHOLD = 128
 
 
 def build_assets(config: dict) -> dict[str, dict]:
@@ -29,13 +32,15 @@ def build_assets(config: dict) -> dict[str, dict]:
     for group_name, group in config["groups"].items():
         moods = group.get("moods", {"": ""})
         for subject_id, subject in group["assets"].items():
+            spec = {**group, **(subject if isinstance(subject, dict) else {"prompt": subject})}
             for mood, expression in moods.items():
                 asset_id = ID_PREFIX.get(group_name, "") + subject_id + (f"_{mood}" if mood else "")
-                parts = [config["style"], group["framing"], subject, expression]
+                parts = [config["style"], group["framing"], spec["prompt"], expression]
                 assets[asset_id] = {
                     "group": group_name,
-                    "size": group["size"],
-                    "grid": group["grid"],
+                    "size": spec["size"],
+                    "grid": spec["grid"],
+                    "transparent": spec.get("transparent", False),
                     "prompt": " ".join(part[0].upper() + part[1:].rstrip(".") + "." for part in parts if part),
                 }
     return assets
@@ -70,6 +75,50 @@ def pixelate(source: Path, target: Path, grid: list[int]) -> None:
     big.save(target, "WEBP", lossless=True)
 
 
+def magenta_mask(image):
+    from PIL import ImageChops
+
+    red, green, blue = image.split()
+    high_red = red.point(lambda value: 255 if value > 170 else 0)
+    low_green = green.point(lambda value: 255 if value < 100 else 0)
+    high_blue = blue.point(lambda value: 255 if value > 170 else 0)
+    return ImageChops.multiply(ImageChops.multiply(high_red, low_green), high_blue)
+
+
+def unpremultiply(color, alpha):
+    from PIL import Image
+
+    rgb = color.tobytes()
+    out = bytearray(len(rgb))
+    for pixel, opacity in enumerate(alpha.tobytes()):
+        for channel in range(pixel * 3, pixel * 3 + 3):
+            out[channel] = min(255, rgb[channel] * 255 // opacity) if opacity else 0
+    return Image.frombytes("RGB", color.size, bytes(out))
+
+
+def pixelate_sprite(source: Path, target: Path, grid: list[int]) -> None:
+    from PIL import Image, ImageChops
+
+    image = Image.open(source).convert("RGB")
+    alpha = ImageChops.invert(magenta_mask(image))
+    bbox = alpha.getbbox()
+    if not bbox:
+        raise ValueError(f"{source.name} is empty after removing the magenta background")
+    image, alpha = image.crop(bbox), alpha.crop(bbox)
+    scale = min(grid[0] / image.width, grid[1] / image.height)
+    size = (max(1, round(image.width * scale)), max(1, round(image.height * scale)))
+    black = Image.new("RGB", image.size)
+    color = Image.composite(image, black, alpha).resize(size, Image.Resampling.BOX)
+    small_alpha = alpha.resize(size, Image.Resampling.BOX)
+    color = unpremultiply(color, small_alpha)
+    color = color.quantize(colors=PALETTE_COLORS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    small_alpha = small_alpha.point(lambda value: 255 if value >= ALPHA_THRESHOLD else 0)
+    sprite = color.convert("RGB")
+    sprite.putalpha(small_alpha)
+    big = sprite.resize((size[0] * UPSCALE, size[1] * UPSCALE), Image.Resampling.NEAREST)
+    big.save(target, "WEBP", lossless=True, exact=True)
+
+
 def import_assets(assets: dict[str, dict], selected: list[str]) -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
@@ -78,7 +127,9 @@ def import_assets(assets: dict[str, dict], selected: list[str]) -> None:
         if not source.exists():
             print("missing", asset_id)
             continue
-        pixelate(source, OUT_DIR / f"{asset_id}.webp", assets[asset_id]["grid"])
+        asset = assets[asset_id]
+        convert = pixelate_sprite if asset["transparent"] else pixelate
+        convert(source, OUT_DIR / f"{asset_id}.webp", asset["grid"])
         manifest[asset_id] = f"/illustrations/{asset_id}.webp"
         print("ok", asset_id)
     MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

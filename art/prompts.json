@@ -37,14 +37,65 @@
         "guerra_nuke_explosion": "a nuclear mushroom cloud rising behind the Buenos Aires skyline, orange shockwave, silhouettes of ruins in the foreground",
         "guerra_nuke_threat": "an underground bunker with red emergency lights, officials around a screen showing a missile trajectory, panic",
         "guerra_join": "Argentine soldiers in camouflage marching to board a military transport plane, Argentine flag patch on their uniforms, grey dawn",
-        "malvinas": "an Argentine navy warship in a stormy South Atlantic sea, rocky windswept islands on the horizon, soldiers on deck, Argentine flag waving",
-        "casa_rosada_normal": "the Casa Rosada presidential palace of Buenos Aires, salmon-pink neoclassical facade, arched windows, central balcony, two Argentine flags, Plaza de Mayo with palm trees in front, two grenadier guards, sunny blue sky",
-        "casa_rosada_quiet": "the Casa Rosada presidential palace of Buenos Aires at dawn, salmon-pink facade lit by golden sunrise, empty Plaza de Mayo, light mist, one lone guard",
-        "casa_rosada_mate": "the Casa Rosada presidential palace of Buenos Aires on a sunny afternoon, salmon-pink facade, relaxed families in Plaza de Mayo drinking mate on the grass, pigeons",
-        "casa_rosada_protest": "the Casa Rosada presidential palace of Buenos Aires, salmon-pink facade, Plaza de Mayo packed with protesters banging pots, banners without text, flags, flares",
-        "casa_rosada_riot": "the Casa Rosada presidential palace of Buenos Aires, salmon-pink facade, burning barricades in Plaza de Mayo, a riot police line with shields, thick black smoke",
-        "casa_rosada_chaos": "the Casa Rosada presidential palace of Buenos Aires at night in total collapse, salmon-pink facade cracked, surrounding buildings on fire, smoke pillars, abandoned plaza",
-        "casa_rosada_nuke": "silhouette of the Casa Rosada presidential palace of Buenos Aires with a giant nuclear mushroom cloud behind it, blood-red apocalyptic sky"
+        "malvinas": "an Argentine navy warship in a stormy South Atlantic sea, rocky windswept islands on the horizon, soldiers on deck, Argentine flag waving"
+      }
+    },
+    "diorama": {
+      "size": "1536x1024",
+      "transparent": true,
+      "framing": "One isolated game sprite for a layered 2D diorama, centered, on a perfectly flat solid pure magenta background (#FF00FF) that fills the whole canvas edge to edge. No shadow or floor drawn on the background, no other scenery, nothing touching the canvas edges. Never use pure magenta inside the sprite itself (salmon pink is fine). Front view, slightly from above, same camera for every sprite",
+      "assets": {
+        "island": {
+          "grid": [320, 144],
+          "prompt": "a floating chunk of earth like a small sky island, rocky brown underside with hanging roots, flat grassy top, seen from the front and slightly above like an Impeached / SNES diorama. On top: the Casa Rosada presidential palace of Buenos Aires (salmon-pink neoclassical facade, arched windows, central arch with balcony, two Argentine flags on the roof), in front of it the Plaza de Mayo with beige paving, the white Piramide de Mayo obelisk in the middle and four palm trees. The plaza is EMPTY: no people"
+        },
+        "island_ruins": {
+          "grid": [320, 144],
+          "prompt": "the same floating sky island and Casa Rosada as a ruin after a bombing: palace half collapsed, pink walls cracked and blackened, roof gone, flags torn and burning, palm trees burnt to stumps, rubble and craters on the plaza, small fires, dark smoke, no people"
+        },
+        "crowd_1": {
+          "grid": [288, 52],
+          "prompt": "a thin horizontal band of about 15 small protesters seen from behind and the side, walking in a loose line, holding a few blank light-blue and white banners and Argentine flags, peaceful march. Chibi SNES proportions, each person about 3x as tall as wide. The band is very wide and short, about 5 times wider than tall"
+        },
+        "crowd_2": {
+          "grid": [288, 52],
+          "prompt": "a dense horizontal band of about 35 angry protesters banging pots and pans (cacerolazo), raised fists, blank banners, Argentine flags, some flares with red smoke. Chibi SNES proportions. The band is very wide and short, about 5 times wider than tall"
+        },
+        "crowd_3": {
+          "grid": [288, 52],
+          "prompt": "a packed horizontal band of about 60 furious rioters, masked faces, thrown stones mid-air, burning tires, red flares, torn flags, people climbing on each other. Chibi SNES proportions. The band is very wide and short, about 5 times wider than tall"
+        },
+        "crowd_party": {
+          "grid": [288, 52],
+          "prompt": "a joyful horizontal band of about 40 people celebrating, jumping, waving big Argentine flags and light-blue and white scarves, confetti, people on shoulders. Chibi SNES proportions. The band is very wide and short, about 5 times wider than tall"
+        },
+        "police": {
+          "grid": [136, 36],
+          "prompt": "a single row of 12 riot police officers standing shoulder to shoulder facing left, dark navy uniforms, helmets with visors, tall clear riot shields, batons. Chibi SNES proportions. The row is about 4 times wider than tall"
+        },
+        "fire": {
+          "size": "1024x1536",
+          "grid": [40, 52],
+          "prompt": "one burning street barricade made of tires and wooden pallets, tall orange and yellow flames, thick black smoke column rising above it"
+        },
+        "helicopter": {
+          "size": "1536x1024",
+          "grid": [68, 34],
+          "prompt": "one small presidential helicopter in side view facing right, white and dark blue body, light-blue window, tail rotor, main rotor blades spread wide, landing skids"
+        },
+        "jets": {
+          "grid": [240, 40],
+          "prompt": "a formation of three grey military fighter jets in side view flying right, in a V formation, orange afterburner flames, thin white contrails behind them. The group is about 6 times wider than tall"
+        },
+        "mushroom": {
+          "size": "1024x1024",
+          "grid": [160, 120],
+          "prompt": "a giant nuclear mushroom cloud, glowing yellow and orange core, dark red and brown billowing cap, ring of smoke around the stem, sparks and debris, no ground and no city"
+        },
+        "graves": {
+          "grid": [224, 40],
+          "prompt": "a horizontal row of eight grey tombstones and simple wooden crosses on small dirt mounds, a few wilted flowers, one tiny Argentine flag stuck in a mound. The row is about 6 times wider than tall"
+        }
       }
     },
     "presidents": {
