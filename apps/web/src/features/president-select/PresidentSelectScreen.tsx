@@ -137,7 +137,7 @@ function ArchetypeCard({
 
       {/* Description */}
       <p className="text-smoke-300 mb-4 text-center text-xs italic leading-relaxed">
-        "{archetype.description}"
+        {archetype.description}
       </p>
 
       {/* Stats */}

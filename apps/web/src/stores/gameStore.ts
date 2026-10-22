@@ -1,3 +1,4 @@
+import { shockLabel } from '../lib/shockLabel.js';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type {
@@ -88,17 +89,6 @@ interface GameStore {
   setScenario: (id: ScenarioId | null) => void;
 }
 
-const SHOCK_NAMES_ES: Record<string, string> = {
-  'shock.oilPriceSpike': 'SUBA DEL PETRÓLEO',
-  'shock.globalRecession': 'RECESIÓN GLOBAL',
-  'shock.currencyAttack': 'ATAQUE A LA MONEDA',
-  'shock.tradeWar': 'GUERRA COMERCIAL',
-  'shock.pandemic': 'PANDEMIA',
-  'shock.naturalDisaster': 'DESASTRE NATURAL',
-  'shock.techBoom': 'BOOM TECNOLÓGICO',
-  'shock.foreignInvestment': 'INVERSIÓN EXTRANJERA',
-};
-
 const CATEGORY_HEADLINES: Record<string, string[]> = {
   economic: ['MERCADOS EN VILO', 'EL PESO TIEMBLA', 'RESERVAS BAJO PRESIÓN', 'CRISIS FISCAL EN MARCHA'],
   political: [
@@ -130,7 +120,7 @@ const CATEGORY_HOOKS: Record<string, string[]> = {
   ],
   social: [
     'Las calles tienen memoria larga.',
-    'La CGT monitora la situación.',
+    'La CGT monitorea la situación.',
     'El malestar social no desaparece solo.',
   ],
   international: [
@@ -172,8 +162,7 @@ function buildTransitionData(
 
   let headline: string;
   if (newShockName) {
-    const shockLabel = SHOCK_NAMES_ES[newShockName] ?? newShockName.replace('shock.', '').toUpperCase();
-    headline = `💥 SHOCK EXTERNO: ${shockLabel}`;
+    headline = `💥 SHOCK EXTERNO: ${shockLabel(newShockName)}`;
   } else {
     headline = headlinePool[(after.turn + choiceIndex) % headlinePool.length]!;
   }
@@ -268,8 +257,8 @@ export const useGameStore = create<GameStore>()(
       },
 
       commitDecision: (decision) => {
-        const { gameState, currentCard, isCrisisExpress } = get();
-        if (!gameState || !currentCard) return;
+        const { gameState, currentCard, isCrisisExpress, showTransition } = get();
+        if (!gameState || !currentCard || showTransition) return;
 
         const { state: stateWithScore, choiceIndex } = resolveTurn(
           gameState,
