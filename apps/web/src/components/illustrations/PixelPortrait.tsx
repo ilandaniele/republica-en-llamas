@@ -5,6 +5,7 @@ import { MOOD_ANIMATIONS } from './portraits/moodAnimations.js';
 import { PORTRAITS, politicianFor } from './portraits/portraits.js';
 import { useGameImage } from '../../hooks/useGameImage.js';
 import type { PortraitId, PortraitMood } from './portraits/types.js';
+import './event-scenes/raster-effects.css';
 
 export type { PortraitId, PortraitMood } from './portraits/types.js';
 
@@ -26,6 +27,7 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
   // Idle: subtle float animation
   useGSAP(
     () => {
+      if (imageUrl || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
       gsap.to(containerRef.current, {
         y: -3,
         duration: 2,
@@ -34,22 +36,28 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
         ease: 'sine.inOut',
       });
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [imageUrl], revertOnUpdate: true },
   );
 
   useGSAP(
     () => {
       if (prevMood.current === mood) return;
       prevMood.current = mood;
+      if (imageUrl || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
       MOOD_ANIMATIONS[mood](containerRef.current);
     },
-    { scope: containerRef, dependencies: [mood] },
+    { scope: containerRef, dependencies: [mood, imageUrl], revertOnUpdate: true },
   );
 
   return (
-    <div ref={containerRef} style={{ display: 'inline-block', width: px, height: svgH, lineHeight: 0 }}>
+    <div
+      ref={containerRef}
+      className={imageUrl ? 'pixel-portrait-frame' : undefined}
+      style={{ display: 'inline-block', width: px, height: svgH, lineHeight: 0 }}
+    >
       {imageUrl ? (
         <img
+          className={`pixel-portrait-image pixel-portrait-image--${mood}`}
           src={imageUrl}
           width={px}
           height={svgH}

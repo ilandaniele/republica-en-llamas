@@ -16,12 +16,12 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_001_b',
         textKey: 'event.eco_001.choice_b',
-        effects: { inflationDelta: 4, deficitDelta: -4, popularityDelta: -5 },
+        effects: { deficitDelta: -4, popularityDelta: -5 },
       },
       {
         id: 'eco_001_c',
         textKey: 'event.eco_001.choice_c',
-        effects: { inflationDelta: 2, deficitDelta: 2, marketConfidenceDelta: -5 },
+        effects: { inflationDelta: -2, deficitDelta: 2, marketConfidenceDelta: -5 },
       },
       {
         id: 'eco_001_d',
@@ -70,12 +70,12 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_003_a',
         textKey: 'event.eco_003.choice_a',
-        effects: { inflationDelta: -8, popularityDelta: -8, marketConfidenceDelta: 12 },
+        effects: { popularityDelta: -8, marketConfidenceDelta: 12, deficitDelta: 8 },
       },
       {
         id: 'eco_003_b',
         textKey: 'event.eco_003.choice_b',
-        effects: { inflationDelta: 5, popularityDelta: 8, deficitDelta: 6 },
+        effects: { popularityDelta: -8, marketConfidenceDelta: -12, stabilityDelta: -6 },
       },
       {
         id: 'eco_003_c',
@@ -129,17 +129,22 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_005_a',
         textKey: 'event.eco_005.choice_a',
-        effects: { currencyStrengthDelta: 10, inflationDelta: -4, marketConfidenceDelta: 8 },
+        effects: { currencyStrengthDelta: -10, inflationDelta: 4, marketConfidenceDelta: 8 },
       },
       {
         id: 'eco_005_b',
         textKey: 'event.eco_005.choice_b',
-        effects: { currencyStrengthDelta: -8, inflationDelta: 6, popularityDelta: 5 },
+        effects: { currencyStrengthDelta: 8, popularityDelta: 5, foreignReservesDelta: -10 },
       },
       {
         id: 'eco_005_c',
         textKey: 'event.eco_005.choice_c',
-        effects: { currencyStrengthDelta: 5, foreignReservesDelta: 5, marketConfidenceDelta: -8 },
+        effects: {
+          currencyStrengthDelta: -3,
+          foreignReservesDelta: 5,
+          marketConfidenceDelta: -8,
+          inflationDelta: 2,
+        },
       },
       {
         id: 'eco_005_d',
@@ -159,7 +164,7 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_006_a',
         textKey: 'event.eco_006.choice_a',
-        effects: { foreignReservesDelta: 10, deficitDelta: 5, inflationDelta: -2 },
+        effects: { foreignReservesDelta: 10, deficitDelta: -5 },
       },
       {
         id: 'eco_006_b',
@@ -218,7 +223,7 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_008_a',
         textKey: 'event.eco_008.choice_a',
-        effects: { marketConfidenceDelta: 20, deficitDelta: 10, inflationDelta: 3 },
+        effects: { marketConfidenceDelta: 20, deficitDelta: -6 },
         requiresVote: true,
         voteChance: 0.5,
       },
@@ -250,17 +255,17 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_009_a',
         textKey: 'event.eco_009.choice_a',
-        effects: { inflationDelta: -10, popularityDelta: -12, marketConfidenceDelta: 15 },
+        effects: { popularityDelta: -12, marketConfidenceDelta: 15, deficitDelta: -10 },
       },
       {
         id: 'eco_009_b',
         textKey: 'event.eco_009.choice_b',
-        effects: { inflationDelta: 8, popularityDelta: 5, deficitDelta: 5 },
+        effects: { popularityDelta: 5, deficitDelta: 5 },
       },
       {
         id: 'eco_009_c',
         textKey: 'event.eco_009.choice_c',
-        effects: { inflationDelta: -5, popularityDelta: -3, deficitDelta: -4 },
+        effects: { popularityDelta: -3, deficitDelta: -4 },
       },
       {
         id: 'eco_009_d',
@@ -308,7 +313,7 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_011_a',
         textKey: 'event.eco_011.choice_a',
-        effects: { currencyStrengthDelta: -15, inflationDelta: 8, foreignReservesDelta: 10 },
+        effects: { currencyStrengthDelta: 5, foreignReservesDelta: 10, marketConfidenceDelta: -8 },
       },
       {
         id: 'eco_011_b',
@@ -367,7 +372,7 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_013_a',
         textKey: 'event.eco_013.choice_a',
-        effects: { marketConfidenceDelta: -20, inflationDelta: 5, popularityDelta: -8 },
+        effects: { marketConfidenceDelta: 5, popularityDelta: -8, deficitDelta: -8 },
       },
       {
         id: 'eco_013_b',
@@ -397,7 +402,7 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_014_a',
         textKey: 'event.eco_014.choice_a',
-        effects: { popularityDelta: 12, deficitDelta: 8, inflationDelta: 3 },
+        effects: { popularityDelta: 12, deficitDelta: 8 },
       },
       {
         id: 'eco_014_b',
@@ -427,12 +432,12 @@ export const ECONOMIC_CARDS: EventCard[] = [
       {
         id: 'eco_015_a',
         textKey: 'event.eco_015.choice_a',
-        effects: { inflationDelta: -15, popularityDelta: -15, marketConfidenceDelta: 20 },
+        effects: { popularityDelta: -15, marketConfidenceDelta: 20 },
       },
       {
         id: 'eco_015_b',
         textKey: 'event.eco_015.choice_b',
-        effects: { inflationDelta: 8, popularityDelta: 8, deficitDelta: 10 },
+        effects: { popularityDelta: 8, deficitDelta: 10 },
       },
       {
         id: 'eco_015_c',
@@ -461,22 +466,22 @@ export const ECONOMIC_CHAINED_CARDS: EventCard[] = [
       {
         id: 'eco_chain_001_a',
         textKey: 'event.eco_chain_001.choice_a',
-        effects: { inflationDelta: -8, marketConfidenceDelta: 15, popularityDelta: -6 },
+        effects: { marketConfidenceDelta: 15, popularityDelta: -6, deficitDelta: -5 },
       },
       {
         id: 'eco_chain_001_b',
         textKey: 'event.eco_chain_001.choice_b',
-        effects: { inflationDelta: 5, deficitDelta: 6, popularityDelta: 10 },
+        effects: { deficitDelta: 6, popularityDelta: 10 },
       },
       {
         id: 'eco_chain_001_c',
         textKey: 'event.eco_chain_001.choice_c',
-        effects: { inflationDelta: -4, deficitDelta: -3, marketConfidenceDelta: 6 },
+        effects: { deficitDelta: -3, marketConfidenceDelta: 6 },
       },
       {
         id: 'eco_chain_001_d',
         textKey: 'event.eco_chain_001.choice_d',
-        effects: { inflationDelta: -2, marketConfidenceDelta: 8, stabilityDelta: 3 },
+        effects: { marketConfidenceDelta: 8, stabilityDelta: 3 },
         requiresVote: true,
         voteChance: 0.5,
       },
@@ -528,17 +533,17 @@ export const ECONOMIC_CHAINED_CARDS: EventCard[] = [
       {
         id: 'eco_chain_003_a',
         textKey: 'event.eco_chain_003.choice_a',
-        effects: { foreignReservesDelta: -10, inflationDelta: 8, popularityDelta: -5 },
+        effects: { foreignReservesDelta: 5, inflationDelta: -3, popularityDelta: -5, gdpGrowthDelta: -0.5 },
       },
       {
         id: 'eco_chain_003_b',
         textKey: 'event.eco_chain_003.choice_b',
-        effects: { foreignReservesDelta: 5, inflationDelta: -4, popularityDelta: 8, deficitDelta: 5 },
+        effects: { foreignReservesDelta: 5, popularityDelta: 8, deficitDelta: 5 },
       },
       {
         id: 'eco_chain_003_c',
         textKey: 'event.eco_chain_003.choice_c',
-        effects: { foreignReservesDelta: -3, inflationDelta: -2, marketConfidenceDelta: 10 },
+        effects: { foreignReservesDelta: -3, marketConfidenceDelta: 10 },
       },
       {
         id: 'eco_chain_003_d',

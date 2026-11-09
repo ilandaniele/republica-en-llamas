@@ -1,5 +1,7 @@
 # República en Llamas — Propuesta de arquitectura y plan de refactor
 
+Actualización del 8 de noviembre de 2026: ver [auditoría actual y opciones](buenas-practicas-2026-11-08.md). Las versiones, tamaños y mediciones de las secciones siguientes describen iteraciones anteriores. El proyecto ya usa React 19, Vite 8 y módulos por feature; se mantiene la opción C liviana registrada aquí.
+
 Estado: **opción C elegida** (ver sección 5). Fase 1 hecha: pantallas en `apps/web/src/features/<feature>/` con la regla `import/no-restricted-paths`, y `replayRun` validando puntajes en la edge function `submit-run`. Lo usado por dos o más features (store del juego, `PaywallModal`, `BuyButton`, `UserMenu`, `useLeaderboard`, `useAuth`, `useEntitlements`) queda en las carpetas compartidas.
 
 ## 1. Punto de partida

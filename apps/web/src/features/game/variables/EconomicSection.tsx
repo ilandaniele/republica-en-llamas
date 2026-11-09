@@ -35,7 +35,7 @@ function InflationMeter({
   if (inflation < 0) {
     return (
       <Meter
-        label={`DEFL${magnifier}`}
+        label={`Deflación${magnifier}`}
         value={Math.abs(inflation)}
         prevValue={prevInflation === undefined ? undefined : Math.abs(prevInflation)}
         max={20}
@@ -48,7 +48,7 @@ function InflationMeter({
   }
   return (
     <Meter
-      label={`INF${magnifier}`}
+      label={`Inflación${magnifier}`}
       value={inflation}
       prevValue={prevInflation}
       max={GAME_OVER.MAX_INFLATION}
@@ -65,12 +65,7 @@ export function EconomicSection({ economic, breakdown, prevSnapshot, flashMap }:
 
   return (
     <div className="space-y-3">
-      <p
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-        className="uppercase text-smoke-600"
-      >
-        ECONOMICO
-      </p>
+      <p className="uppercase text-smoke-300">Economía</p>
       <button
         className="w-full text-left"
         onClick={() => setShowInflationBreakdown((v) => !v)}
@@ -96,7 +91,7 @@ export function EconomicSection({ economic, breakdown, prevSnapshot, flashMap }:
         )}
       </AnimatePresence>
       <Meter
-        label="DEF"
+        label="Déficit público"
         value={economic.publicDeficit}
         prevValue={prevSnapshot?.publicDeficit}
         color="bg-red-500"
@@ -105,7 +100,7 @@ export function EconomicSection({ economic, breakdown, prevSnapshot, flashMap }:
         flashDir={flashMap['publicDeficit']}
       />
       <Meter
-        label="MKT"
+        label="Confianza de los mercados"
         value={economic.marketConfidence}
         prevValue={prevSnapshot?.marketConfidence}
         color="bg-teal-500"
@@ -113,7 +108,7 @@ export function EconomicSection({ economic, breakdown, prevSnapshot, flashMap }:
         flashDir={flashMap['marketConfidence']}
       />
       <Meter
-        label="$$$"
+        label="Fortaleza de la moneda"
         value={economic.currencyStrength}
         prevValue={prevSnapshot?.currencyStrength}
         color="bg-yellow-500"
@@ -121,19 +116,18 @@ export function EconomicSection({ economic, breakdown, prevSnapshot, flashMap }:
         flashDir={flashMap['currencyStrength']}
       />
       <Meter
-        label="RES"
+        label="Reservas internacionales"
         value={economic.foreignReserves}
         prevValue={prevSnapshot?.foreignReserves}
         color="bg-cyan-500"
         icon="🏦"
         flashDir={flashMap['foreignReserves']}
       />
-      <div
-        className="flex justify-between"
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-      >
-        <span className="text-smoke-400">PIB</span>
-        <span className={economic.gdpGrowth >= 0 ? 'text-green-400' : 'text-crimson-400'}>
+      <div className="flex justify-between gap-2">
+        <span className="text-smoke-300">Crecimiento del producto interno bruto</span>
+        <span
+          className={`shrink-0 tabular-nums ${economic.gdpGrowth >= 0 ? 'text-green-400' : 'text-crimson-400'}`}
+        >
           {economic.gdpGrowth >= 0 ? '+' : ''}
           {economic.gdpGrowth.toFixed(1)}%
         </span>

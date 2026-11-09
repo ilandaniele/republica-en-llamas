@@ -1,0 +1,121 @@
+{
+  "generated_at": "2026-11-08T07:00:08+00:00",
+  "duration_s": 461,
+  "scan_id": "9beb7f80-139d-4518-b904-bf32cb33e2b2",
+  "mode": "scan",
+  "scan_prefix": "",
+  "scope": [],
+  "revision": {
+    "versioned": true,
+    "commit": "2664bccc72128611bab6ce26f4f83c0586b28583",
+    "branch": "feat/casa-rosada-diorama",
+    "dirty": true
+  },
+  "revision_source": "self-reported",
+  "model": null,
+  "effort": "medium",
+  "run_shape": {
+    "requested_effort": "medium",
+    "collapsed": null,
+    "source": "coverage.json",
+    "diff_files": null,
+    "diff_lines": null,
+    "pre_existing": 0,
+    "scope_files": null,
+    "empty_diff": false,
+    "empty_scope": false,
+    "researchers_dispatched": 32,
+    "verification_runs": 1,
+    "skipped_components": [
+      {
+        "name": "art-raw-browser-profiles",
+        "paths": ["art"],
+        "reason": "Raw art inputs including Chromium profile data and model files; not application code"
+      },
+      {
+        "name": "claude-config",
+        "paths": [".claude"],
+        "reason": "Local editor/agent settings, not product code"
+      },
+      {
+        "name": "docs",
+        "paths": ["docs"],
+        "reason": "Documentation only"
+      }
+    ],
+    "pruned_buckets": [
+      {
+        "group": "ui-package",
+        "lens": "memory-and-unsafe"
+      },
+      {
+        "group": "mobile-app",
+        "lens": "memory-and-unsafe"
+      },
+      {
+        "group": "edge-functions",
+        "lens": "memory-and-unsafe"
+      },
+      {
+        "group": "game-engine-core",
+        "lens": "memory-and-unsafe"
+      },
+      {
+        "group": "web-auth-payments",
+        "lens": "memory-and-unsafe"
+      },
+      {
+        "group": "web-illustrations",
+        "lens": "memory-and-unsafe"
+      },
+      {
+        "group": "supabase-db",
+        "lens": "memory-and-unsafe"
+      },
+      {
+        "group": "web-lib-hooks",
+        "lens": "memory-and-unsafe"
+      },
+      {
+        "group": "ci-and-scripts",
+        "lens": "memory-and-unsafe"
+      }
+    ],
+    "completeness_check_outcome": "checked",
+    "unaccounted_top_level_dirs": [],
+    "inventory_fallback": null,
+    "top_level_dir_count": 9,
+    "target_files": 325,
+    "component_cap": 24,
+    "research_coverage": {
+      "files": 278,
+      "read": 111,
+      "not_reached": 167,
+      "unaccounted": 0,
+      "outside_components": 47,
+      "capped": false
+    }
+  },
+  "findings": {
+    "total": 4,
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 4
+  },
+  "verification": {
+    "status": "verified",
+    "candidates": 7,
+    "candidates_deduped": 6,
+    "panel_votes": 18,
+    "panel_reviewed_findings": 4,
+    "panel_quorum_findings": 4,
+    "unreviewed_candidate_sites": 0,
+    "incomplete_panel_candidates": 0,
+    "attested_findings": 0,
+    "reason": null,
+    "reason_kind": null,
+    "researchers_dispatched": 32,
+    "researchers_returned": 32
+  }
+}

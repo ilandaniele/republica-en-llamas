@@ -24,8 +24,8 @@ export function LogoutModal({ open, onConfirm, onCancel }: LogoutModalProps) {
           >
             <h3
               style={{
-                fontFamily: "'Press Start 2P', monospace",
-                fontSize: '8px',
+                fontFamily: 'var(--font-readable)',
+                fontSize: '14px',
                 color: 'var(--smoke-100)',
                 marginBottom: '12px',
               }}
@@ -39,14 +39,14 @@ export function LogoutModal({ open, onConfirm, onCancel }: LogoutModalProps) {
               <button
                 onClick={onConfirm}
                 className="pixel-border-crisis flex-1 px-4 py-2 text-smoke-100 transition-colors"
-                style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+                style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
               >
                 Cerrar sesión
               </button>
               <button
                 onClick={onCancel}
-                className="pixel-border text-smoke-300 flex-1 bg-navy-700 px-4 py-2 transition-colors hover:bg-navy-600"
-                style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+                className="pixel-border flex-1 bg-navy-700 px-4 py-2 text-smoke-300 transition-colors hover:bg-navy-600"
+                style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
               >
                 Cancelar
               </button>

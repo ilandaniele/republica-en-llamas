@@ -3,10 +3,13 @@ dist/
 .expo/
 .turbo/
 *.env
+.env.*
 !.env.example
 coverage/
 .DS_Store
 *.log
+__pycache__/
+*.py[cod]
 
 # Compiled output must never live next to sources
 apps/web/src/**/*.js

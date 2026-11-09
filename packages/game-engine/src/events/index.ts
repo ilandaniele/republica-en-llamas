@@ -16,6 +16,14 @@ import { GEOPOLITICAL_CARDS } from './geopolitical.js';
 import { GUERRA_CARDS } from './guerra.js';
 import { MALVINAS_CARDS } from './malvinas.js';
 
+import { PARTY_CARDS } from './parties.js';
+import { PRESIDENT_STORY_CARDS } from './presidentStories.js';
+import { PRESIDENT_EXPANSION_CARDS } from './presidentExpansion.js';
+import { createStoryMatcher } from './storyRequirements.js';
+import { partyForPresident } from '../parties.js';
+import { DEBATE_CARDS } from '../debate.js';
+import { CAREER_CARDS } from './career.js';
+
 const DIFFICULTY_ORDER: Difficulty[] = ['easy', 'normal', 'hard', 'crisis'];
 
 function difficultyAtLeast(current: Difficulty, min: Difficulty): boolean {
@@ -23,6 +31,11 @@ function difficultyAtLeast(current: Difficulty, min: Difficulty): boolean {
 }
 
 export const ALL_CARDS: EventCard[] = [
+  ...CAREER_CARDS,
+  ...DEBATE_CARDS,
+  ...PARTY_CARDS,
+  ...PRESIDENT_STORY_CARDS,
+  ...PRESIDENT_EXPANSION_CARDS,
   ...POLITICAL_CARDS,
   ...POLITICAL_CHAINED_CARDS,
   ...ECONOMIC_CARDS,
@@ -107,12 +120,9 @@ function politicalHealth({ political }: GameState): number {
  * - International cards are slightly boosted in stability (diplomacy time).
  * - Exogenous, lifeline and crisis cards are never adjusted (return 1.0).
  */
-function stateAwareMultiplier(state: GameState, card: EventCard): number {
+function stateAwareMultiplier(econHealth: number, polHealth: number, card: EventCard): number {
   // Never adjust exogenous events, lifelines, or crisis-gated cards
   if (card.isExogenous || card.isLifeline || card.category === 'crisis') return 1.0;
-
-  const econHealth = economicHealth(state);
-  const polHealth = politicalHealth(state);
 
   // Overall weighted health (economy counts 3, politics counts 2)
   const overallHealth = (econHealth * 3 + polHealth * 2) / 5;
@@ -145,8 +155,15 @@ function isWithinTurnAndDifficulty(card: EventCard, state: GameState): boolean {
   return card.minDifficulty === undefined || difficultyAtLeast(state.difficulty, card.minDifficulty);
 }
 
-function meetsRequirements(card: EventCard, state: GameState, activeCrisisTypes: Set<CrisisType>): boolean {
-  if (state.drawnCardIds.includes(card.id)) return false;
+function meetsRequirements(
+  card: EventCard,
+  state: GameState,
+  activeCrisisTypes: Set<CrisisType>,
+  drawnIds: Set<string>,
+): boolean {
+  if (card.careerOffice) return false;
+  if (card.requiredParty && card.requiredParty !== partyForPresident(state.presidentId)) return false;
+  if (drawnIds.has(card.id)) return false;
   if (card.requiredCrisis !== undefined && !activeCrisisTypes.has(card.requiredCrisis)) return false;
   if (card.category === 'crisis' && card.requiredCrisis === undefined) return false;
   if (!isCharacterCardEligible(card, state)) return false;
@@ -175,21 +192,29 @@ function isOnCooldown(card: EventCard, turn: number, cooldowns: Record<string, n
 export function drawCard(state: GameState, rng: () => number, forceLifeline = false): EventCard {
   const activeCrisisTypes = new Set<CrisisType>(state.activeCrises.map((c) => c.type));
   const cooldowns = state.cardCooldowns ?? {};
+  const matchesStory = createStoryMatcher(state);
+  const drawnIds = new Set(state.drawnCardIds);
 
   // Eligible cards (base filter + cooldown)
   const eligible = ALL_CARDS.filter(
     (card) =>
       isWithinTurnAndDifficulty(card, state) &&
-      meetsRequirements(card, state, activeCrisisTypes) &&
+      matchesStory(card) &&
+      meetsRequirements(card, state, activeCrisisTypes, drawnIds) &&
       !isOnCooldown(card, state.turn, cooldowns),
   );
 
   if (eligible.length === 0) {
     const fallback = ALL_CARDS.filter(
-      (c) => c.category !== 'crisis' && (c.minTurn === undefined || state.turn >= c.minTurn),
+      (c) =>
+        c.category !== 'crisis' &&
+        !c.careerOffice &&
+        matchesStory(c) &&
+        (!c.requiredParty || c.requiredParty === partyForPresident(state.presidentId)) &&
+        (c.minTurn === undefined || state.turn >= c.minTurn),
     );
     const idx = Math.floor(rng() * fallback.length);
-    return fallback[idx] ?? ALL_CARDS[0]!;
+    return fallback[idx] ?? POLITICAL_CARDS[0]!;
   }
 
   // Priority: lifeline cards when 2+ variables in red zone, or when forced (guaranteed lifeline turn)
@@ -201,16 +226,20 @@ export function drawCard(state: GameState, rng: () => number, forceLifeline = fa
     if (lifeline) return lifeline;
   }
 
+  const econHealth = economicHealth(state);
+  const polHealth = politicalHealth(state);
   // Apply weight decay + state-aware multiplier for all cards
   const effectiveWeight = (card: EventCard): number => {
     const lastFiredTurn = cooldowns[card.id];
     let w = card.weight;
+    // Personal agendas compete with the shared deck without forcing a fixed draw.
+    if (card.requiredPresident) w *= 4;
     if (lastFiredTurn !== undefined && state.turn - lastFiredTurn < CARD_WEIGHT_DECAY_WINDOW) {
       w *= 0.3;
     }
     // State-aware: shift category weights based on current game health
     // (exogenous, lifeline, and crisis cards are never modified)
-    w *= stateAwareMultiplier(state, card);
+    w *= stateAwareMultiplier(econHealth, polHealth, card);
     // Narrative arc boost: 3× weight for categories matching current scenario phase
     if (state.activeScenario) {
       const arcs = SCENARIO_ARCS[state.activeScenario];
@@ -224,11 +253,12 @@ export function drawCard(state: GameState, rng: () => number, forceLifeline = fa
     return w;
   };
 
-  const totalWeight = eligible.reduce((s, c) => s + effectiveWeight(c), 0);
+  const weights = eligible.map(effectiveWeight);
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
   let roll = rng() * totalWeight;
 
-  for (const card of eligible) {
-    roll -= effectiveWeight(card);
+  for (const [index, card] of eligible.entries()) {
+    roll -= weights[index]!;
     if (roll <= 0) return card;
   }
 

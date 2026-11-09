@@ -78,7 +78,7 @@ export default function AuthScreen() {
                 }`}
               >
                 <div className="font-serif font-bold text-smoke-100">{d.label}</div>
-                <div className="text-smoke-500 mt-0.5 text-[10px] italic">{d.flavor}</div>
+                <div className="mt-0.5 text-sm italic text-smoke-500">{d.flavor}</div>
               </button>
             ))}
           </div>
@@ -124,7 +124,7 @@ export default function AuthScreen() {
               </m.button>
               <button
                 onClick={handleGuest}
-                className="text-smoke-500 hover:text-smoke-300 w-full py-2 font-mono text-sm transition-colors"
+                className="w-full py-2 font-mono text-sm text-smoke-500 transition-colors hover:text-smoke-300"
               >
                 Jugar sin cuenta → <span className="text-xs text-smoke-600">(el progreso no se guarda)</span>
               </button>

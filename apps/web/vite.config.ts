@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
 
 // Stable vendor chunks: cached across deploys and fetched only by screens that need them.
 const VENDOR_GROUPS = [
@@ -15,9 +14,6 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     dedupe: ['react', 'react-dom'],
-    alias: {
-      '@engine': path.resolve(import.meta.dirname, '../../packages/game-engine/src'),
-    },
   },
   server: {
     port: 5173,

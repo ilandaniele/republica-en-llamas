@@ -41,7 +41,7 @@ export function SwingPanel({
         <span className="text-emerald-400">{finalYes} SÍ</span>
         <span className="mx-2 text-smoke-600">—</span>
         <span className="text-crimson-400">{total - finalYes} NO</span>
-        <span className="text-smoke-500 ml-3 text-xs">({required} para mayoría)</span>
+        <span className="ml-3 text-xs text-smoke-500">({required} para mayoría)</span>
       </div>
 
       {/* Senator card */}
@@ -52,19 +52,19 @@ export function SwingPanel({
           </div>
           <div>
             <p className="font-serif font-bold text-smoke-100">{sen.name}</p>
-            <p className="text-smoke-500 font-mono text-xs">
+            <p className="font-mono text-xs text-smoke-500">
               {sen.bloc} · {sen.province}
             </p>
           </div>
           <div className="bg-gold-900/40 border-gold-700 ml-auto rounded border px-2 py-1">
             <p className="font-mono text-xs text-gold-400">⚡ VOTO SORPRESA</p>
-            <p className="text-smoke-500 font-mono text-xs">
+            <p className="font-mono text-xs text-smoke-500">
               {swingIdx + 1}/{swingCount}
             </p>
           </div>
         </div>
 
-        <p className="text-smoke-300 border-gold-700 border-l-2 pl-3 text-sm italic">{sen.demand}</p>
+        <p className="border-gold-700 border-l-2 pl-3 text-sm italic text-smoke-300">{sen.demand}</p>
 
         <div className="space-y-2">
           <button
@@ -83,10 +83,10 @@ export function SwingPanel({
           </button>
           <button
             onClick={() => onChoice('decide')}
-            className="text-smoke-300 flex w-full items-center justify-between rounded-lg border border-navy-500 bg-navy-700 px-4 py-2 text-left font-mono text-sm transition-colors hover:bg-navy-600"
+            className="flex w-full items-center justify-between rounded-lg border border-navy-500 bg-navy-700 px-4 py-2 text-left font-mono text-sm text-smoke-300 transition-colors hover:bg-navy-600"
           >
             <span>🎲 Dejarlo decidir solo</span>
-            <span className="text-smoke-500 text-xs">50/50</span>
+            <span className="text-xs text-smoke-500">50/50</span>
           </button>
         </div>
       </div>

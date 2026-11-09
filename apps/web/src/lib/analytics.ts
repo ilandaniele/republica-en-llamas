@@ -1,4 +1,5 @@
 import type { PostHog } from 'posthog-js';
+import { isPlaytestMode } from './playtest.js';
 
 const KEY = (import.meta.env as Record<string, string | undefined>)['VITE_POSTHOG_KEY'];
 const HOST = 'https://app.posthog.com';
@@ -10,14 +11,14 @@ let loading: Promise<void> | null = null;
 const pending: Array<(ph: PostHog) => void> = [];
 
 function withClient(action: (ph: PostHog) => void) {
-  if (!KEY) return;
+  if (isPlaytestMode || !KEY) return;
   if (client) action(client);
   else pending.push(action);
 }
 
 // posthog-js is loaded lazily so it stays out of the entry chunk.
 export function initAnalytics() {
-  if (loading || !KEY) return;
+  if (isPlaytestMode || loading || !KEY) return;
   loading = import('posthog-js').then(({ default: posthog }) => {
     posthog.init(KEY, { api_host: HOST, capture_pageview: false, persistence: 'localStorage' });
     client = posthog;

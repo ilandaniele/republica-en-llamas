@@ -3,6 +3,8 @@ import type { CongressDecisions } from './congressSession.js';
 import { advanceTurn, applyChoice, applyChoiceEffects, drawNextCard, initGame } from './gameLoop.js';
 import { calculateScore } from './scoring.js';
 import type { Difficulty, EventCard, GameState, Language, ScenarioId } from './types.js';
+import { isRunConfig, isTurnDecision, MAX_RUN_DECISIONS } from './runValidation.js';
+import type { CareerStartOffice } from './career.js';
 
 export type TurnDecision =
   | { kind: 'choice'; cardId: string; choiceIndex: number }
@@ -15,6 +17,8 @@ export interface TurnResult {
 }
 
 export interface RunConfig {
+  careerStart?: CareerStartOffice;
+  presidentId?: string;
   seed: number;
   difficulty: Difficulty;
   language?: Language;
@@ -96,7 +100,10 @@ function applyScoredChoice(
   if (crisisExpress) after = applyCrisisExpressMultiplier(before, after);
   const score = calculateScore(after);
   const finalScore = crisisExpress ? Math.round(score * CRISIS_EXPRESS_SCORE_MULTIPLIER) : score;
-  return { state: { ...after, score: finalScore }, choiceIndex };
+  return {
+    state: { ...after, score: finalScore },
+    choiceIndex: after.history.at(-1)?.choiceIndex ?? choiceIndex,
+  };
 }
 
 export function resolveTurn(
@@ -131,7 +138,11 @@ export function resolveTurn(
 }
 
 export function endTurn(state: GameState, crisisExpress = false): GameState {
-  const next = advanceTurn(state);
+  if (state.isGameOver) return state;
+  const advanced = advanceTurn(state);
+  const next = crisisExpress
+    ? { ...advanced, score: Math.round(advanced.score * CRISIS_EXPRESS_SCORE_MULTIPLIER) }
+    : advanced;
   if (crisisExpress && next.turn > CRISIS_EXPRESS_TURNS && !next.isGameOver) {
     return { ...next, isGameOver: true, gameOverReason: 'term_complete' };
   }
@@ -139,8 +150,22 @@ export function endTurn(state: GameState, crisisExpress = false): GameState {
 }
 
 export function replayRun(config: RunConfig, decisions: TurnDecision[]): GameState {
+  if (
+    !isRunConfig(config) ||
+    !Array.isArray(decisions) ||
+    decisions.length > MAX_RUN_DECISIONS ||
+    !decisions.every(isTurnDecision)
+  )
+    throw new Error('Invalid run data');
   const crisisExpress = config.crisisExpress ?? false;
-  let state = initGame(config.difficulty, config.seed, config.language, config.scenarioId ?? undefined);
+  let state = initGame(
+    config.difficulty,
+    config.seed,
+    config.language,
+    config.scenarioId ?? undefined,
+    config.presidentId,
+    config.careerStart,
+  );
   for (const decision of decisions) {
     if (state.isGameOver) throw new Error('Decision after game over');
     const card = drawNextCard(state);

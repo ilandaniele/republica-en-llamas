@@ -1,0 +1,114 @@
+{
+  "char_docente_normal": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine public-school teacher, woman in her forties with shoulder-length chestnut curly hair, round glasses, green cardigan over a cream blouse, holding a plain blue schoolbook. Calm attentive neutral expression.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_docente_panic": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine public-school teacher, woman in her forties with shoulder-length chestnut curly hair, round glasses, green cardigan over a cream blouse, holding a plain blue schoolbook. Panicked expression, wide eyes, raised brows, open mouth, visible sweat drops.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_medica_normal": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Afro-Argentine emergency doctor, woman in her late thirties with dark brown skin, neat dark braids tied back, teal hospital scrubs, stethoscope around her neck. Calm attentive neutral expression.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_medica_panic": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Afro-Argentine emergency doctor, woman in her late thirties with dark brown skin, neat dark braids tied back, teal hospital scrubs, stethoscope around her neck. Panicked expression, wide eyes, raised brows, open mouth, visible sweat drops.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_empresaria_normal": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine industrial businesswoman in her fifties, silver-grey pixie haircut, angular face, navy tailored jacket, ochre scarf, holding a plain folder. Calm attentive neutral expression.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_empresaria_panic": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine industrial businesswoman in her fifties, silver-grey pixie haircut, angular face, navy tailored jacket, ochre scarf, holding a plain folder. Panicked expression, wide eyes, raised brows, open mouth, visible sweat drops.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_jubilado_normal": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional retired Argentine worker, man in his seventies with sparse white hair, thick white eyebrows, deeply lined face, brown knitted cardigan over a light shirt, holding a wooden walking cane. Calm attentive neutral expression.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_jubilado_panic": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional retired Argentine worker, man in his seventies with sparse white hair, thick white eyebrows, deeply lined face, brown knitted cardigan over a light shirt, holding a wooden walking cane. Panicked expression, wide eyes, raised brows, open mouth, visible sweat drops.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_productor_normal": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine small farmer in his forties, weathered tanned face, short dark beard, straw hat, red checked work shirt, holding a small bundle of wheat stalks. Calm attentive neutral expression.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_productor_panic": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine small farmer in his forties, weathered tanned face, short dark beard, straw hat, red checked work shirt, holding a small bundle of wheat stalks. Panicked expression, wide eyes, raised brows, open mouth, visible sweat drops.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_jueza_normal": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine judge, woman in her late fifties, silver hair in a neat bun, rectangular reading glasses, black judicial robe over a white collar, holding a small wooden gavel. Calm attentive neutral expression.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_jueza_panic": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine judge, woman in her late fifties, silver hair in a neat bun, rectangular reading glasses, black judicial robe over a white collar, holding a small wooden gavel. Panicked expression, wide eyes, raised brows, open mouth, visible sweat drops.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_militar_normal": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine military officer, man in his fifties with short salt-and-pepper hair, square face, trimmed dark moustache, plain olive uniform and olive beret, no rank markings, badges, medals or insignia. Calm attentive neutral expression.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_militar_panic": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine military officer, man in his fifties with short salt-and-pepper hair, square face, trimmed dark moustache, plain olive uniform and olive beret, no rank markings, badges, medals or insignia. Panicked expression, wide eyes, raised brows, open mouth, visible sweat drops.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_cientifica_normal": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine research scientist, woman in her thirties with olive skin, short black bob haircut, clear safety glasses, white lab coat over a purple shirt, holding a small blue circuit board without markings. Calm attentive neutral expression.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  },
+  "char_cientifica_panic": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis RPG dialogue portrait. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette of about 32 colors, 1-pixel dark outlines. Head-and-shoulders portrait of ONE character, facing the viewer, centered, fills most of the square canvas. Flat solid dark navy background exactly #1a1a2e edge to edge. No scenery, text, letters, numbers, logos, border or watermark. A fictional Argentine research scientist, woman in her thirties with olive skin, short black bob haircut, clear safety glasses, white lab coat over a purple shirt, holding a small blue circuit board without markings. Panicked expression, wide eyes, raised brows, open mouth, visible sweat drops.",
+    "size": "1024x1024",
+    "grid": [64, 64],
+    "transparent": false,
+    "group": "characters"
+  }
+}

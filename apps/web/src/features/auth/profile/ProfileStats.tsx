@@ -21,8 +21,8 @@ export function ProfileStats({ recentRuns, totalRuns, personalBest }: ProfileSta
         <div key={stat.label} className="pixel-border bg-navy-800 p-4 text-center">
           <p
             style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: '6px',
+              fontFamily: 'var(--font-readable)',
+              fontSize: '14px',
               color: 'var(--peso-grey)',
               textTransform: 'uppercase',
               letterSpacing: '0.08em',
@@ -32,7 +32,7 @@ export function ProfileStats({ recentRuns, totalRuns, personalBest }: ProfileSta
           </p>
           <p
             style={{
-              fontFamily: "'Press Start 2P', monospace",
+              fontFamily: 'var(--font-readable)',
               fontSize: '14px',
               color: 'var(--gold)',
               marginTop: '6px',

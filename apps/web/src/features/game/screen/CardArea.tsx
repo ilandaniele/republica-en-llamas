@@ -1,9 +1,11 @@
 import { m, AnimatePresence } from 'framer-motion';
-import type { GameState } from '@republica/game-engine';
+import { isDebateCard, type GameState } from '@republica/game-engine';
 import { useGameStore } from '../../../stores/gameStore.js';
-import { trackCongressSession, trackTurnCompleted } from '../../../lib/analytics.js';
+import { trackCongressSession } from '../../../lib/analytics.js';
 import { CongressSession } from '../CongressSession.js';
 import { EventCardComponent } from '../EventCardComponent.js';
+import { DebateCard } from '../debate/DebateCard.js';
+import { ElectionCard } from '../debate/ElectionCard.js';
 
 export function CardArea({ gameState }: { gameState: GameState }) {
   const currentCard = useGameStore((s) => s.currentCard);
@@ -31,22 +33,31 @@ export function CardArea({ gameState }: { gameState: GameState }) {
               resolveCongressSession(currentCard.id, decisions);
             }}
           />
+        ) : !isAnimating && isDebateCard(currentCard.id) ? (
+          <DebateCard
+            key={currentCard.id}
+            state={gameState}
+            card={currentCard}
+            selectedIndex={pendingChoiceIndex}
+            onSelect={selectChoice}
+            onConfirm={confirmChoice}
+          />
+        ) : !isAnimating && currentCard.id === 'pol_election_result' ? (
+          <ElectionCard
+            key={currentCard.id}
+            state={gameState}
+            card={currentCard}
+            selectedIndex={pendingChoiceIndex}
+            onSelect={selectChoice}
+            onConfirm={confirmChoice}
+          />
         ) : !isAnimating ? (
           <EventCardComponent
             key={currentCard.id}
             card={currentCard}
             selectedIndex={pendingChoiceIndex}
             onSelect={selectChoice}
-            onConfirm={() => {
-              if (pendingChoiceIndex !== null && currentCard) {
-                trackTurnCompleted({
-                  turn_number: gameState.turn,
-                  event_category: currentCard.category,
-                  choice_index: pendingChoiceIndex,
-                });
-              }
-              confirmChoice();
-            }}
+            onConfirm={confirmChoice}
             disabled={isAnimating}
             presidentId={presidentId}
             gameState={gameState}

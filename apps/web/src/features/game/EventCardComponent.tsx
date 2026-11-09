@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { EventCard, GameState } from '@republica/game-engine';
-import { getSafestChoiceIndex } from '@republica/game-engine';
+import { getSafestChoiceIndex, PARTIES } from '@republica/game-engine';
 import { CharacterPortrait } from '../../components/illustrations/characters/CharacterPortrait.js';
+import { EventCharacterBadge } from '../../components/illustrations/characters/EventCharacterBadge.js';
 import { EventIllustration } from '../../components/illustrations/EventIllustration.js';
 import { CardParticles } from './event-card/CardParticles.js';
 import { PixelPortrait } from '../../components/illustrations/PixelPortrait.js';
@@ -17,6 +18,13 @@ gsap.registerPlugin(useGSAP);
 const PRESIDENT_IDS = new Set<string>(['milei', 'massa', 'bullrich', 'ingeniero', 'populista', 'tecnocrata']);
 
 const ARCHETYPE_LABEL: Record<string, string> = {
+  kicillof: 'Pres. Axel Kicillof',
+  grabois: 'Pres. Juan Grabois',
+  nestor: 'Néstor Kirchner',
+  cristina: 'Cristina Fernández de Kirchner',
+  macri: 'Mauricio Macri',
+  del_cano: 'Nicolás del Caño',
+
   ingeniero: 'Pres. Milei',
   populista: 'Pres. Massa',
   tecnocrata: 'Min. Bullrich',
@@ -68,31 +76,21 @@ function CardHeading({ card, contextPrefix, style }: CardHeadingProps) {
   const { t } = useTranslation();
   const isCrisis = card.category === 'crisis';
   return (
-    <div className="px-6 pb-3 pt-5">
+    <div className="event-heading">
       {contextPrefix && <p className="mb-2 text-sm italic text-[#444]">{contextPrefix}</p>}
-      {card.requiredFlags && card.requiredFlags.length > 0 && (
+      {(card.requiredChoice || (card.requiredFlags && card.requiredFlags.length > 0)) && (
         <div
           className="mb-2 flex items-center gap-1 border-2 border-[#111] px-2 py-1 text-[#111]"
-          style={{ fontFamily: "'Press Start 2P'", fontSize: '6px', display: 'inline-flex' }}
+          style={{ fontFamily: 'var(--font-readable)', fontSize: '13px', display: 'inline-flex' }}
         >
           <span>↩</span>
           <span>CONSECUENCIA DE DECISIÓN PREVIA</span>
         </div>
       )}
-      <span
-        className={`mb-3 inline-block px-2 py-1 text-white ${style.badge}`}
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
-      >
+      <span className={`mb-3 inline-block px-2 py-1 text-white ${style.badge}`}>
         {CATEGORY_LABELS[card.category] ?? card.category.toUpperCase()}
       </span>
-      <h2
-        style={{
-          fontFamily: "'Press Start 2P', monospace",
-          fontSize: isCrisis ? '9px' : '10px',
-          lineHeight: '1.6',
-        }}
-        className={`uppercase ${isCrisis ? 'text-[#8B0000]' : 'text-[#111]'}`}
-      >
+      <h2 className={`event-title uppercase ${isCrisis ? 'text-[#8B0000]' : 'text-[#111]'}`}>
         {t(card.titleKey)}
       </h2>
     </div>
@@ -113,6 +111,7 @@ export function EventCardComponent({
   const style = CATEGORY_STYLES[card.category] ?? CATEGORY_STYLES['crisis']!;
   const isCrisis = card.category === 'crisis';
   const isEasy = gameState?.difficulty === 'easy';
+  const isCharacterPanicked = isCrisis || (gameState?.political.socialStability ?? 50) < 25;
   const safestIndex = isEasy ? getSafestChoiceIndex(card) : -1;
   const [ripplingChoice, showRipplingChoice] = useTransientValue<number | null>(null);
   const touchStartX = useRef<number | null>(null);
@@ -121,7 +120,7 @@ export function EventCardComponent({
   // ── GSAP: category-specific ambient particle effects on the card ────────────
   useGSAP(
     () => {
-      if (!cardRef.current) return;
+      if (!cardRef.current || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
 
       if (isCrisis) {
         // Crimson border glow pulses on the whole card
@@ -228,25 +227,33 @@ export function EventCardComponent({
 
       <CardParticles category={card.category} />
       <CardHeading card={card} contextPrefix={contextPrefix} style={style} />
+      {card.requiredParty && (
+        <p className="border-b border-navy-600 bg-navy-800 px-4 py-2 font-mono text-xs text-gold-400">
+          Agenda · {PARTIES[card.requiredParty].label}
+        </p>
+      )}
 
       {/* Full-bleed illustration — no horizontal padding */}
-      <div className="relative h-[180px] w-full overflow-hidden border-y-4 border-[#111] md:h-[260px] xl:h-[360px]">
+      <div className="event-art relative w-full overflow-hidden border-y-4 border-[#111]">
         {card.characterId && PRESIDENT_IDS.has(card.characterId) ? (
           <div className="absolute inset-0 flex items-center justify-center border-y border-navy-700 bg-navy-800/60">
-            <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={180} />
+            <PixelPortrait id={card.characterId as PortraitId} mood="neutral" px={112} />
           </div>
         ) : card.characterId ? (
           <div className="absolute inset-0 flex items-center gap-3 border-y border-navy-600 bg-navy-800/60 px-4">
-            <CharacterPortrait characterId={card.characterId} size={72} />
+            <CharacterPortrait characterId={card.characterId} size={72} panic={isCharacterPanicked} />
             <div className="font-mono text-xs italic text-smoke-400 opacity-70">Personaje recurrente</div>
           </div>
         ) : (
-          <EventIllustration
-            eventCategory={card.category}
-            presidentId={presidentId}
-            eventId={card.id}
-            gameState={gameState}
-          />
+          <>
+            <EventIllustration
+              eventCategory={card.category}
+              presidentId={presidentId}
+              eventId={card.id}
+              gameState={gameState}
+            />
+            <EventCharacterBadge card={card} panic={isCharacterPanicked} />
+          </>
         )}
       </div>
 
@@ -256,12 +263,10 @@ export function EventCardComponent({
           const charLabel = ARCHETYPE_LABEL[presidentId];
           if (!charLabel) return null;
           return (
-            <div className="flex items-center gap-3 border-b-4 border-[#111] bg-[#111] px-4 py-2">
-              <PixelPortrait id={presidentId as PortraitId} px={40} />
+            <div className="event-president flex items-center gap-3 border-b-4 border-[#111] bg-[#111] px-4 py-1">
+              <PixelPortrait id={presidentId as PortraitId} px={28} />
               <span
                 style={{
-                  fontFamily: "'Press Start 2P', monospace",
-                  fontSize: '7px',
                   color: 'var(--celeste)',
                 }}
               >
@@ -272,10 +277,10 @@ export function EventCardComponent({
         })()}
 
       {/* Body + choices + confirm */}
-      <div className="px-6 pb-6 pt-4">
-        <p className="mb-5 text-[19px] leading-snug text-[#222]">{t(card.bodyKey)}</p>
+      <div className="event-content">
+        <p className="event-description">{t(card.bodyKey)}</p>
 
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-3">
+        <div className="event-choices grid grid-cols-1 gap-2 md:grid-cols-2">
           {Array.from({ length: 4 }).map((_, index) => {
             const choice = card.choices[index];
             const isLocked = !choice;
@@ -294,16 +299,16 @@ export function EventCardComponent({
                 transition={{ duration: 0.2, delay: index * 0.05 }}
                 whileTap={!disabled ? { scale: 0.97 } : {}}
                 onClick={() => handleChoiceClick(index)}
+                disabled={disabled}
+                aria-pressed={isSelected}
                 className={`pixel-choice-card ${CHOICE_COLORS[index]} w-full text-left ${isSelected ? 'selected' : ''}`}
               >
                 {ripplingChoice === index && <span className="choice-ripple" />}
-                <div className="mb-2 flex items-start gap-2">
+                <div className="flex items-start gap-2">
                   <span
                     style={{
                       background: isSelected ? 'var(--gold)' : '#111',
                       color: isSelected ? '#111' : 'white',
-                      fontFamily: "'Press Start 2P', monospace",
-                      fontSize: '8px',
                       padding: '3px 5px',
                       display: 'inline-block',
                       flexShrink: 0,
@@ -311,7 +316,7 @@ export function EventCardComponent({
                   >
                     {letter}
                   </span>
-                  <span className="text-[17px] font-medium leading-tight">{t(choice.textKey)}</span>
+                  <span className="choice-description">{t(choice.textKey)}</span>
                   {isEasy && index === safestIndex && (
                     <span
                       className="ml-auto shrink-0 bg-[#111] px-1 text-[11px] text-gold-400"
@@ -322,10 +327,7 @@ export function EventCardComponent({
                   )}
                 </div>
                 {choice.requiresVote && (
-                  <div
-                    className="mt-2 inline-flex items-center border-2 border-white px-2 py-1"
-                    style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-                  >
+                  <div className="mt-2 inline-flex items-center border-2 border-white px-2 py-1">
                     REQUIERE CONGRESO
                   </div>
                 )}
@@ -335,12 +337,15 @@ export function EventCardComponent({
         </div>
 
         {selectedIndex !== null && (
-          <m.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-5">
+          <m.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="event-confirm mt-3"
+          >
             <button
               onClick={onConfirm}
               disabled={disabled}
               className="w-full border-4 border-[#111] bg-[var(--gold)] px-6 py-3 font-bold text-[#111] shadow-[4px_4px_0_#111] hover:bg-gold-400 disabled:opacity-50"
-              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px' }}
             >
               CONFIRMAR TURNO ▶
             </button>

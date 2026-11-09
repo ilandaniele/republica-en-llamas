@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { browserStorage } from './browserStorage.js';
 
 type Language = 'es' | 'en';
 
@@ -12,16 +13,22 @@ const loadTranslations: Record<Language, () => Promise<Record<string, string>>> 
 };
 
 function storedLanguage(): Language {
-  return localStorage.getItem('language') === 'en' ? 'en' : 'es';
+  return browserStorage.getItem('language') === 'en' ? 'en' : 'es';
 }
 
 export async function initI18n() {
   const lng = storedLanguage();
-  const translations = await loadTranslations[lng]();
+  const [translations, fallback] = await Promise.all([
+    loadTranslations[lng](),
+    lng === 'en' ? loadTranslations.es() : Promise.resolve(null),
+  ]);
   await i18n.use(initReactI18next).init({
-    resources: { [lng]: { translation: { ...translations, 'app.title': APP_TITLE[lng] } } },
+    resources: {
+      es: { translation: { ...(fallback ?? translations), 'app.title': APP_TITLE.es } },
+      ...(lng === 'en' ? { en: { translation: { ...translations, 'app.title': APP_TITLE.en } } } : {}),
+    },
     lng,
-    fallbackLng: lng,
+    fallbackLng: 'es',
     interpolation: { escapeValue: false },
   });
 }

@@ -27,15 +27,29 @@ export function Bob(props: MotionProps) {
 }
 
 export function Hover(props: MotionProps) {
-  return <Translate values="0 0;0 -2;0 0" {...props} />;
+  return <Translate values="0 0;0 -0.5;0 0" {...props} />;
 }
 
 export function Shake(props: MotionProps) {
   return <Translate values="0 0;-1 0;1 0;0 1;0 0" {...props} />;
 }
 
-export function FlyAway(props: MotionProps) {
-  return <Translate values="0 0;20 -18;60 -60" {...props} />;
+export function FlyAway({ dur, children }: MotionProps) {
+  return (
+    <g data-flight="departure">
+      {children}
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="0 0;8 -4;65 -55"
+        keyTimes="0;0.35;1"
+        calcMode="spline"
+        keySplines="0.42 0 1 1;0.42 0 1 1"
+        dur={dur}
+        fill="freeze"
+      />
+    </g>
+  );
 }
 
 export function Drift(props: MotionProps) {

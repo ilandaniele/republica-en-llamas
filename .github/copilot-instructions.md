@@ -4,7 +4,7 @@
 
 Turborepo monorepo. Three packages:
 - `packages/game-engine/` — pure TypeScript, no React. Exports types + pure functions. Entry: `src/index.ts`.
-- `apps/web/` — React 18 + Vite + Tailwind. The playable web game.
+- `apps/web/` — React 19 + Vite 8 + Tailwind. The playable web game.
 - `apps/mobile/` — Expo/React Native. Do not modify unless explicitly asked.
 
 `@republica/game-engine` is an npm workspace package whose `main` and `exports` point at `src/*.ts`, so the web app consumes TypeScript source with no compile step.
@@ -32,8 +32,8 @@ const store = useGameStore();
 This project uses a pixel-art aesthetic.
 
 ### Fonts
-- Headlines / labels / buttons: `font-serif` (resolves to `'Press Start 2P'`) — keep font-size ≤ 10px
-- Body / narrative text: `font-mono` (resolves to `'VT323'`) — font-size 16–20px is readable
+- Headlines / labels / buttons / narrative: local Pixelify Sans, weights 400–700 (`var(--font-readable)`); use readable sizes, typically 16–22px.
+- Logo: local Press Start 2P. Avoid tiny text and synthetic italics for Spanish accents.
 - Legacy Playfair Display: `font-classic`
 - Legacy JetBrains Mono: `font-code`
 

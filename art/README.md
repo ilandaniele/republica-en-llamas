@@ -22,7 +22,7 @@ Images are generated outside the repo (e.g. with Codex) and then pixelated into 
 uvx --with pillow python scripts/pixel-art.py import
 ```
 
-Import pixelates each raw image to its grid, reduces it to 32 colours, writes `apps/web/public/illustrations/<id>.webp` and points `apps/web/src/assets/image-manifest.json` at it.
+Import pixelates each raw image to its grid, writes lossless `apps/web/public/illustrations/<id>.webp` and points `apps/web/src/assets/image-manifest.json` at it. Full scenes use a minimum 480×270 pixel grid and 64 colours, exported at 1920×1080. Diorama sprites retain more source detail with 64 colours and grids multiplied by 3 for small actors (largest grid dimension ≤64), or by 2 for larger layers. Portraits keep their original grids and 32-colour palettes. Transparent edges stay binary, without smoothing or a magenta fringe.
 Missing raw files are skipped. Pass ids to import only some: `... import portrait_milei_neutral eco_growth`.
 
 The game picks the images up by id. Portraits and characters fall back to the code-drawn SVGs until their image exists.
@@ -36,6 +36,10 @@ The Casa Rosada scene is assembled in code from separate sprite layers (island, 
 3. Save as `art/raw/cr_<id>.png` and run the import. Magenta becomes transparent.
 
 Until a sprite exists, the scene uses its code-drawn fallback.
+
+## Context and corrections
+
+Identity references establish the face and hairstyle; clothing must match the setting. Congressional appearances, official diplomacy and other formal presidential duties use appropriate formal attire. Milei's institutional scenes use a navy business suit, white dress shirt and tie, rather than copying the leather jacket from his portrait. The five replacement prompts are recorded in `context-corrections.json`, loaded after the other supplemental prompt sets.
 
 ## Changing prompts
 

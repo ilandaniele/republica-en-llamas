@@ -55,6 +55,17 @@ describe('requestRunTicket', () => {
 
     expect(await requestRunTicket()).toBeNull();
   });
+
+  it('falls back to local play when a session request throws', async () => {
+    getSession.mockRejectedValueOnce(new Error('Network unavailable'));
+    expect(await requestRunTicket()).toBeNull();
+  });
+
+  it('rejects malformed server tickets', async () => {
+    getSession.mockResolvedValue(session(false));
+    invoke.mockResolvedValueOnce({ data: { id: 'ticket', seed: -1 }, error: null });
+    expect(await requestRunTicket()).toBeNull();
+  });
 });
 
 describe('currentAnonymousToken', () => {

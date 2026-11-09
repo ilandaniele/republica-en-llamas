@@ -9,13 +9,21 @@ interface VotingPanelProps {
   seatVotes: VoteStatus[];
   required: number;
   total: number;
+  finalYes: number;
+  onFinish: () => void;
 }
 
-function LiveVoteBar({ seatVotes, required, total }: Omit<VotingPanelProps, 'title' | 'seats'>) {
+function LiveVoteBar({
+  seatVotes,
+  required,
+  total,
+  finalYes,
+}: Pick<VotingPanelProps, 'seatVotes' | 'required' | 'total' | 'finalYes'>) {
   const toRealSeats = (status: VoteStatus) =>
     Math.round((seatVotes.filter((v) => v === status).length * total) / VISUAL_SEATS);
-  const liveRealYes = toRealSeats('yes');
-  const liveRealNo = toRealSeats('no');
+  const finished = seatVotes.every((vote) => vote !== 'pending');
+  const liveRealYes = finished ? finalYes : Math.min(finalYes, toRealSeats('yes'));
+  const liveRealNo = finished ? total - finalYes : Math.min(total - finalYes, toRealSeats('no'));
   const markerPct = required / total;
   const noBarPct = Math.min(1, liveRealNo / total);
   const yesBarPct = Math.min(1, liveRealYes / total);
@@ -58,7 +66,7 @@ function LiveVoteBar({ seatVotes, required, total }: Omit<VotingPanelProps, 'tit
 
 function BlocLegend() {
   return (
-    <div className="text-smoke-500 flex flex-wrap justify-center gap-3 font-mono text-xs">
+    <div className="flex flex-wrap justify-center gap-3 font-mono text-xs text-smoke-500">
       {(
         [
           ['#9C27B0', 'Oficialismo'],
@@ -67,7 +75,6 @@ function BlocLegend() {
           ['#78909C', 'Independientes'],
           ['#43A047', 'SÍ'],
           ['#E53935', 'NO'],
-          ['#FFA726', 'Abstención'],
         ] as const
       ).map(([color, label]) => (
         <span key={label} className="flex items-center gap-1">
@@ -79,16 +86,30 @@ function BlocLegend() {
   );
 }
 
-export function VotingPanel({ title, seats, seatVotes, required, total }: VotingPanelProps) {
+export function VotingPanel({
+  title,
+  seats,
+  seatVotes,
+  required,
+  total,
+  finalYes,
+  onFinish,
+}: VotingPanelProps) {
   return (
     <m.div key="voting" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
       <div className="text-center">
-        <p className="text-smoke-500 font-mono text-xs uppercase tracking-widest">{title}</p>
+        <p className="font-mono text-xs uppercase tracking-widest text-smoke-500">{title}</p>
         <p className="mt-1 font-mono text-sm text-smoke-400">Hemiciclo en vivo</p>
       </div>
       <Hemicycle seats={seats} seatVotes={seatVotes} required={required} live />
-      <LiveVoteBar seatVotes={seatVotes} required={required} total={total} />
+      <LiveVoteBar seatVotes={seatVotes} required={required} total={total} finalYes={finalYes} />
       <BlocLegend />
+      <button
+        onClick={onFinish}
+        className="min-h-11 w-full border border-navy-500 bg-navy-800 px-4 py-2 text-sm text-smoke-100 hover:bg-navy-700"
+      >
+        Completar recuento →
+      </button>
     </m.div>
   );
 }

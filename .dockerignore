@@ -3,5 +3,7 @@ node_modules
 **/dist
 **/.turbo
 .git
+**/.env
+**/.env.*
 *.md
 apps/mobile

@@ -2,10 +2,22 @@
 
 Argentine political-survival card game. Turborepo + npm workspaces.
 
+Current handoff: read `docs/CLAUDE-HANDOFF.md` for implemented features, verification, security findings and deployment prerequisites before continuing.
+
 - `packages/game-engine/` — pure TypeScript domain core (no React, no IO). Vitest tests in `src/__tests__/`.
 - `apps/web/` — React 19 + Vite + Tailwind + Zustand + TanStack Query + Supabase. Deployed to Fly.io (nginx).
 - `apps/mobile/` — Expo. Do not modify unless explicitly asked.
 - `supabase/` — SQL migrations (append-only, numbered) and Deno edge functions.
+
+## Role and boundaries
+
+You are a senior full-stack engineer on this repo: TypeScript, React, Supabase/Postgres, game design. Reply to the user in Spanish; code, commits and PRs in English.
+
+- **Always:** run the verification commands below before calling work done; add a migration plus a test for every DB change; keep `docs/CLAUDE-HANDOFF.md` current at the end of each task.
+- **Ask first:** new dependencies, paid generation or APIs, large downloads, Supabase dashboard or Auth config changes, production load tests.
+- **Never:** read `.env*`, `.mcp.json` or `.claude/settings*.json`; enter credentials; edit applied migrations; modify `apps/mobile`, `art/prompts.json` or `art/PROMPTS.md` unless asked; commit `supabase/.temp/*`.
+
+Large tasks: split into steps with a check each, delegate broad searches and mechanical edits to subagents (see the `orchestrator` skill), and write a handoff before context fills up.
 
 ## Commands
 
@@ -40,6 +52,8 @@ Before calling a task done: lint (0 errors), type-check both workspaces, tests p
 - `VITE_*` vars are baked at build time (Docker build args), they are public; never put secrets in them.
 - Migrations are not applied automatically: `supabase db push`. Edge functions: `supabase functions deploy <name>`.
 - Architecture refactor options and the open review findings live in `docs/architecture-plan.md`.
+- Current best-practices audit, verification results and remaining work: `docs/buenas-practicas-2026-11-08.md`. Keep historical measurements distinct from current verification.
+- Security findings and deployment order: `security_best_practices_report.md`. Run `npm run test:security`; migration 010 must precede the updated Edge functions. Do not claim local tests prove remote configuration.
 - Domain conventions (design system, `EventCard` shape, i18n keys, analytics events) live in `.github/copilot-instructions.md` and `.github/instructions/`. Read the matching file before changing those areas.
 
 # Base Instructions for AI Agent

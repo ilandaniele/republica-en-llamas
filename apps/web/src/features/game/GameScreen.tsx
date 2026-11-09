@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
+import { isLowerOffice } from '@republica/game-engine';
+import CareerGameScreen from './career/CareerGameScreen.js';
+import { CareerJourney } from '../../components/career/CareerOverview.js';
 import type { GameState } from '@republica/game-engine';
 import { useGameStore } from '../../stores/gameStore.js';
 import { VariablesPanel } from './VariablesPanel.js';
@@ -61,6 +64,11 @@ function useMidGamePaywall(turn: number | undefined) {
 }
 
 export default function GameScreen() {
+  const state = useGameStore((s) => s.gameState);
+  return state && isLowerOffice(state) ? <CareerGameScreen state={state} /> : <PresidentialGameScreen />;
+}
+
+function PresidentialGameScreen() {
   const navigate = useNavigate();
   const gameState = useGameStore((s) => s.gameState);
   const currentCard = useGameStore((s) => s.currentCard);
@@ -75,20 +83,24 @@ export default function GameScreen() {
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
   const timeoutSelection = useGameStore((s) => s.timeoutSelection);
   const [showDiary, setShowDiary] = useState(false);
+  const tutorialComplete = useGameStore((s) => s.tutorialComplete);
+  const [showMidGamePaywall, closeMidGamePaywall] = useMidGamePaywall(gameState?.turn);
+  const controlsPaused = [isAnimating, showTransition, showDiary, showMidGamePaywall, !tutorialComplete].some(
+    Boolean,
+  );
 
   const crisisTimeLeft = useCrisisCountdown({
     cardId: currentCard?.id,
     enabled: isCrisisExpress,
-    paused: isAnimating,
+    paused: controlsPaused,
     onTimeout: timeoutSelection,
   });
   const cardShaking = useCardShake(currentCard);
   const idlePresidentMood = useIdlePresidentMood();
   const { showDolarFloat, showCrowd, showConfetti, milestoneToast } = useEasterEggs(gameState);
-  const [showMidGamePaywall, closeMidGamePaywall] = useMidGamePaywall(gameState?.turn);
   useChoiceHotkeys({
     card: currentCard,
-    enabled: !isAnimating && !showTransition,
+    enabled: !controlsPaused,
     pendingChoiceIndex,
     selectChoice,
     confirmChoice,
@@ -104,11 +116,12 @@ export default function GameScreen() {
 
   return (
     <div
-      className="relative min-h-screen transition-colors duration-700"
+      className="game-screen relative min-h-screen transition-colors duration-700"
       style={{ background: getMoodBackground(gameState) }}
     >
       <BuenosAiresBackground />
       <OfflineBanner />
+      {gameState.career && <CareerJourney career={gameState.career} />}
       <MilestoneToast message={milestoneToast} />
       <DecisionDiary isOpen={showDiary} onClose={() => setShowDiary(false)} />
 
@@ -137,11 +150,11 @@ export default function GameScreen() {
         </div>
 
         {/* Main layout: mobile = card on top, indicators below; desktop = sidebar left */}
-        <div className="flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[320px_1fr]">
+        <div className="game-layout flex flex-col-reverse gap-4 lg:grid lg:grid-cols-[340px_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)]">
           <aside>
             <VariablesPanel state={gameState} />
           </aside>
-          <main>
+          <main className="min-w-0">
             <CardArea gameState={gameState} />
           </main>
         </div>

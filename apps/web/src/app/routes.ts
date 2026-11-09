@@ -1,4 +1,11 @@
 import { lazy } from 'react';
+import { isPlaytestMode } from '../lib/playtest.js';
+
+export const DebatePracticeScreen = import.meta.env.PROD
+  ? null
+  : isPlaytestMode
+    ? lazy(() => import('../features/game/debate/DebatePracticeScreen.js'))
+    : null;
 
 // Single source for route chunks, so React.lazy and prefetching share one import() per screen.
 export const routeLoaders = {
@@ -12,6 +19,7 @@ export const routeLoaders = {
   auth: () => import('../features/auth/AuthScreen.js'),
   register: () => import('../features/auth/RegisterScreen.js'),
   login: () => import('../features/auth/LoginScreen.js'),
+  passwordReset: () => import('../features/auth/PasswordResetScreen.js'),
   profile: () => import('../features/auth/ProfileScreen.js'),
 };
 
@@ -28,11 +36,12 @@ export const screens = {
   AuthScreen: lazy(routeLoaders.auth),
   RegisterScreen: lazy(routeLoaders.register),
   LoginScreen: lazy(routeLoaders.login),
+  PasswordResetScreen: lazy(routeLoaders.passwordReset),
   ProfileScreen: lazy(routeLoaders.profile),
 };
 
 export function prefetchRoute(name: RouteName) {
-  void routeLoaders[name]();
+  void routeLoaders[name]().catch(() => {});
 }
 
 // Spread on a navigation control so its screen chunk loads on hover or focus, before the click.
@@ -43,6 +52,10 @@ export function prefetchOnIntent(name: RouteName) {
 
 export function prefetchRoutesWhenIdle(names: RouteName[]) {
   const run = () => names.forEach(prefetchRoute);
-  if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout: 3000 });
-  else setTimeout(run, 1500);
+  if ('requestIdleCallback' in window) {
+    const id = window.requestIdleCallback(run, { timeout: 3000 });
+    return () => window.cancelIdleCallback(id);
+  }
+  const id = setTimeout(run, 1500);
+  return () => clearTimeout(id);
 }

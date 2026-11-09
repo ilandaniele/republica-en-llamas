@@ -1,5 +1,6 @@
 import type { Sky } from './getCasaRosadaMood.js';
 import { px } from './px.js';
+import { ArgentineFlag } from './ArgentineFlag.js';
 
 const PINK = '#E3A1A4';
 const PINK_SHADOW = '#C4878B';
@@ -75,11 +76,8 @@ function Pediment() {
       {px(72, 25, 16, 1, PINK)}
       {px(74, 24, 12, 1, TRIM)}
       {px(77, 23, 6, 1, TRIM)}
-      {px(80, 8, 1, 15, '#8A9BAA')}
-      {px(81, 8, 11, 2, '#74ACDF')}
-      {px(81, 10, 11, 2, '#FFFFFF')}
-      {px(81, 12, 11, 2, '#74ACDF')}
-      {px(86, 10, 1, 2, '#F6B40E')}
+      {px(80, 18, 1, 5, '#e5edf4')}
+      <ArgentineFlag x={80} y={8} />
     </g>
   );
 }

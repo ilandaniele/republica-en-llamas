@@ -28,7 +28,12 @@ export const CRISIS_CARDS: EventCard[] = [
       {
         id: 'cri_debt_001_d',
         textKey: 'event.cri_debt_001.choice_d',
-        effects: { deficitDelta: -15, popularityDelta: -12, marketConfidenceDelta: 18, foreignReservesDelta: 10 },
+        effects: {
+          deficitDelta: -15,
+          popularityDelta: -12,
+          marketConfidenceDelta: 18,
+          foreignReservesDelta: 10,
+        },
       },
     ],
   },
@@ -53,7 +58,12 @@ export const CRISIS_CARDS: EventCard[] = [
       {
         id: 'cri_debt_002_c',
         textKey: 'event.cri_debt_002.choice_c',
-        effects: { foreignReservesDelta: 12, deficitDelta: 4, marketConfidenceDelta: -3, popularityDelta: -5 },
+        effects: {
+          foreignReservesDelta: 12,
+          deficitDelta: 4,
+          marketConfidenceDelta: -3,
+          popularityDelta: -5,
+        },
       },
       {
         id: 'cri_debt_002_d',
@@ -109,12 +119,17 @@ export const CRISIS_CARDS: EventCard[] = [
       {
         id: 'cri_hyper_001_b',
         textKey: 'event.cri_hyper_001.choice_b',
-        effects: { inflationDelta: 10, popularityDelta: 5, currencyStrengthDelta: -10 },
+        effects: { inflationDelta: -3, popularityDelta: 5, currencyStrengthDelta: -10 },
       },
       {
         id: 'cri_hyper_001_c',
         textKey: 'event.cri_hyper_001.choice_c',
-        effects: { inflationDelta: -15, currencyStrengthDelta: 20, popularityDelta: -15, marketConfidenceDelta: 10 },
+        effects: {
+          inflationDelta: -15,
+          currencyStrengthDelta: 20,
+          popularityDelta: -15,
+          marketConfidenceDelta: 10,
+        },
       },
       {
         id: 'cri_hyper_001_d',
@@ -139,7 +154,12 @@ export const CRISIS_CARDS: EventCard[] = [
       {
         id: 'cri_hyper_002_b',
         textKey: 'event.cri_hyper_002.choice_b',
-        effects: { popularityDelta: 8, inflationDelta: 5, stabilityDelta: 3 },
+        effects: {
+          popularityDelta: 8,
+          stabilityDelta: 3,
+          foreignReservesDelta: -8,
+          currencyStrengthDelta: 5,
+        },
       },
       {
         id: 'cri_hyper_002_c',
@@ -149,7 +169,12 @@ export const CRISIS_CARDS: EventCard[] = [
       {
         id: 'cri_hyper_002_d',
         textKey: 'event.cri_hyper_002.choice_d',
-        effects: { currencyStrengthDelta: 15, inflationDelta: -10, marketConfidenceDelta: -5, foreignReservesDelta: -10 },
+        effects: {
+          currencyStrengthDelta: 15,
+          inflationDelta: -10,
+          marketConfidenceDelta: -5,
+          foreignReservesDelta: -10,
+        },
       },
     ],
   },
@@ -169,17 +194,22 @@ export const CRISIS_CARDS: EventCard[] = [
       {
         id: 'cri_hyper_003_b',
         textKey: 'event.cri_hyper_003.choice_b',
-        effects: { foreignReservesDelta: 15, inflationDelta: -10, marketConfidenceDelta: 10 },
+        effects: { foreignReservesDelta: 15, marketConfidenceDelta: 10 },
       },
       {
         id: 'cri_hyper_003_c',
         textKey: 'event.cri_hyper_003.choice_c',
-        effects: { inflationDelta: -18, deficitDelta: -8, popularityDelta: -15, marketConfidenceDelta: 8 },
+        effects: { deficitDelta: -8, popularityDelta: -15, marketConfidenceDelta: 8 },
       },
       {
         id: 'cri_hyper_003_d',
         textKey: 'event.cri_hyper_003.choice_d',
-        effects: { foreignReservesDelta: 8, inflationDelta: -12, marketConfidenceDelta: 5, popularityDelta: -10 },
+        effects: {
+          foreignReservesDelta: 8,
+          inflationDelta: -12,
+          marketConfidenceDelta: 5,
+          popularityDelta: -10,
+        },
       },
     ],
   },
@@ -205,7 +235,7 @@ export const CRISIS_CARDS: EventCard[] = [
       {
         id: 'cri_social_001_c',
         textKey: 'event.cri_social_001.choice_c',
-        effects: { stabilityDelta: 12, popularityDelta: 15, deficitDelta: 12, inflationDelta: 3 },
+        effects: { stabilityDelta: 12, popularityDelta: 15, deficitDelta: 12 },
       },
       {
         id: 'cri_social_001_d',
@@ -331,7 +361,12 @@ export const CRISIS_CARDS: EventCard[] = [
       {
         id: 'cri_legis_002_d',
         textKey: 'event.cri_legis_002.choice_d',
-        effects: { governmentSeatsDelta: -5, emergencyDecreeDelta: 2, popularityDelta: -8, stabilityDelta: -3 },
+        effects: {
+          governmentSeatsDelta: -5,
+          emergencyDecreeDelta: 2,
+          popularityDelta: -8,
+          stabilityDelta: -3,
+        },
       },
     ],
   },

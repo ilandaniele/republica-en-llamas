@@ -1,5 +1,6 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { SoundContext } from '../hooks/useSounds.js';
+import { browserStorage } from '../lib/browserStorage.js';
 
 function getCtx(ref: React.MutableRefObject<AudioContext | null>): AudioContext | null {
   try {
@@ -9,7 +10,7 @@ function getCtx(ref: React.MutableRefObject<AudioContext | null>): AudioContext 
         (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
       )();
     }
-    if (ref.current.state === 'suspended') ref.current.resume();
+    if (ref.current.state === 'suspended') void ref.current.resume().catch(() => {});
     return ref.current;
   } catch {
     return null;
@@ -28,16 +29,28 @@ function tone(ctx: AudioContext, type: OscillatorType, freq: number, dur: number
   gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
   osc.start(start);
   osc.stop(start + dur + 0.01);
+  osc.onended = () => {
+    osc.disconnect();
+    gain.disconnect();
+  };
 }
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
-  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('soundEnabled') !== 'false');
+  const [soundEnabled, setSoundEnabled] = useState(() => browserStorage.getItem('soundEnabled') !== 'false');
   const ctxRef = useRef<AudioContext | null>(null);
+  useEffect(
+    () => () => {
+      const ctx = ctxRef.current;
+      ctxRef.current = null;
+      if (ctx && ctx.state !== 'closed') void ctx.close().catch(() => {});
+    },
+    [],
+  );
 
   const toggleSound = useCallback(() => {
     setSoundEnabled((prev) => {
       const next = !prev;
-      localStorage.setItem('soundEnabled', String(next));
+      browserStorage.setItem('soundEnabled', String(next));
       return next;
     });
   }, []);
@@ -74,9 +87,26 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     [523, 659, 784, 1047].forEach((f, i) => tone(ctx, 'sine', f, 0.12, 0.22, ctx.currentTime + i * 0.1));
   }, [soundEnabled]);
 
+  const playVoteTick = useCallback(
+    (frequency: number) => {
+      if (!soundEnabled) return;
+      const ctx = getCtx(ctxRef);
+      if (ctx) tone(ctx, 'sine', frequency, 0.04, 0.06);
+    },
+    [soundEnabled],
+  );
+
   return (
     <SoundContext.Provider
-      value={{ soundEnabled, toggleSound, playCardFlip, playCrisisAlert, playGameOver, playVictoryTick }}
+      value={{
+        soundEnabled,
+        toggleSound,
+        playCardFlip,
+        playCrisisAlert,
+        playGameOver,
+        playVictoryTick,
+        playVoteTick,
+      }}
     >
       {children}
       <button

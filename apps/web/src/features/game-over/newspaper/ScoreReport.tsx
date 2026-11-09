@@ -3,6 +3,7 @@ import type { GameOverReason, GameState } from '@republica/game-engine';
 import type { PersonalBest } from '../../../stores/gameStore.js';
 import { DIFFICULTY_LABELS, getRunMedals } from '../gameOverCopy.js';
 import type { Medal } from '../gameOverCopy.js';
+import { useTranslation } from 'react-i18next';
 
 type FatalDecision = ReturnType<typeof getFatalDecision>;
 
@@ -26,10 +27,10 @@ function ScoreRow({
 }) {
   return (
     <div className="flex items-center justify-between border-b border-smoke-200 py-1">
-      <span className="text-smoke-500 text-sm" style={{ fontFamily: "'VT323', monospace" }}>
+      <span className="text-sm text-smoke-500" style={{ fontFamily: 'var(--font-readable)' }}>
         {label}
       </span>
-      <span className={`font-bold ${color}`} style={{ fontFamily: "'VT323', monospace", fontSize: '16px' }}>
+      <span className={`font-bold ${color}`} style={{ fontFamily: 'var(--font-readable)', fontSize: '16px' }}>
         {value}
       </span>
     </div>
@@ -37,13 +38,14 @@ function ScoreRow({
 }
 
 function ScoreBreakdown({ gameState }: { gameState: GameState }) {
+  const { t } = useTranslation();
   const bestMomentTurn = getBestMomentTurn(gameState.history);
   return (
     <>
       <div
         style={{
-          fontFamily: "'Press Start 2P', monospace",
-          fontSize: '6px',
+          fontFamily: 'var(--font-readable)',
+          fontSize: '14px',
           color: '#444',
           marginBottom: '8px',
           letterSpacing: '0.1em',
@@ -73,6 +75,12 @@ function ScoreBreakdown({ gameState }: { gameState: GameState }) {
           value={String(gameState.political.emergencyDecreesUsed)}
           color={gameState.political.emergencyDecreesUsed > 2 ? 'text-red-700' : 'text-smoke-700'}
         />
+        {gameState.debate?.outcome && (
+          <ScoreRow
+            label={t('debate.title')}
+            value={`${t(`debate.outcome.${gameState.debate.outcome}`)} (${gameState.debate.scoreBonus > 0 ? '+' : ''}${gameState.debate.scoreBonus} pts)`}
+          />
+        )}
         {bestMomentTurn && (
           <ScoreRow label="Mejor momento" value={`Turno ${bestMomentTurn}`} color="text-emerald-700" />
         )}
@@ -88,21 +96,21 @@ function FatalDecisionBlock({ fatalDecision }: { fatalDecision: NonNullable<Fata
       <div className="pixel-border-crisis mt-4 p-3" style={{ background: '#fff0f0' }}>
         <div
           style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '6px',
+            fontFamily: 'var(--font-readable)',
+            fontSize: '14px',
             color: '#8b0000',
             marginBottom: '4px',
           }}
         >
           ERROR FATAL
         </div>
-        <div style={{ fontFamily: "'VT323', monospace", fontSize: '16px', color: '#555' }}>
+        <div style={{ fontFamily: 'var(--font-readable)', fontSize: '16px', color: '#555' }}>
           Turno {fatalDecision.turn} &mdash; la decisión más dañina del mandato.
         </div>
         {counterfactual && (
           <div
             style={{
-              fontFamily: "'VT323', monospace",
+              fontFamily: 'var(--font-readable)',
               fontSize: '14px',
               color: '#888',
               marginTop: '4px',
@@ -130,10 +138,10 @@ function PersonalBestRow({
         className="pixel-border mt-3 flex items-center justify-between p-2"
         style={{ background: '#e8e4d0' }}
       >
-        <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', color: '#666' }}>
+        <span style={{ fontFamily: 'var(--font-readable)', fontSize: '14px', color: '#666' }}>
           {isNewRecord ? '🏆 NUEVO RECORD' : 'TU RECORD'}
         </span>
-        <span style={{ fontFamily: "'VT323', monospace", fontSize: '16px', color: '#444' }}>
+        <span style={{ fontFamily: 'var(--font-readable)', fontSize: '16px', color: '#444' }}>
           {personalBest.turns} turnos · {personalBest.score.toLocaleString()} pts
         </span>
       </div>
@@ -147,8 +155,8 @@ function MedalsList({ medals }: { medals: Medal[] }) {
       <div className="mb-2 mt-3">
         <div
           style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '6px',
+            fontFamily: 'var(--font-readable)',
+            fontSize: '14px',
             color: '#444',
             marginBottom: '6px',
             letterSpacing: '0.1em',
@@ -166,8 +174,8 @@ function MedalsList({ medals }: { medals: Medal[] }) {
               <span style={{ fontSize: '14px' }}>{m.icon}</span>
               <span
                 style={{
-                  fontFamily: "'Press Start 2P', monospace",
-                  fontSize: '5px',
+                  fontFamily: 'var(--font-readable)',
+                  fontSize: '14px',
                   color: '#5a4a00',
                 }}
               >
@@ -188,13 +196,13 @@ function FinalScore({ score, isWin }: { score: number; isWin: boolean }) {
         className="pixel-border mt-3 flex items-center justify-between px-3 py-2"
         style={{ background: '#d4d0c0' }}
       >
-        <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px', color: '#444' }}>
+        <span style={{ fontFamily: 'var(--font-readable)', fontSize: '14px', color: '#444' }}>
           PUNTAJE FINAL
         </span>
         <span
           style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '12px',
+            fontFamily: 'var(--font-readable)',
+            fontSize: '14px',
             color: isWin ? '#2a6e00' : '#8b0000',
           }}
         >
@@ -211,7 +219,7 @@ function AnibalQuote({ anibalLine }: { anibalLine: string }) {
       <div
         className="mt-3"
         style={{
-          fontFamily: "'VT323', monospace",
+          fontFamily: 'var(--font-readable)',
           fontSize: '16px',
           color: '#666',
           fontStyle: 'italic',

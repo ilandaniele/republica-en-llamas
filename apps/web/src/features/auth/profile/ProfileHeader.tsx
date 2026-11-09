@@ -59,7 +59,7 @@ function UsernameEditor({
         >
           Guardar
         </button>
-        <button onClick={onClose} className="text-smoke-500 hover:text-smoke-300 font-mono text-xs">
+        <button onClick={onClose} className="font-mono text-xs text-smoke-500 hover:text-smoke-300">
           Cancelar
         </button>
       </div>
@@ -103,7 +103,7 @@ export function ProfileHeader({
             </button>
           </div>
         )}
-        <p className="text-smoke-500 mt-1 font-mono text-xs">{email}</p>
+        <p className="mt-1 font-mono text-xs text-smoke-500">{email}</p>
       </div>
       <button
         onClick={onLogoutClick}

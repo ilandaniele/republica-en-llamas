@@ -1,6 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import type { PersistQueryClientOptions } from '@tanstack/react-query-persist-client';
+import { browserStorage } from '../lib/browserStorage.js';
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -18,7 +19,7 @@ export const queryClient = new QueryClient({
 });
 
 export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
-  persister: createSyncStoragePersister({ storage: window.localStorage, key: 'rel-query-cache' }),
+  persister: createSyncStoragePersister({ storage: browserStorage, key: 'rel-query-cache' }),
   maxAge: ONE_DAY_MS,
   buster: import.meta.env.MODE,
   dehydrateOptions: {

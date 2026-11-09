@@ -30,7 +30,7 @@ export default function HistoryScreen() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="font-serif text-3xl font-bold text-gold-400">Historial de Partidas</h1>
-            <p className="text-smoke-500 mt-1 font-mono text-sm">Tus últimas 20 partidas</p>
+            <p className="mt-1 font-mono text-sm text-smoke-500">Tus últimas 20 partidas</p>
           </div>
           <button
             onClick={() => navigate('/')}
@@ -47,7 +47,7 @@ export default function HistoryScreen() {
         )}
 
         {runs && runs.length === 0 && (
-          <div className="text-smoke-500 py-12 text-center font-mono">
+          <div className="py-12 text-center font-mono text-smoke-500">
             No tienes partidas registradas aún.
           </div>
         )}
@@ -71,7 +71,7 @@ export default function HistoryScreen() {
                       <p className="font-serif font-bold text-smoke-100">
                         {run.difficulty as string} — Turno {run.turns_survived as number}/50
                       </p>
-                      <p className="text-smoke-500 font-mono text-xs">
+                      <p className="font-mono text-xs text-smoke-500">
                         {new Date(run.created_at as string).toLocaleDateString('es')}
                         {' · '}
                         {(run.game_over_reason as string) ?? 'En curso'}
@@ -82,7 +82,7 @@ export default function HistoryScreen() {
                     <span className="font-mono text-lg font-bold text-gold-400">
                       {(run.score as number).toLocaleString()}
                     </span>
-                    <span className="text-smoke-500 text-sm">{isExpanded ? '▲' : '▼'}</span>
+                    <span className="text-sm text-smoke-500">{isExpanded ? '▲' : '▼'}</span>
                   </div>
                 </button>
 

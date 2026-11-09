@@ -141,10 +141,10 @@ export function ResultPanel({
       </div>
 
       <div className="rounded-lg border border-navy-600 bg-navy-800 px-4 py-3">
-        <p className="text-smoke-500 mb-2 font-mono text-sm uppercase tracking-widest">
+        <p className="mb-2 font-mono text-sm uppercase tracking-widest text-smoke-500">
           Consecuencias inmediatas
         </p>
-        <div className="text-smoke-300 font-mono text-sm">
+        <div className="font-mono text-sm text-smoke-300">
           {choice && <EffectsList effects={choice.effects} />}
         </div>
       </div>

@@ -22,6 +22,9 @@ RAW_DIR = ROOT / "art" / "raw"
 OUT_DIR = ROOT / "apps" / "web" / "public" / "illustrations"
 MANIFEST = ROOT / "apps" / "web" / "src" / "assets" / "image-manifest.json"
 PALETTE_COLORS = 32
+SCENE_PALETTE_COLORS = 64
+SCENE_MIN_GRID = (480, 270)
+DIORAMA_PALETTE_COLORS = 64
 UPSCALE = 4
 ID_PREFIX = {"presidents": "portrait_", "characters": "char_", "diorama": "cr_"}
 ALPHA_THRESHOLD = 128
@@ -65,12 +68,12 @@ def write_prompts(assets: dict[str, dict]) -> None:
     print(f"wrote {PROMPTS_MD.relative_to(ROOT)} ({len(assets)} prompts)")
 
 
-def pixelate(source: Path, target: Path, grid: list[int]) -> None:
+def pixelate(source: Path, target: Path, grid: list[int], colors: int = PALETTE_COLORS) -> None:
     from PIL import Image
 
     image = Image.open(source).convert("RGB")
     small = image.resize(tuple(grid), Image.Resampling.BOX)
-    small = small.quantize(colors=PALETTE_COLORS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    small = small.quantize(colors=colors, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     big = small.convert("RGB").resize((grid[0] * UPSCALE, grid[1] * UPSCALE), Image.Resampling.NEAREST)
     big.save(target, "WEBP", lossless=True)
 
@@ -79,10 +82,11 @@ def magenta_mask(image):
     from PIL import ImageChops
 
     red, green, blue = image.split()
-    high_red = red.point(lambda value: 255 if value > 170 else 0)
-    low_green = green.point(lambda value: 255 if value < 100 else 0)
-    high_blue = blue.point(lambda value: 255 if value > 170 else 0)
-    return ImageChops.multiply(ImageChops.multiply(high_red, low_green), high_blue)
+    # Key dark/antialiased magenta edge pixels as well as the solid backdrop.
+    # Absolute brightness thresholds leave a purple halo around fine outlines.
+    red_excess = ImageChops.subtract(red, green).point(lambda value: 255 if value > 20 else 0)
+    blue_excess = ImageChops.subtract(blue, green).point(lambda value: 255 if value > 20 else 0)
+    return ImageChops.multiply(red_excess, blue_excess)
 
 
 def unpremultiply(color, alpha):
@@ -96,7 +100,7 @@ def unpremultiply(color, alpha):
     return Image.frombytes("RGB", color.size, bytes(out))
 
 
-def pixelate_sprite(source: Path, target: Path, grid: list[int]) -> None:
+def pixelate_sprite(source: Path, target: Path, grid: list[int], colors: int = PALETTE_COLORS) -> None:
     from PIL import Image, ImageChops
 
     image = Image.open(source).convert("RGB")
@@ -111,7 +115,7 @@ def pixelate_sprite(source: Path, target: Path, grid: list[int]) -> None:
     color = Image.composite(image, black, alpha).resize(size, Image.Resampling.BOX)
     small_alpha = alpha.resize(size, Image.Resampling.BOX)
     color = unpremultiply(color, small_alpha)
-    color = color.quantize(colors=PALETTE_COLORS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+    color = color.quantize(colors=colors, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
     small_alpha = small_alpha.point(lambda value: 255 if value >= ALPHA_THRESHOLD else 0)
     sprite = color.convert("RGB")
     sprite.putalpha(small_alpha)
@@ -128,8 +132,18 @@ def import_assets(assets: dict[str, dict], selected: list[str]) -> None:
             print("missing", asset_id)
             continue
         asset = assets[asset_id]
-        convert = pixelate_sprite if asset["transparent"] else pixelate
-        convert(source, OUT_DIR / f"{asset_id}.webp", asset["grid"])
+        target = OUT_DIR / f"{asset_id}.webp"
+        if asset["transparent"]:
+            # Retain the original artwork's outlines and facial/clothing detail.
+            # Tiny actor grids previously discarded that detail before display.
+            diorama = asset["group"] == "diorama"
+            scale = (3 if max(asset["grid"]) <= 64 else 2) if diorama else 1
+            grid = [value * scale for value in asset["grid"]]
+            pixelate_sprite(source, target, grid, DIORAMA_PALETTE_COLORS if diorama else PALETTE_COLORS)
+        else:
+            scene = asset["group"] == "scenes"
+            grid = [max(value, minimum) for value, minimum in zip(asset["grid"], SCENE_MIN_GRID)] if scene else asset["grid"]
+            pixelate(source, target, grid, SCENE_PALETTE_COLORS if scene else PALETTE_COLORS)
         manifest[asset_id] = f"/illustrations/{asset_id}.webp"
         print("ok", asset_id)
     MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -141,6 +155,10 @@ def main() -> None:
     if command == "prompts":
         write_prompts(assets)
     elif command == "import":
+        for filename in ("extra-scenes.json", "event-scenes-100.json", "extra-characters.json", "extra-presidents.json", "president-scenes.json", "diorama-animation-pack.json", "plaza-life-pack.json", "riot-response-pack.json", "new-candidates.json", "context-corrections.json"):
+            extra_scenes = ROOT / "art" / filename
+            if extra_scenes.exists():
+                assets.update(json.loads(extra_scenes.read_text(encoding="utf-8")))
         unknown = [asset_id for asset_id in ids if asset_id not in assets]
         if unknown:
             sys.exit(f"unknown ids: {', '.join(unknown)}")

@@ -1,4 +1,7 @@
 import type { GameState } from '@republica/game-engine';
+import { SCENARIO_IMAGES } from './scenarioImages.js';
+import { EVENT_ART } from './eventArt.js';
+import manifest from '../../../assets/image-manifest.json';
 
 type EventMatcher = (eventId: string) => boolean;
 type SceneRule = readonly [scene: string, matches: EventMatcher];
@@ -27,6 +30,13 @@ const anyOf =
 
 // Event-specific keyword overrides: highest priority, checked for every category.
 const EVENT_RULES: SceneRule[] = [
+  ['eco_drought', is('new_001')],
+  ['eco_corte_luz', is('new_002')],
+  ['eco_cyberattack', is('new_003')],
+  ['eco_lithium', is('new_005')],
+  ['soc_housing', is('new_008')],
+  ['eco_automation', is('new_009')],
+  ['soc_flood', is('new_010')],
   ['arg_mundial', anyOf(is('arg_015'), has('mundial', 'campeon'))],
   ['malvinas', has('malvinas')],
   ['guerra_nuke_explosion', is('guerra_003')],
@@ -39,19 +49,6 @@ const EVENT_RULES: SceneRule[] = [
   ['arg_fmi_negocio', has('fmi_deal', 'imf_deal', 'fmi_neg')],
   ['arg_congreso_ley', startsWith('session_law_', 'law_')],
 ];
-
-// Active scenario drives the illustration for events without a keyword match.
-const SCENARIO_SCENE_OVERRIDE: Partial<Record<string, string>> = {
-  hiperinflacion_1989: 'eco_inflation',
-  corralito_2001: 'arg_corralito',
-  convertibilidad: 'eco_growth',
-  rodrigazo_1975: 'soc_unrest',
-  malvinas_1982: 'malvinas',
-  kirchnerismo_boom: 'eco_growth',
-  libertad_avanza_2023: 'crisis',
-  guerra_ucrania_2022: 'int_guerra_ucrania',
-  conflicto_iran_2024: 'int_conflicto_iran',
-};
 
 const CATEGORY_SCENES: Partial<Record<string, CategoryScenes>> = {
   international: {
@@ -110,13 +107,13 @@ export function selectScene(
   eventId: string,
   gameState: GameState | null | undefined,
 ): string {
+  const dedicatedScene = EVENT_ART[eventId]?.scene;
+  if (dedicatedScene && (manifest as Record<string, string>)[dedicatedScene]) return dedicatedScene;
   const eventScene = matchRule(EVENT_RULES, eventId);
   if (eventScene) return eventScene;
   if (category === 'crisis') return 'crisis';
 
-  const scenarioScene = gameState?.activeScenario
-    ? SCENARIO_SCENE_OVERRIDE[gameState.activeScenario]
-    : undefined;
+  const scenarioScene = gameState?.activeScenario ? SCENARIO_IMAGES[gameState.activeScenario] : undefined;
   if (scenarioScene) return scenarioScene;
 
   const group = CATEGORY_SCENES[category];

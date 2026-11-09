@@ -28,13 +28,27 @@ import { SCENARIO_OPENING_SHOCKS } from './scenarioShocks.js';
 import { tickMediaEffects } from './media.js';
 import { drawCard, getCard, CARD_REGISTRY } from './events/index.js';
 import { createRng, clamp, generateId } from './utils.js';
+import { presidentStartingEffects } from './presidents.js';
+import { getDebateRound, isDebateCard, resolveDebateReply } from './debate.js';
+import { calculateElectionResult } from './congress.js';
+import {
+  advanceCareerTurn,
+  applyCareerChoice,
+  createCareer,
+  drawCareerCard,
+  isLowerOffice,
+  type CareerStartOffice,
+} from './career.js';
 
 export function initGame(
   difficulty: Difficulty,
   seed: number,
   language: Language = 'es',
   scenarioId?: ScenarioId,
+  presidentId?: string,
+  careerStart?: CareerStartOffice,
 ): GameState {
+  if (careerStart && scenarioId) throw new Error('Career cannot use a historical scenario');
   const preset = DIFFICULTY_PRESETS[difficulty];
   if (!preset) throw new Error(`Unknown difficulty: ${difficulty}`);
 
@@ -52,25 +66,27 @@ export function initGame(
   const openingShocks = scenarioId ? getScenarioOpeningShocks(scenarioId) : [];
 
   const calendar = calendarFor(scenarioId);
+  const effects = presidentStartingEffects(presidentId);
 
-  return {
+  const state: GameState = {
     id: generateId('run', createRng(seed)),
     seed,
+    ...(presidentId ? { presidentId } : {}),
     difficulty,
     ...(scenarioId !== undefined ? { activeScenario: scenarioId } : {}),
     turn: 1,
     language,
     political: {
-      popularity: stats.popularity,
-      socialStability: stats.socialStability,
-      mediaCredibility: stats.mediaCredibility,
+      popularity: clamp(stats.popularity + (effects.popularityDelta ?? 0), 0, 100),
+      socialStability: clamp(stats.socialStability + (effects.stabilityDelta ?? 0), 0, 100),
+      mediaCredibility: clamp(stats.mediaCredibility + (effects.mediaCredibilityDelta ?? 0), 0, 100),
       emergencyDecreesUsed: 0,
       popularityLowStreak: 0,
     },
     economic: {
       inflation: stats.inflation,
       publicDeficit: stats.publicDeficit,
-      marketConfidence: stats.marketConfidence,
+      marketConfidence: clamp(stats.marketConfidence + (effects.marketConfidenceDelta ?? 0), 0, 100),
       currencyStrength: stats.currencyStrength,
       foreignReserves: stats.foreignReserves,
       gdpGrowth: stats.gdpGrowth,
@@ -104,9 +120,35 @@ export function initGame(
     deflationStreakTurns: 0,
     positiveStreak: 0,
   };
+  return careerStart ? createCareer(state, careerStart) : state;
 }
 
 const DEFAULT_CALENDAR: ScenarioCalendar = { startMonth: 1, startYear: 2024, turnsPerMonth: 3 };
+
+function beginCareerPresidency(state: GameState): GameState {
+  const career = state.career!;
+  const initial = initGame(state.difficulty, state.seed, state.language, undefined, state.presidentId);
+  const next: GameState = {
+    ...initial,
+    currentMonth: (state.currentMonth % 12) + 1,
+    currentYear: state.currentYear + (state.currentMonth === 12 ? 1 : 0),
+    political: {
+      ...initial.political,
+      popularity: clamp(
+        initial.political.popularity + Math.floor((state.political.popularity - 50) / 5),
+        0,
+        100,
+      ),
+    },
+    career: {
+      ...career,
+      completedTurns: state.turn,
+      pendingInauguration: false,
+      previousHistory: state.history,
+    },
+  };
+  return { ...next, score: calculateScore(next) };
+}
 
 function calendarFor(scenarioId: ScenarioId | undefined): ScenarioCalendar {
   return scenarioId ? SCENARIO_CALENDARS[scenarioId] : DEFAULT_CALENDAR;
@@ -183,9 +225,8 @@ const SCENARIO_MECHANICS: Partial<Record<ScenarioId, (s: GameState) => GameState
     }),
   // Reserves permanently capped
   corralito_2001: (s) => withEconomic(s, { foreignReserves: Math.min(s.economic.foreignReserves, 5) }),
-  // Inflation frozen at 0, but reserves drain
-  convertibilidad: (s) =>
-    withEconomic(s, { inflation: 0, foreignReserves: clamp(s.economic.foreignReserves - 3, 0, 100) }),
+  // A currency peg drains reserves; it cannot erase price or devaluation shocks.
+  convertibilidad: (s) => withEconomic(s, { foreignReserves: clamp(s.economic.foreignReserves - 3, 0, 100) }),
   // One-time tarifazo on turn 1
   rodrigazo_1975: (s) =>
     s.turn === 1
@@ -220,7 +261,30 @@ function applyScenarioMechanics(state: GameState): GameState {
   return mechanic ? mechanic(state) : state;
 }
 
+function applyDebateChoice(state: GameState, cardId: string, choiceIndex: number): GameState {
+  const { debate, effects } = resolveDebateReply(state, cardId, choiceIndex);
+  const applied = applyEffects(state, effects);
+  const rounds = debate.rounds.map((round, index) =>
+    index === debate.rounds.length - 1
+      ? { ...round, popularityDelta: applied.political.popularity - state.political.popularity }
+      : round,
+  );
+  return {
+    ...applied,
+    debate: { ...debate, rounds },
+    drawnCardIds: [...state.drawnCardIds, cardId],
+    cardCooldowns: { ...state.cardCooldowns, [cardId]: state.turn },
+    history: [...state.history, { turn: state.turn, cardId, choiceIndex, effectsApplied: effects }],
+  };
+}
+
 export function applyChoice(state: GameState, cardId: string, choiceIndex: number): GameState {
+  if (isLowerOffice(state)) return applyCareerChoice(state, cardId, choiceIndex);
+  if (isDebateCard(cardId)) return applyDebateChoice(state, cardId, choiceIndex);
+  if (cardId === 'pol_election_result') {
+    if (state.turn !== PRESIDENTIAL_ELECTION_TURN) throw new Error('Election outside scheduled turn');
+    choiceIndex = calculateElectionResult(state).won ? 0 : 1;
+  }
   const card = getCard(cardId);
   const choice = card.choices[choiceIndex];
   if (!choice) throw new Error(`Choice ${choiceIndex} not found on card ${cardId}`);
@@ -253,7 +317,7 @@ export function applyChoice(state: GameState, cardId: string, choiceIndex: numbe
       return newState;
     }
     return {
-      ...state,
+      ...(cardId === 'pol_election_result' ? applyEffects(state, choice.effects) : state),
       drawnCardIds: [...state.drawnCardIds, cardId],
       cardCooldowns: { ...state.cardCooldowns, [cardId]: state.turn },
       history: [...state.history, { turn: state.turn, cardId, choiceIndex, effectsApplied: choice.effects }],
@@ -320,11 +384,29 @@ function applyCharacterMemory(
 }
 
 export function advanceTurn(state: GameState): GameState {
-  let s = tickCrises(tickMediaEffects(tickShocks({ ...state })));
+  if (state.career?.pendingInauguration) return beginCareerPresidency(state);
+  if (isLowerOffice(state)) return advanceCareerTurn(state);
+  const { pendingInflationBase, ...current } = state;
+  const previousInflation = pendingInflationBase ?? state.economic.inflation;
+  let s: GameState = tickCrises(tickMediaEffects(current));
   s = tickCongress(s);
   s = applyInflation(s);
+  const macroBreakdown = s.lastInflationBreakdown!;
   s = applyScenarioMechanics(s);
+  s = {
+    ...s,
+    lastInflationBreakdown: {
+      ...macroBreakdown,
+      directEffect: state.economic.inflation - previousInflation,
+      scenarioEffect: s.economic.inflation - macroBreakdown.newInflation,
+      previousInflation,
+      newInflation: s.economic.inflation,
+      delta: s.economic.inflation - previousInflation,
+    },
+  };
   s = applyShockEffects(s);
+  // Apply the final active turn before expiring a shock. New shocks start next turn.
+  s = tickShocks(s);
   s = rollNewShock(s);
   s = updateStreaks(state, s);
 
@@ -436,7 +518,7 @@ function advanceCalendar(s: GameState): GameState {
   const nextTurn = s.turn + 1;
   const turnsElapsed = nextTurn - 1; // turns completed
   const monthsElapsed = Math.floor(turnsElapsed / calendar.turnsPerMonth);
-  const totalMonths = calendar.startMonth - 1 + monthsElapsed;
+  const totalMonths = calendar.startMonth - 1 + monthsElapsed + (s.career?.completedTurns ?? 0);
   return {
     ...s,
     turn: nextTurn,
@@ -452,8 +534,12 @@ function settleScore(s: GameState): GameState {
 }
 
 export function drawNextCard(state: GameState): ReturnType<typeof drawCard> {
+  if (isLowerOffice(state)) return drawCareerCard(state);
   const mod = DIFFICULTY_MODIFIERS[state.difficulty] ?? DIFFICULTY_MODIFIERS['normal']!;
   const rng = createRng(state.seed + state.turn * 777);
+  const debateRound = getDebateRound(state);
+  if (debateRound) return debateRound.card;
+  if (state.turn === PRESIDENTIAL_ELECTION_TURN - 4) return getCard('pol_election_campaign');
 
   // Force presidential election card at turn 40
   if (state.turn === PRESIDENTIAL_ELECTION_TURN) {
@@ -524,6 +610,9 @@ function applyEffects(state: GameState, effects: ChoiceEffect): GameState {
 
   return {
     ...state,
+    ...(effects.inflationDelta
+      ? { pendingInflationBase: state.pendingInflationBase ?? state.economic.inflation }
+      : {}),
     political: {
       ...state.political,
       popularity: clamp(state.political.popularity + scaleNeg(effects.popularityDelta), 0, 100),

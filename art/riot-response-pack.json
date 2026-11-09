@@ -1,0 +1,16 @@
+{
+  "cr_riot_officer_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for Casa Rosada diorama. Reference island is style only; match its palette, chunky pixels and upper-left light, do not draw the island. ONE adult riot police officer in navy uniform, helmet and clear visor, carrying a tall transparent shield and a small orange-marked less-lethal launcher, side view facing right, full body. Calm braced stance, launcher lowered slightly. No projectile, firing flash, victims, injury, ground or shadow. ONE isolated centered sprite on perfectly flat solid #FF00FF magenta background edge to edge. Never use magenta or pure pink within the sprite. No words, numbers, logos or watermark. Hard square pixels, no blur or anti-aliasing. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_riot_officer_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for Casa Rosada diorama. Reference island is style only; match its palette, chunky pixels and upper-left light, do not draw the island. ONE adult riot police officer in navy uniform, helmet and clear visor, carrying a tall transparent shield and a small orange-marked less-lethal launcher, side view facing right, full body. Same officer, same identity, dimensions and foot baseline as the pose reference, brief recoil pose with launcher raised slightly. No projectile, firing flash, victims, injury, ground or shadow. ONE isolated centered sprite on perfectly flat solid #FF00FF magenta background edge to edge. Never use magenta or pure pink within the sprite. No words, numbers, logos or watermark. Hard square pixels, no blur or anti-aliasing. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 28],
+    "transparent": true,
+    "group": "diorama"
+  }
+}

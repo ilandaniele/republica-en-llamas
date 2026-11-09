@@ -37,8 +37,8 @@ export function GameOverActions() {
           onClick={handlePlayAgain}
           className="pixel-border-crisis flex-1 px-6 py-3 transition-colors"
           style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '8px',
+            fontFamily: 'var(--font-readable)',
+            fontSize: '14px',
             background: 'var(--crisis-red)',
             color: 'white',
           }}
@@ -52,8 +52,8 @@ export function GameOverActions() {
             disabled={isSaving || isSaved}
             className="pixel-border-gold px-6 py-3 transition-colors disabled:opacity-50"
             style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: '6px',
+              fontFamily: 'var(--font-readable)',
+              fontSize: '14px',
               background: 'var(--gold)',
               color: 'var(--night-blue)',
             }}
@@ -66,8 +66,8 @@ export function GameOverActions() {
           {...prefetchOnIntent('history')}
           className="pixel-border px-6 py-3 transition-colors hover:bg-navy-800"
           style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '6px',
+            fontFamily: 'var(--font-readable)',
+            fontSize: '14px',
             color: '#aaa',
             borderColor: 'var(--celeste-dark)',
           }}

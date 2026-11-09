@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
-import { getAnibalLine } from '@republica/game-engine';
+import { getAnibalLine, isLowerOffice } from '@republica/game-engine';
+import { CareerEndScreen } from './CareerEndScreen.js';
+import { CareerJourney } from '../../components/career/CareerOverview.js';
 import { useGameStore } from '../../stores/gameStore.js';
 import { trackGameOver } from '../../lib/analytics.js';
 import { ShareImageCard } from './ShareImageCard.js';
@@ -14,6 +16,11 @@ import { ScoreReport } from './newspaper/ScoreReport.js';
 import { CasaRosadaScene } from '../../components/casa-rosada/CasaRosadaScene.js';
 
 export default function GameOverScreen() {
+  const state = useGameStore((s) => s.gameState);
+  return state && isLowerOffice(state) ? <CareerEndScreen state={state} /> : <PresidentialGameOverScreen />;
+}
+
+function PresidentialGameOverScreen() {
   const navigate = useNavigate();
   const gameState = useGameStore((s) => s.gameState);
   const personalBest = useGameStore((s) => s.personalBest);
@@ -23,7 +30,7 @@ export default function GameOverScreen() {
   const shareCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    updatePersonalBest();
+    if (!gameState?.career) updatePersonalBest();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -74,6 +81,7 @@ export default function GameOverScreen() {
               anibalLine={anibalLine}
             />
           </div>
+          {gameState.career && <CareerJourney career={gameState.career} />}
           <ShareSection viralText={viralText} shareCardRef={shareCardRef} />
           <GameOverActions />
         </div>

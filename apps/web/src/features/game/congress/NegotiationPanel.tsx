@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import type { EventCard, GameState, CongressActionId } from '@republica/game-engine';
 import { NEG_ACTIONS } from './congressData.js';
@@ -28,7 +27,6 @@ export function NegotiationPanel({
   onVote,
 }: NegotiationPanelProps) {
   const { t } = useTranslation();
-  const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
   return (
     <m.div
@@ -40,7 +38,7 @@ export function NegotiationPanel({
     >
       {/* Header */}
       <div className="text-center">
-        <p className="text-smoke-500 mb-1 font-mono text-xs uppercase tracking-widest">
+        <p className="mb-1 font-mono text-xs uppercase tracking-widest text-smoke-500">
           Sesión ordinaria del Congreso
         </p>
         <h2 className="font-serif text-xl font-bold text-smoke-100">{t(card.titleKey)}</h2>
@@ -54,7 +52,7 @@ export function NegotiationPanel({
           <p className="font-mono text-lg font-bold text-purple-200">{congress.governmentSeats}</p>
         </div>
         <div className="rounded-lg border border-navy-600 bg-navy-800 px-3 py-2">
-          <p className="text-smoke-500 font-mono text-xs uppercase">Independientes</p>
+          <p className="font-mono text-xs uppercase text-smoke-500">Independientes</p>
           <p className="font-mono text-lg font-bold text-smoke-200">{congress.independentSeats}</p>
         </div>
         <div className="rounded-lg border border-blue-700 bg-blue-900/40 px-3 py-2">
@@ -67,7 +65,7 @@ export function NegotiationPanel({
       <div className="rounded-lg border border-navy-600 bg-navy-800 px-4 py-3">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-smoke-500 font-mono text-xs">Proyección actual</span>
+            <span className="font-mono text-xs text-smoke-500">Proyección actual</span>
             <p className="font-mono font-bold text-smoke-100">
               <span className="text-emerald-400">{projectedYes} SÍ</span>
               <span className="mx-2 text-smoke-600">|</span>
@@ -75,7 +73,7 @@ export function NegotiationPanel({
             </p>
           </div>
           <div className="text-right">
-            <span className="text-smoke-500 font-mono text-xs">Se necesitan</span>
+            <span className="font-mono text-xs text-smoke-500">Se necesitan</span>
             <p className="font-mono text-lg font-bold text-gold-400">{required}</p>
           </div>
         </div>
@@ -90,29 +88,26 @@ export function NegotiationPanel({
 
       {/* Action points */}
       <div className="flex items-center gap-2">
-        <span className="text-smoke-500 font-mono text-xs">Acciones disponibles:</span>
+        <span className="font-mono text-xs text-smoke-500">Acciones disponibles:</span>
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
             className={`h-3 w-3 rounded-full border ${i < actionPoints ? 'border-gold-300 bg-gold-400' : 'border-navy-600 bg-navy-700'}`}
           />
         ))}
-        <span className="text-smoke-500 ml-1 font-mono text-xs">({actionPoints} restantes)</span>
+        <span className="ml-1 font-mono text-xs text-smoke-500">({actionPoints} restantes)</span>
       </div>
 
       {/* Negotiation buttons */}
       <div className="space-y-2">
         {NEG_ACTIONS.map((action) => {
           const used = actionsUsed.includes(action.id);
-          const canUse = !used && (action.isDecree || actionPoints > 0);
-          const isHovered = hoveredAction === action.id;
+          const canUse = !used && actionPoints > 0;
 
           return (
             <m.button
               key={action.id}
               onClick={() => onAction(action)}
-              onMouseEnter={() => setHoveredAction(action.id)}
-              onMouseLeave={() => setHoveredAction(null)}
               disabled={!canUse}
               className={`w-full rounded-lg border px-4 py-3 text-left transition-all duration-150 ${
                 used
@@ -139,19 +134,8 @@ export function NegotiationPanel({
                     )}
                     {used && <span className="font-mono text-xs text-smoke-600">Utilizada</span>}
                   </div>
-                  <AnimatePresence>
-                    {isHovered && !used && (
-                      <m.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <p className="mt-1 text-xs text-smoke-400">{action.preview}</p>
-                        <p className="mt-0.5 font-mono text-xs text-crimson-400">Costo: {action.costLabel}</p>
-                      </m.div>
-                    )}
-                  </AnimatePresence>
+                  <p className="mt-1 text-sm text-smoke-300">{action.preview}</p>
+                  <p className="text-crimson-300 mt-0.5 text-sm">Costo: {action.costLabel}</p>
                 </div>
               </div>
             </m.button>

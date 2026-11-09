@@ -1,0 +1,199 @@
+.cr-pose-a {
+  animation: cr-pose-a var(--pose-duration, 0.6s) steps(1) var(--pose-delay, 0s) infinite;
+}
+.cr-pose-b {
+  opacity: 0;
+  animation: cr-pose-b var(--pose-duration, 0.6s) steps(1) var(--pose-delay, 0s) infinite;
+}
+.cr-person-route {
+  animation: cr-person-route var(--route-cycle, 12s) linear var(--route-delay, 0s) infinite;
+}
+.cr-person-bounce {
+  animation: cr-person-bounce var(--pose-duration, 0.8s) steps(2) var(--pose-delay, 0s) infinite;
+}
+.cr-person-facing {
+  transform-origin: var(--turn-origin, 2.5px 4px);
+  animation: cr-person-facing var(--route-cycle, 12s) steps(1) var(--route-delay, 0s) infinite;
+}
+@keyframes cr-person-facing {
+  0%,
+  49% {
+    transform: scaleX(var(--outbound-facing, 1));
+  }
+  50%,
+  100% {
+    transform: scaleX(calc(var(--outbound-facing, 1) * -1));
+  }
+}
+.cr-fleet {
+  animation: cr-fleet 20s ease-out both;
+}
+.cr-transport {
+  animation: cr-landing 9s ease-in-out both;
+}
+.cr-rotor {
+  animation: cr-rotor 0.12s steps(1) infinite;
+}
+.cr-muzzle {
+  animation: cr-muzzle 0.8s steps(1) var(--shot-delay, 0s) infinite;
+}
+.cr-tracer {
+  animation: cr-tracer 0.8s steps(1) var(--shot-delay, 0s) infinite;
+}
+.cr-confetti {
+  animation: cr-confetti 3s linear var(--fall-delay, 0s) infinite;
+}
+.cr-balcony-president {
+  animation: cr-person-bounce 1.8s steps(3) infinite;
+}
+@keyframes cr-pose-a {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes cr-pose-b {
+  0%,
+  49% {
+    opacity: 0;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes cr-person-route {
+  0%,
+  8% {
+    transform: translateX(0);
+  }
+  42%,
+  58% {
+    transform: translateX(var(--travel, 8px));
+  }
+  92%,
+  100% {
+    transform: translateX(0);
+  }
+}
+@keyframes cr-person-bounce {
+  50% {
+    transform: translateY(-0.2px);
+  }
+}
+@keyframes cr-fleet {
+  from {
+    transform: translateX(18px);
+  }
+  to {
+    transform: translateX(-8px);
+  }
+}
+@keyframes cr-landing {
+  0% {
+    transform: translate(30px, -22px) rotate(-3deg);
+  }
+  40% {
+    transform: translate(1px, -3px) rotate(1deg);
+  }
+  65%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+.cr-cheering-route {
+  animation: none;
+}
+.cr-deploy {
+  animation: cr-deploy 6s steps(1) both;
+}
+.cr-downwash {
+  opacity: 0;
+  animation: cr-downwash 2s ease-out var(--dust-delay, 3s) 2;
+}
+@keyframes cr-deploy {
+  0%,
+  79% {
+    opacity: 0;
+  }
+  80%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes cr-downwash {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  20% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dust-direction, 4px), 1px);
+  }
+}
+@keyframes cr-rotor {
+  50% {
+    opacity: 0.15;
+  }
+}
+@keyframes cr-muzzle {
+  0%,
+  12% {
+    opacity: 1;
+  }
+  13%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes cr-tracer {
+  0%,
+  12% {
+    opacity: 0;
+  }
+  13%,
+  18% {
+    opacity: 0.8;
+  }
+  19%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes cr-confetti {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(4px, 30px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .casa-rosada-scene * {
+    animation: none !important;
+  }
+  .cr-pose-a {
+    opacity: 1;
+  }
+  .cr-pose-b,
+  .cr-muzzle,
+  .cr-tracer,
+  .cr-confetti {
+    display: none;
+  }
+  .cr-downwash {
+    display: none;
+  }
+}

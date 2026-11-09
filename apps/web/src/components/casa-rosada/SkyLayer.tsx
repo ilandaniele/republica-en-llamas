@@ -21,6 +21,13 @@ const STARS = [
 function Clouds() {
   return (
     <g fill="#F4F8FB">
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="-8 0;8 0;-8 0"
+        dur="32s"
+        repeatCount="indefinite"
+      />
       <rect x={18} y={10} width={16} height={3} />
       <rect x={22} y={8} width={8} height={2} />
       <rect x={112} y={16} width={20} height={3} />
@@ -50,7 +57,7 @@ export function SkyLayer({ sky }: { sky: Sky }) {
   const bands = SKY_BANDS[sky];
   return (
     <g>
-      {bands.map((color, i) => px(0, i * 18, 160, 18, color, i))}
+      {bands.map((color, i) => px(0, i * 23, 160, 23, color, i))}
       {sky === 'day' && <Clouds />}
       {sky === 'night' && <Stars />}
     </g>

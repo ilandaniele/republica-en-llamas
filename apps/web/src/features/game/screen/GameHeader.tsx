@@ -29,7 +29,7 @@ function CrisisTimer({ timeLeft }: { timeLeft: number }) {
       className={`pixel-border flex flex-col items-center px-3 py-1 font-mono ${
         timeLeft <= 10
           ? 'bg-crimson-900/70 text-crimson-300 animate-[shake_0.3s_ease-in-out_infinite]'
-          : 'text-smoke-300 bg-navy-800'
+          : 'bg-navy-800 text-smoke-300'
       }`}
     >
       <p className="text-sm">⚡ EXPRESS</p>
@@ -61,7 +61,7 @@ export function GameHeader({
             <PixelPortrait id={presidentId as PortraitId} mood={presidentMood} px={48} />
           </div>
           <div>
-            <h1 className="font-serif text-base font-bold uppercase leading-tight text-gold-400">
+            <h1 className="font-serif text-sm font-bold uppercase leading-relaxed text-gold-400 sm:text-[11px]">
               República en Llamas
             </h1>
             <span className="bg-navy-800 px-2 py-0.5 font-mono text-sm text-smoke-400">
@@ -81,19 +81,19 @@ export function GameHeader({
           </button>
           {isCrisisExpress && <CrisisTimer timeLeft={crisisTimeLeft} />}
           <div className="text-right">
-            <p className="text-smoke-500 font-mono text-sm">Turno</p>
+            <p className="font-mono text-sm text-smoke-500">Turno</p>
             <p className="font-mono font-bold text-gold-400">
               {gameState.turn}/{isCrisisExpress ? 15 : 50}
             </p>
           </div>
           {gameState.currentMonth != null && gameState.currentYear != null && (
             <div className="text-right">
-              <p className="text-smoke-500 font-mono text-sm">{t(`month.${gameState.currentMonth}`)}</p>
+              <p className="font-mono text-sm text-smoke-500">{t(`month.${gameState.currentMonth}`)}</p>
               <p className="font-mono font-bold text-celeste">{gameState.currentYear}</p>
             </div>
           )}
           <div className="text-right">
-            <p className="text-smoke-500 font-mono text-sm">Puntaje</p>
+            <p className="font-mono text-sm text-smoke-500">Puntaje</p>
             <p className="font-mono font-bold text-gold-400">{gameState.score.toLocaleString()}</p>
           </div>
           <button

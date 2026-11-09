@@ -143,7 +143,7 @@ export function AnibalTicker({ text, isCrisis = false }: Props) {
           borderRight: '2px solid rgba(255,255,255,0.3)',
         }}
       >
-        <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', color: 'white' }}>
+        <span style={{ fontFamily: 'var(--font-readable)', fontSize: '14px', color: 'white' }}>
           📻 AM1010
         </span>
       </div>

@@ -1,6 +1,6 @@
 ﻿import React, { useEffect } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
-import { ENTITLEMENT_PRODUCTS } from '@republica/game-engine';
+import { ENTITLEMENT_PRODUCTS, PRESIDENT_LABELS } from '@republica/game-engine';
 import type { EntitlementId } from '@republica/game-engine';
 import { BuyButton } from './BuyButton.js';
 import { getFeatureFlag, trackExperimentStarted, trackPaywallShown } from '../lib/analytics.js';
@@ -61,9 +61,9 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
           <div className="mb-6 rounded-lg border border-navy-600 bg-navy-900 p-4">
             <ul className="space-y-1">
               {product.unlocks.map((u) => (
-                <li key={u} className="text-smoke-300 flex items-center gap-2 font-mono text-xs">
+                <li key={u} className="flex items-center gap-2 font-mono text-xs text-smoke-300">
                   <span className="text-gold-400">✓</span>
-                  <span>{u}</span>
+                  <span>{PRESIDENT_LABELS[u] ?? u}</span>
                 </li>
               ))}
             </ul>
@@ -84,7 +84,7 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
 
           <button
             onClick={onClose}
-            className="text-smoke-500 hover:text-smoke-300 mt-3 w-full py-2 font-mono text-xs"
+            className="mt-3 w-full py-2 font-mono text-xs text-smoke-500 hover:text-smoke-300"
           >
             Tal vez despues
           </button>

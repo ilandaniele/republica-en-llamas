@@ -8,9 +8,9 @@ export function OfflineNotice({ onPlayOffline }: { onPlayOffline: () => void }) 
         <p className="mb-4 font-mono text-xs text-smoke-400">
           Faltan variables de entorno en <code className="text-gold-400">.env</code>:
         </p>
-        {missingEnvVars.url && <p className="text-smoke-300 mb-1 font-mono text-xs">• VITE_SUPABASE_URL</p>}
+        {missingEnvVars.url && <p className="mb-1 font-mono text-xs text-smoke-300">• VITE_SUPABASE_URL</p>}
         {missingEnvVars.key && (
-          <p className="text-smoke-300 mb-1 font-mono text-xs">• VITE_SUPABASE_ANON_KEY</p>
+          <p className="mb-1 font-mono text-xs text-smoke-300">• VITE_SUPABASE_ANON_KEY</p>
         )}
         <button onClick={onPlayOffline} className="mt-6 font-mono text-sm text-gold-400 underline">
           Jugar en modo offline →

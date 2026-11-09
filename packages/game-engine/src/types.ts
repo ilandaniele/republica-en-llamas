@@ -21,7 +21,7 @@ export interface ScenarioArcPhase {
 }
 
 export interface ScenarioCalendar {
-  startMonth: number;    // 1-12
+  startMonth: number; // 1-12
   startYear: number;
   turnsPerMonth: number; // how many game turns equal one calendar month
 }
@@ -50,17 +50,10 @@ export type Language = 'es' | 'en';
 export type CardCategory = 'political' | 'economic' | 'social' | 'international' | 'crisis';
 
 export type NegotiationType =
-  | 'POLITICAL_DEAL'
-  | 'BUDGET_CONCESSION'
-  | 'EMERGENCY_DECREE'
-  | 'COALITION_BUILDING';
+  'POLITICAL_DEAL' | 'BUDGET_CONCESSION' | 'EMERGENCY_DECREE' | 'COALITION_BUILDING';
 
 export type CrisisType =
-  | 'debtCrisis'
-  | 'hyperinflationSpiral'
-  | 'socialUnrest'
-  | 'legislativeRebellion'
-  | 'impeachmentAttempt';
+  'debtCrisis' | 'hyperinflationSpiral' | 'socialUnrest' | 'legislativeRebellion' | 'impeachmentAttempt';
 
 export type GameOverReason =
   | 'hyperinflation'
@@ -75,42 +68,42 @@ export type GameOverReason =
   | 'military_defeat';
 
 export interface PoliticalVars {
-  popularity: number;           // 0-100
-  socialStability: number;      // 0-100
-  mediaCredibility: number;     // 0-100
+  popularity: number; // 0-100
+  socialStability: number; // 0-100
+  mediaCredibility: number; // 0-100
   emergencyDecreesUsed: number; // 0+
-  popularityLowStreak: number;  // consecutive turns below 5
+  popularityLowStreak: number; // consecutive turns below 5
 }
 
 export interface EconomicVars {
-  inflation: number;            // -20 to 200 (negative = deflation)
-  publicDeficit: number;        // 0-100 (% of GDP)
-  marketConfidence: number;     // 0-100
-  currencyStrength: number;     // 0-100
-  foreignReserves: number;      // 0-100
-  gdpGrowth: number;            // -10 to +10
+  inflation: number; // -20 to 200 (negative = deflation)
+  publicDeficit: number; // 0-100 (% of GDP)
+  marketConfidence: number; // 0-100
+  currencyStrength: number; // 0-100
+  foreignReserves: number; // 0-100
+  gdpGrowth: number; // -10 to +10
 }
 
 export interface CongressState {
-  governmentSeats: number;      // 0-538
-  oppositionSeats: number;      // 0-538
-  independentSeats: number;     // 0-538
+  governmentSeats: number; // 0-538
+  oppositionSeats: number; // 0-538
+  independentSeats: number; // 0-538
   coalitionTurnsRemaining: number; // 0+
   independentSupportBonus: number; // 0-100%
-  lawsPassedThisRun: number;    // 0+
+  lawsPassedThisRun: number; // 0+
   pendingVote: PendingVote | null;
 }
 
 export interface PendingVote {
   lawId: string;
   lawTitle: string;
-  requiredSupport: number;      // % needed to pass
+  requiredSupport: number; // % needed to pass
   turnsRemaining: number;
 }
 
 export interface MediaState {
   currentHeadline: string;
-  sentiment: number;            // -100 (hostile) to +100 (supportive)
+  sentiment: number; // -100 (hostile) to +100 (supportive)
   activeSpins: SpinEffect[];
 }
 
@@ -126,7 +119,7 @@ export interface Crisis {
   type: CrisisType;
   startTurn: number;
   turnsActive: number;
-  turnsToResolve: number;       // turns before game over if unresolved
+  turnsToResolve: number; // turns before game over if unresolved
   resolved: boolean;
 }
 
@@ -141,6 +134,10 @@ export interface Shock {
 }
 
 export interface ChoiceEffect {
+  careerManagementDelta?: number;
+  careerAlliancesDelta?: number;
+  careerBudgetDelta?: number;
+  careerIntegrityDelta?: number;
   popularityDelta?: number;
   stabilityDelta?: number;
   mediaCredibilityDelta?: number;
@@ -157,34 +154,38 @@ export interface ChoiceEffect {
 
 export interface Choice {
   id: string;
-  textKey: string;             // i18n key
+  textKey: string; // i18n key
   effects: ChoiceEffect;
   requiresVote?: boolean;
-  voteChance?: number;          // 0-1, probability of passing without negotiation
+  voteChance?: number; // 0-1, probability of passing without negotiation
   instantGameOver?: GameOverReason; // triggers immediate game over instead of normal effect
 }
 
 export interface EventCard {
+  careerOffice?: import('./career.js').CareerStartOffice;
   id: string;
   category: CardCategory;
   titleKey: string;
   bodyKey: string;
   choices: Choice[];
-  weight: number;               // draw weight (higher = more frequent)
-  minTurn?: number;             // earliest turn this can appear
-  maxTurn?: number;             // latest turn this can appear
-  requiredCrisis?: CrisisType;  // only draw if this crisis is active
-  minDifficulty?: Difficulty;   // minimum difficulty to appear
+  weight: number; // draw weight (higher = more frequent)
+  minTurn?: number; // earliest turn this can appear
+  maxTurn?: number; // latest turn this can appear
+  requiredCrisis?: CrisisType; // only draw if this crisis is active
+  minDifficulty?: Difficulty; // minimum difficulty to appear
+  requiredParty?: import('./parties.js').PartyId;
+  requiredPresident?: string;
+  requiredChoice?: { cardId: string; choiceIndexes: number[]; minTurnsAfter?: number };
   // Character / memory fields
-  characterId?: string;         // which recurring character this card belongs to
-  memoryFlagAdded?: string;     // flag added to character when this card is drawn
-  requiredFlags?: string[];     // only draw if character has ALL these flags
-  forbiddenFlags?: string[];    // skip if character has ANY of these flags
+  characterId?: string; // which recurring character this card belongs to
+  memoryFlagAdded?: string; // flag added to character when this card is drawn
+  requiredFlags?: string[]; // only draw if character has ALL these flags
+  forbiddenFlags?: string[]; // skip if character has ANY of these flags
   // Lifeline fields
-  isLifeline?: boolean;         // priority draw when variables in red zone
-  lifelineFor?: string[];       // variable names this card helps recover
+  isLifeline?: boolean; // priority draw when variables in red zone
+  lifelineFor?: string[]; // variable names this card helps recover
   // Congressional session
-  isLaw?: boolean;              // triggers congressional minigame instead of normal choice UI
+  isLaw?: boolean; // triggers congressional minigame instead of normal choice UI
   /** When true, this event originates from external forces (foreign wars, pandemics, IMF pressure).
    *  Its draw weight is NOT adjusted by the state-aware category multiplier — it can appear
    *  regardless of how well or badly the domestic game is going. */
@@ -207,17 +208,20 @@ export interface RecurringCharacter {
   id: CharacterId;
   name: string;
   role: string;
-  avatar: string;       // emoji for MVP
+  avatar: string; // emoji for MVP
   relationship: number; // -100 to +100
   memoryFlags: string[];
 }
 
 export interface GameState {
+  career?: import('./career.js').CareerState;
+  debate?: import('./debate.js').DebateState;
+  presidentId?: string;
   id: string;
   seed: number;
   difficulty: Difficulty;
   activeScenario?: ScenarioId;
-  turn: number;                 // 1-50
+  turn: number; // 1-50
   language: Language;
   political: PoliticalVars;
   economic: EconomicVars;
@@ -225,15 +229,17 @@ export interface GameState {
   media: MediaState;
   activeCrises: Crisis[];
   activeShocks: Shock[];
-  drawnCardIds: string[];       // for deduplication within a run
+  drawnCardIds: string[]; // for deduplication within a run
   history: TurnEvent[];
   isGameOver: boolean;
   gameOverReason: GameOverReason | null;
   score: number;
-  currentMonth: number;         // 1-12
+  currentMonth: number; // 1-12
   currentYear: number;
   characters: RecurringCharacter[];
   lastInflationBreakdown?: InflationBreakdown;
+  /** Inflation before this turn's direct choice effects; consumed by advanceTurn. */
+  pendingInflationBase?: number;
   /** Maps cardId → turn it was last played; used for cooldown enforcement */
   cardCooldowns: Record<string, number>;
   /** Current phase index in the scenario's narrative arc (0 = start). */
@@ -274,6 +280,9 @@ export interface GameOverResult {
 }
 
 export interface InflationBreakdown {
+  directEffect: number;
+  scenarioEffect: number;
+  limitEffect: number;
   deficitPressure: number;
   marketDistrust: number;
   currencyWeakness: number;

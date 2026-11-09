@@ -19,13 +19,13 @@ export default function LeaderboardScreen() {
   const { data: entries, isLoading, error } = useLeaderboard(difficultyFilter || undefined);
 
   return (
-    <div className="mx-auto min-h-screen max-w-3xl p-6">
+    <div className="ui-screen mx-auto min-h-screen max-w-3xl p-6">
       <m.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
         {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="font-serif text-3xl font-bold text-gold-400">Tabla de Líderes</h1>
-            <p className="text-smoke-500 mt-1 font-mono text-sm">Los mejores presidentes de la historia</p>
+            <p className="mt-1 font-mono text-sm text-smoke-500">Los mejores presidentes de la historia</p>
           </div>
           <button
             onClick={() => navigate('/')}
@@ -41,6 +41,7 @@ export default function LeaderboardScreen() {
             <button
               key={f.id}
               onClick={() => setDifficultyFilter(f.id)}
+              aria-pressed={difficultyFilter === f.id}
               className={`rounded-lg px-4 py-2 font-mono text-sm transition-colors ${
                 difficultyFilter === f.id
                   ? 'bg-gold-500 font-bold text-navy-900'
@@ -64,7 +65,7 @@ export default function LeaderboardScreen() {
         )}
 
         {entries && entries.length === 0 && (
-          <div className="text-smoke-500 py-12 text-center font-mono">
+          <div className="py-12 text-center font-mono text-smoke-500">
             Aún no hay puntajes registrados. ¡Sé el primero!
           </div>
         )}
@@ -113,7 +114,7 @@ export default function LeaderboardScreen() {
                   </div>
 
                   {/* Difficulty */}
-                  <span className="text-smoke-500 w-16 font-mono text-xs">{entry.difficulty}</span>
+                  <span className="w-16 font-mono text-xs text-smoke-500">{entry.difficulty}</span>
 
                   {/* Win indicator */}
                   <span className={`text-lg ${entry.is_win ? 'opacity-100' : 'opacity-20'}`}>👑</span>

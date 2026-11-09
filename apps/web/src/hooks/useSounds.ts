@@ -7,6 +7,7 @@ export interface SoundCtx {
   playCrisisAlert: () => void;
   playGameOver: () => void;
   playVictoryTick: () => void;
+  playVoteTick: (frequency: number) => void;
 }
 
 export const SoundContext = createContext<SoundCtx>({
@@ -16,6 +17,7 @@ export const SoundContext = createContext<SoundCtx>({
   playCrisisAlert: () => {},
   playGameOver: () => {},
   playVictoryTick: () => {},
+  playVoteTick: () => {},
 });
 
 export function useSounds() {

@@ -25,7 +25,7 @@ function TrendArrow({
 }) {
   if (prev === undefined) return null;
   const delta = current - prev;
-  if (Math.abs(delta) < 1) return <span className="text-xs text-smoke-600">→</span>;
+  if (Math.abs(delta) < 1) return <span className="text-xs text-smoke-300">→</span>;
   const goingUp = delta > 0;
   // For higher-is-better vars: up = green. For lower-is-better (inverse): down = green.
   const isGood = inverse ? !goingUp : goingUp;
@@ -91,23 +91,26 @@ export function Meter({ label, value, prevValue, max = 100, icon, inverse = fals
 
   return (
     <div className="variable-meter">
-      <div className="mb-1 flex items-center justify-between">
+      <div className="mb-1 flex items-center justify-between gap-2">
         <span
-          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
           className={`flex items-center gap-1 ${isCritical ? 'text-crimson-400' : isDanger ? 'text-gold-400' : 'text-smoke-400'}`}
         >
           {icon} {label}
           {isDanger && <span className="text-crimson-400"> !</span>}
         </span>
-        <span
-          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
-          className="flex items-center gap-1 font-bold"
-        >
+        <span className="flex shrink-0 items-center gap-1 font-bold tabular-nums">
           <TrendArrow current={value} prev={prevValue} inverse={inverse} />
           <AnimatedNumber value={Math.round(value)} inverse={inverse} />
         </span>
       </div>
-      <div className={`pixel-bar-container ${flashClass}`}>
+      <div
+        className={`pixel-bar-container ${flashClass}`}
+        role="progressbar"
+        aria-label={label}
+        aria-valuenow={value}
+        aria-valuemin={0}
+        aria-valuemax={max}
+      >
         <div className={`pixel-bar-fill ${barFillClass}`} style={{ width: `${pct}%` }} />
       </div>
     </div>

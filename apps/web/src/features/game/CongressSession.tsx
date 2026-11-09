@@ -1,5 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { resolveCongressSession } from '@republica/game-engine';
 import type { EventCard, GameState, CongressDecisions, SwingChoice } from '@republica/game-engine';
@@ -26,6 +25,17 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
 
   const [phase, setPhase] = useState<Phase>('negotiation');
   const [decisions, setDecisions] = useState<CongressDecisions>({ actions: [], swingChoices: [] });
+  const phaseRef = useRef<Phase>('negotiation');
+  const decisionsRef = useRef(decisions);
+  const completedRef = useRef(false);
+  const changePhase = useCallback((next: Phase) => {
+    phaseRef.current = next;
+    setPhase(next);
+  }, []);
+  const changeDecisions = useCallback((next: CongressDecisions) => {
+    decisionsRef.current = next;
+    setDecisions(next);
+  }, []);
 
   const outcome = useMemo(() => resolveCongressSession(gameState, decisions), [gameState, decisions]);
   const total = outcome.totalSeats;
@@ -40,36 +50,49 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
     () => computeSeats({ governmentSeats, oppositionSeats, independentSeats }),
     [governmentSeats, oppositionSeats, independentSeats],
   );
-  const { seatVotes, startVoting } = useCongressVote(seats, outcome.independentYesPercent);
+  const { seatVotes, startVoting, finishVoting } = useCongressVote(seats, outcome.independentYesPercent);
 
   const handleAction = useCallback(
     (action: (typeof NEG_ACTIONS)[number]) => {
-      if (decisions.actions.includes(action.id) || outcome.actionPointsLeft <= 0) return;
-      setDecisions((prev) => ({ ...prev, actions: [...prev.actions, action.id] }));
-      if (action.isDecree) setPhase('result');
+      const current = decisionsRef.current;
+      if (
+        phaseRef.current !== 'negotiation' ||
+        current.actions.includes(action.id) ||
+        resolveCongressSession(gameState, current).actionPointsLeft <= 0
+      )
+        return;
+      changeDecisions({ ...current, actions: [...current.actions, action.id] });
+      if (action.isDecree) changePhase('result');
     },
-    [decisions.actions, outcome.actionPointsLeft],
+    [gameState, changeDecisions, changePhase],
   );
 
   const handleVote = useCallback(() => {
-    setPhase('voting');
-    const hasSwing = outcome.swingCandidates.length > 0;
-    startVoting(() => setPhase(hasSwing ? 'swing' : 'result'));
-  }, [startVoting, outcome.swingCandidates]);
+    if (phaseRef.current !== 'negotiation') return;
+    const hasSwing = resolveCongressSession(gameState, decisionsRef.current).swingCandidates.length > 0;
+    changePhase('voting');
+    startVoting(() => changePhase(hasSwing ? 'swing' : 'result'));
+  }, [startVoting, gameState, changePhase]);
 
   const handleSwingChoice = useCallback(
     (choice: SwingChoice) => {
-      if (swingIdx >= swingSens.length) return;
-      setDecisions((prev) => ({ ...prev, swingChoices: [...prev.swingChoices, choice] }));
-      if (swingIdx + 1 >= swingSens.length) setPhase('result');
+      const current = decisionsRef.current;
+      if (
+        phaseRef.current !== 'swing' ||
+        current.swingChoices.length !== swingIdx ||
+        swingIdx >= swingSens.length
+      )
+        return;
+      changeDecisions({ ...current, swingChoices: [...current.swingChoices, choice] });
+      if (swingIdx + 1 >= swingSens.length) changePhase('result');
     },
-    [swingSens, swingIdx],
+    [swingSens, swingIdx, changeDecisions, changePhase],
   );
 
   const currentSwing = swingSens[swingIdx];
 
   return (
-    <div className="event-card border-l-4 border-l-[#1a237e]">
+    <div className="congress-session event-card border-l-4 border-l-[#1a237e]">
       <div
         className={`mb-3 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-blue-400`}
       >
@@ -77,7 +100,7 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
         <span>SESIÓN PARLAMENTARIA</span>
       </div>
 
-      <AnimatePresence mode="wait">
+      <div key={phase === 'swing' ? `swing-${swingIdx}` : phase}>
         {phase === 'negotiation' && (
           <NegotiationPanel
             card={card}
@@ -98,6 +121,8 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
             seatVotes={seatVotes}
             required={required}
             total={total}
+            finalYes={outcome.votingYes}
+            onFinish={finishVoting}
           />
         )}
         {phase === 'swing' && currentSwing && (
@@ -122,10 +147,14 @@ export function CongressSession({ card, gameState, onComplete }: Props) {
             usedDecree={outcome.usedDecree}
             lawPassed={outcome.passed}
             choiceIndex={outcome.choiceIndex}
-            onContinue={() => onComplete(decisions)}
+            onContinue={() => {
+              if (phaseRef.current !== 'result' || completedRef.current) return;
+              completedRef.current = true;
+              onComplete(decisionsRef.current);
+            }}
           />
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }

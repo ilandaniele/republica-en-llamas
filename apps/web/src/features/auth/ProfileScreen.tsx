@@ -9,6 +9,7 @@ import { ProfileHeader } from './profile/ProfileHeader.js';
 import { ProfileStats } from './profile/ProfileStats.js';
 import { RecentRunsList } from './profile/RecentRunsList.js';
 import { LogoutModal } from './profile/LogoutModal.js';
+import { translateAuthError } from '../../lib/supabase.js';
 
 function NoSession({ onBack }: { onBack: () => void }) {
   return (
@@ -42,7 +43,7 @@ export default function ProfileScreen() {
 
   const renameUsername = async (username: string) => {
     const { error } = await updateUsername(username);
-    if (error) return error.message;
+    if (error) return translateAuthError(error.message);
     await queryClient.invalidateQueries({ queryKey: profileUsernameQuery(user.id).queryKey });
     return null;
   };
@@ -58,7 +59,7 @@ export default function ProfileScreen() {
       <div className="mx-auto max-w-2xl">
         <button
           onClick={() => navigate(-1)}
-          className="text-smoke-500 hover:text-smoke-300 mb-6 flex items-center gap-1 font-mono text-xs"
+          className="mb-6 flex items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
         >
           ← Volver
         </button>

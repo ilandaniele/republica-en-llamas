@@ -5,7 +5,14 @@ import { useGameStore } from '../../stores/gameStore.js';
 import { useEntitlements } from '../../hooks/useEntitlements.js';
 import { PixelPortrait, type PortraitId } from '../../components/illustrations/PixelPortrait.js';
 import { PaywallModal } from '../../components/PaywallModal.js';
-import { HISTORICAL_SCENARIOS } from '@republica/game-engine';
+import {
+  HISTORICAL_SCENARIOS,
+  PARTIES,
+  partyForPresident,
+  canPlayPresident,
+  isFree,
+  ENTITLEMENT_PRODUCTS,
+} from '@republica/game-engine';
 import { useTranslation } from 'react-i18next';
 
 interface Archetype {
@@ -16,12 +23,50 @@ interface Archetype {
   description: string;
   bonus: string;
   weakness: string;
-  bonusStat: string;
-  weaknessStat: string;
   color: string;
 }
 
 const ARCHETYPES: Archetype[] = [
+  {
+    id: 'nestor',
+    name: 'Néstor',
+    lastName: 'Kirchner',
+    title: 'La reconstrucción',
+    description: 'Reconstruí poder político, impulsá obras y negociá con las provincias.',
+    bonus: 'Obra pública y empleo',
+    weakness: 'Más presión sobre el presupuesto',
+    color: 'border-sky-500',
+  },
+  {
+    id: 'cristina',
+    name: 'Cristina',
+    lastName: 'Fernández de Kirchner',
+    title: 'El mercado interno',
+    description: 'Definí subsidios, consumo y el papel del Estado frente a una coalición exigente.',
+    bonus: 'Consumo y servicios públicos',
+    weakness: 'Tensión entre subsidios y cuentas fiscales',
+    color: 'border-blue-400',
+  },
+  {
+    id: 'macri',
+    name: 'Mauricio',
+    lastName: 'Macri',
+    title: 'La inversión',
+    description: 'Buscá inversión y apertura comercial mientras negociás los costos de la transición.',
+    bonus: 'Inversión privada y apertura',
+    weakness: 'Costos sociales de la transición',
+    color: 'border-yellow-400',
+  },
+  {
+    id: 'del_cano',
+    name: 'Nicolás',
+    lastName: 'del Caño',
+    title: 'La jornada en debate',
+    description: 'Llevá al gobierno una agenda de salarios, jornada laboral y control público del crédito.',
+    bonus: 'Derechos laborales y crédito público',
+    weakness: 'Resistencia empresarial y financiera',
+    color: 'border-red-500',
+  },
   {
     id: 'ingeniero',
     name: 'Javier',
@@ -31,8 +76,6 @@ const ARCHETYPES: Archetype[] = [
       '¡VIVA LA LIBERTAD, CARAJO! Economista austríaco, anarcocapitalista, enemigo del Banco Central. La motosierra en mano, promete destruir el Estado.',
     bonus: '+15 Confianza de Mercados inicial',
     weakness: '-10 Popularidad inicial',
-    bonusStat: 'marketConfidence',
-    weaknessStat: 'popularity',
     color: 'border-blue-500',
   },
   {
@@ -44,9 +87,29 @@ const ARCHETYPES: Archetype[] = [
       '"Estamos trabajando." Peronista pragmático, camaleón político, eterno candidato. Las plazas lo bancan, los mercados lo dudan.',
     bonus: '+15 Popularidad inicial',
     weakness: '-10 Confianza de Mercados inicial',
-    bonusStat: 'popularity',
-    weaknessStat: 'marketConfidence',
     color: 'border-crimson-500',
+  },
+  {
+    id: 'kicillof',
+    name: 'Axel',
+    lastName: 'Kicillof',
+    title: 'La gestión federal',
+    description:
+      'Coordiná inversión pública, educación y servicios con las provincias. Negociá cómo financiar cada obra.',
+    bonus: 'Obras y servicios públicos como agenda propia',
+    weakness: 'Presión presupuestaria y negociación federal',
+    color: 'border-sky-400',
+  },
+  {
+    id: 'grabois',
+    name: 'Juan',
+    lastName: 'Grabois',
+    title: 'Tierra, techo y trabajo',
+    description:
+      'Impulsá vivienda, cooperativas y economía popular. Decidí cómo financiar y controlar los programas.',
+    bonus: 'Vivienda y organización comunitaria como agenda propia',
+    weakness: 'Resistencia de los mercados y costo fiscal',
+    color: 'border-emerald-500',
   },
   {
     id: 'tecnocrata',
@@ -57,8 +120,6 @@ const ARCHETYPES: Archetype[] = [
       '"Orden y trabajo, sin excusas." PRO de hierro, ministra de seguridad, candidata eterna. Fría, determinada, con cero tolerancia al caos.',
     bonus: '+10 Estabilidad Social, +5 Credibilidad Mediática',
     weakness: '-10 Popularidad inicial',
-    bonusStat: 'socialStability',
-    weaknessStat: 'popularity',
     color: 'border-yellow-500',
   },
   {
@@ -70,8 +131,6 @@ const ARCHETYPES: Archetype[] = [
       '"Que paguen los que más tienen." FIT-Unidad, abogada, trotskista convencida. Las plazas la aclaman, los mercados la odian.',
     bonus: '+15 Estabilidad Social inicial',
     weakness: '-15 Confianza de Mercados inicial',
-    bonusStat: 'socialStability',
-    weaknessStat: 'marketConfidence',
     color: 'border-red-600',
   },
   {
@@ -83,8 +142,6 @@ const ARCHETYPES: Archetype[] = [
       '"Córdoba primero." Tres veces gobernador, peronista disfrazado de independiente. Pragmático, cordobés hasta los huesos, distante de Buenos Aires.',
     bonus: '+10 Credibilidad Mediática, +5 Estabilidad',
     weakness: '-10 Popularidad nacional inicial',
-    bonusStat: 'mediaCredibility',
-    weaknessStat: 'popularity',
     color: 'border-blue-400',
   },
   {
@@ -96,8 +153,6 @@ const ARCHETYPES: Archetype[] = [
       '"Trabajar, trabajar y trabajar." Ex jefe de Gobierno porteño, tecnócrata del PRO, amante del PowerPoint. Gestión sin carisma, resultados sin pasión.',
     bonus: '+10 Confianza de Mercados, +5 Credibilidad Mediática',
     weakness: '-15 Popularidad inicial',
-    bonusStat: 'marketConfidence',
-    weaknessStat: 'popularity',
     color: 'border-sky-400',
   },
 ];
@@ -111,11 +166,13 @@ function ArchetypeCard({
   selected: boolean;
   onSelect: () => void;
 }) {
+  const party = PARTIES[partyForPresident(archetype.id)!];
   return (
     <m.button
       whileHover={{ scale: 1.02, y: -4 }}
       whileTap={{ scale: 0.98 }}
       onClick={onSelect}
+      aria-pressed={selected}
       className={`relative w-full rounded-xl border-2 p-6 text-left transition-all duration-200 ${archetype.color} ${
         selected
           ? 'bg-navy-700 shadow-lg shadow-gold-500/20 ring-2 ring-gold-400'
@@ -129,14 +186,17 @@ function ArchetypeCard({
 
       {/* Name */}
       <div className="mb-4 text-center">
-        <p className="font-serif text-xl font-bold text-smoke-100">
+        <p className="font-sans text-xl font-bold leading-snug text-smoke-100">
           {archetype.name} {archetype.lastName}
         </p>
-        <p className="text-smoke-500 mt-1 font-mono text-xs uppercase tracking-widest">{archetype.title}</p>
+        <p className="mt-1 font-mono text-xs uppercase tracking-widest text-smoke-500">{archetype.title}</p>
       </div>
 
+      <p className="mb-3 text-center font-mono text-xs text-gold-400">
+        {party.label} · {party.agenda}
+      </p>
       {/* Description */}
-      <p className="text-smoke-300 mb-4 text-center text-xs italic leading-relaxed">
+      <p className="mb-4 text-center font-mono text-lg italic leading-snug text-smoke-300">
         {archetype.description}
       </p>
 
@@ -171,6 +231,7 @@ export default function PresidentSelectScreen() {
   const { t } = useTranslation();
   const setPresidentId = useGameStore((s) => s.setPresidentId);
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
+  const careerStart = useGameStore((s) => s.careerStart);
   const setCrisisExpress = useGameStore((s) => s.setCrisisExpress);
   const scenarioId = useGameStore((s) => s.scenarioId);
   const setScenario = useGameStore((s) => s.setScenario);
@@ -179,12 +240,10 @@ export default function PresidentSelectScreen() {
     entitlement: import('@republica/game-engine').EntitlementId;
     trigger: string;
   } | null>(null);
-  const { hasEntitlement } = useEntitlements();
+  const { hasEntitlement, entitlements } = useEntitlements();
 
   const canPlay = (archetypeId: string) => {
-    if (archetypeId === 'ingeniero') return true;
-    if (archetypeId === 'populista') return true;
-    return hasEntitlement('presidents_pack') || hasEntitlement('full_access');
+    return canPlayPresident(archetypeId, entitlements);
   };
 
   const canUseCrisisExpress = hasEntitlement('mode_crisis_express') || hasEntitlement('full_access');
@@ -206,64 +265,79 @@ export default function PresidentSelectScreen() {
   };
 
   const handleConfirm = () => {
+    if (!canPlay(selected)) {
+      setPaywall({ entitlement: 'presidents_pack', trigger: 'president_select' });
+      return;
+    }
     setPresidentId(selected);
     navigate('/game');
   };
 
-  const selectedArchetype = ARCHETYPES.find((a) => a.id === selected) ?? ARCHETYPES[1]!;
+  const selectedArchetype =
+    ARCHETYPES.find((a) => a.id === selected) ?? ARCHETYPES.find((a) => a.id === 'populista')!;
 
   return (
     <m.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex min-h-screen flex-col items-center justify-center p-6"
+      className="ui-screen flex min-h-screen flex-col items-center justify-center p-6"
     >
-      <div className="w-full max-w-4xl">
+      <div className="w-full max-w-5xl">
         {/* Historical scenario badge */}
         {scenarioId && (
-          <div className="pixel-border-gold mb-6 bg-navy-800 px-3 py-2 text-center font-serif text-[8px] tracking-wide text-gold-400">
+          <div className="pixel-border-gold mb-6 bg-navy-800 px-3 py-2 text-center font-serif text-sm tracking-wide text-gold-400">
             MODO HISTÓRICO: {t(HISTORICAL_SCENARIOS[scenarioId].labelKey)}
           </div>
         )}
 
         {/* Header */}
         <div className="mb-10 text-center">
-          <p className="text-smoke-500 mb-2 font-mono text-xs uppercase tracking-widest">
+          <p className="mb-2 font-mono text-xs uppercase tracking-widest text-smoke-500">
             Elecciones presidenciales
           </p>
-          <h1 className="mb-3 font-serif text-4xl font-black text-smoke-100">
+          <h1 className="mb-3 font-serif text-base font-black leading-relaxed text-smoke-100 sm:text-xl">
             ¿Quién va a <span className="text-crimson-400">gobernar</span>?
           </h1>
           <p className="mx-auto max-w-lg text-sm text-smoke-400">
-            Cada presidente arranca con fortalezas y debilidades distintas. El país se acuerda de quién lo
-            llevó a la gloria o al desastre.
+            Cada espacio tiene decisiones propias, con beneficios y costos. Las consecuencias son reglas de
+            esta simulación. El país se acuerda de quién lo llevó a la gloria o al desastre.
           </p>
         </div>
 
         {/* Archetype grid */}
-        <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-3">
-          {ARCHETYPES.map((a) => {
-            const locked = !canPlay(a.id);
-            return (
-              <div key={a.id} className="relative">
-                <ArchetypeCard
-                  archetype={a}
-                  selected={selected === a.id}
-                  onSelect={() => handleSelect(a.id)}
-                />
-                {locked && (
-                  <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-navy-900/70">
-                    <span className="text-3xl">🔒</span>
-                    <span className="mt-1 font-mono text-xs text-gold-400">$2.99</span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[...ARCHETYPES]
+            .sort((a, b) => Number(isFree(b.id)) - Number(isFree(a.id)))
+            .map((a) => {
+              const locked = !canPlay(a.id);
+              return (
+                <div key={a.id} className="relative">
+                  <ArchetypeCard
+                    archetype={a}
+                    selected={selected === a.id}
+                    onSelect={() => handleSelect(a.id)}
+                  />
+                  {isFree(a.id) && (
+                    <span className="pointer-events-none absolute left-3 top-3 rounded bg-emerald-900 px-2 py-1 text-sm text-emerald-200">
+                      Gratis
+                    </span>
+                  )}
+                  {locked && (
+                    <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-navy-900/70">
+                      <span className="text-3xl">🔒</span>
+                      <span className="mt-1 font-mono text-xs text-gold-400">
+                        Pack Presidentes · {ENTITLEMENT_PRODUCTS.presidents_pack.priceLabel}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
         </div>
 
         {/* Crisis Express toggle */}
         <m.div
+          hidden={Boolean(careerStart)}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -274,7 +348,7 @@ export default function PresidentSelectScreen() {
             className={`flex w-full items-center justify-between rounded-xl border-2 px-5 py-4 transition-all duration-200 ${
               isCrisisExpress
                 ? 'bg-crimson-900/50 border-crimson-500 shadow-lg shadow-crimson-500/20'
-                : 'hover:border-navy-400 border-navy-600 bg-navy-800'
+                : 'border-navy-600 bg-navy-800 hover:border-navy-400'
             }`}
           >
             <div className="text-left">
@@ -284,7 +358,7 @@ export default function PresidentSelectScreen() {
                 ⚡ Crisis Express{' '}
                 {!canUseCrisisExpress && <span className="ml-2 text-gold-400">🔒 $1.99</span>}
               </p>
-              <p className="text-smoke-500 mt-0.5 font-mono text-xs">
+              <p className="mt-0.5 font-mono text-xs text-smoke-500">
                 45s por turno · 15 turnos · ×1.5 daño · ×2 puntaje
               </p>
             </div>
@@ -304,7 +378,7 @@ export default function PresidentSelectScreen() {
         <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
           <button
             onClick={handleConfirm}
-            className="w-full rounded-xl bg-crimson-600 px-8 py-4 font-serif text-xl font-bold uppercase tracking-wider text-smoke-100 shadow-lg transition-colors hover:bg-crimson-500"
+            className="w-full rounded-xl bg-gold-400 px-6 py-4 font-serif text-sm font-bold uppercase leading-relaxed tracking-wide text-navy-900 shadow-lg transition-colors hover:bg-gold-300"
           >
             {selectedArchetype
               ? `Asumir como ${selectedArchetype.name} ${selectedArchetype.lastName} →`
@@ -317,7 +391,7 @@ export default function PresidentSelectScreen() {
             setScenario(null);
             navigate('/');
           }}
-          className="text-smoke-500 hover:text-smoke-300 mt-3 w-full py-2 font-mono text-xs"
+          className="mt-3 w-full py-2 font-mono text-xs text-smoke-500 hover:text-smoke-300"
         >
           ← Volver al inicio
         </button>
