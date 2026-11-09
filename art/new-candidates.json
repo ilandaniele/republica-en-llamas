@@ -1,0 +1,128 @@
+{
+  "portrait_kicillof_neutral": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art portrait, visible square pixel clusters, crisp hard edges, no blur or antialiasing, limited 32-color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Axel Kicillof, Argentine political figure, youthful broad rectangular clean-shaven face, distinctive thick dark eyebrows, full medium-length dark brown hair swept to the side with loose wavy bangs, fair skin, prominent straight nose, navy suit, white shirt and light blue tie. ONE person centered facing the viewer, calm neutral expression, upper-left warm light. Flat solid navy #1a1a2e background edge to edge. No text, captions, logos, border, scenery or watermark. Square 1024x1024 canvas. Match the Argentine political survival game's existing pixel portrait style.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_kicillof_panic": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art portrait, visible square pixel clusters, crisp hard edges, no blur or antialiasing, limited 32-color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Axel Kicillof, Argentine political figure, youthful broad rectangular clean-shaven face, distinctive thick dark eyebrows, full medium-length dark brown hair swept to the side with loose wavy bangs, fair skin, prominent straight nose, navy suit, white shirt and light blue tie. ONE person centered facing the viewer, worried panicked expression, widened eyes, tense mouth and visible pixel sweat, upper-left warm light. Flat solid navy #1a1a2e background edge to edge. No text, captions, logos, border, scenery or watermark. Square 1024x1024 canvas. Match the Argentine political survival game's existing pixel portrait style. Use the reference image for exactly the same identity, hairstyle, clothes, pixel size and lighting. Keep the same head and shoulders framing.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_kicillof_victory": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art portrait, visible square pixel clusters, crisp hard edges, no blur or antialiasing, limited 32-color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Axel Kicillof, Argentine political figure, youthful broad rectangular clean-shaven face, distinctive thick dark eyebrows, full medium-length dark brown hair swept to the side with loose wavy bangs, fair skin, prominent straight nose, navy suit, white shirt and light blue tie. ONE person centered facing the viewer, joyful victorious expression, confident warm broad smile, upper-left warm light. Flat solid navy #1a1a2e background edge to edge. No text, captions, logos, border, scenery or watermark. Square 1024x1024 canvas. Match the Argentine political survival game's existing pixel portrait style. Use the reference image for exactly the same identity, hairstyle, clothes, pixel size and lighting. Keep the same head and shoulders framing.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "president_kicillof_office": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president seated behind a large wooden desk in the Casa Rosada, reviewing and signing a plain policy document, one hand on a red rubber stamp. Argentine flag and muted salmon walls, warm daylight. A calm focused governing action. President centered and clearly recognizable, face large enough to read at small game size. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_kicillof_congress": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president addressing the Argentine National Congress from a wooden lectern, gesturing toward seated adult legislators in the background, blue and white flags. Formal democratic policy debate, warm chamber lights. President in center foreground, face large and recognizable. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_kicillof_press": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president giving a live press conference behind a lectern with microphones, photographers and cameras at the edges, camera flashes, dark navy curtain and Argentine flags. Serious composed expression. President in center foreground, face large and recognizable. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_kicillof_diplomacy": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president negotiating at an international diplomatic conference, seated in center foreground at a long table with plain papers and a water glass, foreign diplomats at the edges, an Argentine flag behind. Tense thoughtful expression, blue office lighting. President face large and recognizable. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_kicillof_crisis": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president holding an urgent cabinet meeting in the Casa Rosada at night, worried expression, hands on a desk with plain budget papers, advisers blurred only through sparse pixel detail at the edges, red telephone, distant city windows and warm desk lamp. Show political pressure without violence or allegations of personal wrongdoing. President in center foreground, face large and recognizable. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "cr_president_kicillof": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "portrait_grabois_neutral": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art portrait, visible square pixel clusters, crisp hard edges, no blur or antialiasing, limited 32-color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Juan Grabois, Argentine presidential primary candidate, broad rounded face, thick unruly dark curly hair with some gray, dense short salt-and-pepper beard and mustache, expressive heavy eyebrows, fair olive skin, dark olive blazer over a plain light cream open-collar shirt. ONE person centered facing the viewer, calm neutral expression, upper-left warm light. Flat solid navy #1a1a2e background edge to edge. No text, captions, logos, border, scenery or watermark. Square 1024x1024 canvas. Match the Argentine political survival game's existing pixel portrait style.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_grabois_panic": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art portrait, visible square pixel clusters, crisp hard edges, no blur or antialiasing, limited 32-color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Juan Grabois, Argentine presidential primary candidate, broad rounded face, thick unruly dark curly hair with some gray, dense short salt-and-pepper beard and mustache, expressive heavy eyebrows, fair olive skin, dark olive blazer over a plain light cream open-collar shirt. ONE person centered facing the viewer, worried panicked expression, widened eyes, tense mouth and visible pixel sweat, upper-left warm light. Flat solid navy #1a1a2e background edge to edge. No text, captions, logos, border, scenery or watermark. Square 1024x1024 canvas. Match the Argentine political survival game's existing pixel portrait style. Use the reference image for exactly the same identity, hairstyle, clothes, pixel size and lighting. Keep the same head and shoulders framing.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_grabois_victory": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art portrait, visible square pixel clusters, crisp hard edges, no blur or antialiasing, limited 32-color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Juan Grabois, Argentine presidential primary candidate, broad rounded face, thick unruly dark curly hair with some gray, dense short salt-and-pepper beard and mustache, expressive heavy eyebrows, fair olive skin, dark olive blazer over a plain light cream open-collar shirt. ONE person centered facing the viewer, joyful victorious expression, confident warm broad smile, upper-left warm light. Flat solid navy #1a1a2e background edge to edge. No text, captions, logos, border, scenery or watermark. Square 1024x1024 canvas. Match the Argentine political survival game's existing pixel portrait style. Use the reference image for exactly the same identity, hairstyle, clothes, pixel size and lighting. Keep the same head and shoulders framing.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "president_grabois_office": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president seated behind a large wooden desk in the Casa Rosada, reviewing and signing a plain policy document, one hand on a red rubber stamp. Argentine flag and muted salmon walls, warm daylight. A calm focused governing action. President centered and clearly recognizable, face large enough to read at small game size. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_grabois_congress": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president addressing the Argentine National Congress from a wooden lectern, gesturing toward seated adult legislators in the background, blue and white flags. Formal democratic policy debate, warm chamber lights. President in center foreground, face large and recognizable. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_grabois_press": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president giving a live press conference behind a lectern with microphones, photographers and cameras at the edges, camera flashes, dark navy curtain and Argentine flags. Serious composed expression. President in center foreground, face large and recognizable. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_grabois_diplomacy": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president negotiating at an international diplomatic conference, seated in center foreground at a long table with plain papers and a water glass, foreign diplomats at the edges, an Argentine flag behind. Tense thoughtful expression, blue office lighting. President face large and recognizable. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_grabois_crisis": {
+    "prompt": "Authentic 16-bit SNES / Sega Genesis pixel art for an Argentine political survival game. Visible square pixel clusters, hard edges, no anti-aliasing or blur, limited palette about 32 colors, dark pixel outlines, dithering only. Wide 16:9 complete scene at 1536x864. Use the reference portrait exclusively for the exact identity, face, hairstyle, age and gender of the selected president; keep their recognizable likeness. The selected president holding an urgent cabinet meeting in the Casa Rosada at night, worried expression, hands on a desk with plain budget papers, advisers blurred only through sparse pixel detail at the edges, red telephone, distant city windows and warm desk lamp. Show political pressure without violence or allegations of personal wrongdoing. President in center foreground, face large and recognizable. Same coherent game art style and upper-left key light. Full background appropriate to this location, no chroma magenta. No text, letters, numbers, party logos, captions, borders or watermarks anywhere; papers and signs blank. One selected president only; other people are anonymous supporting adults. Wardrobe must fit official presidential business: a tailored suit or professional formal blazer, with a dress shirt or blouse. In Congress and diplomatic meetings avoid leather jackets, biker clothing, hoodies and sportswear, even if the identity reference wears them. For Javier Milei use a matte dark navy business suit, white dress shirt and light-blue necktie.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "cr_president_grabois": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  }
+}

@@ -123,7 +123,12 @@ export const NEW_CARDS: EventCard[] = [
       {
         id: 'new_004_c',
         textKey: 'event.new_004.choice_c',
-        effects: { popularityDelta: 8, mediaCredibilityDelta: 10, stabilityDelta: -5, governmentSeatsDelta: -5 },
+        effects: {
+          popularityDelta: 8,
+          mediaCredibilityDelta: 10,
+          stabilityDelta: -5,
+          governmentSeatsDelta: -5,
+        },
       },
       {
         id: 'new_004_d',
@@ -177,7 +182,12 @@ export const NEW_CARDS: EventCard[] = [
       {
         id: 'new_006_a',
         textKey: 'event.new_006.choice_a',
-        effects: { popularityDelta: 10, marketConfidenceDelta: 8, foreignReservesDelta: 5, mediaCredibilityDelta: 6 },
+        effects: {
+          popularityDelta: 10,
+          marketConfidenceDelta: 8,
+          foreignReservesDelta: 5,
+          mediaCredibilityDelta: 6,
+        },
       },
       {
         id: 'new_006_b',
@@ -192,7 +202,12 @@ export const NEW_CARDS: EventCard[] = [
       {
         id: 'new_006_d',
         textKey: 'event.new_006.choice_d',
-        effects: { foreignReservesDelta: 8, marketConfidenceDelta: 10, currencyStrengthDelta: 5, deficitDelta: -3 },
+        effects: {
+          foreignReservesDelta: 8,
+          marketConfidenceDelta: 10,
+          currencyStrengthDelta: 5,
+          deficitDelta: -3,
+        },
       },
     ],
   },
@@ -209,7 +224,7 @@ export const NEW_CARDS: EventCard[] = [
       {
         id: 'new_007_a',
         textKey: 'event.new_007.choice_a',
-        effects: { popularityDelta: 6, stabilityDelta: 5, deficitDelta: 4, inflationDelta: 2 },
+        effects: { popularityDelta: 6, stabilityDelta: 5, deficitDelta: 4 },
       },
       {
         id: 'new_007_b',
@@ -246,12 +261,12 @@ export const NEW_CARDS: EventCard[] = [
       {
         id: 'new_008_b',
         textKey: 'event.new_008.choice_b',
-        effects: { popularityDelta: 5, marketConfidenceDelta: -8, inflationDelta: 3 },
+        effects: { popularityDelta: 5, marketConfidenceDelta: -8 },
       },
       {
         id: 'new_008_c',
         textKey: 'event.new_008.choice_c',
-        effects: { popularityDelta: 10, stabilityDelta: 6, deficitDelta: 8, inflationDelta: 2 },
+        effects: { popularityDelta: 10, stabilityDelta: 6, deficitDelta: 8 },
       },
       {
         id: 'new_008_d',
@@ -278,12 +293,23 @@ export const NEW_CARDS: EventCard[] = [
       {
         id: 'new_009_b',
         textKey: 'event.new_009.choice_b',
-        effects: { popularityDelta: 4, stabilityDelta: 4, marketConfidenceDelta: -6, foreignReservesDelta: -2 },
+        effects: {
+          popularityDelta: 4,
+          stabilityDelta: 4,
+          marketConfidenceDelta: -6,
+          foreignReservesDelta: -2,
+        },
       },
       {
         id: 'new_009_c',
         textKey: 'event.new_009.choice_c',
-        effects: { marketConfidenceDelta: 10, foreignReservesDelta: 8, gdpGrowthDelta: 1, popularityDelta: -4, stabilityDelta: -6 },
+        effects: {
+          marketConfidenceDelta: 10,
+          foreignReservesDelta: 8,
+          gdpGrowthDelta: 1,
+          popularityDelta: -4,
+          stabilityDelta: -6,
+        },
       },
       {
         id: 'new_009_d',

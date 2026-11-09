@@ -35,6 +35,13 @@ export const DIFFICULTY_LABELS: Record<string, string> = {
 };
 
 const PRESIDENT_NAMES: Record<string, string> = {
+  kicillof: 'Axel Kicillof',
+  grabois: 'Juan Grabois',
+  nestor: 'Néstor Kirchner',
+  cristina: 'Cristina Fernández de Kirchner',
+  macri: 'Mauricio Macri',
+  del_cano: 'Nicolás del Caño',
+
   ingeniero: 'Javier Milei',
   populista: 'Sergio Massa',
   tecnocrata: 'Patricia Bullrich',

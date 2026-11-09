@@ -12,6 +12,7 @@ import {
 import { useGameStore } from '../../stores/gameStore.js';
 import { GoogleIcon } from './GoogleIcon.js';
 import { useAuthDestination } from './useAuthDestination.js';
+import { rememberSession, setRememberSession } from '../../lib/authStorage.js';
 
 export default function LoginScreen() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function LoginScreen() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberMe, setRememberMe] = useState(rememberSession);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [resetSent, setResetSent] = useState(false);
@@ -32,7 +33,7 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       const guestToken = await captureGuestToken();
-      const { data, error: err } = await signIn(email, password);
+      const { data, error: err } = await signIn(email, password, rememberMe);
       if (err) {
         setError(translateAuthError(err.message));
         return;
@@ -52,9 +53,21 @@ export default function LoginScreen() {
       return;
     }
     setLoading(true);
-    await supabase.auth.resetPasswordForEmail(email);
-    setResetSent(true);
-    setLoading(false);
+    setError('');
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (resetError) {
+        setError('No se pudo enviar la recuperación. Intentá nuevamente más tarde.');
+        return;
+      }
+      setResetSent(true);
+    } catch {
+      setError('No se pudo enviar la recuperación. Revisá tu conexión.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (isOfflineMode) {
@@ -65,9 +78,9 @@ export default function LoginScreen() {
           <p className="mb-4 font-mono text-xs text-smoke-400">
             Faltan variables de entorno en <code className="text-gold-400">.env</code>:
           </p>
-          {missingEnvVars.url && <p className="text-smoke-300 mb-1 font-mono text-xs">• VITE_SUPABASE_URL</p>}
+          {missingEnvVars.url && <p className="mb-1 font-mono text-xs text-smoke-300">• VITE_SUPABASE_URL</p>}
           {missingEnvVars.key && (
-            <p className="text-smoke-300 mb-1 font-mono text-xs">• VITE_SUPABASE_ANON_KEY</p>
+            <p className="mb-1 font-mono text-xs text-smoke-300">• VITE_SUPABASE_ANON_KEY</p>
           )}
           <button onClick={() => navigate('/')} className="mt-6 font-mono text-sm text-gold-400 underline">
             Jugar en modo offline →
@@ -86,7 +99,7 @@ export default function LoginScreen() {
       <div className="w-full max-w-md">
         <button
           onClick={() => navigate(-1)}
-          className="text-smoke-500 hover:text-smoke-300 mb-6 flex items-center gap-1 font-mono text-xs"
+          className="mb-6 flex items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
         >
           ← Volver
         </button>
@@ -96,6 +109,7 @@ export default function LoginScreen() {
         {/* Google OAuth button */}
         <button
           onClick={() => {
+            setRememberSession(rememberMe);
             void signInWithGoogle();
           }}
           className="mb-4 flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-800 transition-colors hover:bg-gray-50"
@@ -112,7 +126,7 @@ export default function LoginScreen() {
 
         {resetSent ? (
           <div className="rounded-lg border border-emerald-700 bg-emerald-900/40 p-4 font-mono text-sm text-emerald-300">
-            ✓ Te enviamos un email para restablecer tu contraseña.
+            ✓ Si la cuenta existe, recibirás un email para restablecer tu contraseña.
           </div>
         ) : (
           <form
@@ -123,6 +137,8 @@ export default function LoginScreen() {
           >
             <input
               type="email"
+              aria-label="Email"
+              autoComplete="username"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -131,6 +147,8 @@ export default function LoginScreen() {
             />
             <input
               type="password"
+              aria-label="Contraseña"
+              autoComplete="current-password"
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -152,7 +170,7 @@ export default function LoginScreen() {
             </div>
 
             {error && (
-              <div className="bg-crimson-900/40 rounded border border-crimson-700 px-3 py-2">
+              <div role="alert" className="bg-crimson-900/40 rounded border border-crimson-700 px-3 py-2">
                 <p className="text-crimson-300 font-mono text-xs">{error}</p>
               </div>
             )}
@@ -169,10 +187,11 @@ export default function LoginScreen() {
 
         <div className="mt-4 flex justify-between">
           <button
+            disabled={loading}
             onClick={() => {
               void handleForgotPassword();
             }}
-            className="text-smoke-500 hover:text-smoke-300 font-mono text-xs underline"
+            className="font-mono text-xs text-smoke-500 underline hover:text-smoke-300"
           >
             Olvidé mi contraseña
           </button>

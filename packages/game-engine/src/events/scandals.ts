@@ -520,7 +520,12 @@ export const SCANDAL_CARDS: EventCard[] = [
       {
         id: 'scn_017_d',
         textKey: 'event.scn_017.choice_d',
-        effects: { foreignReservesDelta: 3, popularityDelta: -2, marketConfidenceDelta: 5, mediaCredibilityDelta: 5 },
+        effects: {
+          foreignReservesDelta: 3,
+          popularityDelta: -2,
+          marketConfidenceDelta: 5,
+          mediaCredibilityDelta: 5,
+        },
       },
     ],
   },
@@ -598,22 +603,27 @@ export const SCANDAL_CARDS: EventCard[] = [
       {
         id: 'scn_020_a',
         textKey: 'event.scn_020.choice_a',
-        effects: { currencyStrengthDelta: -20, inflationDelta: 15, popularityDelta: -15, marketConfidenceDelta: 5 },
+        effects: {
+          currencyStrengthDelta: -20,
+          inflationDelta: 15,
+          popularityDelta: -15,
+          marketConfidenceDelta: 5,
+        },
       },
       {
         id: 'scn_020_b',
         textKey: 'event.scn_020.choice_b',
-        effects: { currencyStrengthDelta: 5, foreignReservesDelta: -15, popularityDelta: 5, inflationDelta: 5 },
+        effects: { currencyStrengthDelta: 5, foreignReservesDelta: -15, popularityDelta: 5 },
       },
       {
         id: 'scn_020_c',
         textKey: 'event.scn_020.choice_c',
-        effects: { currencyStrengthDelta: -8, inflationDelta: 8, popularityDelta: -8, marketConfidenceDelta: -5 },
+        effects: { currencyStrengthDelta: -8, popularityDelta: -8, marketConfidenceDelta: -5 },
       },
       {
         id: 'scn_020_d',
         textKey: 'event.scn_020.choice_d',
-        effects: { currencyStrengthDelta: -3, inflationDelta: 5, popularityDelta: -5, marketConfidenceDelta: -8 },
+        effects: { currencyStrengthDelta: -3, popularityDelta: -5, marketConfidenceDelta: -8 },
       },
     ],
   },

@@ -12,14 +12,9 @@ interface PoliticalSectionProps {
 export function PoliticalSection({ political, prevSnapshot, flashMap }: PoliticalSectionProps) {
   return (
     <div className="space-y-3">
-      <p
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-        className="uppercase text-smoke-600"
-      >
-        POLITICO
-      </p>
+      <p className="uppercase text-smoke-300">Política</p>
       <Meter
-        label="POP"
+        label="Aprobación popular"
         value={political.popularity}
         prevValue={prevSnapshot?.popularity}
         color="bg-blue-500"
@@ -27,19 +22,21 @@ export function PoliticalSection({ political, prevSnapshot, flashMap }: Politica
         flashDir={flashMap['popularity']}
       />
       <Meter
-        label="EST"
+        label="Estabilidad social"
         value={political.socialStability}
         prevValue={prevSnapshot?.socialStability}
         color="bg-emerald-500"
         icon="⚖"
         flashDir={flashMap['socialStability']}
       />
-      <Meter label="MED" value={political.mediaCredibility} color="bg-purple-500" icon="📺" />
-      <div
-        className="flex justify-between"
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-      >
-        <span className="text-smoke-400">DECRETOS</span>
+      <Meter
+        label="Credibilidad mediática"
+        value={political.mediaCredibility}
+        color="bg-purple-500"
+        icon="📺"
+      />
+      <div className="flex justify-between">
+        <span className="text-smoke-300">Decretos de emergencia</span>
         <span className={political.emergencyDecreesUsed > 2 ? 'text-crimson-400' : 'text-smoke-200'}>
           {political.emergencyDecreesUsed}
         </span>

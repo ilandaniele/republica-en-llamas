@@ -106,7 +106,7 @@ export const LIFELINE_CARDS: EventCard[] = [
       {
         id: 'life_mkt_001_a',
         textKey: 'event.life_mkt_001.choice_a',
-        effects: { marketConfidenceDelta: 20, deficitDelta: 5, inflationDelta: 2 },
+        effects: { marketConfidenceDelta: 20, deficitDelta: 5 },
       },
       {
         id: 'life_mkt_001_b',
@@ -142,7 +142,7 @@ export const LIFELINE_CARDS: EventCard[] = [
       {
         id: 'life_cur_001_b',
         textKey: 'event.life_cur_001.choice_b',
-        effects: { popularityDelta: 5, currencyStrengthDelta: -5, inflationDelta: 5 },
+        effects: { popularityDelta: 5, currencyStrengthDelta: -5 },
       },
       {
         id: 'life_cur_001_c',

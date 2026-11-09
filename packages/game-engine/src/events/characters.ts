@@ -50,7 +50,7 @@ export const CHARACTER_CARDS: EventCard[] = [
       {
         id: 'char_min_002_a',
         textKey: 'event.char_min_002.choice_a',
-        effects: { deficitDelta: -8, inflationDelta: -3, popularityDelta: -5, marketConfidenceDelta: 10 },
+        effects: { deficitDelta: -8, popularityDelta: -5, marketConfidenceDelta: 10 },
       },
       {
         id: 'char_min_002_b',
@@ -60,7 +60,7 @@ export const CHARACTER_CARDS: EventCard[] = [
       {
         id: 'char_min_002_c',
         textKey: 'event.char_min_002.choice_c',
-        effects: { deficitDelta: -4, inflationDelta: -1, popularityDelta: -2, marketConfidenceDelta: 5 },
+        effects: { deficitDelta: -4, popularityDelta: -2, marketConfidenceDelta: 5 },
       },
       {
         id: 'char_min_002_d',
@@ -82,7 +82,7 @@ export const CHARACTER_CARDS: EventCard[] = [
       {
         id: 'char_min_003_a',
         textKey: 'event.char_min_003.choice_a',
-        effects: { deficitDelta: -10, inflationDelta: -5, popularityDelta: -8, marketConfidenceDelta: 15 },
+        effects: { deficitDelta: -10, popularityDelta: -8, marketConfidenceDelta: 15 },
       },
       {
         id: 'char_min_003_b',
@@ -97,7 +97,7 @@ export const CHARACTER_CARDS: EventCard[] = [
       {
         id: 'char_min_003_d',
         textKey: 'event.char_min_003.choice_d',
-        effects: { deficitDelta: -5, inflationDelta: -3, popularityDelta: -4, marketConfidenceDelta: 8 },
+        effects: { deficitDelta: -5, popularityDelta: -4, marketConfidenceDelta: 8 },
       },
     ],
   },

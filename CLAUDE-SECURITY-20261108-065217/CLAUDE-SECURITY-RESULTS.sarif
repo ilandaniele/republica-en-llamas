@@ -1,0 +1,482 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Claude Security Plugin for Claude Code",
+          "organization": "Anthropic",
+          "informationUri": "https://claude.com/product/claude-security",
+          "version": "0.12.0",
+          "rules": [
+            {
+              "id": "CWE-200",
+              "name": "ExposureOfSensitiveInformationToAnUnauthorizedActor",
+              "shortDescription": {
+                "text": "Exposure of Sensitive Information to an Unauthorized Actor"
+              },
+              "fullDescription": {
+                "text": "Exposure of Sensitive Information to an Unauthorized Actor (CWE-200, CWE 4.20): findings whose CWE is this entry of the Simplified Mapping view or rolls up to it, reported by Claude Security Plugin for Claude Code from static review of the source."
+              },
+              "help": {
+                "text": "Each alert's message names the finding's own CWE and states the impact, exploit scenario, preconditions and recommended fix; the finding appears under its F<n> id in CLAUDE-SECURITY-RESULTS.md."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/200.html",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-200"
+                ]
+              }
+            },
+            {
+              "id": "CWE-307",
+              "name": "ImproperRestrictionOfExcessiveAuthenticationAttempts",
+              "shortDescription": {
+                "text": "Improper Restriction of Excessive Authentication Attempts"
+              },
+              "fullDescription": {
+                "text": "Improper Restriction of Excessive Authentication Attempts (CWE-307, CWE 4.20): findings whose CWE is this entry of the Simplified Mapping view or rolls up to it, reported by Claude Security Plugin for Claude Code from static review of the source."
+              },
+              "help": {
+                "text": "Each alert's message names the finding's own CWE and states the impact, exploit scenario, preconditions and recommended fix; the finding appears under its F<n> id in CLAUDE-SECURITY-RESULTS.md."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/307.html",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-307"
+                ]
+              }
+            },
+            {
+              "id": "CWE-287",
+              "name": "ImproperAuthentication",
+              "shortDescription": {
+                "text": "Improper Authentication"
+              },
+              "fullDescription": {
+                "text": "Improper Authentication (CWE-287, CWE 4.20): findings whose CWE is this entry of the Simplified Mapping view or rolls up to it, reported by Claude Security Plugin for Claude Code from static review of the source."
+              },
+              "help": {
+                "text": "Each alert's message names the finding's own CWE and states the impact, exploit scenario, preconditions and recommended fix; the finding appears under its F<n> id in CLAUDE-SECURITY-RESULTS.md."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/287.html",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-287"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "automationDetails": {
+        "id": "claude-security-plugin/scan/9beb7f80-139d-4518-b904-bf32cb33e2b2",
+        "guid": "9beb7f80-139d-4518-b904-bf32cb33e2b2"
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": [
+            {
+              "descriptor": {
+                "id": "coverage/skipped-component"
+              },
+              "level": "note",
+              "message": {
+                "text": "Skipped component art-raw-browser-profiles: Raw art inputs including Chromium profile data and model files; not application code"
+              }
+            },
+            {
+              "descriptor": {
+                "id": "coverage/skipped-component"
+              },
+              "level": "note",
+              "message": {
+                "text": "Skipped component claude-config: Local editor/agent settings, not product code"
+              }
+            },
+            {
+              "descriptor": {
+                "id": "coverage/skipped-component"
+              },
+              "level": "note",
+              "message": {
+                "text": "Skipped component docs: Documentation only"
+              }
+            },
+            {
+              "descriptor": {
+                "id": "coverage/files-not-reached"
+              },
+              "level": "note",
+              "message": {
+                "text": "Research coverage: of 278 files in the components researched, 111 read to a conclusion, 167 declared not reached, 0 in no researcher's account; 47 more outside every component"
+              }
+            }
+          ]
+        }
+      ],
+      "originalUriBaseIds": {
+        "%SRCROOT%": {
+          "description": {
+            "text": "The top level of the scanned repository, or the scanned directory when the scan did not run inside a git checkout."
+          }
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CWE-200",
+          "ruleIndex": 0,
+          "level": "note",
+          "message": {
+            "text": "Email local part becomes the public leaderboard username for OAuth signups (partial email disclosure to anon).\n\nhandle_new_user falls back to split_part(new.email,'@',1) as profiles.username when signup metadata has no username (always the case for Google OAuth, which the web app offers and never prompts for a username). The anon-readable leaderboard view (004:64-72, granted to anon at 004:72) is owned by the migration role, bypasses profiles RLS, and exposes p.username for every user with a completed run.\n\nImpact: Confidentiality: bulk harvest of email local parts (effectively full addresses for gmail.com users) of OAuth users, linkable to user_id and game history, for phishing and spam. The user can rename later, but the default is exposed from the first completed run.\n\nExploit scenario: A Google-signed-in player finishes a run. Their profile row was created with username = email local part (for gmail.com accounts this is the whole address minus the known domain). Any unauthenticated caller queries the leaderboard view via PostgREST (select=username,user_id,avatar_url) and harvests these values in bulk. username_available('<guess>') also confirms whether an email local part is registered. The migration 005 comment and docs/security/backend-audit.md say profiles are private and the view exposes no emails.\n\nPreconditions: User signed up through Google OAuth (or any path without raw_user_meta_data.username) and did not rename; User has at least one completed run so a leaderboard row exists; Anon key is public, so no credential is needed to query the view.\n\nRecommendation: Do not derive the public username from the email. Generate a neutral handle such as 'jugador_' plus random suffix, or require the user to choose a username before the profile is public. Keep the leaderboard view's username column limited to values the user chose. Backfill existing profiles whose username equals their email local part.\n\nCWE-359. Severity LOW, confidence medium."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "supabase/migrations/009_anonymous_guests.sql",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 18,
+                  "snippet": {
+                    "text": "    coalesce(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1))"
+                  }
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "handle_new_user",
+                  "fullyQualifiedName": "handle_new_user"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "claudeSecurityPlugin": {
+              "id": "F1",
+              "title": "Email local part becomes the public leaderboard username for OAuth signups (partial email disclosure to anon)",
+              "impact": "Confidentiality: bulk harvest of email local parts (effectively full addresses for gmail.com users) of OAuth users, linkable to user_id and game history, for phishing and spam. The user can rename later, but the default is exposed from the first completed run.",
+              "file": "supabase/migrations/009_anonymous_guests.sql",
+              "line": 18,
+              "description": "handle_new_user falls back to split_part(new.email,'@',1) as profiles.username when signup metadata has no username (always the case for Google OAuth, which the web app offers and never prompts for a username). The anon-readable leaderboard view (004:64-72, granted to anon at 004:72) is owned by the migration role, bypasses profiles RLS, and exposes p.username for every user with a completed run.",
+              "exploit_scenario": "A Google-signed-in player finishes a run. Their profile row was created with username = email local part (for gmail.com accounts this is the whole address minus the known domain). Any unauthenticated caller queries the leaderboard view via PostgREST (select=username,user_id,avatar_url) and harvests these values in bulk. username_available('<guess>') also confirms whether an email local part is registered. The migration 005 comment and docs/security/backend-audit.md say profiles are private and the view exposes no emails.",
+              "preconditions": [
+                "User signed up through Google OAuth (or any path without raw_user_meta_data.username) and did not rename",
+                "User has at least one completed run so a leaderboard row exists",
+                "Anon key is public, so no credential is needed to query the view"
+              ],
+              "category": "Exposure of Sensitive Information to an Unauthorized Actor",
+              "severity": "LOW",
+              "confidence": "medium",
+              "recommendation": "Do not derive the public username from the email. Generate a neutral handle such as 'jugador_' plus random suffix, or require the user to choose a username before the profile is public. Keep the leaderboard view's username column limited to values the user chose. Backfill existing profiles whose username equals their email local part.",
+              "cwe_id": "CWE-359",
+              "snippet": "    coalesce(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1))",
+              "symbol": "handle_new_user",
+              "declared_line": 18,
+              "via_change": null,
+              "other_cwe_ids": [],
+              "claudeSecurityPluginFindingId": "v3:681c96ad3bc6c7a728c84adf48ca39c6cfd09e0116bf9f12264a8d1e9f4a3414",
+              "verification": {
+                "panel": {
+                  "true": 3,
+                  "false": 0,
+                  "voters": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "ruleId": "CWE-307",
+          "ruleIndex": 1,
+          "level": "note",
+          "message": {
+            "text": "Daily ticket cap on seed shopping is bypassed by minting tickets on throwaway guest accounts and claiming them.\n\nstart-run issues tickets to any anonymous Supabase user, and the web client creates those with signInAnonymously at will. claim-run-ticket then moves a guest's ticket to the caller's real account, and the only gate is a count of the target's tickets created in the last day. The claim keeps the ticket's original created_at, so tickets minted more than 24h earlier are not counted and can be claimed without limit.\n\nImpact: Players can pick favourable seeds without bound. That defeats the stated purpose of migration 008, which is to cap seed shopping with a per-user daily limit. The effect is limited to leaderboard fairness. A bot with the public engine can already play any given seed optimally, so no confidentiality or account-level harm follows.\n\nExploit scenario: 1. The attacker signs in anonymously many times, one guest per session. 2. Each guest calls start-run up to 30 times a day and records the server-chosen seeds, which are 0..999999. 3. The attacker precomputes the best seed offline with the public engine and waits 24h, or just claims the best seeds. 4. The attacker signs into a real account and calls claim-run-ticket (10 per minute) with each guest's token. Tickets older than one day add nothing to the target's count, so the claim never hits the daily cap. 5. submit-run accepts a run for the chosen seed because the ticket belongs to the real user.\n\nPreconditions: Supabase anonymous sign-ins enabled (the web client relies on them); Attacker can create multiple guest sessions, limited only by Auth rate limits and the optional IP limiter; Attacker holds a real non-anonymous account to claim into.\n\nRecommendation: Count tickets the target has claimed or been issued over a fixed window, for example by adding a claimed_at column. Alternatively, apply the cap to the ticket's original created_at only if it was issued to that same user. Also limit anonymous ticket issuance per IP and in total, and expire unclaimed or unused tickets after a short TTL.\n\nCWE-799. Severity LOW, confidence medium."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "supabase/functions/claim-run-ticket/index.ts",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 35,
+                  "snippet": {
+                    "text": "const { data: claimed, error } = await adminClient().rpc('claim_run_ticket', {"
+                  }
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "Deno.serve handler (claim-run-ticket)",
+                  "fullyQualifiedName": "Deno.serve handler (claim-run-ticket)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "claudeSecurityPlugin": {
+              "id": "F2",
+              "title": "Daily ticket cap on seed shopping is bypassed by minting tickets on throwaway guest accounts and claiming them",
+              "impact": "Players can pick favourable seeds without bound. That defeats the stated purpose of migration 008, which is to cap seed shopping with a per-user daily limit. The effect is limited to leaderboard fairness. A bot with the public engine can already play any given seed optimally, so no confidentiality or account-level harm follows.",
+              "file": "supabase/functions/claim-run-ticket/index.ts",
+              "line": 35,
+              "description": "start-run issues tickets to any anonymous Supabase user, and the web client creates those with signInAnonymously at will. claim-run-ticket then moves a guest's ticket to the caller's real account, and the only gate is a count of the target's tickets created in the last day. The claim keeps the ticket's original created_at, so tickets minted more than 24h earlier are not counted and can be claimed without limit.",
+              "exploit_scenario": "1. The attacker signs in anonymously many times, one guest per session. 2. Each guest calls start-run up to 30 times a day and records the server-chosen seeds, which are 0..999999. 3. The attacker precomputes the best seed offline with the public engine and waits 24h, or just claims the best seeds. 4. The attacker signs into a real account and calls claim-run-ticket (10 per minute) with each guest's token. Tickets older than one day add nothing to the target's count, so the claim never hits the daily cap. 5. submit-run accepts a run for the chosen seed because the ticket belongs to the real user.",
+              "preconditions": [
+                "Supabase anonymous sign-ins enabled (the web client relies on them)",
+                "Attacker can create multiple guest sessions, limited only by Auth rate limits and the optional IP limiter",
+                "Attacker holds a real non-anonymous account to claim into"
+              ],
+              "category": "Improper Restriction of Excessive Authentication Attempts",
+              "severity": "LOW",
+              "confidence": "medium",
+              "recommendation": "Count tickets the target has claimed or been issued over a fixed window, for example by adding a claimed_at column. Alternatively, apply the cap to the ticket's original created_at only if it was issued to that same user. Also limit anonymous ticket issuance per IP and in total, and expire unclaimed or unused tickets after a short TTL.",
+              "cwe_id": "CWE-799",
+              "snippet": "const { data: claimed, error } = await adminClient().rpc('claim_run_ticket', {",
+              "symbol": "Deno.serve handler (claim-run-ticket)",
+              "declared_line": 35,
+              "via_change": null,
+              "other_cwe_ids": [],
+              "claudeSecurityPluginFindingId": "v3:222cedc3d1e2d8323c509945e91980df07cb2aeb49c9418f7134ac478681a3ac",
+              "verification": {
+                "panel": {
+                  "true": 3,
+                  "false": 0,
+                  "voters": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "ruleId": "CWE-307",
+          "ruleIndex": 1,
+          "level": "note",
+          "message": {
+            "text": "Per-user daily ticket cap, meant to stop seed shopping, is bypassed with disposable anonymous accounts and claim_run_ticket.\n\n008 caps tickets per user per day so abandoning runs to shop for a seed has a bound, but start-run issues tickets to anonymous Supabase users too, and claim_run_ticket moves any guest's ticket to a real account. The target cap only counts tickets whose original created_at is within one day and the caller can claim only the best seed, so the bound does not hold across many guest identities.\n\nImpact: Integrity of the leaderboard: the server-issued random seed no longer constrains seed selection, so top scores can be farmed by seed shopping. No data disclosure or account takeover.\n\nExploit scenario: Attacker scripts signInAnonymously repeatedly, calls start-run up to 30 times per guest (tickets and seeds are returned to the client), replays the public game engine offline to find which seeds score best, then calls claim-run-ticket with that guest's token to move only the winning ticket to their real account and submits a run for it. Tickets older than a day do not count against the target's cap, and tickets never expire.\n\nPreconditions: Supabase anonymous sign-ins are enabled (the web app calls signInAnonymously); Attacker can create many anonymous sessions (limited only by Supabase's per-IP auth rate limit); Per-IP throttling in the edge functions is off unless TRUSTED_CLIENT_IP_HEADER is set.\n\nRecommendation: Do not issue tickets to anonymous users beyond a small global cap, or enforce an issuance cap keyed by something anonymous sessions cannot multiply. Give tickets an expiry and make claim_run_ticket reject tickets older than the window. Count claimed tickets against the target using a claimed_at timestamp.\n\nCWE-799. Severity LOW, confidence medium."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "supabase/migrations/009_anonymous_guests.sql",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 46,
+                  "snippet": {
+                    "text": "  update public.run_tickets set user_id = p_to_user"
+                  }
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "claim_run_ticket",
+                  "fullyQualifiedName": "claim_run_ticket"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "claudeSecurityPlugin": {
+              "id": "F3",
+              "title": "Per-user daily ticket cap, meant to stop seed shopping, is bypassed with disposable anonymous accounts and claim_run_ticket",
+              "impact": "Integrity of the leaderboard: the server-issued random seed no longer constrains seed selection, so top scores can be farmed by seed shopping. No data disclosure or account takeover.",
+              "file": "supabase/migrations/009_anonymous_guests.sql",
+              "line": 46,
+              "description": "008 caps tickets per user per day so abandoning runs to shop for a seed has a bound, but start-run issues tickets to anonymous Supabase users too, and claim_run_ticket moves any guest's ticket to a real account. The target cap only counts tickets whose original created_at is within one day and the caller can claim only the best seed, so the bound does not hold across many guest identities.",
+              "exploit_scenario": "Attacker scripts signInAnonymously repeatedly, calls start-run up to 30 times per guest (tickets and seeds are returned to the client), replays the public game engine offline to find which seeds score best, then calls claim-run-ticket with that guest's token to move only the winning ticket to their real account and submits a run for it. Tickets older than a day do not count against the target's cap, and tickets never expire.",
+              "preconditions": [
+                "Supabase anonymous sign-ins are enabled (the web app calls signInAnonymously)",
+                "Attacker can create many anonymous sessions (limited only by Supabase's per-IP auth rate limit)",
+                "Per-IP throttling in the edge functions is off unless TRUSTED_CLIENT_IP_HEADER is set"
+              ],
+              "category": "Improper Restriction of Excessive Authentication Attempts",
+              "severity": "LOW",
+              "confidence": "medium",
+              "recommendation": "Do not issue tickets to anonymous users beyond a small global cap, or enforce an issuance cap keyed by something anonymous sessions cannot multiply. Give tickets an expiry and make claim_run_ticket reject tickets older than the window. Count claimed tickets against the target using a claimed_at timestamp.",
+              "cwe_id": "CWE-799",
+              "snippet": "  update public.run_tickets set user_id = p_to_user",
+              "symbol": "claim_run_ticket",
+              "declared_line": 46,
+              "via_change": null,
+              "other_cwe_ids": [],
+              "claudeSecurityPluginFindingId": "v3:2e4f61327f0c9fbe02c6de8988c494c81924e3867a84cae19c4e10c4e05550d8",
+              "verification": {
+                "panel": {
+                  "true": 2,
+                  "false": 1,
+                  "voters": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "ruleId": "CWE-287",
+          "ruleIndex": 2,
+          "level": "note",
+          "message": {
+            "text": "Free-tier daily run cap enforced only from client localStorage; server grants up to 30 tickets/day to everyone.\n\nThe 3-runs-per-day gate that HomeScreen turns into dailyLimitReached is computed from the user-writable localStorage key rep_daily_runs, so deleting or editing the key (or patching the JS) resets it. start-run/issue_run_ticket applies the same DAILY_TICKET_LIMIT=30 to every user regardless of entitlement, so the server never enforces the free cap.\n\nImpact: Bypass of a monetization gate (unlimited daily runs without full_access). No confidentiality loss, and ranked saves stay bounded by the server cap of 30 tickets/day.\n\nExploit scenario: A non-paying user clears or rewrites rep_daily_runs in DevTools before each launch. The UI never shows the daily-limit paywall, so they start unlimited runs. start-run keeps issuing tickets up to the server cap of 30/day and submit-run saves them, so the premium benefit of unlimited runs is obtained without full_access.\n\nPreconditions: Attacker has a browser and can edit localStorage or the client bundle; The 3/day cap is meant as a paid-tier restriction.\n\nRecommendation: If the cap is a real entitlement, enforce it in start-run/issue_run_ticket with a lower daily limit for users without full_access and keep the localStorage counter as a UI hint only.\n\nCWE-602. Severity LOW, confidence medium."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "apps/web/src/hooks/useEntitlements.ts",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 24,
+                  "snippet": {
+                    "text": "return Math.max(0, 3 - d.count);"
+                  }
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "getDailyRunsRemaining",
+                  "fullyQualifiedName": "getDailyRunsRemaining"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "claudeSecurityPlugin": {
+              "id": "F4",
+              "title": "Free-tier daily run cap enforced only from client localStorage; server grants up to 30 tickets/day to everyone",
+              "impact": "Bypass of a monetization gate (unlimited daily runs without full_access). No confidentiality loss, and ranked saves stay bounded by the server cap of 30 tickets/day.",
+              "file": "apps/web/src/hooks/useEntitlements.ts",
+              "line": 24,
+              "description": "The 3-runs-per-day gate that HomeScreen turns into dailyLimitReached is computed from the user-writable localStorage key rep_daily_runs, so deleting or editing the key (or patching the JS) resets it. start-run/issue_run_ticket applies the same DAILY_TICKET_LIMIT=30 to every user regardless of entitlement, so the server never enforces the free cap.",
+              "exploit_scenario": "A non-paying user clears or rewrites rep_daily_runs in DevTools before each launch. The UI never shows the daily-limit paywall, so they start unlimited runs. start-run keeps issuing tickets up to the server cap of 30/day and submit-run saves them, so the premium benefit of unlimited runs is obtained without full_access.",
+              "preconditions": [
+                "Attacker has a browser and can edit localStorage or the client bundle",
+                "The 3/day cap is meant as a paid-tier restriction"
+              ],
+              "category": "Improper Authentication",
+              "severity": "LOW",
+              "confidence": "medium",
+              "recommendation": "If the cap is a real entitlement, enforce it in start-run/issue_run_ticket with a lower daily limit for users without full_access and keep the localStorage counter as a UI hint only.",
+              "cwe_id": "CWE-602",
+              "snippet": "return Math.max(0, 3 - d.count);",
+              "symbol": "getDailyRunsRemaining",
+              "declared_line": 24,
+              "via_change": null,
+              "other_cwe_ids": [],
+              "claudeSecurityPluginFindingId": "v3:ae11c342912b1da08421fbeda1bdea7260e526e13b58928bfcd0478c4d9ec8e6",
+              "verification": {
+                "panel": {
+                  "true": 2,
+                  "false": 1,
+                  "voters": 3
+                }
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "claudeSecurityPlugin": {
+          "generated_at": "2026-11-08T07:00:08+00:00",
+          "scan_id": "9beb7f80-139d-4518-b904-bf32cb33e2b2",
+          "mode": "scan",
+          "scan_prefix": "",
+          "scope": [],
+          "revision": {
+            "versioned": true,
+            "commit": "2664bccc72128611bab6ce26f4f83c0586b28583",
+            "branch": "feat/casa-rosada-diorama",
+            "dirty": true
+          },
+          "revision_source": "self-reported",
+          "effort": "medium",
+          "run_shape": {
+            "requested_effort": "medium",
+            "collapsed": null,
+            "source": "coverage.json",
+            "diff_files": null,
+            "diff_lines": null,
+            "pre_existing": 0,
+            "scope_files": null,
+            "empty_diff": false,
+            "empty_scope": false,
+            "researchers_dispatched": 32,
+            "skipped_components": [
+              {
+                "name": "art-raw-browser-profiles",
+                "paths": [
+                  "art"
+                ],
+                "reason": "Raw art inputs including Chromium profile data and model files; not application code"
+              },
+              {
+                "name": "claude-config",
+                "paths": [
+                  ".claude"
+                ],
+                "reason": "Local editor/agent settings, not product code"
+              },
+              {
+                "name": "docs",
+                "paths": [
+                  "docs"
+                ],
+                "reason": "Documentation only"
+              }
+            ],
+            "completeness_check_outcome": "checked",
+            "unaccounted_top_level_dirs": [],
+            "inventory_fallback": null,
+            "top_level_dir_count": 9,
+            "target_files": 325,
+            "component_cap": 24,
+            "research_coverage": {
+              "files": 278,
+              "read": 111,
+              "not_reached": 167,
+              "unaccounted": 0,
+              "outside_components": 47,
+              "capped": false
+            }
+          },
+          "findings": {
+            "total": 4,
+            "critical": 0,
+            "high": 0,
+            "medium": 0,
+            "low": 4
+          },
+          "verification": {
+            "status": "verified",
+            "candidates": 7,
+            "candidates_deduped": 6,
+            "panel_votes": 18,
+            "panel_reviewed_findings": 4,
+            "panel_quorum_findings": 4,
+            "unreviewed_candidate_sites": 0,
+            "incomplete_panel_candidates": 0,
+            "attested_findings": 0,
+            "reason": null,
+            "researchers_dispatched": 32,
+            "researchers_returned": 32
+          },
+          "target_kind": "git-remote"
+        }
+      },
+      "versionControlProvenance": [
+        {
+          "repositoryUri": "https://github.com/ilandaniele/republica-en-llamas"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "president_milei_office": {
+    "prompt": "Edit reference image 1, the existing game scene. Reference image 2 is only the identity and hairstyle reference; IGNORE its clothing. Preserve Javier Milei's recognizable face, distinctive unruly dark hair, age, expression, body pose, camera framing and the existing Casa Rosada presidential office, reviewing and signing policy papers. Replace ALL black leather biker clothing with an unmistakable formal matte dark navy wool business SUIT JACKET, clean WHITE dress shirt with a visible collar and a sober light-blue necktie. This is official presidential business. No leather jacket, no shiny leather, no biker lapels, no zippers, studs, patches or casual outerwear. Preserve the scene's architecture, furniture, anonymous supporting adults, Argentine flags and lighting. Improve the clarity of faces, hands and architectural forms with clean intentional pixel clusters. Authentic detailed 16-bit game pixel art, consistent hard square pixels, dark outlines, rich controlled colors, no blur, no airbrushed photorealism. Wide 16:9 full-canvas scene at 1536x864. No text, letters, numbers, logos, captions or watermark. Exactly one recognizable president.",
+    "size": "1536x864",
+    "grid": [480, 270],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_milei_congress": {
+    "prompt": "Edit reference image 1, the existing game scene. Reference image 2 is only the identity and hairstyle reference; IGNORE its clothing. Preserve Javier Milei's recognizable face, distinctive unruly dark hair, age, expression, body pose, camera framing and the existing Argentine National Congress chamber, addressing legislators from the wooden lectern. Replace ALL black leather biker clothing with an unmistakable formal matte dark navy wool business SUIT JACKET, clean WHITE dress shirt with a visible collar and a sober light-blue necktie. This is official presidential business. No leather jacket, no shiny leather, no biker lapels, no zippers, studs, patches or casual outerwear. Preserve the scene's architecture, furniture, anonymous supporting adults, Argentine flags and lighting. Improve the clarity of faces, hands and architectural forms with clean intentional pixel clusters. Authentic detailed 16-bit game pixel art, consistent hard square pixels, dark outlines, rich controlled colors, no blur, no airbrushed photorealism. Wide 16:9 full-canvas scene at 1536x864. No text, letters, numbers, logos, captions or watermark. Exactly one recognizable president.",
+    "size": "1536x864",
+    "grid": [480, 270],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_milei_press": {
+    "prompt": "Edit reference image 1, the existing game scene. Reference image 2 is only the identity and hairstyle reference; IGNORE its clothing. Preserve Javier Milei's recognizable face, distinctive unruly dark hair, age, expression, body pose, camera framing and the existing formal presidential press conference with Argentine flags and cameras. Replace ALL black leather biker clothing with an unmistakable formal matte dark navy wool business SUIT JACKET, clean WHITE dress shirt with a visible collar and a sober light-blue necktie. This is official presidential business. No leather jacket, no shiny leather, no biker lapels, no zippers, studs, patches or casual outerwear. Preserve the scene's architecture, furniture, anonymous supporting adults, Argentine flags and lighting. Improve the clarity of faces, hands and architectural forms with clean intentional pixel clusters. Authentic detailed 16-bit game pixel art, consistent hard square pixels, dark outlines, rich controlled colors, no blur, no airbrushed photorealism. Wide 16:9 full-canvas scene at 1536x864. No text, letters, numbers, logos, captions or watermark. Exactly one recognizable president.",
+    "size": "1536x864",
+    "grid": [480, 270],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_milei_diplomacy": {
+    "prompt": "Edit reference image 1, the existing game scene. Reference image 2 is only the identity and hairstyle reference; IGNORE its clothing. Preserve Javier Milei's recognizable face, distinctive unruly dark hair, age, expression, body pose, camera framing and the existing official diplomatic negotiation with foreign delegates at a conference table. Replace ALL black leather biker clothing with an unmistakable formal matte dark navy wool business SUIT JACKET, clean WHITE dress shirt with a visible collar and a sober light-blue necktie. This is official presidential business. No leather jacket, no shiny leather, no biker lapels, no zippers, studs, patches or casual outerwear. Preserve the scene's architecture, furniture, anonymous supporting adults, Argentine flags and lighting. Improve the clarity of faces, hands and architectural forms with clean intentional pixel clusters. Authentic detailed 16-bit game pixel art, consistent hard square pixels, dark outlines, rich controlled colors, no blur, no airbrushed photorealism. Wide 16:9 full-canvas scene at 1536x864. No text, letters, numbers, logos, captions or watermark. Exactly one recognizable president.",
+    "size": "1536x864",
+    "grid": [480, 270],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "president_milei_crisis": {
+    "prompt": "Edit reference image 1, the existing game scene. Reference image 2 is only the identity and hairstyle reference; IGNORE its clothing. Preserve Javier Milei's recognizable face, distinctive unruly dark hair, age, expression, body pose, camera framing and the existing urgent presidential cabinet meeting at night in the Casa Rosada. Replace ALL black leather biker clothing with an unmistakable formal matte dark navy wool business SUIT JACKET, clean WHITE dress shirt with a visible collar and a sober light-blue necktie. This is official presidential business. No leather jacket, no shiny leather, no biker lapels, no zippers, studs, patches or casual outerwear. Preserve the scene's architecture, furniture, anonymous supporting adults, Argentine flags and lighting. Improve the clarity of faces, hands and architectural forms with clean intentional pixel clusters. Authentic detailed 16-bit game pixel art, consistent hard square pixels, dark outlines, rich controlled colors, no blur, no airbrushed photorealism. Wide 16:9 full-canvas scene at 1536x864. No text, letters, numbers, logos, captions or watermark. Exactly one recognizable president.",
+    "size": "1536x864",
+    "grid": [480, 270],
+    "transparent": false,
+    "group": "scenes"
+  }
+}

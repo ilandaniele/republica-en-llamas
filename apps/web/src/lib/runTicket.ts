@@ -1,4 +1,5 @@
 import { supabase, isOfflineMode } from './supabase.js';
+import { isPlaytestMode } from './playtest.js';
 
 export interface RunTicket {
   id: string;
@@ -14,10 +15,15 @@ async function ensureSession(): Promise<boolean> {
 }
 
 export async function requestRunTicket(): Promise<RunTicket | null> {
-  if (isOfflineMode || !(await ensureSession())) return null;
-  const { data, error } = await supabase.functions.invoke<RunTicket>('start-run');
-  if (error || !data) return null;
-  return data;
+  try {
+    if (isPlaytestMode || isOfflineMode || !(await ensureSession())) return null;
+    const { data, error } = await supabase.functions.invoke<RunTicket>('start-run');
+    if (error || !data || typeof data.id !== 'string' || !Number.isSafeInteger(data.seed) || data.seed < 0)
+      return null;
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 export async function currentAnonymousToken(): Promise<string | null> {

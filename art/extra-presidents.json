@@ -1,0 +1,86 @@
+{
+  "portrait_nestor_neutral": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Néstor Kirchner, Argentine president circa 2005, long angular face, prominent long nose, slightly asymmetric eyes, receding tousled gray-brown hair, dark suit and light blue tie. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Calm neutral expression. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_nestor_panic": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Néstor Kirchner, Argentine president circa 2005, long angular face, prominent long nose, slightly asymmetric eyes, receding tousled gray-brown hair, dark suit and light blue tie. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Panicked expression, raised brows, open mouth and sweat drops. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_nestor_victory": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Néstor Kirchner, Argentine president circa 2005, long angular face, prominent long nose, slightly asymmetric eyes, receding tousled gray-brown hair, dark suit and light blue tie. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Victorious happy expression, broad smile. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_cristina_neutral": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Cristina Fernández de Kirchner circa 2011, distinctive oval face, arched eyebrows, long thick auburn hair with side swept bangs, pearl earrings, black blazer and white blouse. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Calm neutral expression. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_cristina_panic": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Cristina Fernández de Kirchner circa 2011, distinctive oval face, arched eyebrows, long thick auburn hair with side swept bangs, pearl earrings, black blazer and white blouse. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Panicked expression, raised brows, open mouth and sweat drops. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_cristina_victory": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Cristina Fernández de Kirchner circa 2011, distinctive oval face, arched eyebrows, long thick auburn hair with side swept bangs, pearl earrings, black blazer and white blouse. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Victorious happy expression, broad smile. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_macri_neutral": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Mauricio Macri circa 2016, rectangular face, short salt-and-pepper hair, thick eyebrows, clean shaven, navy suit and pale blue open-collar shirt. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Calm neutral expression. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_macri_panic": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Mauricio Macri circa 2016, rectangular face, short salt-and-pepper hair, thick eyebrows, clean shaven, navy suit and pale blue open-collar shirt. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Panicked expression, raised brows, open mouth and sweat drops. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_macri_victory": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Mauricio Macri circa 2016, rectangular face, short salt-and-pepper hair, thick eyebrows, clean shaven, navy suit and pale blue open-collar shirt. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Victorious happy expression, broad smile. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_del_cano_neutral": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Nicolás del Caño, Argentine politician, youthful long face, thick dark eyebrows, short dark brown hair swept sideways, close trimmed dark beard and mustache, navy blazer and white open collar shirt. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Calm neutral expression. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_del_cano_panic": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Nicolás del Caño, Argentine politician, youthful long face, thick dark eyebrows, short dark brown hair swept sideways, close trimmed dark beard and mustache, navy blazer and white open collar shirt. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Panicked expression, raised brows, open mouth and sweat drops. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  },
+  "portrait_del_cano_victory": {
+    "prompt": "Authentic 16-bit SNES RPG pixel art, visible square pixels, hard edges, no blur or antialiasing, limited 32 color palette, dark pixel outlines. Recognizable head-and-shoulders portrait of Nicolás del Caño, Argentine politician, youthful long face, thick dark eyebrows, short dark brown hair swept sideways, close trimmed dark beard and mustache, navy blazer and white open collar shirt. ONE person centered, facing viewer, same warm upper-left light. Flat solid navy #1a1a2e background edge to edge. No text, logos, border, scenery or watermark. Victorious happy expression, broad smile. Square 1024x1024 canvas.",
+    "size": "1024x1024",
+    "grid": [100, 120],
+    "transparent": false,
+    "group": "portraits"
+  }
+}

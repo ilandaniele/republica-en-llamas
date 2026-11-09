@@ -4,6 +4,7 @@ import { ENTITLEMENT_PRODUCTS } from '@republica/game-engine';
 import type { EntitlementId } from '@republica/game-engine';
 import { trackPurchaseStarted } from '../lib/analytics.js';
 import { supabase } from '../lib/supabase.js';
+import { createCheckout } from '../lib/checkout.js';
 
 interface Props {
   entitlement: EntitlementId;
@@ -32,21 +33,7 @@ export function BuyButton({ entitlement, className = '', label }: Props) {
         window.location.href = '/login';
         return;
       }
-      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ entitlement }),
-      });
-      const data = (await res.json()) as { url?: string; error?: string };
-      if (!res.ok || !data.url) {
-        setError(data.error ?? 'Error al iniciar el pago');
-        return;
-      }
-      window.location.href = data.url;
+      window.location.href = await createCheckout(entitlement);
     } catch {
       setError('Error de conexion. Intenta de nuevo.');
     } finally {
@@ -63,7 +50,11 @@ export function BuyButton({ entitlement, className = '', label }: Props) {
       >
         {loading ? 'Redirigiendo...' : (label ?? `${product.priceLabel} — ${product.label}`)}
       </button>
-      {error && <p className="mt-1 font-mono text-xs text-crimson-400">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-1 font-mono text-xs text-crimson-400">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

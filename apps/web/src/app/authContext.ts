@@ -5,6 +5,12 @@ export interface AuthState {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  passwordRecovery: boolean;
 }
 
-export const AuthContext = createContext<AuthState>({ user: null, session: null, loading: true });
+export const AuthContext = createContext<AuthState>({
+  user: null,
+  session: null,
+  loading: true,
+  passwordRecovery: false,
+});

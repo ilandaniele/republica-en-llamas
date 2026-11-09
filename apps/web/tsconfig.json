@@ -8,10 +8,7 @@
     "noEmit": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "types": ["vite/client"],
-    "paths": {
-      "@engine/*": ["../../packages/game-engine/src/*"]
-    }
+    "types": ["vite/client"]
   },
   "include": ["src"]
 }

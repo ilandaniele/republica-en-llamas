@@ -1,0 +1,142 @@
+{
+  "cr_vendor_serve_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE adult street vendor wearing a green apron over a cream shirt and brown trousers, full body facing right, holding a small plain paper cup outward. No stall or cart. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_vendor_serve_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. The exact same vendor in the complementary serving pose, arm drawn back and other hand raised. Same identity, size, clothes, camera and foot baseline as pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_photographer_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE adult press photographer, woman with short black hair, mustard jacket and navy trousers, full body side view facing left, camera raised to her eyes. No flash drawn. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_photographer_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. The exact same photographer lowering the camera to chest height to review a photograph. Same identity, size, clothes, camera and foot baseline as pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_drummer_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE adult demonstrator wearing a white shirt and blue jeans, full body facing camera with a large light-blue marching bass drum strapped in front, two wooden drumsticks raised. Drum blank. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_drummer_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. The exact same drummer striking the drum with both sticks lowered. Same identity, size, clothes, drum, camera and foot baseline as pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_medic_walk_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE adult emergency medic, dark-skinned woman with dark tied-back hair, teal paramedic uniform, carrying a small plain white medical bag. Full body walking right, left leg forward. No logo, no injury. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_medic_walk_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. The exact same emergency medic in the complementary walk pose, right leg forward. Same identity, size, clothes, bag, camera and foot baseline as pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_worker_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE adult road worker wearing a yellow hard hat, orange safety vest and charcoal trousers, full body facing left, holding a shovel upright beside one foot. No ground or pile. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_worker_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. The exact same worker bending slightly and moving the shovel forward in a digging pose. Same identity, size, clothes, tool, camera and foot baseline as pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_woman_walk_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE adult civilian woman with curly dark brown hair, burgundy coat, cream trousers and a small navy shoulder bag, full body walking left, left leg forward. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_woman_walk_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. The exact same woman in the complementary walking pose, right leg forward. Same identity, size, clothes, bag, camera and foot baseline as pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_ambulance": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE compact Argentine emergency ambulance, side view facing right, white body with teal horizontal band, red emergency roof lamps, blue windows, black tires. No words, symbols or numbers. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [64, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_water_cannon": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE compact navy blue riot-control water cannon truck, side view facing left, armored cab, small roof water nozzle, black tires, blue windows. No water stream, no people, no words or symbols. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [64, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_limousine": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE black presidential sedan limousine, side view facing right, glossy charcoal body, dark-blue windows, black tires, tiny Argentine pennant on front fender. No people or logos. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [64, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_news_van": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE cream and navy television news van, side view facing left, small satellite dish and folded antenna on roof, dark windows, black tires. No people, words, logos or numbers. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [56, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_food_cart": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE small Argentine street food pushcart, front three-quarter view, stainless steel counter, charcoal grill with closed lid, cream and teal striped umbrella, two small wheels. No vendor, food lettering, smoke or ground. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [40, 40],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_barricade_solid": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE small wooden street barricade with stacked plain wooden pallets and two black tires, no fire, no smoke, no graffiti, no people, no ground. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [48, 28],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_aid_tent": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE small emergency medical aid tent, front view, cream canvas with teal roof trim, open doorway, plain white flag on short pole. No symbols, text, ground or people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [48, 40],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_construction_barrier": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the Casa Rosada layered diorama. Reference image 1 is ONLY the palette, pixel size, dark outlines, upper-left light and slightly elevated front camera; DO NOT draw its island or palace. ONE isolated sprite, centered and fully visible. Full canvas perfectly flat solid pure magenta #FF00FF edge to edge. No shadow, floor, scenery, text, letters, numbers, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixel clusters, no anti-aliasing or blur. ONE orange and cream striped temporary roadwork barrier on two black feet, with a small amber warning lamp on top. No letters, ground, shadows or people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [40, 24],
+    "transparent": true,
+    "group": "diorama"
+  }
+}

@@ -16,8 +16,8 @@ export function MilestoneToast({ message: milestoneToast }: { message: string | 
           className="pixel-border-gold fixed left-1/2 top-4 z-50 bg-navy-900 px-4 py-3 text-center text-gold-400"
           style={{
             transform: 'translateX(-50%)',
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '7px',
+            fontFamily: 'var(--font-readable)',
+            fontSize: '14px',
             maxWidth: '80vw',
           }}
         >

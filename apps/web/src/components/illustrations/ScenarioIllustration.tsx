@@ -2,6 +2,9 @@
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { ScenarioId } from '@republica/game-engine';
+import { useGameImage } from '../../hooks/useGameImage.js';
+import { SCENARIO_IMAGES } from './event-scenes/scenarioImages.js';
+import { RasterSceneEffects } from './event-scenes/RasterSceneEffects.js';
 
 gsap.registerPlugin(useGSAP);
 
@@ -743,9 +746,12 @@ function SceneConflictoIran({ pid }: { pid: string }) {
 // ── Main export ────────────────────────────────────────────────────────────────
 export function ScenarioIllustration({ id, presidentId = 'ingeniero' }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const sceneId = SCENARIO_IMAGES[id] ?? '';
+  const imageUrl = useGameImage(sceneId);
 
   useGSAP(
     () => {
+      if (imageUrl || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
       if (!containerRef.current) return;
       switch (id) {
         case 'hiperinflacion_1989':
@@ -867,7 +873,7 @@ export function ScenarioIllustration({ id, presidentId = 'ingeniero' }: Props) {
         }
       }
     },
-    { scope: containerRef, dependencies: [id, presidentId] },
+    { scope: containerRef, dependencies: [id, presidentId, imageUrl], revertOnUpdate: true },
   );
 
   const scenes: Partial<Record<ScenarioId, React.ReactElement>> = {
@@ -883,8 +889,12 @@ export function ScenarioIllustration({ id, presidentId = 'ingeniero' }: Props) {
   };
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+    <div
+      ref={containerRef}
+      style={{ width: '100%', height: '100%', background: '#1a1a2e', overflow: 'hidden' }}
+    >
       <svg
+        xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 320 180"
         preserveAspectRatio="xMidYMid meet"
         width="100%"
@@ -892,7 +902,14 @@ export function ScenarioIllustration({ id, presidentId = 'ingeniero' }: Props) {
         style={{ imageRendering: 'pixelated', display: 'block' }}
         aria-label={`Escenario: ${id}`}
       >
-        {scenes[id] ?? null}
+        {imageUrl ? (
+          <>
+            <image href={imageUrl} width={320} height={180} preserveAspectRatio="xMidYMid slice" />
+            <RasterSceneEffects scene={sceneId} />
+          </>
+        ) : (
+          (scenes[id] ?? null)
+        )}
       </svg>
     </div>
   );

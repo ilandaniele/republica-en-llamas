@@ -35,7 +35,7 @@ export function CrisisAlert({ crises }: Props) {
           </m.span>
           <span
             className="text-crimson-200 uppercase"
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
           >
             CRISIS ACTIVA{crises.length > 1 ? 'S' : ''} — ACTUA YA
           </span>
@@ -52,7 +52,7 @@ export function CrisisAlert({ crises }: Props) {
               >
                 <div className="flex items-center justify-between">
                   <span
-                    style={{ fontFamily: "'VT323', monospace", fontSize: '16px' }}
+                    style={{ fontFamily: 'var(--font-readable)', fontSize: '16px' }}
                     className="text-crimson-200"
                   >
                     {CRISIS_LABELS[crisis.type] ?? crisis.type}
@@ -60,7 +60,7 @@ export function CrisisAlert({ crises }: Props) {
                 </div>
                 <div
                   className={`mt-1 font-bold ${isUrgent ? 'animate-pulse text-red-300' : 'text-gold-400'}`}
-                  style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+                  style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
                 >
                   TENES {turnsLeft} TURNO{turnsLeft !== 1 ? 'S' : ''} PARA RESOLVERLO
                 </div>

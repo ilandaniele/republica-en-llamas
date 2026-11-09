@@ -1,4 +1,10 @@
 export type PortraitId =
+  | 'kicillof'
+  | 'grabois'
+  | 'nestor'
+  | 'cristina'
+  | 'macri'
+  | 'del_cano'
   | 'milei'
   | 'massa'
   | 'bullrich'

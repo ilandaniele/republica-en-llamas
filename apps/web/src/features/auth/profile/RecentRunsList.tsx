@@ -19,10 +19,10 @@ function RecentRunRow({ run }: { run: RecentRun }) {
 
 function RecentRunsBody({ runs, loading }: { runs: RecentRun[]; loading: boolean }) {
   if (loading) {
-    return <p className="text-smoke-500 animate-pulse font-mono text-xs">Cargando historial...</p>;
+    return <p className="animate-pulse font-mono text-xs text-smoke-500">Cargando historial...</p>;
   }
   if (runs.length === 0) {
-    return <p className="text-smoke-500 font-mono text-xs">Sin partidas registradas aún.</p>;
+    return <p className="font-mono text-xs text-smoke-500">Sin partidas registradas aún.</p>;
   }
   return (
     <div className="space-y-2">
@@ -38,8 +38,8 @@ export function RecentRunsList({ runs, loading }: { runs: RecentRun[]; loading: 
     <div className="pixel-border bg-navy-800 p-4">
       <h3
         style={{
-          fontFamily: "'Press Start 2P', monospace",
-          fontSize: '7px',
+          fontFamily: 'var(--font-readable)',
+          fontSize: '14px',
           color: 'var(--gold)',
           letterSpacing: '0.1em',
           marginBottom: '16px',

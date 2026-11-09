@@ -1,0 +1,138 @@
+.raster-effect {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.raster-effect--smoke {
+  animation: scene-smoke 3s steps(12) infinite;
+}
+.raster-effect--embers {
+  animation: scene-embers 2s steps(16) infinite;
+}
+.raster-effect--rain {
+  animation: scene-rain 2s steps(24) infinite;
+}
+.raster-effect--confetti {
+  animation: scene-confetti 3s steps(20) infinite;
+}
+.raster-effect--flash {
+  animation: scene-flash 4s steps(1) infinite;
+}
+.raster-effect--signal {
+  animation: scene-signal 3s steps(3) infinite;
+}
+@keyframes scene-smoke {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(14px, -100px) scale(3);
+  }
+}
+@keyframes scene-embers {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-8px, -110px);
+  }
+}
+@keyframes scene-rain {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.35;
+  }
+  90% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-25px, 200px);
+  }
+}
+@keyframes scene-confetti {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(18px, 200px) rotate(180deg);
+  }
+}
+@keyframes scene-flash {
+  0%,
+  85%,
+  92%,
+  100% {
+    opacity: 0;
+  }
+  86%,
+  91% {
+    opacity: 0.8;
+    transform: scale(3);
+  }
+}
+@keyframes scene-signal {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(2);
+  }
+}
+.pixel-portrait-frame {
+  overflow: hidden;
+  background: #1a1a2e;
+}
+.pixel-portrait-image {
+  transform-origin: center bottom;
+  animation: portrait-breathe 3s steps(4) infinite;
+}
+.pixel-portrait-image--panic {
+  animation: portrait-tremble 0.4s steps(2) infinite;
+}
+.pixel-portrait-image--victory {
+  animation: portrait-cheer 1s steps(4) infinite;
+}
+@keyframes portrait-breathe {
+  50% {
+    transform: scale(1.015);
+  }
+}
+@keyframes portrait-tremble {
+  25% {
+    transform: scale(1.025) translateX(-1px);
+  }
+  75% {
+    transform: scale(1.025) translateX(1px);
+  }
+}
+@keyframes portrait-cheer {
+  50% {
+    transform: scale(1.035) translateY(-1px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .raster-effect,
+  .pixel-portrait-image {
+    animation: none;
+  }
+  .raster-effects {
+    display: none;
+  }
+}

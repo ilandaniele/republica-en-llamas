@@ -29,8 +29,12 @@ export function calculateInflationBreakdown(state: GameState): InflationBreakdow
   const expectationsActive = state.turn >= mod.inflationAccelerationTurn && gap > 0;
   const accelerationEffect = expectationsActive ? (gap / ADJUSTMENT_RATE) * EXPECTATIONS_RATE : 0;
 
-  const newInflation = clamp(previousInflation + gap + accelerationEffect, -20, 200);
+  const rawInflation = previousInflation + gap + accelerationEffect;
+  const newInflation = clamp(rawInflation, -20, 200);
   return {
+    directEffect: 0,
+    scenarioEffect: 0,
+    limitEffect: newInflation - rawInflation,
     deficitPressure,
     marketDistrust,
     currencyWeakness,

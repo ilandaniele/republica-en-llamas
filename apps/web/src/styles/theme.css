@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @layer base {
   :root {
     --color-navy: #1e3a5f;
@@ -22,6 +33,7 @@
     --peso-grey: #888888;
     --night-blue: #0d1b2a;
     --concrete: #2a2a2a;
+    --font-readable: 'Pixelify Sans', monospace;
   }
 
   * {
@@ -48,10 +60,13 @@
   }
 
   body {
-    @apply bg-navy-900 font-sans text-smoke-100 antialiased;
+    @apply bg-navy-900 font-sans text-smoke-100;
+    font-size: 18px;
+    line-height: 1.5;
     background-color: var(--celeste-dark);
     min-height: 100dvh;
     overflow-x: hidden;
+    font-synthesis: none;
   }
 
   #root {
@@ -65,9 +80,173 @@
   h3 {
     @apply font-serif;
   }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+  button {
+    touch-action: manipulation;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
 }
 
 @layer components {
+  .home-actions button,
+  .home-tabs button,
+  .account-menu button,
+  .ui-screen button {
+    font-family: var(--font-readable);
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    min-height: 44px;
+  }
+
+  .home-actions button {
+    font-size: 22px;
+    min-height: 52px;
+    padding: 14px 20px;
+  }
+
+  .home-tabs button,
+  .account-menu button,
+  .ui-screen button {
+    font-size: 18px;
+  }
+
+  .home-levels .difficulty-name {
+    font-family: var(--font-readable);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  .home-levels .difficulty-description {
+    font-family: var(--font-readable);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+
+  .home-levels button {
+    min-height: 120px;
+  }
+
+  .ui-screen h1,
+  .event-card .event-title {
+    font-family: var(--font-readable);
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .event-card .event-title {
+    font-size: 24px;
+  }
+
+  .event-heading {
+    padding: 14px 20px 10px;
+  }
+
+  .event-card.congress-session {
+    background: var(--night-blue);
+    color: var(--white);
+    padding: 20px;
+  }
+
+  .event-art {
+    height: 200px;
+  }
+
+  .event-content {
+    padding: 14px 20px 18px;
+  }
+
+  .event-description,
+  .event-card .choice-description,
+  .event-confirm,
+  .variables-panel,
+  .game-stat-strip {
+    font-family: var(--font-readable);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .event-description {
+    margin-bottom: 14px;
+    color: #222;
+    font-size: 18px;
+  }
+
+  .event-card .pixel-choice-card {
+    min-height: 44px;
+    padding: 10px 12px;
+    align-content: center;
+  }
+
+  .event-confirm button {
+    font-family: var(--font-readable);
+    font-size: 16px;
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+
+  .event-president span {
+    font-family: var(--font-readable);
+    font-size: 16px;
+  }
+
+  .event-heading > span {
+    font-family: var(--font-readable);
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .variables-panel h3 {
+    font-family: var(--font-readable);
+    font-size: 18px;
+    line-height: 1.35;
+    font-weight: 600;
+  }
+
+  .variables-panel p.uppercase {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .variables-panel .variable-meter {
+    font-size: 15px;
+  }
+
+  .game-screen {
+    padding-bottom: 48px;
+  }
+
+  @media (min-width: 1024px) {
+    .event-art {
+      height: clamp(160px, 26dvh, 270px);
+    }
+
+    .event-card .event-choices {
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+      gap: 10px;
+    }
+
+    .event-card .pixel-choice-card {
+      padding: 8px 10px;
+    }
+  }
+
   /* ─── Fire particles (CSS-only, no JS) ───── */
   .fire-container {
     position: relative;
@@ -341,8 +520,8 @@
   .ticker-text {
     display: inline-block;
     animation: ticker-scroll 18s linear infinite;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 7px;
+    font-family: var(--font-readable);
+    font-size: 14px;
     color: white;
     padding-top: 2px;
     padding-bottom: 2px;
@@ -381,6 +560,14 @@
 }
 
 @layer utilities {
+  .font-mono.text-xs {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  .font-mono.text-sm {
+    font-size: 18px;
+    line-height: 1.4;
+  }
   .text-shadow-gold {
     text-shadow: 0 0 20px rgba(246, 180, 14, 0.6);
   }

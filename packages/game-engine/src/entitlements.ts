@@ -6,6 +6,11 @@
   | 'remove_ads'
   | 'full_access';
 
+import { PRESIDENT_IDS, canonicalPresident, isPresidentId } from './presidents.js';
+
+const FREE_PRESIDENTS = ['milei', 'massa', 'kicillof'];
+const PAID_PRESIDENTS = PRESIDENT_IDS.filter((id) => !FREE_PRESIDENTS.includes(id));
+
 export interface EntitlementProduct {
   id: EntitlementId;
   label: string;
@@ -21,22 +26,23 @@ export const ENTITLEMENT_PRODUCTS: Record<EntitlementId, EntitlementProduct> = {
   presidents_pack: {
     id: 'presidents_pack',
     label: 'Pack Presidentes',
-    description: 'Juga como Sergio Massa o Patricia Bullrich',
+    description: 'Desbloqueá los nueve presidentes adicionales, incluido Juan Grabois.',
     price: 2.99,
     priceLabel: '$2.99',
     stripePriceId: 'price_1TAaidPF04vzkOdostTuqofY',
     rcIdentifier: 'presidents_pack',
-    unlocks: ['populista', 'tecnocrata'],
+    unlocks: [...PAID_PRESIDENTS],
   },
   opposition_pack: {
     id: 'opposition_pack',
     label: 'Pack Oposicion',
-    description: 'Kirchner y Kicillof como personajes secundarios desbloqueados',
+    description:
+      'Personajes secundarios de la oposición. La selección presidencial se vende en Pack Presidentes.',
     price: 1.99,
     priceLabel: '$1.99',
     stripePriceId: 'price_1TAaiePF04vzkOdov9PYjTPH',
     rcIdentifier: 'opposition_pack',
-    unlocks: ['kirchner', 'kicillof'],
+    unlocks: ['kirchner'],
   },
   mode_crisis_express: {
     id: 'mode_crisis_express',
@@ -76,22 +82,30 @@ export const ENTITLEMENT_PRODUCTS: Record<EntitlementId, EntitlementProduct> = {
     priceLabel: '$5.99',
     stripePriceId: 'price_1TAaiuPF04vzkOdowvUxpkCL',
     rcIdentifier: 'full_access',
-    unlocks: ['populista', 'tecnocrata', 'kirchner', 'kicillof', 'crisis_express', 'historical', 'no_ads'],
+    unlocks: [...PAID_PRESIDENTS, 'kirchner', 'crisis_express', 'historical', 'no_ads'],
   },
 };
 
 export const FREE_TIER = {
-  presidents: ['ingeniero'] as string[],
+  presidents: ['ingeniero', 'populista', 'kicillof'] as string[],
   modes: ['normal', 'easy', 'hard'] as string[],
   maxRunsPerDay: 3,
 } as const;
 
 export function isFree(featureId: string): boolean {
-  return FREE_TIER.presidents.includes(featureId) || FREE_TIER.modes.includes(featureId);
+  return FREE_PRESIDENTS.includes(canonicalPresident(featureId) ?? '') || FREE_TIER.modes.includes(featureId);
+}
+
+export function canPlayPresident(id: string | undefined, entitlements: readonly string[]): boolean {
+  if (id === undefined) return true;
+  if (!isPresidentId(id)) return false;
+  return isFree(id) || entitlements.includes('presidents_pack') || entitlements.includes('full_access');
 }
 
 export function entitlementsForFeature(featureId: string): EntitlementId[] {
+  if (isFree(featureId)) return [];
+  const normalized = canonicalPresident(featureId) ?? featureId;
   return (Object.values(ENTITLEMENT_PRODUCTS) as EntitlementProduct[])
-    .filter((p) => p.unlocks.includes(featureId))
+    .filter((p) => p.unlocks.includes(normalized))
     .map((p) => p.id);
 }

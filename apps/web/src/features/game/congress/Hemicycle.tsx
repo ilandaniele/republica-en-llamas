@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { CX, CY, ROW_RADII } from './congressData.js';
 import { seatColor } from './congressData.js';
 import type { Seat, VoteStatus } from './congressData.js';
@@ -44,6 +45,19 @@ function ChoriVendor() {
   );
 }
 
+const SeatDot = memo(function SeatDot({ seat, vote, live }: { seat: Seat; vote: VoteStatus; live: boolean }) {
+  return (
+    <circle
+      cx={seat.x}
+      cy={seat.y}
+      r={5}
+      fill={seatColor(seat, vote)}
+      opacity={vote === 'pending' ? (live ? 0.5 : 0.4) : 1}
+      style={live ? { transition: 'fill 0.15s ease, opacity 0.15s ease' } : undefined}
+    />
+  );
+});
+
 export function Hemicycle({ seats, seatVotes, required, live }: HemicycleProps) {
   return (
     <div className="w-full overflow-hidden rounded-lg border border-navy-700 bg-navy-900">
@@ -53,21 +67,9 @@ export function Hemicycle({ seats, seatVotes, required, live }: HemicycleProps) 
         style={{ display: 'block', maxHeight: live ? '340px' : '200px' }}
       >
         {live && <ArcGuides />}
-        {seats.map((seat) => {
-          const vote = seatVotes[seat.index] ?? 'pending';
-          const pendingOpacity = live ? 0.5 : 0.4;
-          return (
-            <circle
-              key={seat.index}
-              cx={seat.x}
-              cy={seat.y}
-              r={5}
-              fill={seatColor(seat, vote)}
-              opacity={vote === 'pending' ? pendingOpacity : 1}
-              style={live ? { transition: 'fill 0.15s ease, opacity 0.15s ease' } : undefined}
-            />
-          );
-        })}
+        {seats.map((seat) => (
+          <SeatDot key={seat.index} seat={seat} vote={seatVotes[seat.index] ?? 'pending'} live={live} />
+        ))}
         {live && (
           <>
             <text x={CX} y={CY + 16} textAnchor="middle" fill="#64748b" fontSize="10" fontFamily="monospace">

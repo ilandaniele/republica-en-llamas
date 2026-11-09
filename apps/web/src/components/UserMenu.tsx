@@ -24,11 +24,11 @@ export function UserMenu() {
 
   if (!user) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="account-menu flex items-center gap-2">
         <button
           onClick={() => navigate('/login')}
           {...prefetchOnIntent('login')}
-          className="text-smoke-300 rounded border border-navy-500 bg-navy-700 px-3 py-1.5 font-mono text-sm transition-colors hover:bg-navy-600"
+          className="rounded border border-navy-500 bg-navy-700 px-3 py-1.5 font-mono text-sm text-smoke-300 transition-colors hover:bg-navy-600"
         >
           Iniciar sesión
         </button>
@@ -47,10 +47,10 @@ export function UserMenu() {
     (user.user_metadata?.['username'] as string | undefined) ?? user.email?.split('@')[0] ?? '?';
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="account-menu relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="text-smoke-300 flex items-center gap-2 rounded-lg border border-navy-600 bg-navy-800 px-3 py-1.5 font-mono text-xs transition-colors hover:bg-navy-700"
+        className="flex items-center gap-2 rounded-lg border border-navy-600 bg-navy-800 px-3 py-1.5 font-mono text-xs text-smoke-300 transition-colors hover:bg-navy-700"
       >
         {personalBest && <span className="text-gold-400">🏆 {personalBest.score.toLocaleString()}</span>}
         <span>👤 {displayName}</span>
@@ -65,7 +65,7 @@ export function UserMenu() {
               navigate('/profile');
             }}
             {...prefetchOnIntent('profile')}
-            className="text-smoke-300 w-full px-4 py-2 text-left font-mono text-xs transition-colors hover:bg-navy-700"
+            className="w-full px-4 py-2 text-left font-mono text-xs text-smoke-300 transition-colors hover:bg-navy-700"
           >
             👤 Mi Perfil
           </button>
@@ -75,7 +75,7 @@ export function UserMenu() {
               navigate('/history');
             }}
             {...prefetchOnIntent('history')}
-            className="text-smoke-300 w-full px-4 py-2 text-left font-mono text-xs transition-colors hover:bg-navy-700"
+            className="w-full px-4 py-2 text-left font-mono text-xs text-smoke-300 transition-colors hover:bg-navy-700"
           >
             📋 Mis Partidas
           </button>

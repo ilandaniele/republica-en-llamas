@@ -55,20 +55,20 @@ export function TutorialOverlay() {
       >
         <div className="pixel-border glow-celeste mx-4 max-w-md bg-navy-800 p-8 shadow-2xl">
           <div
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
             className="mb-3 uppercase text-gold-400"
           >
             TUTORIAL {tutorialStep + 1}/{TUTORIAL_STEPS.length}
           </div>
           <h2
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', lineHeight: '1.8' }}
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px', lineHeight: '1.8' }}
             className="mb-3 text-smoke-100"
           >
             {step.title}
           </h2>
           <p
-            style={{ fontFamily: "'VT323', monospace", fontSize: '18px' }}
-            className="text-smoke-300 mb-6 leading-relaxed"
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '18px' }}
+            className="mb-6 leading-relaxed text-smoke-300"
           >
             {step.body}
           </p>
@@ -84,7 +84,7 @@ export function TutorialOverlay() {
             <button
               onClick={isLast ? completeTutorial : completeTutorialStep}
               className="pixel-border-gold bg-gold-500 px-6 py-2 font-bold text-navy-900 transition-colors hover:bg-gold-400"
-              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
+              style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
             >
               {isLast ? 'COMENZAR' : 'SIGUIENTE ▶'}
             </button>

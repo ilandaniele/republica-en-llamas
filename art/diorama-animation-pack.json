@@ -1,0 +1,170 @@
+{
+  "cr_citizen_walk_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. ONE adult civilian with short brown hair, teal jacket, cream trousers and dark shoes, walking toward the right. Full body, three-quarter side view. Left leg forward, right arm forward. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [16, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_citizen_walk_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. The exact same civilian in the complementary walking pose: right leg forward, left arm forward. Same body size, camera, clothing, identity and baseline as the pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [16, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_supporter_cheer_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. ONE adult supporter with dark hair, light blue shirt and dark trousers, full body facing camera with both arms raised in celebration. Feet on the same baseline, left knee slightly bent. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [16, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_supporter_cheer_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. The exact same supporter in the complementary cheering pose: arms slightly lowered outward, right knee bent. Same body size, camera, clothing, identity and baseline as the pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [16, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_protester_run_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. ONE adult civilian with dark hair, rust orange jacket and navy trousers, full body three-quarter view running toward the left, left leg extended and right arm forward. Empty hands, no injuries. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [16, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_protester_run_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. The exact same civilian in the complementary running pose: right leg extended and left arm forward. Same body size, camera, clothing, identity and baseline as the pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [16, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_guard_fire_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. ONE stylized adult security guard in navy uniform and helmet, full body side view facing right, holding a small rifle horizontally at waist level, braced standing pose. No firing flash, no victim, no blood. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_guard_fire_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. The exact same security guard in a recoil pose, rifle slightly raised and elbows bent. Same body size, camera, clothing, identity and baseline as the pose reference. No firing flash, no victim, no blood. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_british_marine_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. ONE adult British Royal Marine in olive green 1980s field uniform, green beret, dark boots, compact backpack and lowered rifle, full body side view marching left. Left leg forward. No insignia text, no wounds. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_british_marine_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. The exact same British marine in the complementary marching pose: right leg forward. Same body size, camera, clothing, identity and baseline as the pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [20, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_flag_wave_a": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. ONE Argentine flag on a narrow dark pole with gold finial, three horizontal light blue white light blue bands and a tiny golden sun, cloth billowing right in a broad upward fold. Pole perfectly vertical. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_flag_wave_b": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. The exact same Argentine flag and pole in the complementary waving pose, cloth billowing right in a broad downward fold. Same pole size, camera, colors and baseline as the pose reference. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 24],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_british_ship": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. ONE small British Royal Navy gray frigate, side view bow facing left, gray hull, radar mast, small naval turret and a tiny red white blue British naval ensign. No ocean, no wake, no smoke, no lettering. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [96, 40],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_helicopter_transport": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. ONE military transport helicopter, olive green body, pale blue windows, rear cargo door, main rotor, tail rotor and landing wheels, side view facing left. No people, no dust, no ground. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [64, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_milei": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_massa": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_bullrich": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_bregman": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_schiaretti": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_larreta": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_nestor": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_cristina": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_macri": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  },
+  "cr_president_del_cano": {
+    "prompt": "Authentic 16-bit SNES pixel-art sprite for the existing Casa Rosada layered diorama. Use reference image 1 ONLY for palette, chunky pixel size, dark outlines, upper-left light and slightly elevated front camera. Do NOT draw the island or palace. ONE isolated sprite, centered, fully visible, nothing else. Full canvas flat solid pure magenta #FF00FF edge to edge. No shadow, ground, text, letters, border or watermark. NEVER use magenta or pure pink inside the sprite. Hard square pixels, no antialiasing, no gradients except dithering. Reference image 2 is the exact identity reference. ONE small full-body chibi sprite of that selected Argentine president, preserving face, hairstyle, age, gender and clothing colors. Wearing a light-blue white presidential sash with a small gold medallion over their clothes. Front view, standing proudly, right hand raised in greeting from a balcony, left hand relaxed. Do NOT draw the balcony, building, flags or other people. Canvas 1024x1024.",
+    "size": "1024x1024",
+    "grid": [24, 32],
+    "transparent": true,
+    "group": "diorama"
+  }
+}

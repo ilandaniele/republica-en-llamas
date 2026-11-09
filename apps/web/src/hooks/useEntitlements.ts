@@ -2,6 +2,7 @@
 import { supabase } from '../lib/supabase.js';
 import { useAuth } from './useAuth.js';
 import type { EntitlementId } from '@republica/game-engine';
+import { isPlaytestMode } from '../lib/playtest.js';
 
 const DAILY_KEY = 'rep_daily_runs';
 
@@ -64,11 +65,12 @@ export function useEntitlements() {
   });
 
   function hasEntitlement(id: EntitlementId | string): boolean {
+    if (isPlaytestMode) return ['mode_crisis_express', 'mode_historical', 'remove_ads'].includes(id);
     if (entitlements.includes('full_access' as EntitlementId)) return true;
     return entitlements.includes(id as EntitlementId);
   }
 
-  const hasPremium = entitlements.includes('full_access');
+  const hasPremium = isPlaytestMode || entitlements.includes('full_access');
 
   return { entitlements, hasEntitlement, hasPremium, isLoading, refetch };
 }

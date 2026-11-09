@@ -36,7 +36,7 @@ export function TensionMeter({ state }: { state: GameState }) {
           transition={{ duration: 0.8, ease: 'easeOut' }}
         />
       </div>
-      <span className="text-smoke-300 w-8 text-right font-mono text-xs">{Math.round(tension)}</span>
+      <span className="w-8 text-right font-mono text-xs text-smoke-300">{Math.round(tension)}</span>
     </div>
   );
 }

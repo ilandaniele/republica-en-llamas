@@ -20,12 +20,12 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
       {
         id: 'geo_001_a',
         textKey: 'event.geo_001.choice_a',
-        effects: { inflationDelta: 8, foreignReservesDelta: -10, marketConfidenceDelta: -8 },
+        effects: { foreignReservesDelta: -10, marketConfidenceDelta: -8, deficitDelta: 8 },
       },
       {
         id: 'geo_001_b',
         textKey: 'event.geo_001.choice_b',
-        effects: { inflationDelta: 4, deficitDelta: 8, popularityDelta: -5 },
+        effects: { inflationDelta: 4, deficitDelta: -5, popularityDelta: -5 },
       },
       {
         id: 'geo_001_c',
@@ -35,7 +35,7 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
       {
         id: 'geo_001_d',
         textKey: 'event.geo_001.choice_d',
-        effects: { popularityDelta: -8, marketConfidenceDelta: 12, inflationDelta: -2 },
+        effects: { popularityDelta: -8, marketConfidenceDelta: 12, deficitDelta: 5 },
       },
     ],
   },
@@ -84,7 +84,7 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
       {
         id: 'geo_008_b',
         textKey: 'event.geo_008.choice_b',
-        effects: { deficitDelta: -5, popularityDelta: -6, inflationDelta: -3 },
+        effects: { deficitDelta: -5, popularityDelta: -6 },
       },
       {
         id: 'geo_008_c',
@@ -108,17 +108,17 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
       {
         id: 'geo_002_a',
         textKey: 'event.geo_002.choice_a',
-        effects: { inflationDelta: 6, popularityDelta: -4, foreignReservesDelta: -8 },
+        effects: { popularityDelta: -4, deficitDelta: 5 },
       },
       {
         id: 'geo_002_b',
         textKey: 'event.geo_002.choice_b',
-        effects: { inflationDelta: 10, popularityDelta: 5, currencyStrengthDelta: -8 },
+        effects: { popularityDelta: 5, deficitDelta: 2 },
       },
       {
         id: 'geo_002_c',
         textKey: 'event.geo_002.choice_c',
-        effects: { inflationDelta: 3, deficitDelta: 6, marketConfidenceDelta: -5 },
+        effects: { deficitDelta: 3 },
       },
       {
         id: 'geo_002_d',
@@ -196,7 +196,7 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
       {
         id: 'geo_005_a',
         textKey: 'event.geo_005.choice_a',
-        effects: { inflationDelta: 10, currencyStrengthDelta: -8, foreignReservesDelta: -10 },
+        effects: { inflationDelta: 3, currencyStrengthDelta: -8, foreignReservesDelta: -10, deficitDelta: 6 },
       },
       {
         id: 'geo_005_b',
@@ -206,7 +206,7 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
       {
         id: 'geo_005_c',
         textKey: 'event.geo_005.choice_c',
-        effects: { marketConfidenceDelta: -8, inflationDelta: 2, popularityDelta: -5 },
+        effects: { marketConfidenceDelta: -8, inflationDelta: 5, popularityDelta: -5, deficitDelta: -4 },
       },
       {
         id: 'geo_005_d',

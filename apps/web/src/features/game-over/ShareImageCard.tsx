@@ -17,6 +17,13 @@ const HEADLINES: Record<string, string> = {
 };
 
 const PRESIDENT_LABELS: Record<string, string> = {
+  kicillof: 'Axel Kicillof',
+  grabois: 'Juan Grabois',
+  nestor: 'Néstor Kirchner',
+  cristina: 'Cristina Fernández de Kirchner',
+  macri: 'Mauricio Macri',
+  del_cano: 'Nicolás del Caño',
+
   ingeniero: 'J. Milei — La Motosierra',
   populista: 'S. Massa — El Candidato',
   tecnocrata: 'P. Bullrich — La Mano Dura',
@@ -42,10 +49,10 @@ export const ShareImageCard = forwardRef<HTMLDivElement, Props>(({ gameState, pr
         left: '-9999px',
         top: '-9999px',
         width: '600px',
-        height: '340px',
+        minHeight: '340px',
         overflow: 'hidden',
         backgroundColor: '#f4f0e8',
-        fontFamily: 'Georgia, serif',
+        fontFamily: 'var(--font-readable)',
         imageRendering: 'pixelated',
         userSelect: 'none',
       }}
@@ -72,10 +79,12 @@ export const ShareImageCard = forwardRef<HTMLDivElement, Props>(({ gameState, pr
           borderBottom: '1px solid #8b7355',
           display: 'flex',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '4px 8px',
           padding: '3px 12px',
-          fontSize: '8px',
+          fontSize: '14px',
           color: '#555',
-          fontFamily: 'monospace',
+          fontFamily: 'var(--font-readable)',
         }}
       >
         <span>{date.toUpperCase()}</span>
@@ -112,7 +121,14 @@ export const ShareImageCard = forwardRef<HTMLDivElement, Props>(({ gameState, pr
             </p>
           </div>
 
-          <p style={{ fontSize: '11px', color: '#444', marginBottom: '8px', fontFamily: 'monospace' }}>
+          <p
+            style={{
+              fontSize: '18px',
+              color: '#444',
+              marginBottom: '8px',
+              fontFamily: 'var(--font-readable)',
+            }}
+          >
             Bajo el mandato de <strong>{presidentLabel}</strong>, Argentina llegó al turno {gameState.turn}{' '}
             {isWin ? 'completando el período con éxito.' : 'antes de un colapso sin precedentes.'}
           </p>
@@ -131,8 +147,8 @@ export const ShareImageCard = forwardRef<HTMLDivElement, Props>(({ gameState, pr
                   backgroundColor: '#1a1a1a',
                   color: '#f4f0e8',
                   padding: '3px 6px',
-                  fontSize: '9px',
-                  fontFamily: 'monospace',
+                  fontSize: '16px',
+                  fontFamily: 'var(--font-readable)',
                   display: 'flex',
                   justifyContent: 'space-between',
                 }}
@@ -162,10 +178,10 @@ export const ShareImageCard = forwardRef<HTMLDivElement, Props>(({ gameState, pr
         >
           <p
             style={{
-              fontSize: '8px',
+              fontSize: '14px',
               letterSpacing: '3px',
               margin: 0,
-              fontFamily: 'monospace',
+              fontFamily: 'var(--font-readable)',
               opacity: 0.7,
             }}
           >
@@ -183,7 +199,13 @@ export const ShareImageCard = forwardRef<HTMLDivElement, Props>(({ gameState, pr
             {score}
           </p>
           <p
-            style={{ fontSize: '8px', fontFamily: 'monospace', margin: 0, opacity: 0.6, textAlign: 'center' }}
+            style={{
+              fontSize: '14px',
+              fontFamily: 'var(--font-readable)',
+              margin: 0,
+              opacity: 0.6,
+              textAlign: 'center',
+            }}
           >
             ¿PODÉS HACERLO
             <br />
@@ -195,17 +217,14 @@ export const ShareImageCard = forwardRef<HTMLDivElement, Props>(({ gameState, pr
       {/* Footer */}
       <div
         style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
+          position: 'relative',
           borderTop: '1px solid #8b7355',
           backgroundColor: '#1a1a1a',
           color: '#888',
           textAlign: 'center',
           padding: '4px',
-          fontSize: '8px',
-          fontFamily: 'monospace',
+          fontSize: '14px',
+          fontFamily: 'var(--font-readable)',
           letterSpacing: '2px',
         }}
       >

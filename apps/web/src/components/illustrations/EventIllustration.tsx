@@ -4,10 +4,12 @@ import { useGSAP } from '@gsap/react';
 import type { GameState } from '@republica/game-engine';
 import imageManifest from '../../assets/image-manifest.json';
 import { ParticleLayer } from './event-scenes/ParticleLayer.js';
+import { RasterSceneEffects } from './event-scenes/RasterSceneEffects.js';
 import { SceneAnimation } from './event-scenes/SceneAnimation.js';
 import { CATEGORY_ANIMATIONS } from './event-scenes/sceneAnimations.js';
 import { SCENES } from './event-scenes/scenes.js';
 import { selectScene } from './event-scenes/selectScene.js';
+import { selectPresidentScene } from './event-scenes/presidentScenes.js';
 
 gsap.registerPlugin(useGSAP);
 
@@ -19,15 +21,17 @@ interface Props {
 }
 
 export function EventIllustration({ eventCategory, presidentId, eventId = '', gameState }: Props) {
-  const scene = selectScene(eventCategory, eventId, gameState);
+  const baseScene = selectScene(eventCategory, eventId, gameState);
+  const scene = selectPresidentScene(baseScene, eventId, presidentId);
   const aiUrl = (imageManifest as Record<string, string>)[scene] ?? null;
-  const Scene = SCENES[scene];
+  const Scene = SCENES[baseScene];
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Left-to-right reveal wipe on every new scene, then the category particle loop.
   useGSAP(
     () => {
       if (!containerRef.current) return;
+      if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
       gsap.fromTo(
         containerRef.current,
         { clipPath: 'inset(0% 100% 0% 0%)' },
@@ -35,7 +39,7 @@ export function EventIllustration({ eventCategory, presidentId, eventId = '', ga
       );
       CATEGORY_ANIMATIONS[eventCategory]?.();
     },
-    { scope: containerRef, dependencies: [scene, eventCategory] },
+    { scope: containerRef, dependencies: [scene, eventCategory], revertOnUpdate: true },
   );
 
   return (
@@ -76,7 +80,7 @@ export function EventIllustration({ eventCategory, presidentId, eventId = '', ga
               preserveAspectRatio="xMidYMid slice"
               style={{ imageRendering: 'pixelated' as const }}
             />
-            <SceneAnimation scene={scene} scope={containerRef} />
+            <RasterSceneEffects scene={scene} />
           </>
         ) : (
           Scene && (

@@ -39,6 +39,17 @@ jobs:
           npm test --workspace=packages/game-engine
           npm test --workspace=apps/web
 
+      - name: Verify game content
+        run: npm run verify:content
+
+      - name: Security regression tests
+        run: npm run test:security
+
+      - name: Build production game and replay engine
+        run: |
+          npm run build --workspace=apps/web
+          npm run bundle:engine
+
   deploy:
     name: Deploy
     needs: verify

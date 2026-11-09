@@ -31,7 +31,7 @@ const featureBoundaryZones = [
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/.expo/**', 'apps/mobile/**', 'scripts/**', 'supabase/functions/**'],
+    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/.expo/**', 'apps/mobile/**', 'art/raw/**', 'scripts/**', 'supabase/functions/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

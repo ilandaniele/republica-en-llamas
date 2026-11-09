@@ -16,6 +16,8 @@ const config: Config = {
         nightBlue: '#0D1B2A',
         concrete: '#2A2A2A',
         navy: {
+          300: '#627c9b',
+          400: '#425d7e',
           50: '#eef2ff',
           100: '#e0e7ff',
           200: '#c7d2fe',
@@ -44,6 +46,8 @@ const config: Config = {
           dark: '#C8960C',
         },
         smoke: {
+          300: '#c3ccd8',
+          500: '#8b9bb1',
           50: '#f8f8f8',
           100: '#f0f0f0',
           200: '#e0e0e0',
@@ -54,9 +58,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ['Press Start 2P', 'monospace'],
-        mono: ['VT323', 'monospace'],
-        sans: ['Pixelify Sans', 'system-ui', 'sans-serif'],
+        serif: ['Pixelify Sans', 'monospace'],
+        mono: ['Pixelify Sans', 'monospace'],
+        sans: ['Pixelify Sans', 'monospace'],
         classic: ['Playfair Display', 'Georgia', 'serif'],
         code: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
@@ -71,7 +75,7 @@ const config: Config = {
           '0%': { transform: 'translateY(0) scale(1)', opacity: '0.6' },
           '100%': { transform: 'translateY(-60px) scale(1.5)', opacity: '0' },
         },
-        'shake': {
+        shake: {
           '0%, 100%': { transform: 'translateX(0)' },
           '20%': { transform: 'translateX(-2px)' },
           '40%': { transform: 'translateX(2px)' },
@@ -86,7 +90,7 @@ const config: Config = {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.4' },
         },
-        'ripple': {
+        ripple: {
           '0%': { transform: 'scale(0)', opacity: '0.5' },
           '100%': { transform: 'scale(2.5)', opacity: '0' },
         },
@@ -99,20 +103,20 @@ const config: Config = {
           '30%': { filter: 'brightness(1.8) saturate(1.5)', backgroundColor: '#ef4444' },
         },
         'ticker-scroll': {
-          '0%':   { transform: 'translateX(100vw)' },
+          '0%': { transform: 'translateX(100vw)' },
           '100%': { transform: 'translateX(-200%)' },
         },
         'pixel-float': {
           '0%, 100%': { transform: 'translateY(0px)', opacity: '1' },
-          '50%':  { transform: 'translateY(-12px)', opacity: '0.7' },
+          '50%': { transform: 'translateY(-12px)', opacity: '0.7' },
           '100%': { transform: 'translateY(-24px)', opacity: '0' },
         },
         'pixel-rise': {
-          '0%':   { transform: 'translateY(0)', opacity: '0.8' },
+          '0%': { transform: 'translateY(0)', opacity: '0.8' },
           '100%': { transform: 'translateY(-30px)', opacity: '0' },
         },
         'pixel-confetti': {
-          '0%':   { transform: 'translateY(-20px) rotate(0deg)', opacity: '1' },
+          '0%': { transform: 'translateY(-20px) rotate(0deg)', opacity: '1' },
           '100%': { transform: 'translateY(80px) rotate(360deg)', opacity: '0' },
         },
         'blink-star': {
@@ -121,31 +125,31 @@ const config: Config = {
         },
         'pixel-fire': {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '33%':  { transform: 'translateY(-3px)' },
-          '66%':  { transform: 'translateY(-6px)' },
+          '33%': { transform: 'translateY(-3px)' },
+          '66%': { transform: 'translateY(-6px)' },
         },
         'crisis-ticker-flash': {
           '0%, 100%': { backgroundColor: '#CC2200' },
           '50%': { backgroundColor: '#8B0000' },
         },
         'crowd-enter': {
-          '0%':   { transform: 'translateY(100%)', opacity: '0' },
-          '20%':  { transform: 'translateY(0)', opacity: '1' },
-          '80%':  { transform: 'translateY(0)', opacity: '1' },
+          '0%': { transform: 'translateY(100%)', opacity: '0' },
+          '20%': { transform: 'translateY(0)', opacity: '1' },
+          '80%': { transform: 'translateY(0)', opacity: '1' },
           '100%': { transform: 'translateY(0)', opacity: '0' },
         },
         'colectivo-move': {
-          '0%':   { transform: 'translateX(-120px)' },
+          '0%': { transform: 'translateX(-120px)' },
           '100%': { transform: 'translateX(900px)' },
         },
         'idle-look': {
-          '0%':   { transform: 'translateX(0)' },
-          '25%':  { transform: 'translateX(2px)' },
-          '75%':  { transform: 'translateX(-2px)' },
+          '0%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(2px)' },
+          '75%': { transform: 'translateX(-2px)' },
           '100%': { transform: 'translateX(0)' },
         },
         'dolar-float-up': {
-          '0%':   { transform: 'translateY(0)', opacity: '1' },
+          '0%': { transform: 'translateY(0)', opacity: '1' },
           '100%': { transform: 'translateY(-60px)', opacity: '0' },
         },
       },
@@ -155,7 +159,7 @@ const config: Config = {
         'screen-shake': 'shake 0.5s ease-in-out',
         'pulse-red': 'pulse-red 2s ease-in-out infinite',
         'number-flash': 'number-flash 0.5s ease-in-out',
-        'ripple': 'ripple 0.4s ease-out',
+        ripple: 'ripple 0.4s ease-out',
         'bar-flash-up': 'bar-flash-up 0.6s ease-out',
         'bar-flash-down': 'bar-flash-down 0.6s ease-out',
         'ticker-scroll': 'ticker-scroll 18s linear infinite',
@@ -171,7 +175,8 @@ const config: Config = {
         'dolar-float-up': 'dolar-float-up 1.5s ease-out forwards',
       },
       backgroundImage: {
-        'noise': "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E\")",
+        noise:
+          "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E\")",
       },
     },
   },

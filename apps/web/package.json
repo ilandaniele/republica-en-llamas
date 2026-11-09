@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "playtest": "vite --mode playtest --host 127.0.0.1 --port 5174 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint src",
@@ -24,7 +25,7 @@
     "gsap": "^3.12.7",
     "html2canvas": "^1.4.1",
     "i18next": "^23.11.5",
-    "posthog-js": "^1.130.0",
+    "posthog-js": "^1.447.3",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-i18next": "^14.1.2",

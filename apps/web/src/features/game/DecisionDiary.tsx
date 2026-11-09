@@ -118,12 +118,12 @@ export function DecisionDiary({ isOpen, onClose }: Props) {
           >
             <div className="flex items-center justify-between border-b border-navy-600 p-4">
               <h2 className="font-serif text-base font-bold text-gold-400">📋 Diario de Gestión</h2>
-              <button onClick={onClose} className="text-smoke-500 hover:text-smoke-300 font-mono text-sm">
+              <button onClick={onClose} className="font-mono text-sm text-smoke-500 hover:text-smoke-300">
                 ✕
               </button>
             </div>
             <div className="p-3">
-              <p className="text-smoke-500 font-mono text-xs uppercase tracking-widest">
+              <p className="font-mono text-xs uppercase tracking-widest text-smoke-500">
                 Turno actual: {gameState.turn}
               </p>
             </div>

@@ -486,6 +486,8 @@ export const POLITICAL_CARDS: EventCard[] = [
     titleKey: 'event.pol_election_result.title',
     bodyKey: 'event.pol_election_result.body',
     weight: 1,
+    minTurn: 40,
+    maxTurn: 40,
     choices: [
       {
         id: 'pol_election_result_win',

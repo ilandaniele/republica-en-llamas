@@ -149,7 +149,7 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
       {/* Lock overlay */}
       {locked && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-navy-900/70">
-          <span className="font-serif text-[8px] text-gold-400">🔒 PRO</span>
+          <span className="font-serif text-sm text-gold-400">🔒 PRO</span>
         </div>
       )}
 
@@ -169,7 +169,7 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
         </div>
 
         {/* Label */}
-        <div ref={labelRef} className="mb-1 font-serif font-bold text-smoke-100" style={{ fontSize: '8px' }}>
+        <div ref={labelRef} className="mb-1 font-serif font-bold text-smoke-100" style={{ fontSize: '20px' }}>
           {label}
         </div>
 

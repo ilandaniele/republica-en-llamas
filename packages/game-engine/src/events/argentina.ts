@@ -44,7 +44,12 @@ export const ARGENTINA_CARDS: EventCard[] = [
       {
         id: 'arg_002_a',
         textKey: 'event.arg_002.choice_a',
-        effects: { popularityDelta: -20, stabilityDelta: -12, marketConfidenceDelta: 5, foreignReservesDelta: 10 },
+        effects: {
+          popularityDelta: -20,
+          stabilityDelta: -12,
+          marketConfidenceDelta: 5,
+          foreignReservesDelta: 10,
+        },
       },
       {
         id: 'arg_002_b',
@@ -54,7 +59,12 @@ export const ARGENTINA_CARDS: EventCard[] = [
       {
         id: 'arg_002_c',
         textKey: 'event.arg_002.choice_c',
-        effects: { popularityDelta: -10, marketConfidenceDelta: -5, foreignReservesDelta: 5, stabilityDelta: 3 },
+        effects: {
+          popularityDelta: -10,
+          marketConfidenceDelta: -5,
+          foreignReservesDelta: 5,
+          stabilityDelta: 3,
+        },
       },
       {
         id: 'arg_002_d',
@@ -75,17 +85,32 @@ export const ARGENTINA_CARDS: EventCard[] = [
       {
         id: 'arg_003_a',
         textKey: 'event.arg_003.choice_a',
-        effects: { popularityDelta: -5, marketConfidenceDelta: 10, foreignReservesDelta: 8, stabilityDelta: -8 },
+        effects: {
+          popularityDelta: -5,
+          marketConfidenceDelta: 10,
+          foreignReservesDelta: 8,
+          stabilityDelta: -8,
+        },
       },
       {
         id: 'arg_003_b',
         textKey: 'event.arg_003.choice_b',
-        effects: { popularityDelta: 12, stabilityDelta: 5, marketConfidenceDelta: -15, foreignReservesDelta: -10 },
+        effects: {
+          popularityDelta: 12,
+          stabilityDelta: 5,
+          marketConfidenceDelta: -15,
+          foreignReservesDelta: -10,
+        },
       },
       {
         id: 'arg_003_c',
         textKey: 'event.arg_003.choice_c',
-        effects: { popularityDelta: -3, marketConfidenceDelta: 5, foreignReservesDelta: 5, stabilityDelta: -3 },
+        effects: {
+          popularityDelta: -3,
+          marketConfidenceDelta: 5,
+          foreignReservesDelta: 5,
+          stabilityDelta: -3,
+        },
       },
       {
         id: 'arg_003_d',
@@ -147,12 +172,17 @@ export const ARGENTINA_CARDS: EventCard[] = [
       {
         id: 'arg_005_c',
         textKey: 'event.arg_005.choice_c',
-        effects: { popularityDelta: -10, marketConfidenceDelta: 5, currencyStrengthDelta: 5, inflationDelta: -5 },
+        effects: { popularityDelta: -10, marketConfidenceDelta: 5, currencyStrengthDelta: 5 },
       },
       {
         id: 'arg_005_d',
         textKey: 'event.arg_005.choice_d',
-        effects: { currencyStrengthDelta: 3, marketConfidenceDelta: 5, inflationDelta: 5, popularityDelta: -5 },
+        effects: {
+          currencyStrengthDelta: 3,
+          marketConfidenceDelta: 5,
+          popularityDelta: -5,
+          foreignReservesDelta: -5,
+        },
       },
     ],
   },
@@ -200,22 +230,37 @@ export const ARGENTINA_CARDS: EventCard[] = [
       {
         id: 'arg_007_a',
         textKey: 'event.arg_007.choice_a',
-        effects: { foreignReservesDelta: 25, marketConfidenceDelta: 15, popularityDelta: -18, deficitDelta: -10 },
+        effects: {
+          foreignReservesDelta: 25,
+          marketConfidenceDelta: 15,
+          popularityDelta: -18,
+          deficitDelta: -10,
+        },
       },
       {
         id: 'arg_007_b',
         textKey: 'event.arg_007.choice_b',
-        effects: { foreignReservesDelta: -25, marketConfidenceDelta: -25, popularityDelta: 10, inflationDelta: 15 },
+        effects: { foreignReservesDelta: -25, marketConfidenceDelta: -25, popularityDelta: 10 },
       },
       {
         id: 'arg_007_c',
         textKey: 'event.arg_007.choice_c',
-        effects: { foreignReservesDelta: 12, marketConfidenceDelta: 8, popularityDelta: -8, deficitDelta: -5 },
+        effects: {
+          foreignReservesDelta: 12,
+          marketConfidenceDelta: 8,
+          popularityDelta: -8,
+          deficitDelta: -5,
+        },
       },
       {
         id: 'arg_007_d',
         textKey: 'event.arg_007.choice_d',
-        effects: { foreignReservesDelta: 10, marketConfidenceDelta: 5, popularityDelta: -5, deficitDelta: -3 },
+        effects: {
+          foreignReservesDelta: 10,
+          marketConfidenceDelta: 5,
+          popularityDelta: -5,
+          deficitDelta: -3,
+        },
       },
     ],
   },
@@ -331,7 +376,7 @@ export const ARGENTINA_CARDS: EventCard[] = [
       {
         id: 'arg_011_b',
         textKey: 'event.arg_011.choice_b',
-        effects: { inflationDelta: 15, deficitDelta: 10, popularityDelta: 5 },
+        effects: { deficitDelta: 10, popularityDelta: 5 },
       },
       {
         id: 'arg_011_c',
@@ -341,7 +386,7 @@ export const ARGENTINA_CARDS: EventCard[] = [
       {
         id: 'arg_011_d',
         textKey: 'event.arg_011.choice_d',
-        effects: { inflationDelta: -8, popularityDelta: -10, deficitDelta: -5, marketConfidenceDelta: 5 },
+        effects: { popularityDelta: -10, deficitDelta: -5, marketConfidenceDelta: 5, inflationDelta: -8 },
       },
     ],
   },
@@ -387,7 +432,12 @@ export const ARGENTINA_CARDS: EventCard[] = [
       {
         id: 'arg_013_a',
         textKey: 'event.arg_013.choice_a',
-        effects: { inflationDelta: -15, currencyStrengthDelta: 15, foreignReservesDelta: -20, marketConfidenceDelta: 10 },
+        effects: {
+          inflationDelta: -15,
+          currencyStrengthDelta: 15,
+          foreignReservesDelta: -20,
+          marketConfidenceDelta: 10,
+        },
       },
       {
         id: 'arg_013_b',
@@ -397,12 +447,22 @@ export const ARGENTINA_CARDS: EventCard[] = [
       {
         id: 'arg_013_c',
         textKey: 'event.arg_013.choice_c',
-        effects: { inflationDelta: -10, currencyStrengthDelta: 8, foreignReservesDelta: -12, marketConfidenceDelta: 5 },
+        effects: {
+          inflationDelta: -10,
+          currencyStrengthDelta: 8,
+          foreignReservesDelta: -12,
+          marketConfidenceDelta: 5,
+        },
       },
       {
         id: 'arg_013_d',
         textKey: 'event.arg_013.choice_d',
-        effects: { inflationDelta: -8, currencyStrengthDelta: 10, foreignReservesDelta: -8, marketConfidenceDelta: 8 },
+        effects: {
+          inflationDelta: -8,
+          currencyStrengthDelta: 10,
+          foreignReservesDelta: -8,
+          marketConfidenceDelta: 8,
+        },
       },
     ],
   },
@@ -484,10 +544,26 @@ export const ARGENTINA_CARDS: EventCard[] = [
     maxTurn: 5,
     requiredFlags: ['scenario_hiperinflacion_1989'],
     choices: [
-      { id: 'hist_hiper_001_a', textKey: 'event.hist_hiper_001.choice_a', effects: { popularityDelta: -30, inflationDelta: 20, stabilityDelta: -20 } },
-      { id: 'hist_hiper_001_b', textKey: 'event.hist_hiper_001.choice_b', effects: { popularityDelta: -10, inflationDelta: 40, marketConfidenceDelta: -20 } },
-      { id: 'hist_hiper_001_c', textKey: 'event.hist_hiper_001.choice_c', effects: { popularityDelta: -20, inflationDelta: -15, deficitDelta: 15, marketConfidenceDelta: 10 } },
-      { id: 'hist_hiper_001_d', textKey: 'event.hist_hiper_001.choice_d', effects: { popularityDelta: -5, inflationDelta: 10, deficitDelta: 5, stabilityDelta: -10 } },
+      {
+        id: 'hist_hiper_001_a',
+        textKey: 'event.hist_hiper_001.choice_a',
+        effects: { popularityDelta: -30, inflationDelta: -3, stabilityDelta: -20 },
+      },
+      {
+        id: 'hist_hiper_001_b',
+        textKey: 'event.hist_hiper_001.choice_b',
+        effects: { popularityDelta: -10, marketConfidenceDelta: -20 },
+      },
+      {
+        id: 'hist_hiper_001_c',
+        textKey: 'event.hist_hiper_001.choice_c',
+        effects: { popularityDelta: -20, inflationDelta: -15, deficitDelta: -8, marketConfidenceDelta: 10 },
+      },
+      {
+        id: 'hist_hiper_001_d',
+        textKey: 'event.hist_hiper_001.choice_d',
+        effects: { popularityDelta: -5, inflationDelta: 10, deficitDelta: 5, stabilityDelta: -10 },
+      },
     ],
   },
   {
@@ -500,9 +576,17 @@ export const ARGENTINA_CARDS: EventCard[] = [
     maxTurn: 10,
     requiredFlags: ['scenario_hiperinflacion_1989'],
     choices: [
-      { id: 'hist_hiper_002_a', textKey: 'event.hist_hiper_002.choice_a', effects: { popularityDelta: -40, inflationDelta: -30, marketConfidenceDelta: 20, deficitDelta: -10 } },
-      { id: 'hist_hiper_002_b', textKey: 'event.hist_hiper_002.choice_b', effects: { popularityDelta: 15, inflationDelta: 25, marketConfidenceDelta: -25 } },
-      { id: 'hist_hiper_002_c', textKey: 'event.hist_hiper_002.choice_c', effects: { popularityDelta: -5, inflationDelta: -10, deficitDelta: 5 } },
+      {
+        id: 'hist_hiper_002_a',
+        textKey: 'event.hist_hiper_002.choice_a',
+        effects: { popularityDelta: -40, marketConfidenceDelta: 20 },
+      },
+      {
+        id: 'hist_hiper_002_b',
+        textKey: 'event.hist_hiper_002.choice_b',
+        effects: { popularityDelta: 15, marketConfidenceDelta: -25 },
+      },
+      { id: 'hist_hiper_002_c', textKey: 'event.hist_hiper_002.choice_c', effects: { popularityDelta: -5 } },
     ],
   },
   {
@@ -514,9 +598,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 6,
     requiredFlags: ['scenario_hiperinflacion_1989'],
     choices: [
-      { id: 'hist_hiper_003_a', textKey: 'event.hist_hiper_003.choice_a', effects: { popularityDelta: -20, inflationDelta: -40, marketConfidenceDelta: 30, deficitDelta: 20 } },
-      { id: 'hist_hiper_003_b', textKey: 'event.hist_hiper_003.choice_b', effects: { popularityDelta: 10, inflationDelta: 15, stabilityDelta: -15 } },
-      { id: 'hist_hiper_003_c', textKey: 'event.hist_hiper_003.choice_c', effects: { popularityDelta: -10, inflationDelta: -20, marketConfidenceDelta: 15 } },
+      {
+        id: 'hist_hiper_003_a',
+        textKey: 'event.hist_hiper_003.choice_a',
+        effects: { popularityDelta: -20, inflationDelta: -40, marketConfidenceDelta: 30, deficitDelta: 20 },
+      },
+      {
+        id: 'hist_hiper_003_b',
+        textKey: 'event.hist_hiper_003.choice_b',
+        effects: { popularityDelta: 10, stabilityDelta: -15 },
+      },
+      {
+        id: 'hist_hiper_003_c',
+        textKey: 'event.hist_hiper_003.choice_c',
+        effects: { popularityDelta: -10, inflationDelta: -20, marketConfidenceDelta: 15 },
+      },
     ],
   },
 
@@ -531,10 +627,31 @@ export const ARGENTINA_CARDS: EventCard[] = [
     maxTurn: 5,
     requiredFlags: ['scenario_corralito_2001'],
     choices: [
-      { id: 'hist_corral_001_a', textKey: 'event.hist_corral_001.choice_a', effects: { popularityDelta: -25, marketConfidenceDelta: -20, foreignReservesDelta: -30 } },
-      { id: 'hist_corral_001_b', textKey: 'event.hist_corral_001.choice_b', effects: { popularityDelta: -30, stabilityDelta: -20, marketConfidenceDelta: 5 } },
-      { id: 'hist_corral_001_c', textKey: 'event.hist_corral_001.choice_c', effects: { popularityDelta: -10, deficitDelta: 15, marketConfidenceDelta: -10 } },
-      { id: 'hist_corral_001_d', textKey: 'event.hist_corral_001.choice_d', effects: { popularityDelta: -5, marketConfidenceDelta: -5, stabilityDelta: -5, mediaCredibilityDelta: 5 } },
+      {
+        id: 'hist_corral_001_a',
+        textKey: 'event.hist_corral_001.choice_a',
+        effects: { popularityDelta: -25, marketConfidenceDelta: -20, foreignReservesDelta: -30 },
+      },
+      {
+        id: 'hist_corral_001_b',
+        textKey: 'event.hist_corral_001.choice_b',
+        effects: { popularityDelta: -30, stabilityDelta: -20, marketConfidenceDelta: 5 },
+      },
+      {
+        id: 'hist_corral_001_c',
+        textKey: 'event.hist_corral_001.choice_c',
+        effects: { popularityDelta: -10, deficitDelta: 15, marketConfidenceDelta: -10 },
+      },
+      {
+        id: 'hist_corral_001_d',
+        textKey: 'event.hist_corral_001.choice_d',
+        effects: {
+          popularityDelta: -5,
+          marketConfidenceDelta: -5,
+          stabilityDelta: -5,
+          mediaCredibilityDelta: 5,
+        },
+      },
     ],
   },
   {
@@ -546,9 +663,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 3,
     requiredFlags: ['scenario_corralito_2001'],
     choices: [
-      { id: 'hist_corral_002_a', textKey: 'event.hist_corral_002.choice_a', effects: { popularityDelta: -40, stabilityDelta: -30 } },
-      { id: 'hist_corral_002_b', textKey: 'event.hist_corral_002.choice_b', effects: { popularityDelta: -15, deficitDelta: 20, marketConfidenceDelta: -15 } },
-      { id: 'hist_corral_002_c', textKey: 'event.hist_corral_002.choice_c', effects: { popularityDelta: -10, marketConfidenceDelta: -10, inflationDelta: 10 } },
+      {
+        id: 'hist_corral_002_a',
+        textKey: 'event.hist_corral_002.choice_a',
+        effects: { popularityDelta: -40, stabilityDelta: -30 },
+      },
+      {
+        id: 'hist_corral_002_b',
+        textKey: 'event.hist_corral_002.choice_b',
+        effects: { popularityDelta: -15, deficitDelta: 20, marketConfidenceDelta: -15 },
+      },
+      {
+        id: 'hist_corral_002_c',
+        textKey: 'event.hist_corral_002.choice_c',
+        effects: { popularityDelta: -10, marketConfidenceDelta: -10 },
+      },
     ],
   },
   {
@@ -560,9 +689,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 5,
     requiredFlags: ['scenario_corralito_2001'],
     choices: [
-      { id: 'hist_corral_003_a', textKey: 'event.hist_corral_003.choice_a', effects: { popularityDelta: -35, inflationDelta: 30, marketConfidenceDelta: -20, foreignReservesDelta: -20 } },
-      { id: 'hist_corral_003_b', textKey: 'event.hist_corral_003.choice_b', effects: { popularityDelta: -20, deficitDelta: 25, foreignReservesDelta: 10 } },
-      { id: 'hist_corral_003_c', textKey: 'event.hist_corral_003.choice_c', effects: { popularityDelta: -10, inflationDelta: 15, foreignReservesDelta: -10 } },
+      {
+        id: 'hist_corral_003_a',
+        textKey: 'event.hist_corral_003.choice_a',
+        effects: { popularityDelta: -35, marketConfidenceDelta: -20, foreignReservesDelta: -20 },
+      },
+      {
+        id: 'hist_corral_003_b',
+        textKey: 'event.hist_corral_003.choice_b',
+        effects: { popularityDelta: -20, deficitDelta: 25, foreignReservesDelta: 10 },
+      },
+      {
+        id: 'hist_corral_003_c',
+        textKey: 'event.hist_corral_003.choice_c',
+        effects: { popularityDelta: -10, foreignReservesDelta: -10 },
+      },
     ],
   },
 
@@ -577,9 +718,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     maxTurn: 5,
     requiredFlags: ['scenario_convertibilidad'],
     choices: [
-      { id: 'hist_conv_001_a', textKey: 'event.hist_conv_001.choice_a', effects: { popularityDelta: 10, marketConfidenceDelta: 15, inflationDelta: -10, deficitDelta: 5 } },
-      { id: 'hist_conv_001_b', textKey: 'event.hist_conv_001.choice_b', effects: { popularityDelta: -5, marketConfidenceDelta: -20, inflationDelta: 5 } },
-      { id: 'hist_conv_001_c', textKey: 'event.hist_conv_001.choice_c', effects: { popularityDelta: 5, deficitDelta: 10, foreignReservesDelta: -8 } },
+      {
+        id: 'hist_conv_001_a',
+        textKey: 'event.hist_conv_001.choice_a',
+        effects: { popularityDelta: 10, marketConfidenceDelta: 15, inflationDelta: -10, deficitDelta: 5 },
+      },
+      {
+        id: 'hist_conv_001_b',
+        textKey: 'event.hist_conv_001.choice_b',
+        effects: { popularityDelta: -5, marketConfidenceDelta: -20 },
+      },
+      {
+        id: 'hist_conv_001_c',
+        textKey: 'event.hist_conv_001.choice_c',
+        effects: { popularityDelta: 5, deficitDelta: 10, foreignReservesDelta: -8 },
+      },
     ],
   },
   {
@@ -591,9 +744,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 4,
     requiredFlags: ['scenario_convertibilidad'],
     choices: [
-      { id: 'hist_conv_002_a', textKey: 'event.hist_conv_002.choice_a', effects: { popularityDelta: -10, foreignReservesDelta: -20, marketConfidenceDelta: 10 } },
-      { id: 'hist_conv_002_b', textKey: 'event.hist_conv_002.choice_b', effects: { popularityDelta: -20, marketConfidenceDelta: -15, inflationDelta: 8 } },
-      { id: 'hist_conv_002_c', textKey: 'event.hist_conv_002.choice_c', effects: { popularityDelta: -5, deficitDelta: 8, foreignReservesDelta: -5 } },
+      {
+        id: 'hist_conv_002_a',
+        textKey: 'event.hist_conv_002.choice_a',
+        effects: { popularityDelta: -10, foreignReservesDelta: -20, marketConfidenceDelta: 10 },
+      },
+      {
+        id: 'hist_conv_002_b',
+        textKey: 'event.hist_conv_002.choice_b',
+        effects: { popularityDelta: -20, marketConfidenceDelta: -15, inflationDelta: 8 },
+      },
+      {
+        id: 'hist_conv_002_c',
+        textKey: 'event.hist_conv_002.choice_c',
+        effects: { popularityDelta: -5, deficitDelta: 8, foreignReservesDelta: -5 },
+      },
     ],
   },
   {
@@ -605,9 +770,26 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 8,
     requiredFlags: ['scenario_convertibilidad'],
     choices: [
-      { id: 'hist_conv_003_a', textKey: 'event.hist_conv_003.choice_a', effects: { popularityDelta: -30, inflationDelta: 20, marketConfidenceDelta: -25, foreignReservesDelta: 15 } },
-      { id: 'hist_conv_003_b', textKey: 'event.hist_conv_003.choice_b', effects: { popularityDelta: 5, foreignReservesDelta: -25, deficitDelta: 15 } },
-      { id: 'hist_conv_003_c', textKey: 'event.hist_conv_003.choice_c', effects: { popularityDelta: -15, inflationDelta: 10, foreignReservesDelta: -10, marketConfidenceDelta: -10 } },
+      {
+        id: 'hist_conv_003_a',
+        textKey: 'event.hist_conv_003.choice_a',
+        effects: {
+          popularityDelta: -30,
+          inflationDelta: 20,
+          marketConfidenceDelta: -25,
+          foreignReservesDelta: 15,
+        },
+      },
+      {
+        id: 'hist_conv_003_b',
+        textKey: 'event.hist_conv_003.choice_b',
+        effects: { popularityDelta: 5, foreignReservesDelta: -25, deficitDelta: 15 },
+      },
+      {
+        id: 'hist_conv_003_c',
+        textKey: 'event.hist_conv_003.choice_c',
+        effects: { popularityDelta: -15, foreignReservesDelta: -10, marketConfidenceDelta: -10 },
+      },
     ],
   },
 
@@ -622,9 +804,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     maxTurn: 4,
     requiredFlags: ['scenario_rodrigazo_1975'],
     choices: [
-      { id: 'hist_rod_001_a', textKey: 'event.hist_rod_001.choice_a', effects: { popularityDelta: -25, inflationDelta: 35, stabilityDelta: -25, marketConfidenceDelta: 10 } },
-      { id: 'hist_rod_001_b', textKey: 'event.hist_rod_001.choice_b', effects: { popularityDelta: 10, deficitDelta: 20, inflationDelta: 10 } },
-      { id: 'hist_rod_001_c', textKey: 'event.hist_rod_001.choice_c', effects: { popularityDelta: -15, inflationDelta: 15, stabilityDelta: -10, deficitDelta: 10 } },
+      {
+        id: 'hist_rod_001_a',
+        textKey: 'event.hist_rod_001.choice_a',
+        effects: { popularityDelta: -25, inflationDelta: 35, stabilityDelta: -25, marketConfidenceDelta: 10 },
+      },
+      {
+        id: 'hist_rod_001_b',
+        textKey: 'event.hist_rod_001.choice_b',
+        effects: { popularityDelta: 10, deficitDelta: 20, inflationDelta: -5 },
+      },
+      {
+        id: 'hist_rod_001_c',
+        textKey: 'event.hist_rod_001.choice_c',
+        effects: { popularityDelta: -15, inflationDelta: 15, stabilityDelta: -10, deficitDelta: 10 },
+      },
     ],
   },
   {
@@ -636,9 +830,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 2,
     requiredFlags: ['scenario_rodrigazo_1975'],
     choices: [
-      { id: 'hist_rod_002_a', textKey: 'event.hist_rod_002.choice_a', effects: { popularityDelta: -20, stabilityDelta: -15, inflationDelta: -10, deficitDelta: 5 } },
-      { id: 'hist_rod_002_b', textKey: 'event.hist_rod_002.choice_b', effects: { popularityDelta: 15, stabilityDelta: 10, inflationDelta: 15, deficitDelta: 15 } },
-      { id: 'hist_rod_002_c', textKey: 'event.hist_rod_002.choice_c', effects: { popularityDelta: -8, inflationDelta: 5, deficitDelta: 8 } },
+      {
+        id: 'hist_rod_002_a',
+        textKey: 'event.hist_rod_002.choice_a',
+        effects: { popularityDelta: -20, stabilityDelta: -15, deficitDelta: 5 },
+      },
+      {
+        id: 'hist_rod_002_b',
+        textKey: 'event.hist_rod_002.choice_b',
+        effects: { popularityDelta: 15, stabilityDelta: 10, deficitDelta: 15 },
+      },
+      {
+        id: 'hist_rod_002_c',
+        textKey: 'event.hist_rod_002.choice_c',
+        effects: { popularityDelta: -8, inflationDelta: -3, deficitDelta: 8 },
+      },
     ],
   },
   {
@@ -650,9 +856,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 4,
     requiredFlags: ['scenario_rodrigazo_1975'],
     choices: [
-      { id: 'hist_rod_003_a', textKey: 'event.hist_rod_003.choice_a', effects: { popularityDelta: -30, stabilityDelta: -25, inflationDelta: -15 } },
-      { id: 'hist_rod_003_b', textKey: 'event.hist_rod_003.choice_b', effects: { popularityDelta: -45, stabilityDelta: -35 } },
-      { id: 'hist_rod_003_c', textKey: 'event.hist_rod_003.choice_c', effects: { popularityDelta: -15, stabilityDelta: -20, inflationDelta: 5, mediaCredibilityDelta: -10 } },
+      {
+        id: 'hist_rod_003_a',
+        textKey: 'event.hist_rod_003.choice_a',
+        effects: { popularityDelta: -30, stabilityDelta: -25 },
+      },
+      {
+        id: 'hist_rod_003_b',
+        textKey: 'event.hist_rod_003.choice_b',
+        effects: { popularityDelta: -45, stabilityDelta: -35 },
+      },
+      {
+        id: 'hist_rod_003_c',
+        textKey: 'event.hist_rod_003.choice_c',
+        effects: { popularityDelta: -15, stabilityDelta: -20, mediaCredibilityDelta: -10 },
+      },
     ],
   },
 
@@ -667,9 +885,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     maxTurn: 4,
     requiredFlags: ['scenario_malvinas_1982'],
     choices: [
-      { id: 'hist_mal_001_a', textKey: 'event.hist_mal_001.choice_a', effects: { popularityDelta: 30, stabilityDelta: 15, marketConfidenceDelta: -20, deficitDelta: 15 } },
-      { id: 'hist_mal_001_b', textKey: 'event.hist_mal_001.choice_b', effects: { popularityDelta: -20, stabilityDelta: -10, marketConfidenceDelta: 5 } },
-      { id: 'hist_mal_001_c', textKey: 'event.hist_mal_001.choice_c', effects: { popularityDelta: 5, marketConfidenceDelta: -5, deficitDelta: 5 } },
+      {
+        id: 'hist_mal_001_a',
+        textKey: 'event.hist_mal_001.choice_a',
+        effects: { popularityDelta: 30, stabilityDelta: 15, marketConfidenceDelta: -20, deficitDelta: 15 },
+      },
+      {
+        id: 'hist_mal_001_b',
+        textKey: 'event.hist_mal_001.choice_b',
+        effects: { popularityDelta: -20, stabilityDelta: -10, marketConfidenceDelta: 5 },
+      },
+      {
+        id: 'hist_mal_001_c',
+        textKey: 'event.hist_mal_001.choice_c',
+        effects: { popularityDelta: 5, marketConfidenceDelta: -5, deficitDelta: 5 },
+      },
     ],
   },
   {
@@ -681,9 +911,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 3,
     requiredFlags: ['scenario_malvinas_1982'],
     choices: [
-      { id: 'hist_mal_002_a', textKey: 'event.hist_mal_002.choice_a', effects: { popularityDelta: -10, deficitDelta: 20, foreignReservesDelta: -15 } },
-      { id: 'hist_mal_002_b', textKey: 'event.hist_mal_002.choice_b', effects: { popularityDelta: 20, deficitDelta: 30, marketConfidenceDelta: -20 } },
-      { id: 'hist_mal_002_c', textKey: 'event.hist_mal_002.choice_c', effects: { popularityDelta: 5, deficitDelta: 10, mediaCredibilityDelta: -8 } },
+      {
+        id: 'hist_mal_002_a',
+        textKey: 'event.hist_mal_002.choice_a',
+        effects: { popularityDelta: -10, deficitDelta: 20, foreignReservesDelta: -15 },
+      },
+      {
+        id: 'hist_mal_002_b',
+        textKey: 'event.hist_mal_002.choice_b',
+        effects: { popularityDelta: 20, deficitDelta: 30, marketConfidenceDelta: -20 },
+      },
+      {
+        id: 'hist_mal_002_c',
+        textKey: 'event.hist_mal_002.choice_c',
+        effects: { popularityDelta: 5, deficitDelta: 10, mediaCredibilityDelta: -8 },
+      },
     ],
   },
   {
@@ -695,9 +937,17 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 5,
     requiredFlags: ['scenario_malvinas_1982'],
     choices: [
-      { id: 'hist_mal_003_a', textKey: 'event.hist_mal_003.choice_a', effects: { popularityDelta: -40, stabilityDelta: -30, marketConfidenceDelta: -20 } },
-      { id: 'hist_mal_003_b', textKey: 'event.hist_mal_003.choice_b', effects: { popularityDelta: -25, stabilityDelta: -20, mediaCredibilityDelta: 10 } },
-      { id: 'hist_mal_003_c', textKey: 'event.hist_mal_003.choice_c', effects: { popularityDelta: -20, inflationDelta: 10, deficitDelta: 10 } },
+      {
+        id: 'hist_mal_003_a',
+        textKey: 'event.hist_mal_003.choice_a',
+        effects: { popularityDelta: -40, stabilityDelta: -30, marketConfidenceDelta: -20 },
+      },
+      {
+        id: 'hist_mal_003_b',
+        textKey: 'event.hist_mal_003.choice_b',
+        effects: { popularityDelta: -25, stabilityDelta: -20, mediaCredibilityDelta: 10 },
+      },
+      { id: 'hist_mal_003_c', textKey: 'event.hist_mal_003.choice_c', effects: { popularityDelta: -20 } },
     ],
   },
 
@@ -712,9 +962,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     maxTurn: 6,
     requiredFlags: ['scenario_kirchnerismo_boom'],
     choices: [
-      { id: 'hist_kirch_001_a', textKey: 'event.hist_kirch_001.choice_a', effects: { popularityDelta: 15, stabilityDelta: 10, gdpGrowthDelta: 1.5, deficitDelta: 5 } },
-      { id: 'hist_kirch_001_b', textKey: 'event.hist_kirch_001.choice_b', effects: { marketConfidenceDelta: 15, foreignReservesDelta: 10, popularityDelta: -5 } },
-      { id: 'hist_kirch_001_c', textKey: 'event.hist_kirch_001.choice_c', effects: { popularityDelta: 8, gdpGrowthDelta: 0.8, inflationDelta: 3 } },
+      {
+        id: 'hist_kirch_001_a',
+        textKey: 'event.hist_kirch_001.choice_a',
+        effects: { popularityDelta: 15, stabilityDelta: 10, gdpGrowthDelta: 1.5, deficitDelta: 5 },
+      },
+      {
+        id: 'hist_kirch_001_b',
+        textKey: 'event.hist_kirch_001.choice_b',
+        effects: { marketConfidenceDelta: 15, foreignReservesDelta: 10, popularityDelta: -5 },
+      },
+      {
+        id: 'hist_kirch_001_c',
+        textKey: 'event.hist_kirch_001.choice_c',
+        effects: { popularityDelta: 8, gdpGrowthDelta: 0.8, deficitDelta: 3 },
+      },
     ],
   },
   {
@@ -726,9 +988,21 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 4,
     requiredFlags: ['scenario_kirchnerismo_boom'],
     choices: [
-      { id: 'hist_kirch_002_a', textKey: 'event.hist_kirch_002.choice_a', effects: { popularityDelta: 20, stabilityDelta: 15, inflationDelta: 5, deficitDelta: 8 } },
-      { id: 'hist_kirch_002_b', textKey: 'event.hist_kirch_002.choice_b', effects: { marketConfidenceDelta: 10, inflationDelta: -3, popularityDelta: -10 } },
-      { id: 'hist_kirch_002_c', textKey: 'event.hist_kirch_002.choice_c', effects: { popularityDelta: 10, stabilityDelta: 5, inflationDelta: 2 } },
+      {
+        id: 'hist_kirch_002_a',
+        textKey: 'event.hist_kirch_002.choice_a',
+        effects: { popularityDelta: 20, stabilityDelta: 15, foreignReservesDelta: -15 },
+      },
+      {
+        id: 'hist_kirch_002_b',
+        textKey: 'event.hist_kirch_002.choice_b',
+        effects: { marketConfidenceDelta: 10, popularityDelta: -10 },
+      },
+      {
+        id: 'hist_kirch_002_c',
+        textKey: 'event.hist_kirch_002.choice_c',
+        effects: { popularityDelta: 10, stabilityDelta: 5, foreignReservesDelta: -8 },
+      },
     ],
   },
   {
@@ -740,9 +1014,26 @@ export const ARGENTINA_CARDS: EventCard[] = [
     minTurn: 8,
     requiredFlags: ['scenario_kirchnerismo_boom'],
     choices: [
-      { id: 'hist_kirch_003_a', textKey: 'event.hist_kirch_003.choice_a', effects: { popularityDelta: 25, stabilityDelta: 10, inflationDelta: 15, deficitDelta: 15 } },
-      { id: 'hist_kirch_003_b', textKey: 'event.hist_kirch_003.choice_b', effects: { popularityDelta: -15, inflationDelta: -8, marketConfidenceDelta: 15 } },
-      { id: 'hist_kirch_003_c', textKey: 'event.hist_kirch_003.choice_c', effects: { popularityDelta: 5, inflationDelta: 8, deficitDelta: 10 } },
+      {
+        id: 'hist_kirch_003_a',
+        textKey: 'event.hist_kirch_003.choice_a',
+        effects: {
+          popularityDelta: 25,
+          stabilityDelta: 10,
+          marketConfidenceDelta: -15,
+          mediaCredibilityDelta: -15,
+        },
+      },
+      {
+        id: 'hist_kirch_003_b',
+        textKey: 'event.hist_kirch_003.choice_b',
+        effects: { popularityDelta: -15, inflationDelta: -8, marketConfidenceDelta: 15 },
+      },
+      {
+        id: 'hist_kirch_003_c',
+        textKey: 'event.hist_kirch_003.choice_c',
+        effects: { popularityDelta: 5, marketConfidenceDelta: -8, mediaCredibilityDelta: -8 },
+      },
     ],
   },
 ];

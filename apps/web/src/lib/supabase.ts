@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import { authStorage, setRememberSession } from './authStorage.js';
 
 const supabaseUrl = import.meta.env['VITE_SUPABASE_URL'] as string | undefined;
 const supabaseAnonKey = import.meta.env['VITE_SUPABASE_ANON_KEY'] as string | undefined;
@@ -29,8 +31,30 @@ const OFFLINE_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiJ9.ZM1234567890000000000000000000000000000000';
 
 export const supabase = isOfflineMode
-  ? createClient(OFFLINE_URL, OFFLINE_KEY)
-  : createClient(supabaseUrl!, supabaseAnonKey!);
+  ? createClient(OFFLINE_URL, OFFLINE_KEY, { auth: { storage: authStorage } })
+  : createClient(supabaseUrl!, supabaseAnonKey!, { auth: { storage: authStorage } });
+
+type AuthListener = (event: AuthChangeEvent, session: Session | null) => void;
+const authListeners = new Set<AuthListener>();
+let recoveryUserId: string | null = null;
+
+// Capture SDK-validated recovery before lazy routes or locale loading can miss the event.
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY') recoveryUserId = session?.user.id ?? null;
+  if (event === 'SIGNED_OUT' || event === 'SIGNED_IN') recoveryUserId = null;
+  for (const listener of authListeners) listener(event, session);
+});
+
+export function subscribeToAuth(listener: AuthListener): () => void {
+  authListeners.add(listener);
+  return () => {
+    authListeners.delete(listener);
+  };
+}
+
+export function isPasswordRecovery(userId: string | undefined): boolean {
+  return Boolean(userId && userId === recoveryUserId);
+}
 
 /** Translate Supabase error messages to Spanish */
 export function translateAuthError(message: string): string {
@@ -43,10 +67,11 @@ export function translateAuthError(message: string): string {
   if (message.includes('Unable to validate email address')) return 'Email inválido';
   if (message.includes('duplicate key')) return 'Ese nombre de usuario ya está ocupado';
   if (message.includes('Network')) return 'Error de conexión. Revisá tu internet.';
-  return message;
+  return 'No se pudo completar la operación. Intentá de nuevo.';
 }
 
-export async function signIn(email: string, password: string) {
+export async function signIn(email: string, password: string, remember = true) {
+  setRememberSession(remember);
   return supabase.auth.signInWithPassword({ email, password });
 }
 

@@ -22,6 +22,15 @@ export function useChoiceHotkeys({
   useEffect(() => {
     if (!enabled || !card || card.isLaw) return;
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (document.querySelector('[data-choices-disabled="true"]')) return;
+      if (
+        e.target instanceof Element &&
+        e.target.closest(
+          'input, textarea, select, button, a, [contenteditable]:not([contenteditable="false"]), [role="dialog"], [role="button"]',
+        )
+      )
+        return;
       const idx = CHOICE_KEYS[e.key.toLowerCase()];
       if (idx !== undefined && idx < (card.choices?.length ?? 0)) {
         e.preventDefault();

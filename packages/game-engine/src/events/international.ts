@@ -40,7 +40,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_002_a',
         textKey: 'event.int_002.choice_a',
-        effects: { marketConfidenceDelta: 20, deficitDelta: -8, inflationDelta: -3 },
+        effects: { marketConfidenceDelta: 20, deficitDelta: -8 },
       },
       {
         id: 'int_002_b',
@@ -70,7 +70,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_003_a',
         textKey: 'event.int_003.choice_a',
-        effects: { inflationDelta: 8, popularityDelta: -5, marketConfidenceDelta: -8 },
+        effects: { popularityDelta: -5, marketConfidenceDelta: -8, deficitDelta: 6 },
       },
       {
         id: 'int_003_b',
@@ -80,7 +80,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_003_c',
         textKey: 'event.int_003.choice_c',
-        effects: { inflationDelta: 2, popularityDelta: 2, stabilityDelta: 3 },
+        effects: { popularityDelta: 2, stabilityDelta: 3 },
       },
       {
         id: 'int_003_d',
@@ -110,7 +110,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_004_c',
         textKey: 'event.int_004.choice_c',
-        effects: { currencyStrengthDelta: 6, inflationDelta: -3, foreignReservesDelta: 3 },
+        effects: { marketConfidenceDelta: 3 },
       },
       {
         id: 'int_004_d',
@@ -159,7 +159,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_006_a',
         textKey: 'event.int_006.choice_a',
-        effects: { inflationDelta: 10, marketConfidenceDelta: -15, popularityDelta: -5 },
+        effects: { marketConfidenceDelta: -15, popularityDelta: -5 },
       },
       {
         id: 'int_006_b',
@@ -218,7 +218,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_008_a',
         textKey: 'event.int_008.choice_a',
-        effects: { marketConfidenceDelta: 10, inflationDelta: -3, deficitDelta: 4 },
+        effects: { marketConfidenceDelta: 10, deficitDelta: 4 },
       },
       {
         id: 'int_008_b',
@@ -253,7 +253,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_009_b',
         textKey: 'event.int_009.choice_b',
-        effects: { foreignReservesDelta: -15, currencyStrengthDelta: 10, inflationDelta: -5 },
+        effects: { foreignReservesDelta: -15, currencyStrengthDelta: 10 },
       },
       {
         id: 'int_009_c',
@@ -307,7 +307,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_011_a',
         textKey: 'event.int_011.choice_a',
-        effects: { foreignReservesDelta: 20, deficitDelta: -10, inflationDelta: -5 },
+        effects: { foreignReservesDelta: 20, deficitDelta: 7 },
       },
       {
         id: 'int_011_b',
@@ -395,7 +395,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_014_a',
         textKey: 'event.int_014.choice_a',
-        effects: { inflationDelta: 6, marketConfidenceDelta: -10, popularityDelta: -4 },
+        effects: { marketConfidenceDelta: -10, popularityDelta: -4 },
       },
       {
         id: 'int_014_b',
@@ -425,7 +425,7 @@ export const INTERNATIONAL_CARDS: EventCard[] = [
       {
         id: 'int_015_a',
         textKey: 'event.int_015.choice_a',
-        effects: { marketConfidenceDelta: 25, foreignReservesDelta: 15, inflationDelta: -8 },
+        effects: { marketConfidenceDelta: 25, foreignReservesDelta: 15 },
       },
       {
         id: 'int_015_b',

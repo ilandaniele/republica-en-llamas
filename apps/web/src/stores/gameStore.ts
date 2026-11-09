@@ -1,20 +1,29 @@
 import { shockLabel } from '../lib/shockLabel.js';
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import type {
   GameState,
   Difficulty,
   Language,
-  NegotiationType,
   ScenarioId,
   CongressDecisions,
   TurnDecision,
   RunConfig,
+  CareerStartOffice,
 } from '@republica/game-engine';
 import { trackTurnCompleted, trackCrisisTriggered } from '../lib/analytics.js';
 import { requestRunTicket } from '../lib/runTicket.js';
-import { initGame, drawNextCard, applyNegotiation, resolveTurn, endTurn } from '@republica/game-engine';
+import {
+  initGame,
+  drawNextCard,
+  isPresidentId,
+  isTurnDecision,
+  resolveTurn,
+  endTurn,
+} from '@republica/game-engine';
 import type { EventCard } from '@republica/game-engine';
+import { browserStorage } from '../lib/browserStorage.js';
+import { restoreGameStore } from './restoreGameStore.js';
 
 export interface TransitionData {
   fromTurn: number;
@@ -39,7 +48,7 @@ export interface VarSnapshot {
   publicDeficit: number;
 }
 
-interface GameStore {
+export interface GameStore {
   // State
   gameState: GameState | null;
   currentCard: EventCard | null;
@@ -60,9 +69,11 @@ interface GameStore {
   userId: string | null;
   isCrisisExpress: boolean;
   scenarioId: ScenarioId | null;
+  careerStart: CareerStartOffice | null;
   runConfig: RunConfig | null;
   runTicketId: string | null;
   decisions: TurnDecision[];
+  saveRecoveryMessage: string | null;
 
   // Actions
   resolveCongressSession: (cardId: string, decisions: CongressDecisions) => void;
@@ -72,13 +83,10 @@ interface GameStore {
   setCrisisExpress: (val: boolean) => void;
   timeoutSelection: () => void;
   selectChoice: (cardId: string, choiceIndex: number) => void;
-  applyNegotiationAction: (type: NegotiationType) => void;
   confirmChoice: () => void;
   commitDecision: (decision: TurnDecision) => void;
   dismissCrisisScreen: () => void;
   dismissTransition: () => void;
-  setAnimating: (val: boolean) => void;
-  advanceTurnAction: () => void;
   resetGame: () => void;
   setLanguage: (lang: Language) => void;
   setSoundEnabled: (val: boolean) => void;
@@ -87,6 +95,7 @@ interface GameStore {
   updatePersonalBest: () => void;
   setPresidentId: (id: string) => void;
   setScenario: (id: ScenarioId | null) => void;
+  setCareerStart: (office: CareerStartOffice | null) => void;
 }
 
 const CATEGORY_HEADLINES: Record<string, string[]> = {
@@ -106,6 +115,26 @@ const CATEGORY_HEADLINES: Record<string, string[]> = {
   ],
   crisis: ['🚨 CRISIS EN MARCHA', '⚠ SITUACIÓN LÍMITE', 'AL BORDE DEL ABISMO', 'EMERGENCIA NACIONAL'],
 };
+
+let startRequest = 0;
+
+function initializeRun(config: RunConfig) {
+  const gameState = initGame(
+    config.difficulty,
+    config.seed,
+    config.language,
+    config.scenarioId ?? undefined,
+    config.presidentId,
+    config.careerStart,
+  );
+  return { runConfig: config, gameState, currentCard: drawNextCard(gameState) };
+}
+
+function matchesCardDecision(card: EventCard, decision: TurnDecision): boolean {
+  if (!isTurnDecision(decision) || decision.cardId !== card.id) return false;
+  if (decision.kind === 'choice') return !card.isLaw && Boolean(card.choices[decision.choiceIndex]);
+  return decision.kind !== 'congress' || Boolean(card.isLaw);
+}
 
 const CATEGORY_HOOKS: Record<string, string[]> = {
   economic: [
@@ -138,7 +167,6 @@ const CATEGORY_HOOKS: Record<string, string[]> = {
 function buildTransitionData(
   before: GameState,
   after: GameState,
-  cardId: string,
   choiceIndex: number,
   cardCategory?: string,
   newShockName?: string,
@@ -200,54 +228,67 @@ export const useGameStore = create<GameStore>()(
       userId: null,
       isCrisisExpress: false,
       scenarioId: null,
+      careerStart: null,
       runConfig: null,
       runTicketId: null,
       decisions: [],
+      saveRecoveryMessage: null,
 
       resolveCongressSession: (cardId, decisions) => {
         get().commitDecision({ kind: 'congress', cardId, decisions });
       },
 
       startNewGame: async (difficulty) => {
-        const ticket = await requestRunTicket();
+        const request = ++startRequest;
         const runConfig: RunConfig = {
-          seed: ticket?.seed ?? Math.floor(Math.random() * 1_000_000),
+          seed: Math.floor(Math.random() * 1_000_000),
           difficulty,
           language: get().language,
           scenarioId: get().scenarioId,
           crisisExpress: get().isCrisisExpress,
+          presidentId: get().presidentId,
+          ...(get().careerStart ? { careerStart: get().careerStart! } : {}),
         };
-        const state = initGame(
-          runConfig.difficulty,
-          runConfig.seed,
-          runConfig.language,
-          runConfig.scenarioId ?? undefined,
-        );
-        const card = drawNextCard(state);
+        if (runConfig.careerStart) {
+          runConfig.scenarioId = null;
+          runConfig.crisisExpress = false;
+        }
+        const ticket = runConfig.careerStart ? null : await requestRunTicket();
+        if (request !== startRequest) return;
+        if (ticket) runConfig.seed = ticket.seed;
         set({
-          runConfig,
+          ...initializeRun(runConfig),
+          isCrisisExpress: runConfig.crisisExpress ?? false,
+          scenarioId: runConfig.scenarioId ?? null,
           runTicketId: ticket?.id ?? null,
           decisions: [],
-          gameState: state,
-          currentCard: card,
           pendingCardId: null,
           pendingChoiceIndex: null,
           isAnimating: false,
           showCrisisScreen: false,
           showTransition: false,
           transitionData: null,
+          prevVarSnapshot: null,
+          crisisCountdown: null,
+          saveRecoveryMessage: null,
         });
       },
 
       selectChoice: (cardId, choiceIndex) => {
+        const { currentCard, gameState, showTransition, isAnimating } = get();
+        if (
+          !gameState ||
+          gameState.isGameOver ||
+          showTransition ||
+          isAnimating ||
+          !currentCard ||
+          currentCard.id !== cardId ||
+          currentCard.isLaw ||
+          !Number.isInteger(choiceIndex) ||
+          !currentCard.choices[choiceIndex]
+        )
+          return;
         set({ pendingCardId: cardId, pendingChoiceIndex: choiceIndex });
-      },
-
-      applyNegotiationAction: (type) => {
-        const { gameState } = get();
-        if (!gameState) return;
-        const newState = applyNegotiation(gameState, type);
-        set({ gameState: newState });
       },
 
       confirmChoice: () => {
@@ -257,8 +298,16 @@ export const useGameStore = create<GameStore>()(
       },
 
       commitDecision: (decision) => {
-        const { gameState, currentCard, isCrisisExpress, showTransition } = get();
-        if (!gameState || !currentCard || showTransition) return;
+        const { gameState, currentCard, isCrisisExpress, showTransition, isAnimating } = get();
+        if (
+          !gameState ||
+          gameState.isGameOver ||
+          !currentCard ||
+          showTransition ||
+          isAnimating ||
+          !matchesCardDecision(currentCard, decision)
+        )
+          return;
 
         const { state: stateWithScore, choiceIndex } = resolveTurn(
           gameState,
@@ -266,98 +315,70 @@ export const useGameStore = create<GameStore>()(
           decision,
           isCrisisExpress,
         );
+        const next = endTurn(stateWithScore, isCrisisExpress);
 
-        const newShock = stateWithScore.activeShocks.find(
+        const newShock = next.activeShocks.find(
           (s) => !gameState.activeShocks.some((old) => old.id === s.id),
         );
         const transitionData = buildTransitionData(
           gameState,
-          stateWithScore,
-          currentCard.id,
+          next,
           choiceIndex,
           currentCard.category,
           newShock?.name,
         );
 
-        if (decision.kind !== 'congress') {
-          trackTurnCompleted({
-            turn_number: gameState.turn,
-            event_category: currentCard.category,
-            choice_index: choiceIndex,
-          });
-        }
+        trackTurnCompleted({
+          turn_number: gameState.turn,
+          event_category: currentCard.category,
+          choice_index: choiceIndex,
+        });
+        const newCrisis = next.activeCrises.find(
+          (crisis) => !gameState.activeCrises.some((old) => old.type === crisis.type),
+        );
+        if (newCrisis) trackCrisisTriggered({ crisis_type: newCrisis.type, turn: next.turn });
+        const activeCrisis = next.activeCrises[0];
 
         set({
-          gameState: stateWithScore,
+          gameState: next,
           decisions: [...get().decisions, decision],
           pendingCardId: null,
           pendingChoiceIndex: null,
           isAnimating: true,
           showTransition: true,
           transitionData,
+          showCrisisScreen: Boolean(newCrisis) && !next.isGameOver,
+          prevVarSnapshot: {
+            popularity: gameState.political.popularity,
+            socialStability: gameState.political.socialStability,
+            marketConfidence: gameState.economic.marketConfidence,
+            currencyStrength: gameState.economic.currencyStrength,
+            foreignReserves: gameState.economic.foreignReserves,
+            inflation: gameState.economic.inflation,
+            publicDeficit: gameState.economic.publicDeficit,
+          },
+          crisisCountdown: activeCrisis
+            ? Math.max(0, activeCrisis.turnsToResolve - activeCrisis.turnsActive)
+            : null,
         });
       },
 
       dismissTransition: () => {
-        set({ showTransition: false });
-        get().advanceTurnAction();
-      },
-
-      advanceTurnAction: () => {
-        const { gameState } = get();
-        if (!gameState) return;
-
-        // Capture snapshot before advancing
-        const snapshot: VarSnapshot = {
-          popularity: gameState.political.popularity,
-          socialStability: gameState.political.socialStability,
-          marketConfidence: gameState.economic.marketConfidence,
-          currencyStrength: gameState.economic.currencyStrength,
-          foreignReserves: gameState.economic.foreignReserves,
-          inflation: gameState.economic.inflation,
-          publicDeficit: gameState.economic.publicDeficit,
-        };
-
-        const next = endTurn(gameState, get().isCrisisExpress);
-        const hasCrisis = next.activeCrises.length > gameState.activeCrises.length;
-        const crisisResolved =
-          gameState.activeCrises.length > 0 && next.activeCrises.length < gameState.activeCrises.length;
-        if (hasCrisis && next.activeCrises[0]) {
-          trackCrisisTriggered({ crisis_type: next.activeCrises[0].type, turn: next.turn });
-        }
-        const card = next.isGameOver ? null : drawNextCard(next);
-
-        // Crisis countdown: turns to resolve
-        const activeCrisis = next.activeCrises[0];
-        const crisisCountdown = activeCrisis
-          ? Math.max(0, activeCrisis.turnsToResolve - activeCrisis.turnsActive)
-          : null;
+        const { gameState, showTransition } = get();
+        if (!gameState || !showTransition) return;
 
         set({
-          gameState: next,
-          currentCard: card,
+          currentCard: gameState.isGameOver ? null : drawNextCard(gameState),
           isAnimating: false,
-          showCrisisScreen: hasCrisis && !next.isGameOver,
-          prevVarSnapshot: snapshot,
-          crisisCountdown,
+          showTransition: false,
+          transitionData: null,
         });
-
-        // Flash green on crisis resolve
-        if (crisisResolved) {
-          // Brief flag for UI - reset after 2s
-          setTimeout(() => {
-            if (get().crisisCountdown === null) {
-              set((s) => ({ ...s })); // trigger re-render
-            }
-          }, 2000);
-        }
       },
 
       dismissCrisisScreen: () => set({ showCrisisScreen: false }),
 
-      setAnimating: (val) => set({ isAnimating: val }),
-
-      resetGame: () =>
+      resetGame: () => {
+        startRequest++;
         set({
           runConfig: null,
           runTicketId: null,
@@ -370,10 +391,14 @@ export const useGameStore = create<GameStore>()(
           showCrisisScreen: false,
           showTransition: false,
           transitionData: null,
-        }),
+          prevVarSnapshot: null,
+          crisisCountdown: null,
+          saveRecoveryMessage: null,
+        });
+      },
 
       setLanguage: (lang) => {
-        localStorage.setItem('language', lang);
+        browserStorage.setItem('language', lang);
         set({ language: lang });
       },
 
@@ -392,15 +417,36 @@ export const useGameStore = create<GameStore>()(
         }
       },
 
-      setPresidentId: (id: string) => set({ presidentId: id }),
+      setPresidentId: (id: string) => {
+        if (!isPresidentId(id)) return;
+        const { runConfig, gameState, decisions } = get();
+        if (gameState && !gameState.isGameOver && decisions.length > 0) return;
+        set({
+          presidentId: id,
+          ...(runConfig && gameState?.turn === 1 && decisions.length === 0
+            ? initializeRun({ ...runConfig, presidentId: id })
+            : {}),
+        });
+      },
 
       setScenario: (id: ScenarioId | null) => set({ scenarioId: id }),
+      setCareerStart: (office) => set({ careerStart: office }),
 
       setUserId: (id: string | null) => set({ userId: id }),
 
       clearRunTicket: () => set({ runTicketId: null }),
 
-      setCrisisExpress: (val: boolean) => set({ isCrisisExpress: val }),
+      setCrisisExpress: (val: boolean) => {
+        const { runConfig, gameState, decisions } = get();
+        if (val && runConfig?.careerStart) return;
+        if (gameState && !gameState.isGameOver && decisions.length > 0) return;
+        set({
+          isCrisisExpress: val,
+          ...(runConfig && gameState?.turn === 1 && decisions.length === 0
+            ? { runConfig: { ...runConfig, crisisExpress: val } }
+            : {}),
+        });
+      },
 
       timeoutSelection: () => {
         const { currentCard } = get();
@@ -410,19 +456,22 @@ export const useGameStore = create<GameStore>()(
     }),
     {
       name: 'republica-game-store',
+      version: 1,
+      storage: createJSONStorage(() => browserStorage),
+      migrate: (saved) => saved as GameStore,
+      merge: restoreGameStore,
       partialize: (s) => ({
         tutorialComplete: s.tutorialComplete,
         tutorialStep: s.tutorialStep,
         soundEnabled: s.soundEnabled,
         language: s.language,
-        gameState: s.gameState,
         runConfig: s.runConfig,
         runTicketId: s.runTicketId,
         decisions: s.decisions,
-        currentCard: s.currentCard,
         personalBest: s.personalBest,
         presidentId: s.presidentId,
         isCrisisExpress: s.isCrisisExpress,
+        careerStart: s.careerStart,
       }),
     },
   ),

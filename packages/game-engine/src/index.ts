@@ -1,4 +1,24 @@
 // Public API for @republica/game-engine
+export {
+  CAREER_START_OFFICES,
+  CAREER_LABELS,
+  canAdvanceCareer,
+  getCareerChoicePreview,
+  getCareerRequirements,
+  isCareerStartOffice,
+  isLowerOffice,
+} from './career.js';
+export type { CareerState, CareerOffice, CareerStartOffice } from './career.js';
+export {
+  getElectionNight,
+  electionLeader,
+  ELECTION_DISTRICTS,
+  ELECTION_PARTIES,
+  ELECTION_COUNT_STEPS,
+} from './electionNight.js';
+export type { ElectionNight, ElectionCountFrame, DistrictCount, PartyVotes } from './electionNight.js';
+export { DEBATE_START_TURN, getDebateRound, isDebateCard, resolveDebateReply } from './debate.js';
+export type { DebateState, DebateRound, DebateResult, DebateReply, DebateStrategy } from './debate.js';
 export type {
   GameState,
   PoliticalVars,
@@ -57,7 +77,13 @@ export {
 } from './gameLoop.js';
 export { ALL_CARDS, CARD_REGISTRY, getCard, drawCard } from './events/index.js';
 export type { EntitlementId, EntitlementProduct } from './entitlements.js';
-export { ENTITLEMENT_PRODUCTS, FREE_TIER, isFree, entitlementsForFeature } from './entitlements.js';
+export {
+  ENTITLEMENT_PRODUCTS,
+  FREE_TIER,
+  isFree,
+  entitlementsForFeature,
+  canPlayPresident,
+} from './entitlements.js';
 export { es } from './i18n/es.js';
 export { en } from './i18n/en.js';
 export { clamp, createRng } from './utils.js';
@@ -88,3 +114,9 @@ export {
   TIMEOUT_POPULARITY_PENALTY,
 } from './run.js';
 export type { TurnDecision, TurnResult, RunConfig } from './run.js';
+
+export { PARTIES, partyForPresident } from './parties.js';
+export type { PartyId } from './parties.js';
+export { PRESIDENT_EXPANSION_ART } from './events/presidentExpansion.js';
+export { isRunConfig, isTurnDecision, MAX_RUN_DECISIONS } from './runValidation.js';
+export { canonicalPresident, isPresidentId, PRESIDENT_IDS, PRESIDENT_LABELS } from './presidents.js';

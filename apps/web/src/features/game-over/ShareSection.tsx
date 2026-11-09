@@ -17,6 +17,7 @@ function releaseCanvas(canvas: HTMLCanvasElement) {
 export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
   const [copied, flashCopied] = useTransientValue(false);
   const [sharingImage, setSharingImage] = useState(false);
+  const [shareError, setShareError] = useState<string | null>(null);
 
   const handleCopyText = () => {
     void navigator.clipboard.writeText(viralText).then(() => {
@@ -38,32 +39,34 @@ export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
   };
 
   const handleShareImage = async () => {
-    if (!shareCardRef.current) return;
+    if (!shareCardRef.current || sharingImage) return;
     setSharingImage(true);
+    setShareError(null);
+    let canvas: HTMLCanvasElement | undefined;
     try {
+      await document.fonts?.ready;
       const { default: html2canvas } = await import('html2canvas');
-      const canvas = await html2canvas(shareCardRef.current, { useCORS: true, scale: 2 });
-      canvas.toBlob(async (blob) => {
-        releaseCanvas(canvas);
-        if (!blob) return;
-        const file = new File([blob], 'republica-en-llamas.png', { type: 'image/png' });
-        if (navigator.canShare?.({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: 'República en Llamas',
-            text: '¿Podés hacerlo mejor?',
-          });
-        } else {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'republica-en-llamas.png';
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-        trackShareClicked({ share_type: 'image' });
-      }, 'image/png');
+      canvas = await html2canvas(shareCardRef.current, { useCORS: true, scale: 2 });
+      const blob = await new Promise<Blob | null>((resolve) => canvas!.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Image encoding failed');
+      const file = new File([blob], 'republica-en-llamas.png', { type: 'image/png' });
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'República en Llamas', text: '¿Podés hacerlo mejor?' });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'republica-en-llamas.png';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+      trackShareClicked({ share_type: 'image' });
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) {
+        setShareError('No se pudo compartir la imagen. Podés volver a intentarlo.');
+      }
     } finally {
+      if (canvas) releaseCanvas(canvas);
       setSharingImage(false);
     }
   };
@@ -76,8 +79,8 @@ export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
       >
         <div
           style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '6px',
+            fontFamily: 'var(--font-readable)',
+            fontSize: '14px',
             color: 'var(--peso-grey)',
             letterSpacing: '0.1em',
             marginBottom: '8px',
@@ -87,7 +90,7 @@ export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
         </div>
         <div
           style={{
-            fontFamily: "'VT323', monospace",
+            fontFamily: 'var(--font-readable)',
             fontSize: '15px',
             color: '#aaa',
             fontStyle: 'italic',
@@ -104,21 +107,21 @@ export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
           <button
             onClick={handleCopyText}
             className="pixel-border bg-navy-700 px-4 py-2 text-smoke-200 transition-colors hover:bg-navy-600"
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
           >
             {copied ? '✓ COPIADO' : '📋 COPIAR'}
           </button>
           <button
             onClick={handleShareX}
             className="pixel-border px-4 py-2 text-white transition-colors hover:bg-[#333]"
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', background: '#1a1a1a' }}
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px', background: '#1a1a1a' }}
           >
             𝕏 COMPARTIR EN X
           </button>
           <button
             onClick={handleShareWhatsApp}
             className="pixel-border px-4 py-2 text-white transition-colors"
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px', background: '#128C7E' }}
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px', background: '#128C7E' }}
           >
             📱 WHATSAPP
           </button>
@@ -127,8 +130,8 @@ export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
             disabled={sharingImage}
             className="pixel-border px-4 py-2 transition-colors disabled:opacity-50"
             style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: '6px',
+              fontFamily: 'var(--font-readable)',
+              fontSize: '14px',
               background: 'var(--celeste-dark)',
               color: 'white',
             }}
@@ -136,6 +139,11 @@ export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
             {sharingImage ? '...' : '🖼 IMAGEN'}
           </button>
         </div>
+        {shareError && (
+          <p role="alert" className="mt-3 text-gold-400">
+            {shareError}
+          </p>
+        )}
       </div>
     </>
   );

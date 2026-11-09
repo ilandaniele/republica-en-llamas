@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import type { GameState } from '@republica/game-engine';
 import type { TransitionData } from '../../stores/gameStore.js';
 import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
 import { useGameStore } from '../../stores/gameStore.js';
 import { CasaRosadaScene } from '../../components/casa-rosada/CasaRosadaScene.js';
+import { DebateSummary } from './debate/DebateSummary.js';
 
 function CasaRosadaBanner({ gameState }: { gameState: GameState }) {
   return (
@@ -45,10 +47,18 @@ interface Props {
   onDismiss: () => void;
 }
 
+function isPresidentialInauguration(state: GameState | null): boolean {
+  return Boolean(
+    state?.career && state.career.office === 'president' && state.turn === 1 && state.history.length === 0,
+  );
+}
+
 export function TurnTransitionScreen({ data, onDismiss }: Props) {
+  const { t } = useTranslation();
   const [clicked, setClicked] = useState(false);
   const gameState = useGameStore((s) => s.gameState);
   const breakdown = gameState?.lastInflationBreakdown;
+  const startsPresidency = isPresidentialInauguration(gameState);
 
   const handleContinue = () => {
     if (clicked) return;
@@ -78,16 +88,21 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
     >
       <div className="mx-auto w-full max-w-xl px-4 py-4">
         {gameState && <CasaRosadaBanner gameState={gameState} />}
+        {gameState?.debate?.rounds.at(-1) && gameState.history.at(-1)?.cardId.startsWith('pol_debate_') && (
+          <DebateSummary debate={gameState.debate} />
+        )}
 
         {/* Turn counter */}
         <div className="mb-4 text-center">
           <span
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
-            className="text-smoke-500 uppercase"
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
+            className="uppercase text-smoke-500"
           >
-            TURNO {data.fromTurn} ▶ {data.toTurn}
+            {startsPresidency ? t('career.presidentStart') : `TURNO ${data.fromTurn} ▶ ${data.toTurn}`}
           </span>
         </div>
+
+        {startsPresidency && <p className="mb-4 text-lg text-celeste-light">{t('career.presidentIntro')}</p>}
 
         {/* Stat deltas */}
         {data.statDeltas.length > 0 && <StatDeltas deltas={data.statDeltas} />}
@@ -101,13 +116,13 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
           style={{ borderColor: '#888' }}
         >
           <div
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-            className="text-smoke-500 mb-2 uppercase"
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
+            className="mb-2 uppercase text-smoke-500"
           >
-            LA GACETA DE LA REPUBLICA
+            La Gaceta de la República
           </div>
           <div
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', lineHeight: '1.8' }}
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '22px', lineHeight: '1.35' }}
             className="font-black leading-tight text-smoke-900"
           >
             {data.headline}
@@ -131,8 +146,8 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="mb-6 text-center italic text-smoke-400"
-          style={{ fontFamily: "'VT323', monospace", fontSize: '16px' }}
+          className="mb-6 text-center leading-relaxed text-smoke-200"
+          style={{ fontFamily: 'var(--font-readable)', fontSize: '16px' }}
         >
           {data.hookText}
         </m.p>
@@ -147,12 +162,12 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
           <button
             onClick={handleContinue}
             className="pixel-border-gold min-h-[56px] w-full bg-gold-500 px-8 py-4 font-bold text-navy-900 shadow-lg transition-colors hover:bg-gold-400 active:bg-gold-600"
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px' }}
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
           >
             CONTINUAR ▶
           </button>
           {!clicked && (
-            <p className="text-smoke-500 mt-2 animate-pulse text-center font-mono text-xs">
+            <p className="mt-2 animate-pulse text-center font-mono text-xs text-smoke-500">
               tocá para continuar →
             </p>
           )}

@@ -19,8 +19,8 @@ function Masthead({ turn }: { turn: number }) {
       >
         <div
           style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '7px',
+            fontFamily: 'var(--font-readable)',
+            fontSize: '14px',
             color: '#444',
             letterSpacing: '0.15em',
             marginBottom: '4px',
@@ -28,7 +28,7 @@ function Masthead({ turn }: { turn: number }) {
         >
           LA GACETA DE LA REPÚBLICA
         </div>
-        <div style={{ fontFamily: "'VT323', monospace", fontSize: '14px', color: '#666' }}>
+        <div style={{ fontFamily: 'var(--font-readable)', fontSize: '14px', color: '#666' }}>
           Turno {turn} &mdash; Edición especial
         </div>
       </div>
@@ -55,8 +55,8 @@ function InstantDeathBanner({ reason }: { reason: GameOverReason }) {
           </svg>
           <div
             style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: '9px',
+              fontFamily: 'var(--font-readable)',
+              fontSize: '14px',
               color: '#CC2200',
               marginTop: 12,
               textAlign: 'center',
@@ -67,7 +67,7 @@ function InstantDeathBanner({ reason }: { reason: GameOverReason }) {
           </div>
           <div
             style={{
-              fontFamily: "'VT323', monospace",
+              fontFamily: 'var(--font-readable)',
               fontSize: '16px',
               color: '#888',
               marginTop: 8,
@@ -100,8 +100,8 @@ function InstantDeathBanner({ reason }: { reason: GameOverReason }) {
           </svg>
           <div
             style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: '9px',
+              fontFamily: 'var(--font-readable)',
+              fontSize: '14px',
               color: '#B3D4F0',
               marginTop: 12,
               textAlign: 'center',
@@ -112,7 +112,7 @@ function InstantDeathBanner({ reason }: { reason: GameOverReason }) {
           </div>
           <div
             style={{
-              fontFamily: "'VT323', monospace",
+              fontFamily: 'var(--font-readable)',
               fontSize: '16px',
               color: '#888',
               marginTop: 8,
@@ -142,9 +142,9 @@ function Headline({ presidentId, isWin, reason }: Omit<NewspaperFrontProps, 'tur
         <div className="pixel-border mb-2 bg-[#e8e4d0] p-2">
           <div
             style={{
-              fontFamily: "'Press Start 2P', monospace",
-              fontSize: headline.replace(/[^a-zA-Z ]/g, '').length <= 40 ? '8px' : '6px',
-              lineHeight: 1.6,
+              fontFamily: 'var(--font-readable)',
+              fontSize: 'clamp(22px, 4vw, 32px)',
+              lineHeight: 1.25,
               color: isWin ? '#2a6e00' : '#8b0000',
             }}
           >
@@ -154,7 +154,7 @@ function Headline({ presidentId, isWin, reason }: Omit<NewspaperFrontProps, 'tur
         {/* Sub-headline */}
         <div
           style={{
-            fontFamily: "'VT323', monospace",
+            fontFamily: 'var(--font-readable)',
             fontSize: '18px',
             color: '#555',
             fontStyle: 'italic',

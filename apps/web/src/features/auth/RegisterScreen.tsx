@@ -80,7 +80,7 @@ export default function RegisterScreen() {
       <div className="w-full max-w-md">
         <button
           onClick={() => navigate(-1)}
-          className="text-smoke-500 hover:text-smoke-300 mb-6 flex items-center gap-1 font-mono text-xs"
+          className="mb-6 flex items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
         >
           ← Volver
         </button>
@@ -143,7 +143,7 @@ export default function RegisterScreen() {
           </button>
         </form>
 
-        <p className="text-smoke-500 mt-6 text-center font-mono text-xs">
+        <p className="mt-6 text-center font-mono text-xs text-smoke-500">
           ¿Ya tenés cuenta?{' '}
           <button onClick={goToLogin} className="text-gold-400 underline hover:text-gold-300">
             Iniciá sesión

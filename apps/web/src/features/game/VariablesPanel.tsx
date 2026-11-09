@@ -17,17 +17,12 @@ function PanelHeader({ positiveStreak }: { positiveStreak: number }) {
       className="flex items-center justify-between"
       style={{ borderBottom: '2px solid var(--celeste-dark)', paddingBottom: '8px' }}
     >
-      <h3
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px', color: 'var(--celeste)' }}
-        className="uppercase"
-      >
-        TERMOMETRO NACIONAL
+      <h3 style={{ color: 'var(--celeste)' }} className="uppercase">
+        Termómetro nacional
       </h3>
       {positiveStreak >= 2 && (
         <span
           style={{
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '6px',
             background: 'var(--gold)',
             color: '#0D1B2A',
             padding: '2px 5px',
@@ -44,16 +39,8 @@ function TemperatureBox({ state }: Props) {
   const temp = getTemperatura(state);
   return (
     <div className={`p-3 ${temp.bg}`} style={{ border: '2px solid currentColor' }}>
-      <p
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }}
-        className="text-smoke-500 mb-1 uppercase"
-      >
-        TEMPERATURA
-      </p>
-      <div
-        className={`flex items-center gap-2 font-bold ${temp.color}`}
-        style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '7px' }}
-      >
+      <p className="mb-1 uppercase text-smoke-500">TEMPERATURA</p>
+      <div className={`flex items-center gap-2 font-bold ${temp.color}`}>
         <span>{temp.emoji}</span>
         <span>{temp.label}</span>
       </div>
@@ -65,20 +52,12 @@ function TurnScore({ turn, score }: { turn: number; score: number }) {
   return (
     <div className="flex justify-between pt-3" style={{ borderTop: '2px solid var(--celeste-dark)' }}>
       <div>
-        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }} className="text-smoke-600">
-          TURNO
-        </p>
-        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--gold)' }}>
-          {turn}/50
-        </p>
+        <p className="text-smoke-300">TURNO</p>
+        <p style={{ color: 'var(--gold)' }}>{turn}/50</p>
       </div>
       <div className="text-right">
-        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '6px' }} className="text-smoke-600">
-          SCORE
-        </p>
-        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '8px', color: 'var(--gold)' }}>
-          {score.toLocaleString()}
-        </p>
+        <p className="text-smoke-300">Puntaje</p>
+        <p style={{ color: 'var(--gold)' }}>{score.toLocaleString()}</p>
       </div>
     </div>
   );
@@ -90,7 +69,7 @@ export function VariablesPanel({ state }: Props) {
   const flashMap = useFlashMap(state, prevSnapshot);
 
   return (
-    <div className="pixel-border space-y-4 bg-navy-800 p-4">
+    <div className="variables-panel pixel-border space-y-4 bg-navy-800 p-4">
       <PanelHeader positiveStreak={state.positiveStreak ?? 0} />
 
       <CasaRosadaScene state={state} />

@@ -1,6 +1,7 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase, isOfflineMode } from '../../lib/supabase.js';
 import type { RunConfig, TurnDecision } from '@republica/game-engine';
+import { isPlaytestMode } from '../../lib/playtest.js';
 
 interface SavedRun {
   id: string | null;
@@ -9,6 +10,7 @@ interface SavedRun {
 }
 
 export function useSaveRun() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({
       ticketId,
@@ -19,13 +21,21 @@ export function useSaveRun() {
       config: RunConfig;
       decisions: TurnDecision[];
     }): Promise<SavedRun | null> => {
-      if (isOfflineMode) return null;
+      if (isPlaytestMode || isOfflineMode || config.careerStart) return null;
 
       const { data, error } = await supabase.functions.invoke<SavedRun>('submit-run', {
         body: { ticketId, config, decisions },
       });
       if (error) throw error;
       return data;
+    },
+    onSuccess: async (saved) => {
+      if (!saved) return;
+      await Promise.all(
+        ['leaderboard', 'run-history', 'recent-runs'].map((key) =>
+          queryClient.invalidateQueries({ queryKey: [key] }),
+        ),
+      );
     },
   });
 }

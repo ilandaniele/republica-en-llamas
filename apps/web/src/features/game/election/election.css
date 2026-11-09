@@ -1,0 +1,220 @@
+.election-tally {
+  margin: 18px 0;
+}
+.election-count-progress {
+  border: 2px solid var(--celeste-dark);
+  padding: 12px;
+  background: #091525;
+}
+.election-count-progress strong {
+  color: var(--gold);
+  font-size: 26px;
+}
+.election-simulation,
+.election-map-note {
+  color: var(--celeste-light);
+  font-size: 16px;
+  margin-top: 8px;
+}
+.election-progress,
+.election-vote-bar {
+  height: 12px;
+  background: #040c17;
+  border: 1px solid #425d7e;
+  margin-top: 8px;
+}
+.election-progress > div {
+  height: 100%;
+  background: var(--gold);
+}
+.election-count-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.9fr) minmax(0, 1fr);
+  gap: 20px;
+  margin-top: 18px;
+}
+.election-map {
+  background: #091525;
+  border: 2px solid var(--celeste-dark);
+  align-self: start;
+  padding: 10px;
+}
+.election-map svg {
+  width: 100%;
+  max-height: 460px;
+  display: block;
+}
+.election-map figcaption {
+  color: var(--celeste-light);
+  font-size: 14px;
+  line-height: 1.3;
+  padding-top: 8px;
+}
+.election-map a {
+  text-decoration: underline;
+}
+.election-map-labels {
+  font-family: var(--font-readable);
+  font-size: 11px;
+}
+.election-province {
+  cursor: pointer;
+}
+.election-province:hover,
+.election-province:focus-visible {
+  filter: brightness(1.25);
+}
+.election-province:focus-visible {
+  outline: 2px solid var(--gold);
+}
+.election-province.is-selected {
+  opacity: 0.85;
+}
+.election-returns h3 {
+  font-size: 24px;
+  color: var(--celeste-light);
+  margin-bottom: 12px;
+}
+.election-party-results {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.election-party-results li {
+  border-left: 5px solid;
+  background: #091525;
+  padding: 10px 12px;
+}
+.election-party-title {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 20px;
+}
+.election-party-title strong {
+  color: var(--white);
+  white-space: nowrap;
+}
+.election-party-results p {
+  font-size: 16px;
+  color: var(--celeste-light);
+}
+.election-vote-bar {
+  height: 8px;
+  border: 0;
+}
+.election-vote-bar > div {
+  height: 100%;
+}
+.election-district-picker {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 18px;
+}
+.election-district-picker select {
+  min-height: 44px;
+  background: #091525;
+  border: 2px solid var(--celeste-dark);
+  padding: 8px;
+  color: var(--white);
+  width: 100%;
+  min-width: 0;
+}
+.election-district-detail {
+  border: 2px solid var(--celeste-dark);
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 16px;
+}
+.election-district-detail h4 {
+  color: var(--white);
+  font-size: 20px;
+}
+.election-local-result {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+}
+.election-skip {
+  min-height: 44px;
+  border: 2px solid var(--celeste);
+  color: var(--celeste-light);
+  background: #162d4a;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+}
+.election-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 12px;
+  margin-top: 16px;
+}
+.election-controls label,
+.election-districts label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.election-controls select,
+.election-districts select {
+  min-height: 44px;
+  border: 2px solid var(--celeste-dark);
+  background: #091525;
+  color: var(--white);
+  padding: 8px;
+}
+.election-controls p {
+  flex-basis: 100%;
+  color: var(--celeste-light);
+}
+.election-districts {
+  border: 2px solid var(--celeste-dark);
+  padding: 12px;
+  margin: 18px 0;
+}
+.election-districts summary {
+  color: var(--celeste-light);
+  cursor: pointer;
+  min-height: 44px;
+}
+.election-table-scroll {
+  overflow-x: auto;
+  margin-top: 12px;
+}
+.election-districts table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+.election-districts th,
+.election-districts td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--celeste-dark);
+}
+.election-districts th[scope='row'] {
+  min-width: 180px;
+}
+.election-districts button {
+  min-height: 44px;
+  text-align: left;
+  padding: 4px;
+  border: 2px solid transparent;
+}
+.election-districts button[aria-pressed='true'] {
+  border-color: var(--gold);
+}
+@media (max-width: 760px) {
+  .election-count-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .election-map {
+    width: min(100%, 380px);
+    justify-self: center;
+  }
+}
