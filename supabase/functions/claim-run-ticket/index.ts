@@ -8,7 +8,7 @@ import {
   requestGuard,
   requestErrorResponse,
 } from '../_shared/http.ts';
-import { DAILY_TICKET_LIMIT } from '../_shared/runTickets.ts';
+import { DAILY_TICKET_LIMIT, FREE_DAILY_TICKET_LIMIT } from '../_shared/runTickets.ts';
 import { enforceIpRateLimit, enforceUserRateLimit } from '../_shared/rateLimit.ts';
 import { isRecord, readJsonBody } from '../_shared/requestPolicy.ts';
 
@@ -37,6 +37,7 @@ Deno.serve(async (req: Request) => {
       p_from_user: guest.id,
       p_to_user: user.id,
       p_daily_limit: DAILY_TICKET_LIMIT,
+      p_free_daily_limit: FREE_DAILY_TICKET_LIMIT,
     });
     if (error) {
       console.error('claim-run-ticket failed to claim a ticket');

@@ -27,6 +27,7 @@ for (const name of [
   '008_run_ticket_daily_limit.sql',
   '009_anonymous_guests.sql',
   '010_api_security.sql',
+  '011_ticket_caps_and_private_usernames.sql',
 ]) {
   const migration = (await readFile(`supabase/migrations/${name}`, 'utf8'))
     .replace(/^\uFEFF/, '')
@@ -186,4 +187,53 @@ test('rate retention only deletes expired buckets and is not callable by clients
   await db.exec('set role authenticated');
   await assert.rejects(db.query('select public.prune_api_rate_limits()'), /permission denied/);
   await db.exec('reset role');
+});
+
+const FREE = '55555555-5555-4555-8555-555555555555';
+const GUEST = '66666666-6666-4666-8666-666666666666';
+const issue = (user) =>
+  db.query('select * from public.issue_run_ticket($1,7,30,3)', [user]).then((r) => r.rows.length);
+const claim = (ticket, to = FREE) =>
+  db
+    .query('select public.claim_run_ticket($1,$2,$3,30,3) as claimed', [ticket, GUEST, to])
+    .then((r) => r.rows[0].claimed);
+
+test('OAuth signups and legacy email-derived usernames never expose the email local part', async () => {
+  await db.query("insert into auth.users(id,email) values ($1,'secret.person@gmail.com')", [FREE]);
+  const username = async () =>
+    (await db.query('select username from public.profiles where id=$1', [FREE])).rows[0].username;
+  assert.match(await username(), /^jugador_[0-9a-f]{10}$/);
+  await db.query("update public.profiles set username='secret.person' where id=$1", [FREE]);
+  await db.exec(
+    (await readFile('supabase/migrations/011_ticket_caps_and_private_usernames.sql', 'utf8')).replace(/^﻿/, ''),
+  );
+  assert.match(await username(), /^jugador_[0-9a-f]{10}$/);
+});
+
+test('server enforces the free daily cap unless the player has full_access', async () => {
+  assert.deepEqual([await issue(FREE), await issue(FREE), await issue(FREE), await issue(FREE)], [1, 1, 1, 0]);
+  await db.query("insert into public.user_entitlements(user_id,entitlement) values ($1,'full_access')", [FREE]);
+  assert.equal(await issue(FREE), 1);
+  await db.query("delete from public.user_entitlements where user_id=$1 and entitlement='full_access'", [FREE]);
+});
+
+test('claimed guest tickets count from the claim time and stale guest tickets cannot be claimed', async () => {
+  await db.query("insert into auth.users(id,email,is_anonymous) values ($1,null,true)", [GUEST]);
+  const guestTicket = async (age) =>
+    (
+      await db.query(
+        `insert into public.run_tickets(user_id,seed,created_at) values ($1,9,now()-interval '${age}') returning id`,
+        [GUEST],
+      )
+    ).rows[0].id;
+  assert.equal(await claim(await guestTicket('2 days'), OTHER), false);
+  const fresh = await guestTicket('1 hour');
+  assert.equal(await claim(fresh), false);
+  await db.query("update public.run_tickets set created_at = now()-interval '2 days' where user_id=$1", [FREE]);
+  assert.equal(await claim(fresh), true);
+  const { rows } = await db.query(
+    "select user_id, created_at > now()-interval '1 minute' as recent from public.run_tickets where id=$1",
+    [fresh],
+  );
+  assert.deepEqual(rows[0], { user_id: FREE, recent: true });
 });

@@ -7,7 +7,7 @@ import {
   requestErrorResponse,
 } from '../_shared/http.ts';
 import { enforceIpRateLimit, enforceUserRateLimit } from '../_shared/rateLimit.ts';
-import { DAILY_TICKET_LIMIT } from '../_shared/runTickets.ts';
+import { DAILY_TICKET_LIMIT, FREE_DAILY_TICKET_LIMIT } from '../_shared/runTickets.ts';
 
 const SEED_RANGE = 1_000_000;
 
@@ -31,6 +31,7 @@ Deno.serve(async (req: Request) => {
       p_user_id: userId,
       p_seed: randomSeed(),
       p_daily_limit: DAILY_TICKET_LIMIT,
+      p_free_daily_limit: FREE_DAILY_TICKET_LIMIT,
     });
     if (error) {
       console.error('start-run failed to issue a ticket');

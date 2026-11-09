@@ -42,7 +42,7 @@ npm run build
 
 Las correcciones están en código; **no se aplicaron migraciones ni se desplegaron funciones/web**. Antes de publicar:
 
-1. Revisar y aplicar `supabase/migrations/010_api_security.sql` en staging antes de desplegar las funciones que usan sus RPC. Sin esos RPC, los limitadores nuevos fallan cerrado con 503.
+1. Revisar y aplicar `supabase/migrations/010_api_security.sql` en staging antes de desplegar las funciones que usan sus RPC. Sin esos RPC, los limitadores nuevos fallan cerrado con 503. Aplicar después `011_ticket_caps_and_private_usernames.sql` antes de desplegar `start-run` y `claim-run-ticket`: cambia las firmas de `issue_run_ticket`/`claim_run_ticket` (cupo gratuito de 3, tickets reclamados, usernames neutros).
 2. Configurar orígenes exactos, límites de Supabase Auth y cabecera IP saneada por el gateway. No confiar en un `X-Forwarded-For` arbitrario. Programar limpieza administrativa de contadores.
 3. Agregar la URL exacta `/reset-password` a la allowlist de Supabase y probar expiración, uso único y revocación de sesiones. La UI no configura el vencimiento del servidor.
 4. Desplegar funciones con el bundle actual del motor y verificar JWT del gateway y firma Stripe. Después probar web, dos cuentas, compras en modo test, tickets y replay.

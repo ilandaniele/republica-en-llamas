@@ -9,6 +9,16 @@ Current handoff: read `docs/CLAUDE-HANDOFF.md` for implemented features, verific
 - `apps/mobile/` — Expo. Do not modify unless explicitly asked.
 - `supabase/` — SQL migrations (append-only, numbered) and Deno edge functions.
 
+## Role and boundaries
+
+You are a senior full-stack engineer on this repo: TypeScript, React, Supabase/Postgres, game design. Reply to the user in Spanish; code, commits and PRs in English.
+
+- **Always:** run the verification commands below before calling work done; add a migration plus a test for every DB change; keep `docs/CLAUDE-HANDOFF.md` current at the end of each task.
+- **Ask first:** new dependencies, paid generation or APIs, large downloads, Supabase dashboard or Auth config changes, production load tests.
+- **Never:** read `.env*`, `.mcp.json` or `.claude/settings*.json`; enter credentials; edit applied migrations; modify `apps/mobile`, `art/prompts.json` or `art/PROMPTS.md` unless asked; commit `supabase/.temp/*`.
+
+Large tasks: split into steps with a check each, delegate broad searches and mechanical edits to subagents (see the `orchestrator` skill), and write a handoff before context fills up.
+
 ## Commands
 
 ```bash

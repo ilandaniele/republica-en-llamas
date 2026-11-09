@@ -101,11 +101,13 @@ El usuario aceptó explícitamente el coste y el escaneo completo con esfuerzo m
 
 Resultado oficial: [CLAUDE-SECURITY-RESULTS.md](CLAUDE-SECURITY-20261108-065217/CLAUDE-SECURITY-RESULTS.md), junto con JSONL, SARIF y sello de revisión `2664bccc7212-dirty`. El renderer registra **`verification.status: verified`**, 32 de 32 investigadores retornados, 18 votos, una ronda de panel y cuatro hallazgos bajos confirmados. El redactor terminó sin advertencias de credenciales sin limpiar. No se editaron fuentes de aplicación ni el índice Git durante el escaneo; no se generaron ni aplicaron parches.
 
-Hallazgos nuevos, aún sin corregir:
+Hallazgos nuevos, corregidos en código por `supabase/migrations/011_ticket_caps_and_private_usernames.sql` y las funciones `start-run`/`claim-run-ticket` (cubiertos por `npm run test:security`; pendiente aplicar en remoto):
 
 - **SEC-013 / F1, baja:** el fallback de username para OAuth deriva de la parte local del email y puede hacerla pública mediante el ranking (`009_anonymous_guests.sql:18`).
 - **SEC-014 / F2–F3, baja:** tickets antiguos de invitados pueden reclamarse sin consumir correctamente el cupo diario del destinatario porque conservan `created_at`. F2 y F3 son dos ubicaciones de la misma causa, no dos problemas independientes.
 - **SEC-015 / F4, baja:** el cupo gratuito de tres partidas depende de localStorage; el servidor solo aplica un límite general de 30 tickets. El cliente puede eludir ese control de producto.
+
+Corrección: usernames neutros `jugador_<hex>` con backfill de los derivados del email; el ticket reclamado reinicia `created_at` y cuenta contra el cupo del destino; tickets de invitado de más de un día no se reclaman; el servidor aplica 3 tickets diarios sin `full_access` y 30 con él. El contador de localStorage queda solo como indicación de UI.
 
 Cobertura oficial: 325 archivos seguidos por Git, 10 componentes y un barrido adicional. `completeness_check_outcome: checked` significa que los directorios principales fueron contabilizados, no que cada línea se leyó. Dentro de componentes: 111 archivos leídos, 167 bajo exclusiones declaradas. Se apartaron `art` (inputs gráficos, perfiles Chromium/modelos), `.claude` (configuración local) y `docs` (documentación). Tests, contenido gráfico/eventos/i18n y salidas generadas se examinaron parcialmente o solo por búsquedas. No se aplicó la lente de memoria insegura a nueve grupos por su lenguaje. Los archivos nuevos sin seguimiento se leyeron en parte, pero no entran en el conteo ni en la garantía de cobertura del ledger. No se leyeron `.env` ni almacenes de credenciales.
 
