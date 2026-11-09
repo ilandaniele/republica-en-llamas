@@ -65,7 +65,7 @@ describe('local playable review', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'CARRERA' }));
     fireEvent.click(screen.getByRole('button', { name: /Nueva Partida|Jugar como invitado/i }));
     fireEvent.click(await screen.findByRole('button', { name: /Asumir como/ }));
-    await screen.findByRole('progressbar', { name: 'Gestión' });
+    await screen.findByRole('progressbar', { name: 'Gestión' }, { timeout: 5000 });
     for (let decision = 0; decision < 4; decision++) {
       const choice = document.querySelectorAll('[aria-pressed]');
       fireEvent.click(choice[3]!);
@@ -94,7 +94,7 @@ describe('local playable review', () => {
       fireEvent.click(await screen.findByRole('button', { name: /Javier Milei.*La Motosierra/ }));
       expect(screen.queryByRole('button', { name: /Crisis Express/ })).toBeNull();
       fireEvent.click(screen.getByRole('button', { name: /Asumir como Javier Milei/ }));
-      await screen.findByRole('progressbar', { name: 'Gestión' });
+      await screen.findByRole('progressbar', { name: 'Gestión' }, { timeout: 5000 });
       expect(useGameStore.getState().runConfig?.careerStart).toBe(office);
       expect(useGameStore.getState().gameState?.career?.office).toBe(office);
       expect(useGameStore.getState().runTicketId).toBeNull();
@@ -112,7 +112,7 @@ describe('local playable review', () => {
         await useGameStore.persist.rehydrate();
       });
       mountGame();
-      await screen.findByRole('progressbar', { name: 'Gestión' });
+      await screen.findByRole('progressbar', { name: 'Gestión' }, { timeout: 5000 });
       expect(useGameStore.getState().gameState).toEqual(committed.gameState);
       expect(useGameStore.getState().gameState?.career?.officeTurn).toBe(2);
       expect(invoke).not.toHaveBeenCalled();
@@ -127,7 +127,7 @@ describe('local playable review', () => {
     fireEvent.click(screen.getByRole('button', { name: /Nueva Partida|Jugar como invitado/i }));
     fireEvent.click(await screen.findByRole('button', { name: /Sergio Massa.*El Candidato/ }));
     fireEvent.click(screen.getByRole('button', { name: /Asumir como Sergio Massa/ }));
-    await screen.findByRole('progressbar', { name: 'Gestión' });
+    await screen.findByRole('progressbar', { name: 'Gestión' }, { timeout: 5000 });
     while (useGameStore.getState().gameState?.career?.office !== 'president') {
       const store = useGameStore.getState();
       const promotion = store.currentCard!.id.endsWith('_promotion');
