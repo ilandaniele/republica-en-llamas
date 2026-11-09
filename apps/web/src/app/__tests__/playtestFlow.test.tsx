@@ -7,7 +7,6 @@ import App from '../../App.js';
 import { AuthProvider } from '../AuthProvider.js';
 import { useGameStore } from '../../stores/gameStore.js';
 import { initI18n } from '../../lib/i18n.js';
-import { supabase } from '../../lib/supabase.js';
 
 vi.mock('../../lib/playtest.js', () => ({ isPlaytestMode: true }));
 vi.mock('@gsap/react', () => ({ useGSAP: vi.fn() }));
@@ -85,7 +84,7 @@ describe('local playable review', () => {
   ] as const)(
     'starts, saves and resumes a career from %s',
     async (office, label) => {
-      const invoke = vi.spyOn(supabase.functions, 'invoke');
+      const apiFetch = vi.spyOn(globalThis, 'fetch');
       const view = mountGame();
       fireEvent.click(await screen.findByRole('button', { name: 'CARRERA' }));
       fireEvent.click(screen.getByRole('button', { name: label }));
@@ -115,8 +114,8 @@ describe('local playable review', () => {
       await screen.findByRole('progressbar', { name: 'Gestión' }, { timeout: 5000 });
       expect(useGameStore.getState().gameState).toEqual(committed.gameState);
       expect(useGameStore.getState().gameState?.career?.officeTurn).toBe(2);
-      expect(invoke).not.toHaveBeenCalled();
-      invoke.mockRestore();
+      expect(apiFetch).not.toHaveBeenCalledWith(expect.stringContaining('/api/'), expect.anything());
+      apiFetch.mockRestore();
     },
     30000,
   );
@@ -153,7 +152,7 @@ describe('local playable review', () => {
     expect(screen.getByText('Termómetro nacional')).toBeTruthy();
   }, 30000);
   it('opens the isolated debate from home without starting or submitting a run', async () => {
-    const invoke = vi.spyOn(supabase.functions, 'invoke');
+    const apiFetch = vi.spyOn(globalThis, 'fetch');
     const stateBefore = useGameStore.getState().gameState;
     mountGame();
     fireEvent.click(await screen.findByRole('button', { name: 'Probar debate presidencial' }));
@@ -164,8 +163,8 @@ describe('local playable review', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Responder en el debate' }));
     expect(useGameStore.getState().gameState).toBe(stateBefore);
     expect(useGameStore.getState().decisions).toHaveLength(0);
-    expect(invoke).not.toHaveBeenCalled();
-    invoke.mockRestore();
+    expect(apiFetch).not.toHaveBeenCalledWith(expect.stringContaining('/api/'), expect.anything());
+    apiFetch.mockRestore();
   });
   it('offers three free presidents and sends a paid candidate to the pack without changing selection', async () => {
     mountGame();
@@ -190,7 +189,7 @@ describe('local playable review', () => {
   }, 30000);
 
   it('starts from home, chooses a new president, confirms a decision, and resumes the same run', async () => {
-    const invoke = vi.spyOn(supabase.functions, 'invoke');
+    const apiFetch = vi.spyOn(globalThis, 'fetch');
     const view = mountGame();
     const start = await screen.findByRole(
       'button',
@@ -228,7 +227,7 @@ describe('local playable review', () => {
     expect(useGameStore.getState().decisions).toHaveLength(1);
     expect(useGameStore.getState().gameState).toEqual(committed.gameState);
     expect(screen.getByText(/VERSIÓN DE PRUEBA/)).toBeTruthy();
-    expect(invoke).not.toHaveBeenCalled();
-    invoke.mockRestore();
+    expect(apiFetch).not.toHaveBeenCalledWith(expect.stringContaining('/api/'), expect.anything());
+    apiFetch.mockRestore();
   }, 30000);
 });

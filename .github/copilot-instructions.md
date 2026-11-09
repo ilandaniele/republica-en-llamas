@@ -82,7 +82,7 @@ Check `index.ts` for the current list of components before creating a new one.
 
 - Framer Motion is used for enter/exit animations. Use `<AnimatePresence mode="wait">` around card transitions.
 - Screens live in `apps/web/src/features/<feature>/`; code shared by two or more features stays in `components/`, `hooks/`, `stores/` and `lib/`. A feature never imports another feature (ESLint `import/no-restricted-paths`). Route-level lazy loading and idle/hover prefetch live in `apps/web/src/app/routes.ts`.
-- `useAuth` → Supabase session. `useEntitlements` → IAP unlock status. Both are in `apps/web/src/hooks/`.
+- `useAuth` → Better Auth session (`lib/auth.ts`; anonymous guest sessions count as signed out). Server calls go through `lib/api.ts` (`apiSend`, `isOfflineMode`). `useEntitlements` → IAP unlock status. Both are in `apps/web/src/hooks/`.
 
 ## Narrative Arc
 
@@ -111,9 +111,11 @@ For A/B tests: use `getFeatureFlag('flag_name')` from `lib/analytics.ts` (postho
 
 Event card text is stored in `packages/game-engine/src/i18n/es.ts` and `en.ts` as flat key-value maps. Key format: `event.<cardId>.title`, `event.<cardId>.body`, `event.<cardId>.choice_a` … `choice_d`. Import via the re-exported `es`/`en` named exports from `@republica/game-engine`.
 
-## Deployment (Fly.io)
+## Deployment (Cloudflare Workers)
 
-`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` must be passed as Docker build args — they are baked into the bundle at Vite build time. Set them via `fly deploy --build-arg VITE_SUPABASE_URL=... --build-arg VITE_SUPABASE_ANON_KEY=...` or as Fly secrets mapped to build args.
+One Worker (`apps/api`) serves `/api/*` and the static web build (`apps/web/dist`, Workers Static Assets with SPA fallback). Pushing to `main` runs `.github/workflows/deploy.yml`: build web, `npm run db:migrate` (D1), `npm run deploy --workspace=apps/api`. Manual: `npm run deploy`.
+
+Only `VITE_POSTHOG_KEY` and `VITE_OFFLINE_MODE` are `VITE_*` vars. They are public and baked into the bundle at Vite build time — never put secrets in them. Server secrets (`BETTER_AUTH_SECRET`, Google, Stripe, email) are Worker secrets set with `wrangler secret put`; see `apps/api/src/env.ts`. Deploy needs GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 
 ## GSAP Animations
 

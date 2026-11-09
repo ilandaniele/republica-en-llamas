@@ -9,7 +9,7 @@ import { ProfileHeader } from './profile/ProfileHeader.js';
 import { ProfileStats } from './profile/ProfileStats.js';
 import { RecentRunsList } from './profile/RecentRunsList.js';
 import { LogoutModal } from './profile/LogoutModal.js';
-import { translateAuthError } from '../../lib/supabase.js';
+import { translateAuthError } from '../../lib/auth.js';
 
 function NoSession({ onBack }: { onBack: () => void }) {
   return (
@@ -37,8 +37,7 @@ export default function ProfileScreen() {
 
   if (!user) return <NoSession onBack={() => navigate('/')} />;
 
-  const metadataUsername = user.user_metadata?.['username'] as string | undefined;
-  const displayName = profileUsername ?? metadataUsername ?? user.email ?? '?';
+  const displayName = profileUsername ?? user.name ?? user.email;
   const recentRuns = runsPage?.runs ?? [];
 
   const renameUsername = async (username: string) => {
@@ -66,7 +65,7 @@ export default function ProfileScreen() {
         <ProfileHeader
           displayName={displayName}
           email={user.email}
-          initialUsername={metadataUsername ?? ''}
+          initialUsername={profileUsername ?? ''}
           onRename={renameUsername}
           onLogoutClick={() => setShowLogoutModal(true)}
         />

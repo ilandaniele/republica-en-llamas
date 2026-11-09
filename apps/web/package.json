@@ -17,10 +17,10 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@republica/game-engine": "*",
-    "@supabase/supabase-js": "^2.43.0",
     "@tanstack/query-sync-storage-persister": "^5.104.1",
     "@tanstack/react-query": "^5.40.0",
     "@tanstack/react-query-persist-client": "^5.104.1",
+    "better-auth": "^1.7.18",
     "framer-motion": "^11.2.0",
     "gsap": "^3.12.7",
     "html2canvas": "^1.4.1",

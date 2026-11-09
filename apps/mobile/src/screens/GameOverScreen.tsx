@@ -18,7 +18,6 @@ export default function GameOverScreen() {
   const router = useRouter();
   const gameState = useMobileGameStore((s) => s.gameState);
   const resetGame = useMobileGameStore((s) => s.resetGame);
-  const restoreFromTurn = useMobileGameStore((s) => s.restoreFromTurn);
 
   if (!gameState) { router.replace('/'); return null; }
 
@@ -31,7 +30,6 @@ export default function GameOverScreen() {
   const { isLoaded: adReady, isLoading: adLoading, showAd, adsDisabled } = useRewardedAd({
     placement: 'game_over',
     onRewarded: () => {
-      if (restoreFromTurn) restoreFromTurn(continueTurn);
       router.replace('/game');
     },
   });

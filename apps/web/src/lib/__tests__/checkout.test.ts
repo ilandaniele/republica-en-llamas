@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-const invoke = vi.hoisted(() => vi.fn());
-vi.mock('../supabase.js', () => ({ supabase: { functions: { invoke } } }));
+const apiSend = vi.hoisted(() => vi.fn());
+vi.mock('../api.js', () => ({ apiSend }));
 import { checkoutUrl, createCheckout } from '../checkout.js';
 
 describe('checkout boundary', () => {
@@ -25,17 +25,16 @@ describe('checkout boundary', () => {
     expect(checkoutUrl(target)).toBeNull();
   });
 
-  it('uses the configured Supabase client without accepting an API origin from input', async () => {
-    invoke.mockResolvedValue({ data: { url: 'https://checkout.stripe.com/c/pay/cs_test' }, error: null });
+  it('posts to the same-origin API without accepting an API origin from input', async () => {
+    apiSend.mockResolvedValue({ url: 'https://checkout.stripe.com/c/pay/cs_test' });
     expect(await createCheckout('presidents_pack')).toBe('https://checkout.stripe.com/c/pay/cs_test');
-    expect(invoke).toHaveBeenCalledWith('create-checkout', { body: { entitlement: 'presidents_pack' } });
+    expect(apiSend).toHaveBeenCalledWith('create-checkout', { entitlement: 'presidents_pack' });
   });
 
   it('does not reflect a backend error or navigate to an arbitrary response URL', async () => {
-    invoke.mockResolvedValue({
-      data: { url: 'https://attacker.test' },
-      error: { message: 'private detail' },
-    });
+    apiSend.mockResolvedValueOnce({ url: 'https://attacker.test' });
+    await expect(createCheckout('presidents_pack')).rejects.toThrow('No se pudo iniciar el pago');
+    apiSend.mockRejectedValueOnce(new Error('private detail'));
     await expect(createCheckout('presidents_pack')).rejects.toThrow('No se pudo iniciar el pago');
   });
 });

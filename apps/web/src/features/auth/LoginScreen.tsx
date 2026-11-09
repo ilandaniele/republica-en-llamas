@@ -2,27 +2,22 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
-import {
-  supabase,
-  isOfflineMode,
-  missingEnvVars,
-  signInWithGoogle,
-  translateAuthError,
-} from '../../lib/supabase.js';
+import { isOfflineMode } from '../../lib/api.js';
+import { requestPasswordReset, signInWithGoogle, translateAuthError } from '../../lib/auth.js';
 import { useGameStore } from '../../stores/gameStore.js';
 import { GoogleIcon } from './GoogleIcon.js';
 import { useAuthDestination } from './useAuthDestination.js';
-import { rememberSession, setRememberSession } from '../../lib/authStorage.js';
+import { OfflineNotice } from './OfflineNotice.js';
 
 export default function LoginScreen() {
   const navigate = useNavigate();
-  const { routeState, captureGuestToken, continueAfterAuth } = useAuthDestination();
+  const { routeState, continueAfterAuth } = useAuthDestination();
   const { signIn } = useAuth();
   const setUserId = useGameStore((s) => s.setUserId);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(rememberSession);
+  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [resetSent, setResetSent] = useState(false);
@@ -32,14 +27,13 @@ export default function LoginScreen() {
     setError('');
     setLoading(true);
     try {
-      const guestToken = await captureGuestToken();
       const { data, error: err } = await signIn(email, password, rememberMe);
       if (err) {
-        setError(translateAuthError(err.message));
+        setError(translateAuthError(err.message ?? ''));
         return;
       }
-      if (data.user) setUserId(data.user.id);
-      await continueAfterAuth(guestToken);
+      setUserId(data.user.id);
+      await continueAfterAuth();
     } catch {
       setError('Error inesperado. Intentá de nuevo.');
     } finally {
@@ -55,9 +49,7 @@ export default function LoginScreen() {
     setLoading(true);
     setError('');
     try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
+      const { error: resetError } = await requestPasswordReset(email);
       if (resetError) {
         setError('No se pudo enviar la recuperación. Intentá nuevamente más tarde.');
         return;
@@ -70,25 +62,7 @@ export default function LoginScreen() {
     }
   };
 
-  if (isOfflineMode) {
-    return (
-      <div className="flex min-h-screen items-center justify-center p-6">
-        <div className="w-full max-w-md rounded-xl border border-navy-600 bg-navy-800 p-8 text-center">
-          <p className="mb-3 font-serif text-xl font-bold text-crimson-400">⚠ Sin conexión a Supabase</p>
-          <p className="mb-4 font-mono text-xs text-smoke-400">
-            Faltan variables de entorno en <code className="text-gold-400">.env</code>:
-          </p>
-          {missingEnvVars.url && <p className="mb-1 font-mono text-xs text-smoke-300">• VITE_SUPABASE_URL</p>}
-          {missingEnvVars.key && (
-            <p className="mb-1 font-mono text-xs text-smoke-300">• VITE_SUPABASE_ANON_KEY</p>
-          )}
-          <button onClick={() => navigate('/')} className="mt-6 font-mono text-sm text-gold-400 underline">
-            Jugar en modo offline →
-          </button>
-        </div>
-      </div>
-    );
-  }
+  if (isOfflineMode) return <OfflineNotice onPlayOffline={() => navigate('/')} />;
 
   return (
     <m.div
@@ -109,7 +83,6 @@ export default function LoginScreen() {
         {/* Google OAuth button */}
         <button
           onClick={() => {
-            setRememberSession(rememberMe);
             void signInWithGoogle();
           }}
           className="mb-4 flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-800 transition-colors hover:bg-gray-50"

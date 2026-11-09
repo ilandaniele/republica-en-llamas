@@ -1,14 +1,17 @@
 import { useContext } from 'react';
-import { supabase, signIn, signUp, signOut } from '../lib/supabase.js';
+import { saveUsername, signIn, signOut, signUp } from '../lib/auth.js';
 import { AuthContext } from '../app/authContext.js';
 
+async function updateUsername(username: string): Promise<{ error: Error | null }> {
+  try {
+    await saveUsername(username);
+    return { error: null };
+  } catch (error) {
+    return { error: error instanceof Error ? error : new Error('Request failed') };
+  }
+}
+
 export function useAuth() {
-  const { user, session, loading, passwordRecovery } = useContext(AuthContext);
-
-  const updateUsername = async (username: string) => {
-    if (!user) return { error: new Error('Not authenticated') };
-    return supabase.from('profiles').update({ username }).eq('id', user.id);
-  };
-
-  return { user, session, loading, passwordRecovery, signIn, signUp, signOut, updateUsername };
+  const { user, loading } = useContext(AuthContext);
+  return { user, loading, signIn, signUp, signOut, updateUsername };
 }

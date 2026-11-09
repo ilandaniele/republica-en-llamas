@@ -1,32 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
-const unsubscribe = vi.fn();
-let authCallback: (event: AuthChangeEvent, session: Session | null) => void;
-const onAuthStateChange = vi.fn((callback: typeof authCallback) => {
-  authCallback = callback;
-  return { data: { subscription: { unsubscribe } } };
-});
-const session = { user: { id: 'u1', app_metadata: {} } } as Session;
-const getSession = vi.fn(() => Promise.resolve({ data: { session } }));
+interface SessionResult {
+  data: { user: { id: string; email: string; name: string; isAnonymous?: boolean } } | null;
+  isPending: boolean;
+}
 
-vi.mock('../../lib/supabase.js', () => ({
-  isOfflineMode: false,
-  ensureProfile: vi.fn(),
+const signedIn: SessionResult = {
+  data: { user: { id: 'u1', email: 'u1@example.test', name: 'u1', isAnonymous: false } },
+  isPending: false,
+};
+const useSession = vi.hoisted(() => vi.fn<() => SessionResult>());
+
+vi.mock('../../lib/api.js', () => ({ isOfflineMode: false }));
+vi.mock('../../lib/auth.js', () => ({
+  authClient: { useSession },
+  saveUsername: vi.fn(),
   signIn: vi.fn(),
   signUp: vi.fn(),
   signOut: vi.fn(),
-  subscribeToAuth: (callback: typeof authCallback) =>
-    onAuthStateChange(callback).data.subscription.unsubscribe,
-  isPasswordRecovery: () => false,
-  supabase: {
-    auth: {
-      getSession,
-      onAuthStateChange,
-    },
-  },
 }));
 
 const { AuthProvider } = await import('../AuthProvider.js');
@@ -37,54 +30,47 @@ function UserId() {
   return <span>{loading ? 'loading' : (user?.id ?? 'signed out')}</span>;
 }
 
-beforeEach(() => vi.clearAllMocks());
-afterEach(cleanup);
-
-function mountAuth(client = new QueryClient()) {
-  return render(
+function tree(client: QueryClient) {
+  return (
     <QueryClientProvider client={client}>
       <AuthProvider>
         <UserId />
         <UserId />
         <UserId />
       </AuthProvider>
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
 }
 
+beforeEach(() => {
+  vi.clearAllMocks();
+  useSession.mockReturnValue(signedIn);
+});
+afterEach(cleanup);
+
 describe('AuthProvider', () => {
-  it('shares one auth subscription across all useAuth consumers', async () => {
-    const { unmount } = mountAuth();
-
-    expect(await screen.findAllByText('u1')).toHaveLength(3);
-    expect(onAuthStateChange).toHaveBeenCalledTimes(1);
-
-    unmount();
-    expect(unsubscribe).toHaveBeenCalledTimes(1);
+  it('shares one session subscription across all useAuth consumers', () => {
+    render(tree(new QueryClient()));
+    expect(screen.getAllByText('u1')).toHaveLength(3);
+    expect(useSession).toHaveBeenCalledTimes(1);
   });
 
-  it('does not restore a stale bootstrap session after a sign-out event', async () => {
-    let resolveSession: (value: { data: { session: Session } }) => void = () => {};
-    getSession.mockImplementationOnce(
-      () =>
-        new Promise((resolve) => {
-          resolveSession = resolve;
-        }),
-    );
-    mountAuth();
-    act(() => authCallback('SIGNED_OUT', null));
-    await act(async () => resolveSession({ data: { session } }));
+  it('treats anonymous guest sessions as signed out', () => {
+    useSession.mockReturnValue({
+      data: { user: { id: 'guest', email: 'guest@example.test', name: '', isAnonymous: true } },
+      isPending: false,
+    });
+    render(tree(new QueryClient()));
     expect(screen.getAllByText('signed out')).toHaveLength(3);
-    expect(screen.queryByText('u1')).toBeNull();
   });
 
-  it('removes private cached data on logout while keeping the public ranking', async () => {
+  it('removes private cached data on logout while keeping the public ranking', () => {
     const client = new QueryClient();
-    mountAuth(client);
-    await screen.findAllByText('u1');
+    const view = render(tree(client));
     for (const root of ['entitlements', 'profile-username', 'recent-runs', 'run-history', 'leaderboard'])
       client.setQueryData([root, 'u1'], ['private']);
-    act(() => authCallback('SIGNED_OUT', null));
+    useSession.mockReturnValue({ data: null, isPending: false });
+    view.rerender(tree(client));
     for (const root of ['entitlements', 'profile-username', 'recent-runs', 'run-history'])
       expect(client.getQueryData([root, 'u1'])).toBeUndefined();
     expect(client.getQueryData(['leaderboard', 'u1'])).toEqual(['private']);

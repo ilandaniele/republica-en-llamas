@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase, isOfflineMode } from '../../lib/supabase.js';
+import { apiSend, isOfflineMode } from '../../lib/api.js';
 import type { RunConfig, TurnDecision } from '@republica/game-engine';
 import { isPlaytestMode } from '../../lib/playtest.js';
 
@@ -23,11 +23,7 @@ export function useSaveRun() {
     }): Promise<SavedRun | null> => {
       if (isPlaytestMode || isOfflineMode || config.careerStart) return null;
 
-      const { data, error } = await supabase.functions.invoke<SavedRun>('submit-run', {
-        body: { ticketId, config, decisions },
-      });
-      if (error) throw error;
-      return data;
+      return apiSend<SavedRun>('submit-run', { ticketId, config, decisions });
     },
     onSuccess: async (saved) => {
       if (!saved) return;

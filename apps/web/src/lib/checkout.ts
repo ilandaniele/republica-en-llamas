@@ -1,5 +1,5 @@
 import type { EntitlementId } from '@republica/game-engine';
-import { supabase } from './supabase.js';
+import { apiSend } from './api.js';
 
 export function checkoutUrl(value: unknown): string | null {
   if (typeof value !== 'string') return null;
@@ -21,10 +21,8 @@ export function checkoutUrl(value: unknown): string | null {
 }
 
 export async function createCheckout(entitlement: EntitlementId): Promise<string> {
-  const { data, error } = await supabase.functions.invoke<{ url?: unknown }>('create-checkout', {
-    body: { entitlement },
-  });
+  const data = await apiSend<{ url?: unknown }>('create-checkout', { entitlement }).catch(() => null);
   const url = checkoutUrl(data?.url);
-  if (error || !url) throw new Error('No se pudo iniciar el pago. Intentá nuevamente.');
+  if (!url) throw new Error('No se pudo iniciar el pago. Intentá nuevamente.');
   return url;
 }

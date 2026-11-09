@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
-import { isOfflineMode, signInWithGoogle } from '../../lib/supabase.js';
+import { isOfflineMode } from '../../lib/api.js';
+import { signInWithGoogle } from '../../lib/auth.js';
 import { useGameStore } from '../../stores/gameStore.js';
 import type { Difficulty } from '@republica/game-engine';
 import { GoogleIcon } from './GoogleIcon.js';

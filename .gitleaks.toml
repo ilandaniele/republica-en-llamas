@@ -6,7 +6,6 @@ description = "Installed dependencies and generated output are not application s
 paths = [
   '''(^|[\\/])(node_modules|dist|\.git|\.turbo|\.expo|coverage)([\\/]|$)''',
   '''^art[\\/]raw[\\/]''',
-  '''^supabase[\\/]functions[\\/]_shared[\\/]game-engine\.js$''',
 ]
 
 [[rules]]
@@ -18,10 +17,3 @@ regexes = [
   '''^scenario\.[a-z0-9_]+\.(label|period|description)$''',
   '''^price_[A-Za-z0-9]+$''',
 ]
-
-[[rules]]
-id = "jwt"
-[[rules.allowlists]]
-description = "Deliberately invalid offline Supabase placeholder, not a session token"
-regexTarget = "secret"
-regexes = ['''\.ZM1234567890000000000000000000000000000000$''']

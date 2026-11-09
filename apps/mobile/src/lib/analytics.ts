@@ -3,6 +3,8 @@ import PostHog from 'posthog-react-native';
 const POSTHOG_KEY = process.env.EXPO_PUBLIC_POSTHOG_KEY ?? '';
 const HOST = 'https://app.posthog.com';
 
+type EventProperties = NonNullable<Parameters<PostHog['capture']>[1]>;
+
 let client: PostHog | null = null;
 
 export function initAnalytics(): void {
@@ -10,7 +12,7 @@ export function initAnalytics(): void {
   client = new PostHog(POSTHOG_KEY, { host: HOST });
 }
 
-export function identifyUser(userId: string, props?: Record<string, unknown>): void {
+export function identifyUser(userId: string, props?: EventProperties): void {
   client?.identify(userId, props);
 }
 
@@ -18,7 +20,7 @@ export function resetUser(): void {
   client?.reset();
 }
 
-function capture(event: string, props?: Record<string, unknown>): void {
+function capture(event: string, props?: EventProperties): void {
   client?.capture(event, props ?? {});
 }
 

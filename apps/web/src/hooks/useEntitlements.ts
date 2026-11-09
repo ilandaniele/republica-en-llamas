@@ -1,5 +1,5 @@
 ﻿import { useQuery } from '@tanstack/react-query';
-import { supabase } from '../lib/supabase.js';
+import { apiGet } from '../lib/api.js';
 import { useAuth } from './useAuth.js';
 import type { EntitlementId } from '@republica/game-engine';
 import { isPlaytestMode } from '../lib/playtest.js';
@@ -53,12 +53,8 @@ export function useEntitlements() {
     queryKey: ['entitlements', user?.id],
     queryFn: async () => {
       if (!user) return [] as EntitlementId[];
-      const { data, error } = await supabase
-        .from('user_entitlements')
-        .select('entitlement')
-        .eq('user_id', user.id);
-      if (error) return [] as EntitlementId[];
-      return (data ?? []).map((r: { entitlement: string }) => r.entitlement as EntitlementId);
+      const data = await apiGet<{ entitlements: EntitlementId[] }>('entitlements').catch(() => null);
+      return data?.entitlements ?? [];
     },
     enabled: !!user,
     staleTime: 5 * 60 * 1000,
