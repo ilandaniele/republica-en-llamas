@@ -28,3 +28,7 @@ supabase/.temp/
 
 # Raw images generated with Codex (scripts/pixel-art.py import)
 art/raw/
+
+# Cloudflare
+.wrangler/
+.dev.vars

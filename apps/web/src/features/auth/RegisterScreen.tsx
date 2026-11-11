@@ -3,19 +3,19 @@ import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
 import { MIN_USERNAME_LENGTH, useUsernameAvailability } from './useUsernameAvailability.js';
-import { isOfflineMode, signInWithGoogle, supabase, translateAuthError } from '../../lib/supabase.js';
+import { isOfflineMode } from '../../lib/api.js';
+import { signInWithGoogle, translateAuthError } from '../../lib/auth.js';
 import { useGameStore } from '../../stores/gameStore.js';
 import { GoogleIcon } from './GoogleIcon.js';
 import { useAuthDestination } from './useAuthDestination.js';
-import { OfflineNotice } from './register/OfflineNotice.js';
-import { ConfirmationSent } from './register/ConfirmationSent.js';
+import { OfflineNotice } from './OfflineNotice.js';
 import { UsernameField } from './register/UsernameField.js';
 import { PasswordField } from './register/PasswordField.js';
 import { validateRegistration } from './register/validateRegistration.js';
 
 export default function RegisterScreen() {
   const navigate = useNavigate();
-  const { routeState, captureGuestToken, continueAfterAuth } = useAuthDestination();
+  const { routeState, continueAfterAuth } = useAuthDestination();
   const { signUp } = useAuth();
   const setUserId = useGameStore((s) => s.setUserId);
 
@@ -25,32 +25,17 @@ export default function RegisterScreen() {
   const { available: usernameAvailable, checking: checkingUsername } = useUsernameAvailability(username);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [confirmationSent, setConfirmationSent] = useState(false);
 
   const goToLogin = () => navigate('/login', { state: routeState });
 
   const register = async () => {
-    const guestToken = await captureGuestToken();
     const { data, error: err } = await signUp(email, password, username);
     if (err) {
-      setError(translateAuthError(err.message));
+      setError(translateAuthError(err.message ?? ''));
       return;
     }
-
-    if (data.user) {
-      setUserId(data.user.id);
-      await supabase.from('profiles').upsert({
-        id: data.user.id,
-        username: username.trim(),
-      });
-    }
-
-    // A session exists immediately only when email confirmation is disabled
-    if (data.session) {
-      await continueAfterAuth(guestToken);
-    } else {
-      setConfirmationSent(true);
-    }
+    setUserId(data.user.id);
+    await continueAfterAuth();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,7 +54,6 @@ export default function RegisterScreen() {
   };
 
   if (isOfflineMode) return <OfflineNotice onPlayOffline={() => navigate('/')} />;
-  if (confirmationSent) return <ConfirmationSent email={email} onGoToLogin={goToLogin} />;
 
   return (
     <m.div

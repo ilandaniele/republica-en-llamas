@@ -1,5 +1,33 @@
 # Revisión de seguridad — 8 de noviembre de 2026
 
+## 2026-11-09 — Cloudflare migration update (current)
+
+The backend moved from Supabase (Postgres, RLS, Edge functions) and Fly.io (nginx) to a Cloudflare Worker (`apps/api`) with D1 and Better Auth, serving the static web build from the same origin. **Everything below this section was written against the Supabase/Fly architecture and is historical.** Findings tied to Supabase (RLS policies, `getUser(token)`, migrations 001-011, the PGlite SQL tests, Edge-function JWT gateway config, nginx limits) and the publication order ("apply migration 010 before the Edge functions", Supabase Auth allowlists, counter cleanup RPCs) are **superseded by the migration** and no longer describe the deployed system. Application-level findings (SEC-001 to SEC-009, SEC-013 to SEC-015) must be re-verified against the Worker code before being called closed; the rate-limit, request-size and ticket-cap controls were re-implemented in `apps/api/src`.
+
+### SEC-016 — Public default auth secret in the deployed Worker (high, fixed in code; secret set remotely)
+
+- **Finding:** with `BETTER_AUTH_SECRET` unset, the deployed Worker fell back to Better Auth's built-in default secret. That value is public, so an attacker could forge session cookies for any user.
+- **Fix:** `createAuth` (`apps/api/src/auth.ts`) throws when the secret is missing or shorter than 32 characters, and the API answers 503 (fail closed) instead of serving auth with a weak secret. A random 48-byte secret was generated and set with `wrangler secret put`.
+- **Tests:** `apps/api/src/__tests__/api.test.ts` (15 tests) cover the fail-closed path. Run with `npm run test:security`.
+- **Limit:** local tests prove the code refuses a missing or short secret. They do not prove the remote secret is set or strong; confirm with `wrangler secret list` (names only) and the live smoke checks (`/api/auth/get-session` answers null, not 503).
+
+### SEC-017 — Missing hashed asset returned SPA HTML with 200 (low, fixed)
+
+- **Finding:** a request for a missing `/assets/*.js` fell through to the SPA fallback and returned `index.html` with status 200, which breaks stale-client recovery and caches HTML under a script URL.
+- **Fix:** `/assets/*` is now `run_worker_first`; a missing hashed asset returns 404 instead of HTML. `/api/*` also runs the Worker first.
+- **Evidence:** covered by API tests; live smoke on https://republica-en-llamas.ilandaniele.workers.dev was run for `/`, `/api/leaderboard`, `/api/profile` (401), `/api/auth/get-session` (null) and `/api/nope` (404). That is a point-in-time smoke test, not a full pentest.
+
+### Current status and open items
+
+- CSP is still report-only (`apps/web/public/_headers`); enforcement needs testing on the deployed origin. Session cookies are managed by Better Auth.
+- `tar` advisory under the Expo toolchain (SEC-010) is unchanged. Mobile type-check was not run.
+- Not verified remotely: Google OAuth and Stripe dashboard configuration (redirect `<url>/api/auth/callback/google`, webhook `<url>/api/stripe-webhook`), the `EMAIL` binding for password reset, and rate-limit behavior behind the real edge. Local tests do not prove any of these.
+- Owner tasks: set the remaining Worker secrets, add GitHub secrets `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID`, decommission the Fly app and the Supabase project.
+
+---
+
+# Histórico — Revisión de seguridad del 8 de noviembre de 2026 (Supabase/Fly)
+
 Se descomprimió el ZIP solicitado, se leyeron sus 14 guías y `Seguridad.docx`, y se ejecutaron revisiones por fases con tres subagentes. Se corrigieron controles de autorización, solicitudes, sesiones, checkout, recuperación, RLS y persistencia. **924 pruebas locales aprobaron**, junto con lint, build, tipos de motor/UI/web y comprobación Deno de cinco funciones. **STRIX no se ejecutó.**
 
 No se aplicaron migraciones, despliegues, compras ni escrituras remotas. Las correcciones de servidor requieren publicación coordinada. Quedan riesgos y configuración pendientes; este informe no certifica producción.

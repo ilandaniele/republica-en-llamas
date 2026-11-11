@@ -10,7 +10,7 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "test": "turbo run test",
-    "test:security": "npm run bundle:engine && node --import tsx --test scripts/security/backend.test.mjs scripts/security/backend-sql.test.mjs scripts/security/load.test.mjs scripts/security/k6-guards.test.mjs",
+    "test:security": "npm test --workspace=apps/api && node --import tsx --test scripts/security/load.test.mjs scripts/security/k6-guards.test.mjs",
     "test:load": "node scripts/security/run-load.mjs",
     "lint": "eslint .",
     "type-check": "turbo run type-check",
@@ -19,14 +19,13 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "bundle:engine": "esbuild packages/game-engine/src/index.ts --bundle --format=esm --platform=neutral --outfile=supabase/functions/_shared/game-engine.js",
     "verify:content": "tsx scripts/verify-content.ts",
-    "deploy:submit-run": "npm run bundle:engine && npx supabase functions deploy submit-run"
+    "deploy": "npm run build --workspace=apps/web && npm run deploy --workspace=apps/api",
+    "db:migrate": "npm run db:migrate --workspace=apps/api"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@electric-sql/pglite": "0.5.15",
     "@eslint/js": "^9.39.5",
     "esbuild": "^0.21.5",
     "eslint": "^9.39.5",

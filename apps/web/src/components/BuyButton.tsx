@@ -3,7 +3,6 @@ import { useAuth } from '../hooks/useAuth.js';
 import { ENTITLEMENT_PRODUCTS } from '@republica/game-engine';
 import type { EntitlementId } from '@republica/game-engine';
 import { trackPurchaseStarted } from '../lib/analytics.js';
-import { supabase } from '../lib/supabase.js';
 import { createCheckout } from '../lib/checkout.js';
 
 interface Props {
@@ -27,12 +26,6 @@ export function BuyButton({ entitlement, className = '', label }: Props) {
     setError('');
     trackPurchaseStarted({ entitlement, price: product.price });
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData.session?.access_token;
-      if (!accessToken) {
-        window.location.href = '/login';
-        return;
-      }
       window.location.href = await createCheckout(entitlement);
     } catch {
       setError('Error de conexion. Intenta de nuevo.');

@@ -1,5 +1,5 @@
 import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '../lib/supabase.js';
+import { apiGet } from '../lib/api.js';
 import { PERSISTED_GC_TIME } from '../app/queryClient.js';
 import { prefetchRoute } from '../app/routes.js';
 
@@ -15,20 +15,9 @@ export interface LeaderboardEntry {
   created_at: string;
 }
 
-const LEADERBOARD_COLUMNS =
-  'id, user_id, username, avatar_url, difficulty, score, turns_survived, is_win, created_at';
-
-async function fetchLeaderboard(difficulty?: string): Promise<LeaderboardEntry[]> {
-  let query = supabase
-    .from('leaderboard')
-    .select(LEADERBOARD_COLUMNS)
-    .order('score', { ascending: false })
-    .limit(100);
-  if (difficulty) query = query.eq('difficulty', difficulty);
-
-  const { data, error } = await query;
-  if (error) throw error;
-  return (data ?? []) as LeaderboardEntry[];
+function fetchLeaderboard(difficulty?: string): Promise<LeaderboardEntry[]> {
+  const params = difficulty ? `?${new URLSearchParams({ difficulty }).toString()}` : '';
+  return apiGet<LeaderboardEntry[]>(`leaderboard${params}`);
 }
 
 export function leaderboardQuery(difficulty?: string) {

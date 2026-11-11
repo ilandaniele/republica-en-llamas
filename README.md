@@ -12,7 +12,8 @@ A full-stack political-economic simulation card game. You are the president. Eve
 | Game engine | Pure TypeScript (zero UI deps) |
 | Web app | React 18 + Vite + Tailwind + shadcn/ui + Framer Motion + Zustand |
 | Mobile app | Expo SDK 51 + NativeWind + Reanimated |
-| Backend | Supabase (Auth + PostgreSQL + Edge Functions) |
+| Backend | Cloudflare Worker (`apps/api`) + D1 (SQLite) + Better Auth |
+| Hosting | Cloudflare Workers Static Assets (web build + API on one origin) |
 
 ---
 
@@ -39,39 +40,36 @@ npm install
 
 ### 2. Configure environment
 
+Web (`apps/web`), public and baked into the bundle at build time (never put secrets here):
+- `VITE_POSTHOG_KEY` — PostHog project key (analytics stays off without it)
+- `VITE_OFFLINE_MODE` — optional, runs the web app without the API
+
+Mobile (`apps/mobile`):
+- `EXPO_PUBLIC_API_URL` — Worker origin; the leaderboard fetches `${EXPO_PUBLIC_API_URL}/api/leaderboard`
+
+API Worker (`apps/api`), never `VITE_*`. Local values go in `apps/api/.dev.vars` (do not commit it); deployed values are Worker secrets (`npx wrangler secret put <NAME>` from `apps/api`):
+- `BETTER_AUTH_SECRET` — required, at least 32 random characters. The API answers 503 (fail closed) if it is missing or shorter
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — optional, enables Google sign-in
+- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` — checkout and the Stripe webhook
+- `RESET_EMAIL_FROM` and an `EMAIL` send-email binding — password reset mail; without them reset emails are skipped
+- `WEB_URL` (plain var in `apps/api/wrangler.jsonc`) and optional `ALLOWED_ORIGINS` — exact allowed origins for auth and CORS
+
+### 3. Set up the local database
+
+D1 migrations live in `apps/api/migrations/` (append-only, numbered). Apply them to the local D1 used by `wrangler dev`:
+
 ```bash
-cp .env.example .env
-# Edit .env and fill in your Supabase credentials
-```
-
-Required variables:
-- `VITE_SUPABASE_URL` — Supabase project URL
-- `VITE_SUPABASE_ANON_KEY` — Supabase anonymous key
-- `EXPO_PUBLIC_SUPABASE_URL` — Same URL for mobile
-- `EXPO_PUBLIC_SUPABASE_ANON_KEY` — Same anon key for mobile
-- `SUPABASE_SERVICE_ROLE_KEY` — Service role key (for edge functions only)
-
-### 3. Set up Supabase database
-
-Option A — Supabase Dashboard:
-1. Go to your Supabase project → SQL Editor
-2. Paste and run the contents of `supabase/migrations/001_initial.sql`
-
-Option B — Supabase CLI:
-```bash
-supabase login
-supabase link --project-ref <your-project-ref>
-supabase db push
+npm run db:migrate:local --workspace=apps/api
 ```
 
 ---
 
 ## Development
 
-### Run the web app
+### Run the API and the web app
 ```bash
-npm run dev --workspace=apps/web
-# Opens at http://localhost:5173
+npm run dev --workspace=apps/api   # wrangler dev, http://localhost:8787
+npm run dev --workspace=apps/web   # Vite, http://localhost:5173, proxies /api to 8787
 ```
 
 ### Run the mobile app
@@ -98,24 +96,35 @@ npm run build
 
 ---
 
-## Supabase Edge Functions
+## API (Cloudflare Worker)
 
-`submit-run` saves a finished run. It replays the seed and the player's decisions with the
-game engine and stores the score it computes, so the client never sends a score. The function
-imports a bundle of the engine that `npm run bundle:engine` writes to
-`supabase/functions/_shared/game-engine.js` (gitignored).
+`apps/api/src/index.ts` is a single Worker that serves `/api/*` and the static web build. Routes: `start-run`, `submit-run`, `create-checkout`, `stripe-webhook`, `leaderboard`, `username-available`, `profile` (GET/PATCH), `runs` and `entitlements`. Authentication is Better Auth at `/api/auth/*` (email + password, anonymous guest sessions, optional Google).
 
-### Serve locally
+`submit-run` replays the seed and the player's decisions with the game engine (imported directly from `@republica/game-engine`) and stores the score it computes, so the client never sends a score. Prices, entitlements and scores are always decided server-side.
+
+Static assets come from `apps/web/dist` via Workers Static Assets with SPA fallback. `/api/*` and `/assets/*` run the Worker first; a missing hashed asset returns 404, never the SPA HTML. Security headers live in `apps/web/public/_headers`.
+
+### Test
 ```bash
-npm run bundle:engine
-supabase functions serve submit-run --env-file .env
+npm test --workspace=apps/api
+npm run test:security
 ```
 
 ### Deploy
+
+Pushing to `main` runs `.github/workflows/deploy.yml`: verify, build the web app (`VITE_POSTHOG_KEY`), `npm run db:migrate` (remote D1), then `npm run deploy --workspace=apps/api`. Required GitHub secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` (and `VITE_POSTHOG_KEY` for analytics).
+
+Manual deploy:
 ```bash
-supabase db push
-npm run deploy:submit-run
+npm run db:migrate   # wrangler d1 migrations apply republica-en-llamas --remote
+npm run deploy       # build web, then wrangler deploy
 ```
+
+Live URL: https://republica-en-llamas.ilandaniele.workers.dev
+
+External callbacks:
+- Google OAuth redirect URI: `<url>/api/auth/callback/google`
+- Stripe webhook endpoint: `<url>/api/stripe-webhook`
 
 ---
 
@@ -144,10 +153,11 @@ republica-en-llamas/
 │           └── __tests__/
 ├── apps/
 │   ├── web/              # Vite + React 18
+│   ├── api/              # Cloudflare Worker (routes, Better Auth, D1 migrations)
+│   │   ├── src/
+│   │   ├── migrations/0001_init.sql
+│   │   └── wrangler.jsonc
 │   └── mobile/           # Expo SDK 51
-└── supabase/
-    ├── migrations/001_initial.sql
-    └── functions/        (submit-run, create-checkout, ...)
 ```
 
 ---
@@ -201,7 +211,7 @@ score = turn × 100
 
 ## V2 Roadmap (scaffolded but not active)
 
-- Multiplayer realtime mode (Supabase Realtime channels)
+- Multiplayer realtime mode (Cloudflare Durable Objects / WebSockets)
 - Achievement system
 - Campaign mode with persistent world state
 - Custom card creator

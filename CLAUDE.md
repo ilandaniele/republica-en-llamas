@@ -5,17 +5,17 @@ Argentine political-survival card game. Turborepo + npm workspaces.
 Current handoff: read `docs/CLAUDE-HANDOFF.md` for implemented features, verification, security findings and deployment prerequisites before continuing.
 
 - `packages/game-engine/` — pure TypeScript domain core (no React, no IO). Vitest tests in `src/__tests__/`.
-- `apps/web/` — React 19 + Vite + Tailwind + Zustand + TanStack Query + Supabase. Deployed to Fly.io (nginx).
+- `apps/web/` — React 19 + Vite + Tailwind + Zustand + TanStack Query + Better Auth client. Built to static assets served by the `apps/api` Worker.
 - `apps/mobile/` — Expo. Do not modify unless explicitly asked.
-- `supabase/` — SQL migrations (append-only, numbered) and Deno edge functions.
+- `apps/api/` — Cloudflare Worker (`/api/*` routes, Better Auth, static assets) + D1. Migrations in `apps/api/migrations/` (append-only, numbered).
 
 ## Role and boundaries
 
-You are a senior full-stack engineer on this repo: TypeScript, React, Supabase/Postgres, game design. Reply to the user in Spanish; code, commits and PRs in English.
+You are a senior full-stack engineer on this repo: TypeScript, React, Cloudflare Workers/D1, game design. Reply to the user in Spanish; code, commits and PRs in English.
 
 - **Always:** run the verification commands below before calling work done; add a migration plus a test for every DB change; keep `docs/CLAUDE-HANDOFF.md` current at the end of each task.
-- **Ask first:** new dependencies, paid generation or APIs, large downloads, Supabase dashboard or Auth config changes, production load tests.
-- **Never:** read `.env*`, `.mcp.json` or `.claude/settings*.json`; enter credentials; edit applied migrations; modify `apps/mobile`, `art/prompts.json` or `art/PROMPTS.md` unless asked; commit `supabase/.temp/*`.
+- **Ask first:** new dependencies, paid generation or APIs, large downloads, Cloudflare dashboard, secrets or Auth config changes, production load tests.
+- **Never:** read `.env*`, `.mcp.json` or `.claude/settings*.json`; enter credentials; edit applied migrations; modify `apps/mobile`, `art/prompts.json` or `art/PROMPTS.md` unless asked; commit `.wrangler/*`.
 
 Large tasks: split into steps with a check each, delegate broad searches and mechanical edits to subagents (see the `orchestrator` skill), and write a handoff before context fills up.
 
@@ -34,26 +34,26 @@ Before calling a task done: lint (0 errors), type-check both workspaces, tests p
 
 ## Architecture rules (enforced by ESLint where possible)
 
-- Game logic lives only in `packages/game-engine`. The engine must not import react, `@supabase/*` or posthog-js.
+- Game logic lives only in `packages/game-engine`. The engine must not import react, `better-auth` or posthog-js.
 - Web imports the engine as `@republica/game-engine` (never `@engine/*`). `GameState` is immutable; spread to update.
 - Zustand: always subscribe to slices (`useGameStore((s) => s.x)`), never the whole store.
 - Analytics: only through `apps/web/src/lib/analytics.ts` (`track*`, `getFeatureFlag`). posthog-js is lazy-loaded; never import it elsewhere.
 - Server data: TanStack Query with `queryOptions` factories (see `hooks/useLeaderboard.ts`). Explicit column lists, never `select *`.
 - Screens are lazy routes in `apps/web/src/app/routes.ts`; prefetch with `prefetchRoute` on hover/focus.
 - Web code is grouped by feature in `apps/web/src/features/<feature>/`. A feature never imports another feature, and `components/`, `hooks/`, `stores/`, `lib/` never import a feature (`import/no-restricted-paths`). Code used by two or more features goes in those shared folders.
-- Security-sensitive values (prices, entitlements, scores) are decided server-side; never trust the client body in edge functions.
-- New DB access patterns need an index in a new migration; RLS policies use `(select auth.uid())` and `to authenticated`.
+- Security-sensitive values (prices, entitlements, scores) are decided server-side; never trust the client body in Worker routes.
+- New DB access patterns need an index in a new migration; every query filters by the session user id from `sessionUser`.
 
 ## Gotchas
 
 - Relative imports in TS use the `.js` extension (`'../lib/analytics.js'`).
 - Never commit compiled `.js` / `.d.ts` / `.map` files inside `src/` (gitignored).
 - Many web files use CRLF line endings; regex-based edits must accept `\r?\n`.
-- `VITE_*` vars are baked at build time (Docker build args), they are public; never put secrets in them.
-- Migrations are not applied automatically: `supabase db push`. Edge functions: `supabase functions deploy <name>`.
+- `VITE_*` vars are baked at build time (CI build step), they are public; never put secrets in them.
+- Deploy is CI on push to main: `npm run db:migrate` (D1 remote) then `npm run deploy --workspace=apps/api`. Worker secrets via `wrangler secret put`.
 - Architecture refactor options and the open review findings live in `docs/architecture-plan.md`.
 - Current best-practices audit, verification results and remaining work: `docs/buenas-practicas-2026-11-08.md`. Keep historical measurements distinct from current verification.
-- Security findings and deployment order: `security_best_practices_report.md`. Run `npm run test:security`; migration 010 must precede the updated Edge functions. Do not claim local tests prove remote configuration.
+- Security findings and deployment order: `security_best_practices_report.md`. Run `npm run test:security`; D1 migrations must precede the Worker deploy. Do not claim local tests prove remote configuration.
 - Domain conventions (design system, `EventCard` shape, i18n keys, analytics events) live in `.github/copilot-instructions.md` and `.github/instructions/`. Read the matching file before changing those areas.
 
 # Base Instructions for AI Agent

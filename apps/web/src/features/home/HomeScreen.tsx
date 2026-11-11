@@ -8,7 +8,8 @@ import type { Difficulty, ScenarioId } from '@republica/game-engine';
 import { HISTORICAL_SCENARIOS } from '@republica/game-engine';
 import { useGameStore } from '../../stores/gameStore.js';
 import { useAuth } from '../../hooks/useAuth.js';
-import { isOfflineMode, translateAuthError } from '../../lib/supabase.js';
+import { isOfflineMode } from '../../lib/api.js';
+import { translateAuthError } from '../../lib/auth.js';
 import { UserMenu } from '../../components/UserMenu.js';
 import { OfflineBanner } from '../../components/OfflineBanner.js';
 import { useEntitlements, getDailyRunsRemaining, consumeDailyRun } from '../../hooks/useEntitlements.js';
@@ -70,7 +71,7 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
       if (mode === 'login') {
         const { error: err } = await signIn(email, password);
         if (err) {
-          setError(translateAuthError(err.message));
+          setError(translateAuthError(err.message ?? ''));
           return;
         }
       } else {
@@ -81,7 +82,7 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
         }
         const { error: err } = await signUp(email, password, username);
         if (err) {
-          setError(translateAuthError(err.message));
+          setError(translateAuthError(err.message ?? ''));
           return;
         }
       }

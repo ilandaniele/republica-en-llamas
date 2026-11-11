@@ -1,5 +1,7 @@
 # Auditoría de buenas prácticas — 8 de noviembre de 2026
 
+> **Note (2026-11-09):** the backend moved to Cloudflare Workers + D1 and Better Auth; Supabase, Fly.io and nginx are gone. References below to Supabase, Edge functions and nginx (gzip, cache headers) describe the state on 2026-11-08 and are historical measurements, not current deployment instructions. See `docs/CLAUDE-HANDOFF.md`.
+
 Se leyeron `BASE_CLAUDE.md` y `Buenas practicas.docx` de la carpeta de desarrollo indicada. El texto completo del archivo base ya está incorporado en `CLAUDE.md`; se comprobó su presencia sin duplicarlo. Sus criterios de simplicidad, responsabilidades, nombres claros, cambios puntuales y verificación se aplican a esta revisión.
 
 El DOCX pide investigación, auditoría y alternativas antes de una reorganización general. Este trabajo corrige fallos concretos y presenta opciones. No reemplaza la arquitectura elegida previamente ni aplica una migración general.

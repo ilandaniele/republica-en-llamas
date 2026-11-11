@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { queryOptions, useQuery } from '@tanstack/react-query';
-import { checkUsernameAvailable } from '../../lib/supabase.js';
+import { checkUsernameAvailable } from '../../lib/auth.js';
 
 export const MIN_USERNAME_LENGTH = 3;
 const DEBOUNCE_MS = 400;

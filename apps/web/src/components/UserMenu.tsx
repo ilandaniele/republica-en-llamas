@@ -43,8 +43,7 @@ export function UserMenu() {
     );
   }
 
-  const displayName =
-    (user.user_metadata?.['username'] as string | undefined) ?? user.email?.split('@')[0] ?? '?';
+  const displayName = user.name || user.email.split('@')[0] || '?';
 
   return (
     <div className="account-menu relative" ref={ref}>

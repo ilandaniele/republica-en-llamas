@@ -60,7 +60,7 @@ export default function LeaderboardScreen() {
 
         {error && (
           <div className="py-12 text-center font-mono text-sm text-crimson-400">
-            Error al cargar. ¿Configuraste las credenciales de Supabase?
+            Error al cargar el ranking. Intentá de nuevo.
           </div>
         )}
 

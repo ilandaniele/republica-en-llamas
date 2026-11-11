@@ -1,16 +1,14 @@
 import { createContext } from 'react';
-import type { Session, User } from '@supabase/supabase-js';
 
-export interface AuthState {
-  user: User | null;
-  session: Session | null;
-  loading: boolean;
-  passwordRecovery: boolean;
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
 }
 
-export const AuthContext = createContext<AuthState>({
-  user: null,
-  session: null,
-  loading: true,
-  passwordRecovery: false,
-});
+export interface AuthState {
+  user: AuthUser | null;
+  loading: boolean;
+}
+
+export const AuthContext = createContext<AuthState>({ user: null, loading: true });

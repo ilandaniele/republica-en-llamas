@@ -1,0 +1,25 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "republica-en-llamas",
+  "main": "./src/index.ts",
+  "compatibility_date": "2026-11-09",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/assets/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "republica-en-llamas",
+      "database_id": "fc4175a8-d749-45ec-b57b-9cb682c1ab76",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "WEB_URL": "https://republica-en-llamas.ilandaniele.workers.dev"
+  }
+}

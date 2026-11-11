@@ -1,5 +1,5 @@
 import React from 'react';
-import { isOfflineMode } from '../lib/supabase.js';
+import { isOfflineMode } from '../lib/api.js';
 import { isPlaytestMode } from '../lib/playtest.js';
 
 export function OfflineBanner() {
