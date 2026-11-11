@@ -41,4 +41,20 @@ Los tests de guardas ejecutan k6 local real cuando está instalado. Si falta, tr
 
 Los tiempos y memoria obtenidos pertenecen al servidor Node y al tráfico local. No prueban nginx, compresión real de producción, TLS, latencia de internet, autorización remota, capacidad de Postgres, memoria de pestaña, layout, FPS ni ejecución de JavaScript en navegador.
 
+## Carga de la API del Worker
+
+`api-load.k6.js` prueba el Worker de Cloudflare (`/api/*`) con los mismos perfiles (smoke/load/peak/stress/spike/soak, mismos escalones de VUs). Mezcla: mayoría de `GET /api/leaderboard` (con y sin `?difficulty=`) y, una de cada cinco iteraciones, un flujo de invitado por VU: `POST /api/auth/sign-in/anonymous` y luego `POST /api/start-run` con la cookie de sesión.
+
+El runner no inicia el Worker: debe estar escuchando antes. Solo admite `http://localhost:<puerto>` o `http://127.0.0.1:<puerto>` (el runner y el script k6 rechazan cualquier otro destino; no hay modo producción). El header `Origin` es la propia URL base, que debe estar en `WEB_URL`/`ALLOWED_ORIGINS` del Worker (en local, `http://localhost:8787`).
+
+```sh
+npm run dev --workspace=apps/api              # wrangler dev en http://localhost:8787
+npm run test:load:api -- smoke                # equivale a node scripts/security/run-api-load.mjs smoke
+API_LOAD_URL=http://127.0.0.1:8787 node scripts/security/run-api-load.mjs peak spike
+```
+
+Un 429 (límite por IP/usuario, límite de Better Auth o tope diario de tickets) es resultado esperado: no cuenta como HTTP fallido, se mide en `api_rate_limited` y el flujo de invitado lo acepta. Umbrales: p95/p99 como el perfil estático, HTTP fallido inesperado menor a 1%, `api_server_errors` (5xx o sin respuesta) menor a 0,1% y checks al 100%. Salida en `scripts/security/results/api-<perfil>.json|html`, manifests `api-<perfil>-manifest.json` y `api-run-summary.json`.
+
+Mide el Worker y D1 local de miniflare, no producción, D1 remoto, límites del borde de Cloudflare ni `CF-Connecting-IP` real (en local todos los VUs comparten el bucket de IP `unknown`).
+
 Referencia de la implementación: [resúmenes personalizados de k6](https://grafana.com/docs/k6/latest/results-output/end-of-test/custom-summary/) y [ramping VUs](https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-vus/).

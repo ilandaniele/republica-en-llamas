@@ -7,6 +7,7 @@ export const USER_LIMITS = {
   'start-run': 10,
   'submit-run': 15,
   'create-checkout': 5,
+  'update-profile': 5,
 } as const;
 
 export type LimitedAction = keyof typeof USER_LIMITS;

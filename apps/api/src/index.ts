@@ -1,7 +1,15 @@
 import { createAuth } from './auth.js';
 import type { RouteContext } from './context.js';
 import type { Env } from './env.js';
-import { allowedOrigins, assertAllowedOrigin, checkContentLength, errorResponse, json } from './http.js';
+import {
+  allowedOrigins,
+  assertAllowedOrigin,
+  checkContentLength,
+  errorResponse,
+  json,
+  withLimitedBody,
+  withSecurityHeaders,
+} from './http.js';
 import { enforceIpRateLimit } from './rateLimit.js';
 import { leaderboard } from './routes/leaderboard.js';
 import { createCheckout, stripeWebhook } from './routes/payments.js';
@@ -21,10 +29,10 @@ const ROUTES: Record<string, Route> = {
   'POST /api/submit-run': { handler: submitRun, maxBytes: 262_144, ipLimited: true },
   'POST /api/create-checkout': { handler: createCheckout, ipLimited: true },
   'POST /api/stripe-webhook': { handler: stripeWebhook, maxBytes: 262_144 },
-  'GET /api/leaderboard': { handler: leaderboard },
-  'GET /api/username-available': { handler: usernameAvailable },
+  'GET /api/leaderboard': { handler: leaderboard, ipLimited: true },
+  'GET /api/username-available': { handler: usernameAvailable, ipLimited: true },
   'GET /api/profile': { handler: getProfile },
-  'PATCH /api/profile': { handler: updateProfile },
+  'PATCH /api/profile': { handler: updateProfile, ipLimited: true },
   'GET /api/runs': { handler: listRuns },
   'GET /api/entitlements': { handler: getEntitlements },
 };
@@ -32,7 +40,9 @@ const ROUTES: Record<string, Route> = {
 async function handleApi(request: Request, env: Env, url: URL): Promise<Response> {
   try {
     const auth = createAuth(env);
-    if (url.pathname.startsWith('/api/auth/')) return await auth.handler(request);
+    if (url.pathname.startsWith('/api/auth/')) {
+      return withSecurityHeaders(await auth.handler(await withLimitedBody(request, DEFAULT_MAX_BYTES)));
+    }
 
     const route = ROUTES[`${request.method} ${url.pathname}`];
     if (!route) return json({ error: 'Not found' }, 404);

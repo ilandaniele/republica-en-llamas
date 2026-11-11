@@ -2,7 +2,18 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
-## 2026-11-09 — Cloudflare migration (current state)
+## 2026-11-11 — Security hardening
+
+Phase notes, checklist coverage and open follow-ups: `docs/security/hardening-2026-11-11.md`.
+
+- `/api/*` responses carry HSTS, CSP, X-Frame-Options, nosniff and Referrer-Policy (`apps/api/src/http.ts`). CSP is enforced in `apps/web/public/_headers`; Google Fonts removed.
+- PATCH `/api/profile`: 5/min per user, username pattern `^[\p{L}\p{N}_.-]{3,24}$` (same check in web registration). Public GETs are IP rate limited. Non-GET `/api/auth/*` bodies are size capped. Run tickets expire after 24h.
+- k6 API load: `npm run test:load:api` against a local `wrangler dev` only (refuses other hosts). Local dev Worker needs `--var BETTER_AUTH_SECRET:<random>` and `--var WEB_URL:http://localhost:8787`.
+- Verification: lint 0 errors; type-check engine, web, api; tests engine 252, web 623, api 27; `npm run test:security` passes. Local only: not proof of remote config.
+- Sign-up shows a neutral message for an existing email (UI only; the API still distinguishes).
+- Open: API-level auth enumeration (needs email verification), Origin-less requests accepted, no cleanup job for `rate_limits` and stale anonymous users, Stripe refunds not handled.
+
+## 2026-11-09 — Cloudflare migration
 
 Branch `feat/cloudflare-migration`. Supabase and Fly.io were removed entirely. Everything below this section that mentions Supabase, Fly, nginx, Docker, Edge functions or migrations 001-011 is **historical** (state on 2026-11-08) and kept for context only. Do not follow its deployment steps.
 
@@ -12,7 +23,7 @@ Branch `feat/cloudflare-migration`. Supabase and Fly.io were removed entirely. E
 - The web build (`apps/web/dist`) is served by Workers Static Assets with SPA fallback. `/api/*` and `/assets/*` run the Worker first; a missing hashed asset returns 404 instead of SPA HTML.
 - Database is Cloudflare D1 `republica-en-llamas`. Migrations are in `apps/api/migrations/` (`0001_init.sql`, applied remotely). It started from zero data: no Supabase data was migrated.
 - Live URL: https://republica-en-llamas.ilandaniele.workers.dev
-- Web uses `apps/web/src/lib/api.ts` (`apiSend`, `isOfflineMode`) and `apps/web/src/lib/auth.ts` (better-auth/react client). `useAuth` is the Better Auth session; anonymous sessions count as signed out. Security headers are in `apps/web/public/_headers` (CSP still report-only, HSTS, etc.).
+- Web uses `apps/web/src/lib/api.ts` (`apiSend`, `isOfflineMode`) and `apps/web/src/lib/auth.ts` (better-auth/react client). `useAuth` is the Better Auth session; anonymous sessions count as signed out. Security headers are in `apps/web/public/_headers` (CSP enforced since 2026-11-11, HSTS, etc.).
 - Mobile leaderboard fetches `${EXPO_PUBLIC_API_URL}/api/leaderboard`. Mobile type-check was not run.
 - Only `VITE_POSTHOG_KEY` and `VITE_OFFLINE_MODE` remain as `VITE_*` vars (public, baked at build).
 - `scripts/generate-images.ts` still uses Supabase Storage. It is offline tooling and was left as is.
@@ -47,7 +58,7 @@ With no `BETTER_AUTH_SECRET`, the deployed Worker used Better Auth's public defa
 3. Set the remaining Worker secrets with `wrangler secret put`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`. Password-reset mail also needs `RESET_EMAIL_FROM` and an `EMAIL` send-email binding (names in `apps/api/src/env.ts`); without them reset emails are skipped. `BETTER_AUTH_SECRET` is already set.
 4. Google OAuth redirect URI: `<url>/api/auth/callback/google`. Stripe webhook endpoint: `<url>/api/stripe-webhook`.
 5. Two probe guest users from smoke tests exist in D1; delete them if a clean table is wanted.
-6. Still open from before: CSP enforcement, `tar` advisory under Expo tooling, mobile type errors.
+6. Still open from before: `tar` advisory under Expo tooling, mobile type errors.
 
 ## Estado del proyecto (histórico, 2026-11-08)
 

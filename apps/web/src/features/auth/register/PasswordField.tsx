@@ -6,7 +6,7 @@ export function PasswordField({ value, onChange }: { value: string; onChange: (v
     <div>
       <input
         type="password"
-        placeholder="Contraseña (mínimo 6 caracteres)"
+        placeholder={`Contraseña (mínimo ${MIN_PASSWORD_LENGTH} caracteres)`}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required

@@ -7,11 +7,25 @@ export class RequestError extends Error {
   }
 }
 
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'no-referrer',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'",
+};
+
 const API_HEADERS = {
   'Content-Type': 'application/json',
   'Cache-Control': 'no-store',
-  'X-Content-Type-Options': 'nosniff',
+  ...SECURITY_HEADERS,
 };
+
+export function withSecurityHeaders(response: Response): Response {
+  const secured = new Response(response.body, response);
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) secured.headers.set(name, value);
+  return secured;
+}
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -56,6 +70,12 @@ export function checkContentLength(request: Request, maxBytes: number): void {
     throw new RequestError(413, 'Request body too large');
   const encoding = request.headers.get('content-encoding');
   if (encoding && encoding !== 'identity') throw new RequestError(415, 'Unsupported content encoding');
+}
+
+export async function withLimitedBody(request: Request, maxBytes: number): Promise<Request> {
+  if (!request.body) return request;
+  const body = await readLimitedText(request, maxBytes);
+  return new Request(request.url, { method: request.method, headers: request.headers, body });
 }
 
 export async function readLimitedText(request: Request, maxBytes: number): Promise<string> {

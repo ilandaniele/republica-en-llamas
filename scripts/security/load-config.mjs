@@ -28,6 +28,19 @@ export function profileFor(name, full = false) {
   };
 }
 
+export const LOCAL_API_URL_PATTERN = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/;
+export const DEFAULT_API_URL = 'http://localhost:8787';
+
+export function apiProfileFor(name, full = false) {
+  return { ...profileFor(name, full), serverErrorRate: 0.001 };
+}
+
+export function assertLocalApiUrl(url) {
+  if (!LOCAL_API_URL_PATTERN.test(url))
+    throw new Error('API load tests only permit http://localhost:<port> or http://127.0.0.1:<port>');
+  return url;
+}
+
 export function insideRoot(root, file) {
   const path = relative(root, file);
   return (

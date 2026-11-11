@@ -24,6 +24,10 @@ export default function LoginScreen() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim() || !password) {
+      setError('Completá email y contraseña');
+      return;
+    }
     setError('');
     setLoading(true);
     try {

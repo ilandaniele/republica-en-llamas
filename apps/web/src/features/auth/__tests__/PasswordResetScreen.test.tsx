@@ -1,5 +1,5 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, useLocation } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const resetPassword = vi.hoisted(() => vi.fn());
 vi.mock('../../../lib/auth.js', () => ({ authClient: { resetPassword } }));
@@ -10,10 +10,15 @@ beforeEach(() => {
 });
 afterEach(cleanup);
 
+function CurrentSearch() {
+  return <span data-testid="search">{useLocation().search}</span>;
+}
+
 function mount(url = '/reset-password?token=reset-token') {
   render(
     <MemoryRouter initialEntries={[url]}>
       <PasswordResetScreen />
+      <CurrentSearch />
     </MemoryRouter>,
   );
 }
@@ -29,6 +34,12 @@ describe('password recovery boundary', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('El enlace no es válido');
     expect(screen.queryByLabelText('Nueva contraseña')).toBeNull();
     expect(resetPassword).not.toHaveBeenCalled();
+  });
+
+  it('removes the reset token from the URL so analytics never sees it', () => {
+    mount('/reset-password?token=reset-token&lang=es');
+    expect(screen.getByTestId('search').textContent).toBe('?lang=es');
+    expect(screen.getByLabelText('Nueva contraseña')).toBeInTheDocument();
   });
 
   it('requires matching strong passwords before sending anything', () => {

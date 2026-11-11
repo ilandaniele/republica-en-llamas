@@ -12,7 +12,7 @@ import type { RouteContext } from '../context.js';
 import { isRecord, isUuid, json, readJsonBody, RequestError, sha256Hex } from '../http.js';
 import { canUseRunModes } from '../policy.js';
 import { enforceUserRateLimit } from '../rateLimit.js';
-import { issueRunTicket } from '../tickets.js';
+import { dayAgo, issueRunTicket } from '../tickets.js';
 
 const SUBMIT_MAX_BYTES = 262_144;
 const HISTORY_LIMIT = 20;
@@ -89,8 +89,8 @@ export async function submitRun(ctx: RouteContext): Promise<Response> {
   if (options.careerStart) throw new RequestError(400, 'Career runs use local progress, outside competitive rankings');
 
   const ticket = await db
-    .prepare('select seed from run_tickets where id = ?1 and user_id = ?2')
-    .bind(ticketId, user.id)
+    .prepare('select seed from run_tickets where id = ?1 and user_id = ?2 and created_at > ?3')
+    .bind(ticketId, user.id, dayAgo())
     .first<{ seed: number }>();
   if (!ticket || ticket.seed !== config.seed) throw new RequestError(403, 'Invalid run ticket');
 

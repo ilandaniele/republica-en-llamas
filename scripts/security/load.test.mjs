@@ -3,7 +3,15 @@ import { after, before, test } from 'node:test';
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
-import { PROFILE_NAMES, discoverTargets, insideRoot, profileFor } from './load-config.mjs';
+import {
+  DEFAULT_API_URL,
+  PROFILE_NAMES,
+  apiProfileFor,
+  assertLocalApiUrl,
+  discoverTargets,
+  insideRoot,
+  profileFor,
+} from './load-config.mjs';
 import { listenLocal } from './static-server.mjs';
 
 let root;
@@ -72,4 +80,26 @@ test('missing assets never receive a successful SPA HTML fallback', async () => 
 test('path containment rejects files outside build root', () => {
   assert.equal(insideRoot(root, resolve(root, '../secret')), false);
   assert.equal(insideRoot(root, resolve(root, 'assets/main.js')), true);
+});
+
+test('api profiles reuse the static stages and require near-zero 5xx', () => {
+  for (const name of PROFILE_NAMES) {
+    const profile = apiProfileFor(name);
+    assert.deepEqual(profile.stages, profileFor(name).stages);
+    assert.ok(profile.serverErrorRate <= 0.001);
+  }
+});
+
+test('api load target is restricted to localhost and 127.0.0.1 over http', () => {
+  assert.equal(assertLocalApiUrl(DEFAULT_API_URL), DEFAULT_API_URL);
+  assert.equal(assertLocalApiUrl('http://127.0.0.1:8787'), 'http://127.0.0.1:8787');
+  for (const url of [
+    'https://republica-en-llamas.ilandaniele.workers.dev',
+    'http://localhost',
+    'http://localhost:8787/api',
+    'http://localhost.example.com:8787',
+    'http://example.com:8787',
+    'https://localhost:8787',
+  ])
+    assert.throws(() => assertLocalApiUrl(url), undefined, url);
 });

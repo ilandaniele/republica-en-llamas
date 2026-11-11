@@ -51,7 +51,8 @@ async function addUser(id: string, isAnonymous = false): Promise<void> {
     )
     .bind(id, `${id}@example.test`, now, isAnonymous ? 1 : 0)
     .run();
-  if (!isAnonymous) await db.prepare('insert into profiles (id, username) values (?1, ?2)').bind(id, `jugador_${id}`).run();
+  if (!isAnonymous)
+    await db.prepare('insert into profiles (id, username) values (?1, ?2)').bind(id, `jugador_${id}`).run();
 }
 
 async function grant(userId: string, entitlement: string): Promise<void> {
@@ -97,7 +98,10 @@ describe('run tickets', () => {
   });
 
   it('start-run answers 429 once the daily cap is reached', async () => {
-    for (let i = 0; i < 3; i++) expect((await call(startRun, context(jsonRequest('/api/start-run', {}), { id: 'alice' }))).status).toBe(200);
+    for (let i = 0; i < 3; i++)
+      expect((await call(startRun, context(jsonRequest('/api/start-run', {}), { id: 'alice' }))).status).toBe(
+        200,
+      );
     const response = await call(startRun, context(jsonRequest('/api/start-run', {}), { id: 'alice' }));
     expect(response.status).toBe(429);
     expect(response.headers.get('Retry-After')).toBe('60');
@@ -106,17 +110,28 @@ describe('run tickets', () => {
   it('transfers only fresh guest tickets up to the remaining cap', async () => {
     await addUser('guest', true);
     const old = new Date(Date.now() - 2 * 86_400_000).toISOString();
-    await db.prepare('insert into run_tickets (id, user_id, seed, created_at) values (?1, ?2, 1, ?3)').bind('stale', 'guest', old).run();
+    await db
+      .prepare('insert into run_tickets (id, user_id, seed, created_at) values (?1, ?2, 1, ?3)')
+      .bind('stale', 'guest', old)
+      .run();
     for (let i = 0; i < 3; i++) await issueRunTicket(db, 'guest');
     await issueRunTicket(db, 'alice');
 
     await transferGuestTickets(db, 'guest', 'alice');
-    const owned = await db.prepare('select count(*) as n from run_tickets where user_id = ?1').bind('alice').first<{ n: number }>();
-    const stale = await db.prepare('select user_id from run_tickets where id = ?1').bind('stale').first<{ user_id: string }>();
+    const owned = await db
+      .prepare('select count(*) as n from run_tickets where user_id = ?1')
+      .bind('alice')
+      .first<{ n: number }>();
+    const stale = await db
+      .prepare('select user_id from run_tickets where id = ?1')
+      .bind('stale')
+      .first<{ user_id: string }>();
     expect(owned?.n).toBe(3);
     expect(stale?.user_id).toBe('guest');
   });
 });
+
+const STALE_TICKET = '00000000-0000-4000-8000-000000000001';
 
 describe('submit-run', () => {
   async function submit(body: unknown, user: { id: string; isAnonymous?: boolean } = { id: 'alice' }) {
@@ -137,7 +152,21 @@ describe('submit-run', () => {
     const ticketId = await ticketFor(42);
     expect((await submit({ ticketId, ...run }, { id: 'guest', isAnonymous: true })).status).toBe(403);
     await addUser('bob');
-    expect((await submit({ ticketId, config: run.config, decisions: run.decisions }, { id: 'bob' })).status).toBe(403);
+    expect(
+      (await submit({ ticketId, config: run.config, decisions: run.decisions }, { id: 'bob' })).status,
+    ).toBe(403);
+  });
+
+  it('rejects tickets older than one day', async () => {
+    const run = finishedRun(42);
+    const old = new Date(Date.now() - 2 * 86_400_000).toISOString();
+    await db
+      .prepare('insert into run_tickets (id, user_id, seed, created_at) values (?1, ?2, 42, ?3)')
+      .bind(STALE_TICKET, 'alice', old)
+      .run();
+    expect(
+      (await submit({ ticketId: STALE_TICKET, config: run.config, decisions: run.decisions })).status,
+    ).toBe(403);
   });
 
   it('rejects a seed that differs from the ticket', async () => {
@@ -149,7 +178,11 @@ describe('submit-run', () => {
   it('requires purchased access for premium modes', async () => {
     const run = finishedRun(42);
     const ticketId = await ticketFor(42);
-    const response = await submit({ ticketId, config: { ...run.config, crisisExpress: true }, decisions: run.decisions });
+    const response = await submit({
+      ticketId,
+      config: { ...run.config, crisisExpress: true },
+      decisions: run.decisions,
+    });
     expect(response.status).toBe(403);
   });
 
@@ -170,20 +203,27 @@ describe('submit-run', () => {
     const saved = (await first.json()) as { id: string; score: number };
     expect(saved.score).toBe(run.state.score);
 
-    const events = await db.prepare('select count(*) as n from run_events where run_id = ?1').bind(saved.id).first<{ n: number }>();
+    const events = await db
+      .prepare('select count(*) as n from run_events where run_id = ?1')
+      .bind(saved.id)
+      .first<{ n: number }>();
     expect(events?.n).toBe(run.state.history.length);
 
     const retry = await submit(body);
     expect(await retry.json()).toEqual({ id: saved.id, score: saved.score, duplicate: true });
 
-    const history = (await (await call(listRuns, context(new Request(`${WEB_URL}/api/runs`), { id: 'alice' }))).json()) as {
+    const history = (await (
+      await call(listRuns, context(new Request(`${WEB_URL}/api/runs`), { id: 'alice' }))
+    ).json()) as {
       runs: { id: string; is_win: boolean; run_events: unknown[] }[];
       total: number;
     };
     expect(history.total).toBe(1);
     expect(history.runs[0]?.run_events.length).toBe(Math.min(10, run.state.history.length));
 
-    const board = (await (await call(leaderboard, context(new Request(`${WEB_URL}/api/leaderboard`), null))).json()) as {
+    const board = (await (
+      await call(leaderboard, context(new Request(`${WEB_URL}/api/leaderboard`), null))
+    ).json()) as {
       username: string;
       score: number;
     }[];
@@ -194,25 +234,79 @@ describe('submit-run', () => {
 describe('profile', () => {
   it('reports availability and rejects taken usernames', async () => {
     await addUser('bob');
-    const available = await call(usernameAvailable, context(new Request(`${WEB_URL}/api/username-available?name=jugador_bob`), null));
+    const available = await call(
+      usernameAvailable,
+      context(new Request(`${WEB_URL}/api/username-available?name=jugador_bob`), null),
+    );
     expect(await available.json()).toEqual({ available: false });
 
-    const taken = await call(updateProfile, context(jsonRequest('/api/profile', { username: 'jugador_bob' }, 'PATCH'), { id: 'alice' }));
+    const taken = await call(
+      updateProfile,
+      context(jsonRequest('/api/profile', { username: 'jugador_bob' }, 'PATCH'), { id: 'alice' }),
+    );
     expect(taken.status).toBe(409);
 
-    const renamed = await call(updateProfile, context(jsonRequest('/api/profile', { username: '  Alicia ' }, 'PATCH'), { id: 'alice' }));
+    const renamed = await call(
+      updateProfile,
+      context(jsonRequest('/api/profile', { username: '  Alicia ' }, 'PATCH'), { id: 'alice' }),
+    );
     expect(await renamed.json()).toEqual({ username: 'Alicia' });
     const profile = await call(getProfile, context(new Request(`${WEB_URL}/api/profile`), { id: 'alice' }));
     expect(await profile.json()).toEqual({ username: 'Alicia' });
+  });
+
+  it.each(['ab', 'a'.repeat(25), 'ali\u200bce', 'bad name', '<script>', 'admin\u0000'])(
+    'rejects the username %j',
+    async (username) => {
+      const params = new URLSearchParams({ name: username });
+      const available = await call(
+        usernameAvailable,
+        context(new Request(`${WEB_URL}/api/username-available?${params}`), null),
+      );
+      expect(await available.json()).toEqual({ available: false });
+      const response = await call(
+        updateProfile,
+        context(jsonRequest('/api/profile', { username }, 'PATCH'), { id: 'alice' }),
+      );
+      expect(response.status).toBe(400);
+    },
+  );
+
+  it('rate limits username changes per user', async () => {
+    const rename = (i: number) =>
+      call(
+        updateProfile,
+        context(jsonRequest('/api/profile', { username: `Alicia${i}` }, 'PATCH'), { id: 'alice' }),
+      );
+    for (let i = 0; i < 5; i++) expect((await rename(i)).status).toBe(200);
+    expect((await rename(5)).status).toBe(429);
   });
 });
 
 describe('worker routing', () => {
   it('blocks foreign origins and unknown routes, and serves assets outside /api', async () => {
-    const foreign = new Request(`${WEB_URL}/api/start-run`, { method: 'POST', headers: { origin: 'https://evil.test' } });
+    const foreign = new Request(`${WEB_URL}/api/start-run`, {
+      method: 'POST',
+      headers: { origin: 'https://evil.test' },
+    });
     expect((await worker.fetch(foreign, env)).status).toBe(403);
     expect((await worker.fetch(new Request(`${WEB_URL}/api/nope`), env)).status).toBe(404);
     expect(await (await worker.fetch(new Request(`${WEB_URL}/`), env)).text()).toBe('asset');
+  });
+
+  it('sends security headers on route and auth responses', async () => {
+    const responses = [
+      await worker.fetch(new Request(`${WEB_URL}/api/nope`), env),
+      await worker.fetch(new Request(`${WEB_URL}/api/auth/get-session`), env),
+    ];
+    for (const response of responses) {
+      expect(response.headers.get('x-frame-options')).toBe('DENY');
+      expect(response.headers.get('x-content-type-options')).toBe('nosniff');
+      expect(response.headers.get('strict-transport-security')).toContain('max-age=31536000');
+      expect(response.headers.get('content-security-policy')).toBe(
+        "default-src 'none'; frame-ancestors 'none'",
+      );
+    }
   });
 
   it('fails closed when the auth secret is missing', async () => {
@@ -238,32 +332,84 @@ describe('worker routing', () => {
     expect((await worker.fetch(request, env)).status).toBe(413);
   });
 
+  it('caps auth request bodies', async () => {
+    const request = new Request(`${WEB_URL}/api/auth/sign-up/email`, {
+      method: 'POST',
+      headers: { origin: WEB_URL, 'content-type': 'application/json', 'content-length': '5000' },
+      body: 'x'.repeat(5000),
+    });
+    expect((await worker.fetch(request, env)).status).toBe(413);
+  });
+
+  it('caps streamed auth bodies without content-length', async () => {
+    const body = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode('x'.repeat(5000)));
+        controller.close();
+      },
+    });
+    const request = new Request(`${WEB_URL}/api/auth/sign-up/email`, {
+      method: 'POST',
+      headers: { origin: WEB_URL, 'content-type': 'application/json' },
+      body,
+      duplex: 'half',
+    } as RequestInit);
+    expect(request.headers.get('content-length')).toBeNull();
+    expect((await worker.fetch(request, env)).status).toBe(413);
+  });
+
+  it('rate limits public reads per IP', async () => {
+    const read = () =>
+      worker.fetch(
+        new Request(`${WEB_URL}/api/leaderboard`, { headers: { 'CF-Connecting-IP': '203.0.113.9' } }),
+        env,
+      );
+    for (let i = 0; i < 120; i++) await read();
+    expect((await read()).status).toBe(429);
+  });
+
   it('rejects unsigned stripe webhooks', async () => {
     const request = new Request(`${WEB_URL}/api/stripe-webhook`, { method: 'POST', body: '{}' });
     expect((await worker.fetch(request, env)).status).toBe(400);
   });
 
   it('links a guest to a new account, creating a neutral profile and moving tickets', async () => {
-    const signIn = await worker.fetch(new Request(`${WEB_URL}/api/auth/sign-in/anonymous`, { method: 'POST', headers: { origin: WEB_URL } }), env);
+    const signIn = await worker.fetch(
+      new Request(`${WEB_URL}/api/auth/sign-in/anonymous`, { method: 'POST', headers: { origin: WEB_URL } }),
+      env,
+    );
     expect(signIn.status).toBe(200);
     const cookie = signIn.headers.get('set-cookie')?.split(';')[0] ?? '';
-    const ticket = await worker.fetch(new Request(`${WEB_URL}/api/start-run`, { method: 'POST', headers: { origin: WEB_URL, cookie } }), env);
+    const ticket = await worker.fetch(
+      new Request(`${WEB_URL}/api/start-run`, { method: 'POST', headers: { origin: WEB_URL, cookie } }),
+      env,
+    );
     const { ticketId } = (await ticket.json()) as { ticketId: string };
 
     const signUp = await worker.fetch(
       new Request(`${WEB_URL}/api/auth/sign-up/email`, {
         method: 'POST',
         headers: { origin: WEB_URL, cookie, 'content-type': 'application/json' },
-        body: JSON.stringify({ email: 'carla@example.test', password: 'correct-horse-battery', name: 'carla@example.test' }),
+        body: JSON.stringify({
+          email: 'carla@example.test',
+          password: 'correct-horse-battery',
+          name: 'carla@example.test',
+        }),
       }),
       env,
     );
     expect(signUp.status).toBe(200);
     const { user } = (await signUp.json()) as { user: { id: string } };
 
-    const owner = await db.prepare('select user_id from run_tickets where id = ?1').bind(ticketId).first<{ user_id: string }>();
+    const owner = await db
+      .prepare('select user_id from run_tickets where id = ?1')
+      .bind(ticketId)
+      .first<{ user_id: string }>();
     expect(owner?.user_id).toBe(user.id);
-    const profile = await db.prepare('select username from profiles where id = ?1').bind(user.id).first<{ username: string }>();
+    const profile = await db
+      .prepare('select username from profiles where id = ?1')
+      .bind(user.id)
+      .first<{ username: string }>();
     expect(profile?.username).toMatch(/^jugador_[0-9a-f]{10}$/);
   });
 });

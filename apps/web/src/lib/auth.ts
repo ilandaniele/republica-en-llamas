@@ -6,7 +6,7 @@ export const authClient = createAuthClient({ plugins: [anonymousClient()] });
 
 const AUTH_ERRORS: [string, string][] = [
   ['Invalid email or password', 'Email o contraseña incorrectos'],
-  ['User already exists', 'Este email ya tiene una cuenta'],
+  ['User already exists', 'No pudimos crear la cuenta con esos datos. Si ya tenés cuenta, iniciá sesión.'],
   ['Invalid email', 'Email inválido'],
   ['Password too short', 'La contraseña debe tener al menos 8 caracteres'],
   ['Email not verified', 'Confirmá tu email antes de ingresar'],

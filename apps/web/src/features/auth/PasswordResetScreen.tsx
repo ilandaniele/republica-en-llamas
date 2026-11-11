@@ -1,16 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { authClient } from '../../lib/auth.js';
 
 export default function PasswordResetScreen() {
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [token] = useState(() => searchParams.get('token'));
   const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (!searchParams.has('token')) return;
+    const withoutToken = new URLSearchParams(searchParams);
+    withoutToken.delete('token');
+    setSearchParams(withoutToken, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();

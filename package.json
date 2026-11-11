@@ -12,6 +12,7 @@
     "test": "turbo run test",
     "test:security": "npm test --workspace=apps/api && node --import tsx --test scripts/security/load.test.mjs scripts/security/k6-guards.test.mjs",
     "test:load": "node scripts/security/run-load.mjs",
+    "test:load:api": "node scripts/security/run-api-load.mjs",
     "lint": "eslint .",
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rm -rf node_modules",
