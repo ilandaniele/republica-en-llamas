@@ -2,9 +2,22 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-17 — Security review fixes (crear-app phase 6)
+
+- Full findings, fix batches and per-finding status: `docs/security-report.md` (76 findings; re-verified: 43 fixed, 12 partial, 2 not fixed, 19 deferred). Regression notes R-01..R-10 are in its "Fix status" section.
+- API: Better Auth memoized per env; IP limiter stops writing once over the limit; `/api/auth/*` one `auth` bucket, path cap, Origin check; `/api/health`; structured errors (503 only for D1/misconfig); sign-out without body works; reset token 30 min, mail sent via `waitUntil`.
+- `auth.ts` returns 503 when `findEnvProblems` (`apps/api/src/env.ts`) reports anything: secret < 32 chars, non-https `WEB_URL`, or only one of the Stripe / Google secret pairs. Check production secrets before deploying.
+- Payments: 409 when already owned, idempotent grants, line-item price check, retryable 500 on ungrantable paid sessions.
+- Runs: historical scenarios need `full_access` (`canStartRun` in engine), leaderboard split into two indexed queries, decisions normalized, ticket reuse with different decisions returns 409, ranked runs capped at 58 decisions.
+- Cron: per-table bounded deletes (2000 rows each) for rate limits, run tickets > 24 h, expired verification rows, guests without a live session, expired sessions; one failing table does not block others. Test signs in a real Better Auth guest.
+- CI: Cloudflare token only on D1 bookmark / migrate / deploy steps, actions pinned by SHA (confirm SHAs), `npm audit`, smoke test on `/api/health`, `.github/dependabot.yml`. `wrangler.jsonc` adds `send_email` binding `EMAIL`.
+- Web: run-save errors surfaced, register username retry, shared accessible `Modal`, auth form labels, contrast, live regions, reduced motion, plus an "Accesibilidad" panel on Home (reduce motion, disable 1-4/A-D shortcuts, 90 s Crisis Express) pending owner confirmation.
+- Owner before deploy: enable Email Routing and `wrangler secret put RESET_EMAIL_FROM` (the binding may break deploy otherwise), add reviewers to GitHub environment `production`, decide gitleaks, crisis difficulty paywall, F-04 password hash vs Paid plan.
+- Verification (local only): lint 0, type-check web/api/engine, tests api 86, engine 257, web 681, `test:security` 14, web build OK.
+
 ## 2026-11-17 — Scheduled cleanup
 
-- Daily cron `0 4 * * *` (`apps/api/wrangler.jsonc`) runs `cleanupStaleRows` (`apps/api/src/cleanup.ts`) from the Worker `scheduled` handler, in one D1 batch:
+- Daily cron `0 4 * * *` (`apps/api/wrangler.jsonc`) runs `cleanupStaleRows` (`apps/api/src/cleanup.ts`) from the Worker `scheduled` handler, in bounded per-table deletes (see security review section above):
   - `api_rate_limits` rows older than the current 1-minute window.
   - Better Auth `rateLimit` rows idle for over 1 hour.
   - Anonymous users with no unexpired session (cascade removes their sessions, accounts and run tickets). Guests cannot buy or save runs, so no purchases or leaderboard rows are lost.
