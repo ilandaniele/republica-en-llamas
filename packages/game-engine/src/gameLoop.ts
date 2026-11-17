@@ -18,6 +18,7 @@ import {
   HISTORICAL_SCENARIOS,
   SCENARIO_CALENDARS,
   SCENARIO_ARCS,
+  GAME_OVER,
 } from './constants.js';
 import { calculateInflationBreakdown } from './inflation.js';
 import { calculateScore } from './scoring.js';
@@ -303,7 +304,7 @@ export function applyChoice(state: GameState, cardId: string, choiceIndex: numbe
           { turn: state.turn, cardId, choiceIndex, effectsApplied: choice.effects },
         ],
         lameDuckMode: true,
-        lameDuckTurnsRemaining: 8,
+        lameDuckTurnsRemaining: GAME_OVER.LAME_DUCK_TURNS,
         political: {
           ...state.political,
           popularity: clamp(state.political.popularity - 15, 0, 100),

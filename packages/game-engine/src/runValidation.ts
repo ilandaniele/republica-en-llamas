@@ -1,10 +1,11 @@
-import { HISTORICAL_SCENARIOS } from './constants.js';
+import { GAME_OVER, HISTORICAL_SCENARIOS } from './constants.js';
 import { CONGRESS_ACTIONS, CONGRESS_ACTION_POINTS } from './congressSession.js';
 import { isPresidentId } from './presidents.js';
 import { isCareerStartOffice } from './career.js';
 import type { RunConfig, TurnDecision } from './run.js';
 
 export const MAX_RUN_DECISIONS = 200;
+export const MAX_RANKED_RUN_DECISIONS = GAME_OVER.MAX_TURNS + GAME_OVER.LAME_DUCK_TURNS;
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -58,4 +59,22 @@ export function isTurnDecision(value: unknown): value is TurnDecision {
     swingChoices.length <= 3 &&
     swingChoices.every((choice) => ['accept', 'refuse', 'decide'].includes(choice))
   );
+}
+
+export function normalizeDecision(decision: TurnDecision): TurnDecision {
+  const { cardId } = decision;
+  switch (decision.kind) {
+    case 'choice':
+      return { kind: 'choice', cardId, choiceIndex: decision.choiceIndex };
+    case 'congress': {
+      const { actions, swingChoices } = decision.decisions;
+      return {
+        kind: 'congress',
+        cardId,
+        decisions: { actions: [...actions], swingChoices: [...swingChoices] },
+      };
+    }
+    case 'timeout':
+      return { kind: 'timeout', cardId };
+  }
 }

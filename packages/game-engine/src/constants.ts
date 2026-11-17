@@ -1,4 +1,12 @@
-import type { DifficultyPreset, CrisisType, HistoricalScenarioConfig, ScenarioId, ScenarioCalendar, ScenarioArcPhase, CardCategory } from './types.js';
+import type {
+  DifficultyPreset,
+  CrisisType,
+  HistoricalScenarioConfig,
+  ScenarioId,
+  ScenarioCalendar,
+  ScenarioArcPhase,
+  CardCategory,
+} from './types.js';
 
 // ─── Difficulty presets ───────────────────────────────────────────────────────
 
@@ -80,10 +88,34 @@ export interface DifficultyModifiers {
 }
 
 export const DIFFICULTY_MODIFIERS: Record<string, DifficultyModifiers> = {
-  easy:   { negativeEffectMultiplier: 0.5, crisisMinTurn: 8,  impeachmentMinTurn: 15, inflationAccelerationTurn: 10, lifelineGuaranteeEvery: 3 },
-  normal: { negativeEffectMultiplier: 1.0, crisisMinTurn: 4,  impeachmentMinTurn: 8,  inflationAccelerationTurn: 5,  lifelineGuaranteeEvery: 6 },
-  hard:   { negativeEffectMultiplier: 1.3, crisisMinTurn: 2,  impeachmentMinTurn: 5,  inflationAccelerationTurn: 3,  lifelineGuaranteeEvery: 10 },
-  crisis: { negativeEffectMultiplier: 1.6, crisisMinTurn: 1,  impeachmentMinTurn: 3,  inflationAccelerationTurn: 1,  lifelineGuaranteeEvery: 99 },
+  easy: {
+    negativeEffectMultiplier: 0.5,
+    crisisMinTurn: 8,
+    impeachmentMinTurn: 15,
+    inflationAccelerationTurn: 10,
+    lifelineGuaranteeEvery: 3,
+  },
+  normal: {
+    negativeEffectMultiplier: 1.0,
+    crisisMinTurn: 4,
+    impeachmentMinTurn: 8,
+    inflationAccelerationTurn: 5,
+    lifelineGuaranteeEvery: 6,
+  },
+  hard: {
+    negativeEffectMultiplier: 1.3,
+    crisisMinTurn: 2,
+    impeachmentMinTurn: 5,
+    inflationAccelerationTurn: 3,
+    lifelineGuaranteeEvery: 10,
+  },
+  crisis: {
+    negativeEffectMultiplier: 1.6,
+    crisisMinTurn: 1,
+    impeachmentMinTurn: 3,
+    inflationAccelerationTurn: 1,
+    lifelineGuaranteeEvery: 99,
+  },
 };
 
 // ─── Crisis thresholds ────────────────────────────────────────────────────────
@@ -115,6 +147,7 @@ export const GAME_OVER = {
   MIN_MARKET_CONFIDENCE_FOR_BANKRUPT: 10,
   IMPEACHMENT_RESOLVE_TURNS: 3,
   MAX_TURNS: 50,
+  LAME_DUCK_TURNS: 8,
 } as const;
 
 // ─── Congress seat totals ─────────────────────────────────────────────────────
@@ -286,15 +319,15 @@ export const HISTORICAL_SCENARIOS: Record<ScenarioId, HistoricalScenarioConfig> 
 // ─── Scenario calendars (start date + turn pacing) ────────────────────────────
 
 export const SCENARIO_CALENDARS: Record<ScenarioId, ScenarioCalendar> = {
-  hiperinflacion_1989:  { startMonth: 1,  startYear: 1989, turnsPerMonth: 2 },
-  corralito_2001:       { startMonth: 12, startYear: 2001, turnsPerMonth: 2 },
-  convertibilidad:      { startMonth: 4,  startYear: 1991, turnsPerMonth: 3 },
-  rodrigazo_1975:       { startMonth: 6,  startYear: 1975, turnsPerMonth: 2 },
-  malvinas_1982:        { startMonth: 4,  startYear: 1982, turnsPerMonth: 2 },
-  kirchnerismo_boom:    { startMonth: 12, startYear: 2003, turnsPerMonth: 3 },
+  hiperinflacion_1989: { startMonth: 1, startYear: 1989, turnsPerMonth: 2 },
+  corralito_2001: { startMonth: 12, startYear: 2001, turnsPerMonth: 2 },
+  convertibilidad: { startMonth: 4, startYear: 1991, turnsPerMonth: 3 },
+  rodrigazo_1975: { startMonth: 6, startYear: 1975, turnsPerMonth: 2 },
+  malvinas_1982: { startMonth: 4, startYear: 1982, turnsPerMonth: 2 },
+  kirchnerismo_boom: { startMonth: 12, startYear: 2003, turnsPerMonth: 3 },
   libertad_avanza_2023: { startMonth: 12, startYear: 2023, turnsPerMonth: 2 },
-  guerra_ucrania_2022:  { startMonth: 2,  startYear: 2022, turnsPerMonth: 2 },
-  conflicto_iran_2024:  { startMonth: 4,  startYear: 2024, turnsPerMonth: 2 },
+  guerra_ucrania_2022: { startMonth: 2, startYear: 2022, turnsPerMonth: 2 },
+  conflicto_iran_2024: { startMonth: 4, startYear: 2024, turnsPerMonth: 2 },
 };
 
 // ─── Scenario narrative arcs ──────────────────────────────────────────────────
@@ -303,47 +336,47 @@ export const SCENARIO_CALENDARS: Record<ScenarioId, ScenarioCalendar> = {
 
 export const SCENARIO_ARCS: Partial<Record<ScenarioId, ScenarioArcPhase[]>> = {
   hiperinflacion_1989: [
-    { maxTurn: 6,  weightedCategories: ['economic' as CardCategory] },
+    { maxTurn: 6, weightedCategories: ['economic' as CardCategory] },
     { maxTurn: 14, weightedCategories: ['crisis' as CardCategory, 'economic' as CardCategory] },
     { maxTurn: 50, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
   ],
   corralito_2001: [
-    { maxTurn: 5,  weightedCategories: ['economic' as CardCategory, 'international' as CardCategory] },
+    { maxTurn: 5, weightedCategories: ['economic' as CardCategory, 'international' as CardCategory] },
     { maxTurn: 12, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
     { maxTurn: 50, weightedCategories: ['political' as CardCategory, 'crisis' as CardCategory] },
   ],
   convertibilidad: [
-    { maxTurn: 8,  weightedCategories: ['economic' as CardCategory, 'international' as CardCategory] },
+    { maxTurn: 8, weightedCategories: ['economic' as CardCategory, 'international' as CardCategory] },
     { maxTurn: 18, weightedCategories: ['political' as CardCategory, 'economic' as CardCategory] },
     { maxTurn: 50, weightedCategories: ['crisis' as CardCategory, 'economic' as CardCategory] },
   ],
   rodrigazo_1975: [
-    { maxTurn: 4,  weightedCategories: ['social' as CardCategory, 'economic' as CardCategory] },
+    { maxTurn: 4, weightedCategories: ['social' as CardCategory, 'economic' as CardCategory] },
     { maxTurn: 12, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
     { maxTurn: 50, weightedCategories: ['political' as CardCategory, 'crisis' as CardCategory] },
   ],
   malvinas_1982: [
-    { maxTurn: 5,  weightedCategories: ['international' as CardCategory, 'political' as CardCategory] },
+    { maxTurn: 5, weightedCategories: ['international' as CardCategory, 'political' as CardCategory] },
     { maxTurn: 15, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
     { maxTurn: 50, weightedCategories: ['economic' as CardCategory, 'political' as CardCategory] },
   ],
   kirchnerismo_boom: [
-    { maxTurn: 8,  weightedCategories: ['economic' as CardCategory, 'social' as CardCategory] },
+    { maxTurn: 8, weightedCategories: ['economic' as CardCategory, 'social' as CardCategory] },
     { maxTurn: 18, weightedCategories: ['political' as CardCategory, 'international' as CardCategory] },
     { maxTurn: 50, weightedCategories: ['crisis' as CardCategory, 'economic' as CardCategory] },
   ],
   libertad_avanza_2023: [
-    { maxTurn: 5,  weightedCategories: ['economic' as CardCategory, 'political' as CardCategory] },
+    { maxTurn: 5, weightedCategories: ['economic' as CardCategory, 'political' as CardCategory] },
     { maxTurn: 14, weightedCategories: ['crisis' as CardCategory, 'social' as CardCategory] },
     { maxTurn: 50, weightedCategories: ['crisis' as CardCategory, 'political' as CardCategory] },
   ],
   guerra_ucrania_2022: [
-    { maxTurn: 5,  weightedCategories: ['international' as CardCategory, 'economic' as CardCategory] },
+    { maxTurn: 5, weightedCategories: ['international' as CardCategory, 'economic' as CardCategory] },
     { maxTurn: 15, weightedCategories: ['international' as CardCategory, 'crisis' as CardCategory] },
     { maxTurn: 50, weightedCategories: ['political' as CardCategory, 'economic' as CardCategory] },
   ],
   conflicto_iran_2024: [
-    { maxTurn: 5,  weightedCategories: ['international' as CardCategory, 'economic' as CardCategory] },
+    { maxTurn: 5, weightedCategories: ['international' as CardCategory, 'economic' as CardCategory] },
     { maxTurn: 14, weightedCategories: ['crisis' as CardCategory, 'international' as CardCategory] },
     { maxTurn: 50, weightedCategories: ['political' as CardCategory, 'economic' as CardCategory] },
   ],
