@@ -2,6 +2,14 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-17 — Test phase (crear-app phase 7)
+
+Full results and findings: `docs/test-report.md`.
+
+- New suites: `npm run test:integration --workspace=apps/api` (workerd + real local D1, 27 tests, compat date overridden to `2026-08-22` because of the pool's bundled workerd), `npm run test:e2e --workspace=apps/web` (Playwright on installed Edge, desktop + Pixel 7, 28 tests, starts its own `wrangler dev` on 8788), `npm run test:coverage`, `scripts/security/pentest-local.sh` (loopback only), `run-api-load.mjs` bounded soak (`API_LOAD_SOAK_SECONDS` ≤ 600, `API_LOAD_PER_VU_IP=1`).
+- Blocker before sharing email accounts on Workers Free: scrypt ~55 ms CPU per sign-up/sign-in (F1 = F-04). Guest play is fine.
+- Open product findings, not fixed: F2 `get-session` shares the auth IP bucket and a 429 downgrades the UI to guest; F3 no `<main>` landmark (e2e `test.fail`); F4 ~134 D1 writes per run; F5 stale leaderboard cache; F6 profile a11y labels.
+
 ## 2026-11-17 — Security review fixes (crear-app phase 6)
 
 - Full findings, fix batches and per-finding status: `docs/security-report.md` (76 findings; re-verified: 43 fixed, 12 partial, 2 not fixed, 19 deferred). Regression notes R-01..R-10 are in its "Fix status" section.

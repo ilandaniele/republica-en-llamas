@@ -40,7 +40,11 @@ export const options = {
   setupTimeout: '10s',
 };
 
-const headers = { Origin: manifest.baseUrl, 'Content-Type': 'application/json' };
+const headers = {
+  Origin: manifest.baseUrl,
+  'Content-Type': 'application/json',
+  ...(manifest.perVuIp ? { 'CF-Connecting-IP': `10.77.${Math.floor(__VU / 250)}.${__VU % 250}` } : {}),
+};
 let signedIn = false;
 
 function request(method, path, endpoint, body = null) {

@@ -8,6 +8,12 @@ export default mergeConfig(
       environment: 'jsdom',
       setupFiles: ['./src/test/setup.ts'],
       include: ['src/**/*.test.{ts,tsx}'],
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'json', 'json-summary'],
+        include: ['src/**/*.{ts,tsx}'],
+        exclude: ['src/**/*.test.{ts,tsx}', 'src/test/**', 'src/**/*.d.ts'],
+      },
       server: {
         deps: {
           inline: [/@tanstack\//, /react-i18next/, /zustand/, /use-sync-external-store/, /@gsap\/react/],

@@ -28,3 +28,8 @@ art/raw/
 # Cloudflare
 .wrangler/
 .dev.vars
+
+# Playwright
+apps/web/test-results/
+apps/web/test-results-*/
+apps/web/playwright-report/

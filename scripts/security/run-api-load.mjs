@@ -7,6 +7,8 @@ import { runK6Profile } from './k6-runner.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const requested = process.argv.slice(2);
 const extended = requested.includes('--extended');
+const soakSeconds = Number(process.env.API_LOAD_SOAK_SECONDS ?? 0);
+const perVuIp = process.env.API_LOAD_PER_VU_IP === '1';
 const names = requested.filter((value) => value !== '--extended');
 if (names.some((name) => !PROFILE_NAMES.includes(name))) {
   console.error(`Usage: node scripts/security/run-api-load.mjs [${PROFILE_NAMES.join('|')}] [--extended]`);
@@ -27,13 +29,13 @@ if (names.some((name) => !PROFILE_NAMES.includes(name))) {
     const summaries = [];
     for (const name of names.length ? names : PROFILE_NAMES) {
       if (interrupted) throw new Error('Load run interrupted');
-      const profile = apiProfileFor(name, extended);
+      const profile = apiProfileFor(name, extended, soakSeconds);
       const summary = await runK6Profile({
         script: 'scripts/security/api-load.k6.js',
         root,
         output,
         reportName: `api-${name}`,
-        manifestData: { baseUrl, profile },
+        manifestData: { baseUrl, profile, perVuIp },
         profile,
         onChild: (spawned) => {
           child = spawned;

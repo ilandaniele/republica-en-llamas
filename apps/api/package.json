@@ -9,7 +9,8 @@
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "db:migrate": "wrangler d1 migrations apply republica-en-llamas --remote",
-    "db:migrate:local": "wrangler d1 migrations apply republica-en-llamas --local"
+    "db:migrate:local": "wrangler d1 migrations apply republica-en-llamas --local",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
   },
   "dependencies": {
     "@republica/game-engine": "*",

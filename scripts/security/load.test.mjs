@@ -90,6 +90,14 @@ test('api profiles reuse the static stages and require near-zero 5xx', () => {
   }
 });
 
+test('api soak duration is bounded to ten minutes', () => {
+  const soak = apiProfileFor('soak', false, 600);
+  assert.equal(soak.durationSeconds, 600);
+  assert.deepEqual(soak.stages, [{ duration: '600s', target: 4 }]);
+  assert.deepEqual(apiProfileFor('spike', false, 600), apiProfileFor('spike'));
+  for (const seconds of [601, -1, 1.5]) assert.throws(() => apiProfileFor('soak', false, seconds));
+});
+
 test('api load target is restricted to localhost and 127.0.0.1 over http', () => {
   assert.equal(assertLocalApiUrl(DEFAULT_API_URL), DEFAULT_API_URL);
   assert.equal(assertLocalApiUrl('http://127.0.0.1:8787'), 'http://127.0.0.1:8787');
