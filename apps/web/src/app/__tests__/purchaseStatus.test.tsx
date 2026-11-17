@@ -32,6 +32,13 @@ describe('purchase status is server-confirmed', () => {
     expect(await screen.findByText('Compra confirmada — contenido desbloqueado')).toBeTruthy();
   });
 
+  it('reports a failed entitlements fetch instead of a pending purchase', async () => {
+    refetch.mockResolvedValue({ data: undefined, error: new Error('Request failed') });
+    mount();
+    expect(await screen.findByText('No se pudo verificar la compra. Revisá tu conexión.')).toBeTruthy();
+    expect(screen.queryByText(/pendiente de confirmación/)).toBeNull();
+  });
+
   it('keeps a server failure from becoming a success message', async () => {
     refetch.mockRejectedValue(new Error('private detail'));
     mount();

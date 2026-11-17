@@ -6,6 +6,7 @@ import { initAnalytics } from './lib/analytics.js';
 import { useEntitlements } from './hooks/useEntitlements.js';
 import { useTransientValue } from './hooks/useTransientValue.js';
 import { PixelMate } from './components/illustrations/PixelMate.js';
+import { RouteFocus } from './components/RouteFocus.js';
 import { DebatePracticeScreen, prefetchRoutesWhenIdle, screens } from './app/routes.js';
 
 const {
@@ -26,6 +27,7 @@ const {
 function LoadingSpinner() {
   return (
     <div
+      role="status"
       className="flex min-h-screen flex-col items-center justify-center gap-6"
       style={{ background: 'var(--night-blue)' }}
     >
@@ -53,10 +55,12 @@ export function PurchaseSuccessToast() {
     if (params.get('purchase_success') === '1') {
       flash('Verificando compra...', 4000);
       const entitlement = params.get('entitlement');
+      const failed = () => flash('No se pudo verificar la compra. Revisá tu conexión.', 6000);
       void refetch()
         .then(({ data, error }) => {
           if (!active) return;
-          const confirmed = !error && data?.some((id) => id === entitlement || id === 'full_access');
+          if (error) return failed();
+          const confirmed = data?.some((id) => id === entitlement || id === 'full_access');
           flash(
             confirmed
               ? 'Compra confirmada — contenido desbloqueado'
@@ -65,7 +69,7 @@ export function PurchaseSuccessToast() {
           );
         })
         .catch(() => {
-          if (active) flash('No se pudo verificar la compra. Revisá tu conexión.', 6000);
+          if (active) failed();
         });
     }
     return () => {
@@ -91,6 +95,7 @@ export default function App() {
   return (
     <SoundProvider>
       <BrowserRouter>
+        <RouteFocus />
         <Suspense fallback={<LoadingSpinner />}>
           <PurchaseSuccessToast />
           <Routes>

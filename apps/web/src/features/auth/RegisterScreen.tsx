@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
@@ -19,6 +19,7 @@ export default function RegisterScreen() {
   const { signUp } = useAuth();
   const setUserId = useGameStore((s) => s.setUserId);
 
+  const emailId = useId();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -64,7 +65,7 @@ export default function RegisterScreen() {
       <div className="w-full max-w-md">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 flex items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
+          className="mb-6 inline-flex min-h-[44px] min-w-[44px] items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
         >
           ← Volver
         </button>
@@ -86,7 +87,7 @@ export default function RegisterScreen() {
 
         <div className="mb-4 flex items-center gap-3">
           <div className="h-px flex-1 bg-navy-600" />
-          <span className="font-mono text-xs text-smoke-600">o registrate con email</span>
+          <span className="font-mono text-xs text-smoke-400">o registrate con email</span>
           <div className="h-px flex-1 bg-navy-600" />
         </div>
 
@@ -102,19 +103,26 @@ export default function RegisterScreen() {
             available={usernameAvailable}
             checking={checkingUsername}
           />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500 focus:outline-none"
-          />
+          <div>
+            <label htmlFor={emailId} className="sr-only">
+              Email
+            </label>
+            <input
+              id={emailId}
+              type="email"
+              autoComplete="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500"
+            />
+          </div>
           <PasswordField value={password} onChange={setPassword} />
 
           {error && (
-            <div className="bg-crimson-900/40 rounded border border-crimson-700 px-3 py-2">
-              <p className="text-crimson-300 font-mono text-xs">{error}</p>
+            <div role="alert" className="rounded border border-crimson-700 bg-crimson-900/40 px-3 py-2">
+              <p className="font-mono text-xs text-crimson-300">{error}</p>
             </div>
           )}
 

@@ -5,12 +5,15 @@ import type { ScenarioId } from '@republica/game-engine';
 import { useGameImage } from '../../hooks/useGameImage.js';
 import { SCENARIO_IMAGES } from './event-scenes/scenarioImages.js';
 import { RasterSceneEffects } from './event-scenes/RasterSceneEffects.js';
+import { imageA11yProps } from './imageA11yProps.js';
+import { prefersReducedMotion } from '../../lib/reducedMotion.js';
 
 gsap.registerPlugin(useGSAP);
 
 interface Props {
   id: ScenarioId;
   presidentId?: string;
+  label?: string;
 }
 
 // ── Pixel rect primitive ────────────────────────────────────────────────────────
@@ -744,14 +747,14 @@ function SceneConflictoIran({ pid }: { pid: string }) {
 }
 
 // ── Main export ────────────────────────────────────────────────────────────────
-export function ScenarioIllustration({ id, presidentId = 'ingeniero' }: Props) {
+export function ScenarioIllustration({ id, presidentId = 'ingeniero', label }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneId = SCENARIO_IMAGES[id] ?? '';
   const imageUrl = useGameImage(sceneId);
 
   useGSAP(
     () => {
-      if (imageUrl || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+      if (imageUrl || prefersReducedMotion()) return;
       if (!containerRef.current) return;
       switch (id) {
         case 'hiperinflacion_1989':
@@ -900,7 +903,7 @@ export function ScenarioIllustration({ id, presidentId = 'ingeniero' }: Props) {
         width="100%"
         height="100%"
         style={{ imageRendering: 'pixelated', display: 'block' }}
-        aria-label={`Escenario: ${id}`}
+        {...imageA11yProps(label)}
       >
         {imageUrl ? (
           <>

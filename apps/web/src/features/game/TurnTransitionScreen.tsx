@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { m } from 'framer-motion';
 import type { GameState } from '@republica/game-engine';
@@ -7,6 +7,7 @@ import { InflationBreakdownPanel } from './InflationBreakdownPanel.js';
 import { useGameStore } from '../../stores/gameStore.js';
 import { CasaRosadaScene } from '../../components/casa-rosada/CasaRosadaScene.js';
 import { DebateSummary } from './debate/DebateSummary.js';
+import { Modal } from '../../components/Modal.js';
 
 function CasaRosadaBanner({ gameState }: { gameState: GameState }) {
   return (
@@ -56,6 +57,8 @@ function isPresidentialInauguration(state: GameState | null): boolean {
 export function TurnTransitionScreen({ data, onDismiss }: Props) {
   const { t } = useTranslation();
   const [clicked, setClicked] = useState(false);
+  const titleId = useId();
+  const continueRef = useRef<HTMLButtonElement>(null);
   const gameState = useGameStore((s) => s.gameState);
   const breakdown = gameState?.lastInflationBreakdown;
   const startsPresidency = isPresidentialInauguration(gameState);
@@ -66,20 +69,10 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
     onDismiss();
   };
 
-  // Keyboard: Enter or Space to continue
-  React.useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        handleContinue();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [clicked]); // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
-    <m.div
+    <Modal
+      aria-labelledby={titleId}
+      initialFocusRef={continueRef}
       initial={{ y: '-100%', opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: '-100%', opacity: 0 }}
@@ -94,12 +87,13 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
 
         {/* Turn counter */}
         <div className="mb-4 text-center">
-          <span
+          <h2
+            id={titleId}
             style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
-            className="uppercase text-smoke-500"
+            className="uppercase text-smoke-300"
           >
             {startsPresidency ? t('career.presidentStart') : `TURNO ${data.fromTurn} ▶ ${data.toTurn}`}
-          </span>
+          </h2>
         </div>
 
         {startsPresidency && <p className="mb-4 text-lg text-celeste-light">{t('career.presidentIntro')}</p>}
@@ -117,7 +111,7 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
         >
           <div
             style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
-            className="mb-2 uppercase text-smoke-500"
+            className="mb-2 uppercase text-smoke-800"
           >
             La Gaceta de la República
           </div>
@@ -160,6 +154,7 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
           className="w-full"
         >
           <button
+            ref={continueRef}
             onClick={handleContinue}
             className="pixel-border-gold min-h-[56px] w-full bg-gold-500 px-8 py-4 font-bold text-navy-900 shadow-lg transition-colors hover:bg-gold-400 active:bg-gold-600"
             style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
@@ -167,12 +162,12 @@ export function TurnTransitionScreen({ data, onDismiss }: Props) {
             CONTINUAR ▶
           </button>
           {!clicked && (
-            <p className="mt-2 animate-pulse text-center font-mono text-xs text-smoke-500">
+            <p className="mt-2 animate-pulse text-center font-mono text-xs text-smoke-300" aria-hidden="true">
               tocá para continuar →
             </p>
           )}
         </m.div>
       </div>
-    </m.div>
+    </Modal>
   );
 }

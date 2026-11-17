@@ -12,6 +12,7 @@ import { EventIllustration } from '../../components/illustrations/EventIllustrat
 import { CardParticles } from './event-card/CardParticles.js';
 import { PixelPortrait } from '../../components/illustrations/PixelPortrait.js';
 import type { PortraitId } from '../../components/illustrations/PixelPortrait.js';
+import { prefersReducedMotion } from '../../lib/reducedMotion.js';
 
 gsap.registerPlugin(useGSAP);
 
@@ -120,7 +121,7 @@ export function EventCardComponent({
   // ── GSAP: category-specific ambient particle effects on the card ────────────
   useGSAP(
     () => {
-      if (!cardRef.current || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+      if (!cardRef.current || prefersReducedMotion()) return;
 
       if (isCrisis) {
         // Crimson border glow pulses on the whole card

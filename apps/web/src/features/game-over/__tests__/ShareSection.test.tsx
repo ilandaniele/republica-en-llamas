@@ -56,3 +56,15 @@ describe('pixel image sharing', () => {
     expect(canvas.width).toBe(0);
   });
 });
+
+describe('share links', () => {
+  it('opens X and WhatsApp without giving them a handle to this window', () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null);
+    render(<ShareSection viralText="Prueba" shareCardRef={{ current: null }} />);
+    fireEvent.click(screen.getByRole('button', { name: /COMPARTIR EN X/ }));
+    fireEvent.click(screen.getByRole('button', { name: /WHATSAPP/ }));
+    expect(open).toHaveBeenCalledTimes(2);
+    for (const call of open.mock.calls) expect(call.slice(1)).toEqual(['_blank', 'noopener,noreferrer']);
+    open.mockRestore();
+  });
+});

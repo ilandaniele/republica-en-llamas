@@ -110,11 +110,14 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     >
       {children}
       <button
+        type="button"
         onClick={toggleSound}
-        className="fixed right-14 top-3 z-50 flex h-8 w-8 items-center justify-center rounded-full border border-navy-600 bg-navy-800/80 text-sm transition-colors hover:bg-navy-700"
+        aria-label="Sonido"
+        aria-pressed={soundEnabled}
+        className="fixed right-14 top-2 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-navy-600 bg-navy-800/80 text-sm transition-colors hover:bg-navy-700"
         title={soundEnabled ? 'Silenciar' : 'Activar sonido'}
       >
-        {soundEnabled ? '🔊' : '🔇'}
+        <span aria-hidden="true">{soundEnabled ? '🔊' : '🔇'}</span>
       </button>
     </SoundContext.Provider>
   );

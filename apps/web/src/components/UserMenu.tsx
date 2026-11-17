@@ -11,6 +11,7 @@ export function UserMenu() {
   const personalBest = useGameStore((s) => s.personalBest);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -18,8 +19,17 @@ export function UserMenu() {
         setOpen(false);
       }
     };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || !ref.current?.contains(document.activeElement)) return;
+      setOpen(false);
+      toggleRef.current?.focus();
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
   }, []);
 
   if (!user) {
@@ -48,12 +58,16 @@ export function UserMenu() {
   return (
     <div className="account-menu relative" ref={ref}>
       <button
+        ref={toggleRef}
         onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
         className="flex items-center gap-2 rounded-lg border border-navy-600 bg-navy-800 px-3 py-1.5 font-mono text-xs text-smoke-300 transition-colors hover:bg-navy-700"
       >
         {personalBest && <span className="text-gold-400">🏆 {personalBest.score.toLocaleString()}</span>}
         <span>👤 {displayName}</span>
-        <span className="text-smoke-600">{open ? '▴' : '▾'}</span>
+        <span className="text-smoke-400" aria-hidden="true">
+          {open ? '▴' : '▾'}
+        </span>
       </button>
 
       {open && (

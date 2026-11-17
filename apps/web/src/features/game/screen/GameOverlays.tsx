@@ -9,6 +9,7 @@ export function MilestoneToast({ message: milestoneToast }: { message: string | 
       {milestoneToast && (
         <m.div
           key="milestone-toast"
+          role="status"
           initial={{ y: -60, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -60, opacity: 0 }}
@@ -21,7 +22,8 @@ export function MilestoneToast({ message: milestoneToast }: { message: string | 
             maxWidth: '80vw',
           }}
         >
-          ⭐ {milestoneToast}
+          <span aria-hidden="true">⭐ </span>
+          {milestoneToast}
         </m.div>
       )}
     </AnimatePresence>

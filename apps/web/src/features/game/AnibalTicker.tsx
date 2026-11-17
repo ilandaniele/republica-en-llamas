@@ -155,7 +155,7 @@ export function AnibalTicker({ text, isCrisis = false }: Props) {
           style={{ animationDuration: `${Math.max(12, displayText.length * 0.18)}s` }}
         >
           {displayText}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          {displayText}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <span aria-hidden="true">{displayText}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </span>
       </div>
     </div>

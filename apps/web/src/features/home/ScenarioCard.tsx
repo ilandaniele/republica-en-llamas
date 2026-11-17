@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import type { ScenarioId } from '@republica/game-engine';
 import { ScenarioIllustration } from '../../components/illustrations/ScenarioIllustration.js';
 import { useGameStore } from '../../stores/gameStore.js';
+import { prefersReducedMotion } from '../../lib/reducedMotion.js';
 
 gsap.registerPlugin(useGSAP);
 
@@ -47,6 +48,10 @@ export function ScenarioCard({ id, label, period, description, locked, index, on
   useGSAP(
     () => {
       if (!cardRef.current) return;
+      if (prefersReducedMotion()) {
+        setYearDisplay(period);
+        return;
+      }
 
       const delay = index * 0.08;
 

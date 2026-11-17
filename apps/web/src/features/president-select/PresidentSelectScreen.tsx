@@ -5,6 +5,8 @@ import { useGameStore } from '../../stores/gameStore.js';
 import { useEntitlements } from '../../hooks/useEntitlements.js';
 import { PixelPortrait, type PortraitId } from '../../components/illustrations/PixelPortrait.js';
 import { PaywallModal } from '../../components/PaywallModal.js';
+import { usePreferencesStore } from '../../stores/preferencesStore.js';
+import { crisisSecondsPerTurn } from '../../lib/crisisExpress.js';
 import {
   HISTORICAL_SCENARIOS,
   PARTIES,
@@ -206,9 +208,9 @@ function ArchetypeCard({
           <span className="font-mono text-xs font-bold text-emerald-400">+</span>
           <span className="font-mono text-xs text-emerald-300">{archetype.bonus}</span>
         </div>
-        <div className="bg-crimson-900/30 flex items-center gap-2 rounded border border-crimson-800 px-3 py-2">
+        <div className="flex items-center gap-2 rounded border border-crimson-800 bg-crimson-900/30 px-3 py-2">
           <span className="font-mono text-xs font-bold text-crimson-400">−</span>
-          <span className="text-crimson-300 font-mono text-xs">{archetype.weakness}</span>
+          <span className="font-mono text-xs text-crimson-300">{archetype.weakness}</span>
         </div>
       </div>
 
@@ -231,6 +233,7 @@ export default function PresidentSelectScreen() {
   const { t } = useTranslation();
   const setPresidentId = useGameStore((s) => s.setPresidentId);
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
+  const crisisSeconds = crisisSecondsPerTurn(usePreferencesStore((s) => s.extendedTime));
   const careerStart = useGameStore((s) => s.careerStart);
   const setCrisisExpress = useGameStore((s) => s.setCrisisExpress);
   const scenarioId = useGameStore((s) => s.scenarioId);
@@ -344,10 +347,12 @@ export default function PresidentSelectScreen() {
           className="mb-4"
         >
           <button
+            type="button"
+            aria-pressed={isCrisisExpress}
             onClick={handleToggleCrisisExpress}
             className={`flex w-full items-center justify-between rounded-xl border-2 px-5 py-4 transition-all duration-200 ${
               isCrisisExpress
-                ? 'bg-crimson-900/50 border-crimson-500 shadow-lg shadow-crimson-500/20'
+                ? 'border-crimson-500 bg-crimson-900/50 shadow-lg shadow-crimson-500/20'
                 : 'border-navy-600 bg-navy-800 hover:border-navy-400'
             }`}
           >
@@ -359,7 +364,7 @@ export default function PresidentSelectScreen() {
                 {!canUseCrisisExpress && <span className="ml-2 text-gold-400">🔒 $1.99</span>}
               </p>
               <p className="mt-0.5 font-mono text-xs text-smoke-500">
-                45s por turno · 15 turnos · ×1.5 daño · ×2 puntaje
+                {crisisSeconds}s por turno · 15 turnos · ×1.5 daño · ×2 puntaje
               </p>
             </div>
             <div

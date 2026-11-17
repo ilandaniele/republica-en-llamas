@@ -77,7 +77,7 @@ export default function LoginScreen() {
       <div className="w-full max-w-md">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 flex items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
+          className="mb-6 inline-flex min-h-[44px] min-w-[44px] items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
         >
           ← Volver
         </button>
@@ -120,7 +120,7 @@ export default function LoginScreen() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500 focus:outline-none"
+              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500"
             />
             <input
               type="password"
@@ -130,7 +130,7 @@ export default function LoginScreen() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500 focus:outline-none"
+              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500"
             />
 
             <div className="flex items-center gap-2">
@@ -147,8 +147,8 @@ export default function LoginScreen() {
             </div>
 
             {error && (
-              <div role="alert" className="bg-crimson-900/40 rounded border border-crimson-700 px-3 py-2">
-                <p className="text-crimson-300 font-mono text-xs">{error}</p>
+              <div role="alert" className="rounded border border-crimson-700 bg-crimson-900/40 px-3 py-2">
+                <p className="font-mono text-xs text-crimson-300">{error}</p>
               </div>
             )}
 

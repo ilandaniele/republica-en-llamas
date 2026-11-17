@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore.js';
+import { Modal } from '../../components/Modal.js';
 
 const TUTORIAL_STEPS = [
   {
@@ -35,6 +36,7 @@ export function TutorialOverlay() {
   const tutorialStep = useGameStore((s) => s.tutorialStep);
   const completeTutorialStep = useGameStore((s) => s.completeTutorialStep);
   const completeTutorial = useGameStore((s) => s.completeTutorial);
+  const titleId = useId();
 
   if (tutorialComplete) return null;
 
@@ -44,53 +46,61 @@ export function TutorialOverlay() {
   const isLast = tutorialStep === TUTORIAL_STEPS.length - 1;
 
   return (
-    <AnimatePresence>
-      <m.div
-        key={tutorialStep}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-        onClick={(e) => e.target === e.currentTarget && completeTutorialStep()}
-      >
-        <div className="pixel-border glow-celeste mx-4 max-w-md bg-navy-800 p-8 shadow-2xl">
-          <div
-            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
-            className="mb-3 uppercase text-gold-400"
+    <Modal
+      aria-labelledby={titleId}
+      onEscape={completeTutorial}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      onClick={(e) => e.target === e.currentTarget && completeTutorialStep()}
+    >
+      <div className="pixel-border glow-celeste mx-4 max-w-md bg-navy-800 p-8 shadow-2xl">
+        <AnimatePresence mode="wait">
+          <m.div
+            key={tutorialStep}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
           >
-            TUTORIAL {tutorialStep + 1}/{TUTORIAL_STEPS.length}
-          </div>
-          <h2
-            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px', lineHeight: '1.8' }}
-            className="mb-3 text-smoke-100"
-          >
-            {step.title}
-          </h2>
-          <p
-            style={{ fontFamily: 'var(--font-readable)', fontSize: '18px' }}
-            className="mb-6 leading-relaxed text-smoke-300"
-          >
-            {step.body}
-          </p>
-          <div className="flex items-center justify-between">
-            <div className="flex gap-1">
-              {TUTORIAL_STEPS.map((_, i) => (
-                <div
-                  key={i}
-                  className={`h-2 w-2 rounded-full ${i <= tutorialStep ? 'bg-gold-400' : 'bg-navy-600'}`}
-                />
-              ))}
-            </div>
-            <button
-              onClick={isLast ? completeTutorial : completeTutorialStep}
-              className="pixel-border-gold bg-gold-500 px-6 py-2 font-bold text-navy-900 transition-colors hover:bg-gold-400"
+            <div
               style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
+              className="mb-3 uppercase text-gold-400"
             >
-              {isLast ? 'COMENZAR' : 'SIGUIENTE ▶'}
-            </button>
+              TUTORIAL {tutorialStep + 1}/{TUTORIAL_STEPS.length}
+            </div>
+            <h2
+              id={titleId}
+              style={{ fontFamily: 'var(--font-readable)', fontSize: '14px', lineHeight: '1.8' }}
+              className="mb-3 text-smoke-100"
+            >
+              {step.title}
+            </h2>
+            <p
+              style={{ fontFamily: 'var(--font-readable)', fontSize: '18px' }}
+              className="mb-6 leading-relaxed text-smoke-300"
+            >
+              {step.body}
+            </p>
+          </m.div>
+        </AnimatePresence>
+        <div className="flex items-center justify-between">
+          <div className="flex gap-1" aria-hidden="true">
+            {TUTORIAL_STEPS.map((_, i) => (
+              <div
+                key={i}
+                className={`h-2 w-2 rounded-full ${i <= tutorialStep ? 'bg-gold-400' : 'bg-navy-600'}`}
+              />
+            ))}
           </div>
+          <button
+            onClick={isLast ? completeTutorial : completeTutorialStep}
+            className="pixel-border-gold bg-gold-500 px-6 py-2 font-bold text-navy-900 transition-colors hover:bg-gold-400"
+            style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
+          >
+            {isLast ? 'COMENZAR' : 'SIGUIENTE ▶'}
+          </button>
         </div>
-      </m.div>
-    </AnimatePresence>
+      </div>
+    </Modal>
   );
 }

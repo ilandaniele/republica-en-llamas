@@ -1,8 +1,9 @@
-﻿import React, { useEffect } from 'react';
+﻿import React, { useEffect, useId } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { ENTITLEMENT_PRODUCTS, PRESIDENT_LABELS } from '@republica/game-engine';
 import type { EntitlementId } from '@republica/game-engine';
 import { BuyButton } from './BuyButton.js';
+import { Modal } from './Modal.js';
 import { getFeatureFlag, trackExperimentStarted, trackPaywallShown } from '../lib/analytics.js';
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
 
 export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
   const product = ENTITLEMENT_PRODUCTS[entitlement];
+  const titleId = useId();
 
   const ctaCopyVariant = getFeatureFlag('paywall_cta_copy') ?? 'comprar';
   const pricingVariant = getFeatureFlag('paywall_pricing_order') ?? 'anchor_first';
@@ -37,7 +39,9 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
 
   return (
     <AnimatePresence>
-      <m.div
+      <Modal
+        aria-labelledby={titleId}
+        onEscape={onClose}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -53,8 +57,12 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="mb-6 text-center">
-            <div className="mb-3 text-4xl">🔒</div>
-            <h2 className="mb-1 font-serif text-xl font-bold text-smoke-100">{product.label}</h2>
+            <div className="mb-3 text-4xl" aria-hidden="true">
+              🔒
+            </div>
+            <h2 id={titleId} className="mb-1 font-serif text-xl font-bold text-smoke-100">
+              {product.label}
+            </h2>
             <p className="font-mono text-sm text-smoke-400">{product.description}</p>
           </div>
 
@@ -62,7 +70,9 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
             <ul className="space-y-1">
               {product.unlocks.map((u) => (
                 <li key={u} className="flex items-center gap-2 font-mono text-xs text-smoke-300">
-                  <span className="text-gold-400">✓</span>
+                  <span className="text-gold-400" aria-hidden="true">
+                    ✓
+                  </span>
                   <span>{PRESIDENT_LABELS[u] ?? u}</span>
                 </li>
               ))}
@@ -89,7 +99,7 @@ export function PaywallModal({ entitlement, triggerPoint, onClose }: Props) {
             Tal vez despues
           </button>
         </m.div>
-      </m.div>
+      </Modal>
     </AnimatePresence>
   );
 }

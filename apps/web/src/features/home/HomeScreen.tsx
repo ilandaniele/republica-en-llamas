@@ -15,6 +15,8 @@ import { OfflineBanner } from '../../components/OfflineBanner.js';
 import { useEntitlements, getDailyRunsRemaining, consumeDailyRun } from '../../hooks/useEntitlements.js';
 import { BuyButton } from '../../components/BuyButton.js';
 import { PaywallModal } from '../../components/PaywallModal.js';
+import { AccessibilitySettings } from '../../components/AccessibilitySettings.js';
+import { prefersReducedMotion } from '../../lib/reducedMotion.js';
 import { ScenarioCard } from './ScenarioCard.js';
 import { CareerSetup } from './CareerSetup.js';
 import { trackGameStarted } from '../../lib/analytics.js';
@@ -270,7 +272,7 @@ export default function HomeScreen() {
   // ── GSAP: title entry + tab-switch card stagger ───────────────────────────
   useGSAP(
     () => {
-      if (!homeContainerRef.current) return;
+      if (!homeContainerRef.current || prefersReducedMotion()) return;
       // Title + subtitle cascade in on first mount
       gsap.from('.home-title-line', {
         y: -24,
@@ -292,7 +294,7 @@ export default function HomeScreen() {
 
   useGSAP(
     () => {
-      if (!homeContainerRef.current) return;
+      if (!homeContainerRef.current || prefersReducedMotion()) return;
       // Tab content fades + cards stagger in whenever homeMode switches
       gsap.fromTo(
         '.home-tab-cards > *',
@@ -480,8 +482,8 @@ export default function HomeScreen() {
               {/* Auth / Start buttons */}
               {/* Daily run limit banner */}
               {dailyLimitReached && (
-                <div className="bg-crimson-900/40 mb-4 rounded-xl border border-crimson-700 p-4 text-center">
-                  <p className="text-crimson-300 mb-1 font-mono text-sm font-bold">
+                <div className="mb-4 rounded-xl border border-crimson-700 bg-crimson-900/40 p-4 text-center">
+                  <p className="mb-1 font-mono text-sm font-bold text-crimson-300">
                     ⏰ Límite diario alcanzado (3/3)
                   </p>
                   <p className="mb-3 font-mono text-xs text-smoke-400">
@@ -545,6 +547,8 @@ export default function HomeScreen() {
             </m.div>
           )}
         </AnimatePresence>
+
+        <AccessibilitySettings />
 
         <p className="mt-8 text-center font-mono text-xs text-smoke-600">v0.3.0 — República en Llamas</p>
       </m.div>

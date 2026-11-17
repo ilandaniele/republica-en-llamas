@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import type { TurnEvent } from '@republica/game-engine';
 import { useGameStore } from '../../stores/gameStore.js';
+import { Modal } from '../../components/Modal.js';
 
 const EFFECT_SUMMARIES: Record<string, (val: number) => string> = {
   popularityDelta: (v) => `Popularidad ${v > 0 ? '+' : ''}${Math.round(v)}%`,
@@ -41,7 +42,7 @@ function DiaryEntry({ event, isFatal }: DiaryEntryProps) {
   return (
     <div
       className={`flex gap-3 border-b border-navy-700/50 py-2 text-xs ${
-        isFatal ? 'bg-crimson-900/20 rounded border-crimson-800 px-2' : ''
+        isFatal ? 'rounded border-crimson-800 bg-crimson-900/20 px-2' : ''
       }`}
     >
       <span className={`shrink-0 font-mono ${isFatal ? 'font-bold text-crimson-400' : 'text-smoke-600'}`}>
@@ -70,6 +71,7 @@ interface Props {
 
 export function DecisionDiary({ isOpen, onClose }: Props) {
   const gameState = useGameStore((s) => s.gameState);
+  const titleId = useId();
 
   if (!gameState) return null;
 
@@ -108,8 +110,9 @@ export function DecisionDiary({ isOpen, onClose }: Props) {
             className="fixed inset-0 z-40 bg-navy-900/70"
             onClick={onClose}
           />
-          {/* Panel */}
-          <m.div
+          <Modal
+            aria-labelledby={titleId}
+            onEscape={onClose}
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
@@ -117,9 +120,15 @@ export function DecisionDiary({ isOpen, onClose }: Props) {
             className="fixed bottom-0 left-0 top-0 z-50 flex w-80 flex-col overflow-hidden border-r border-navy-600 bg-navy-900"
           >
             <div className="flex items-center justify-between border-b border-navy-600 p-4">
-              <h2 className="font-serif text-base font-bold text-gold-400">📋 Diario de Gestión</h2>
-              <button onClick={onClose} className="font-mono text-sm text-smoke-500 hover:text-smoke-300">
-                ✕
+              <h2 id={titleId} className="font-serif text-base font-bold text-gold-400">
+                <span aria-hidden="true">📋 </span>Diario de Gestión
+              </h2>
+              <button
+                onClick={onClose}
+                aria-label="Cerrar diario"
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center font-mono text-sm text-smoke-300 hover:text-smoke-100"
+              >
+                <span aria-hidden="true">✕</span>
               </button>
             </div>
             <div className="p-3">
@@ -144,7 +153,7 @@ export function DecisionDiary({ isOpen, onClose }: Props) {
                 </div>
               )}
             </div>
-          </m.div>
+          </Modal>
         </>
       )}
     </AnimatePresence>

@@ -8,6 +8,7 @@ import {
   replayRun,
 } from '@republica/game-engine';
 import type { GameStore } from './gameStore.js';
+import { parseRunTicketError } from '../lib/runTicket.js';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -52,6 +53,7 @@ export function restoreGameStore(saved: unknown, current: GameStore): GameStore 
     currentCard: null,
     runConfig: null,
     runTicketId: null,
+    runTicketError: null,
     decisions: [],
     pendingCardId: null,
     pendingChoiceIndex: null,
@@ -80,6 +82,7 @@ export function restoreGameStore(saved: unknown, current: GameStore): GameStore 
       decisions: saved.decisions,
       currentCard: gameState.isGameOver ? null : drawNextCard(gameState),
       runTicketId: typeof saved.runTicketId === 'string' ? saved.runTicketId : null,
+      runTicketError: parseRunTicketError(saved.runTicketError),
       presidentId: saved.runConfig.presidentId ?? restored.presidentId,
       isCrisisExpress: saved.runConfig.crisisExpress ?? false,
       scenarioId: saved.runConfig.scenarioId ?? null,
