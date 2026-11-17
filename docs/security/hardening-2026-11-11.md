@@ -42,7 +42,7 @@ against `http://localhost:8787`). Local results do not prove the remote Cloudfla
 
 - Auth enumeration on sign-up (Claude Security F2): UI message is neutral, but the API response still differs for an existing email. Email verification would close it.
 - Requests without an `Origin` header pass the Origin check (kept for non-browser clients such as mobile).
-- `rate_limits` rows and abandoned anonymous users are never cleaned up: add a scheduled cleanup.
+- ~~`rate_limits` rows and abandoned anonymous users are never cleaned up~~: daily cron added 2026-11-17 (`apps/api/src/cleanup.ts`).
 - Stripe refunds and async payment events are not handled.
 - Cache API is a no-op on `*.workers.dev`; edge caching of the leaderboard needs a custom domain.
 - Usernames differing by case, confusable scripts or fullwidth forms can coexist: NFKC plus a lowercased unique key in a new migration.

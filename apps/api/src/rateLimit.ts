@@ -1,6 +1,6 @@
 import { RequestError, sha256Hex } from './http.js';
 
-const WINDOW_MS = 60_000;
+export const RATE_LIMIT_WINDOW_MS = 60_000;
 const IP_LIMIT = 120;
 
 export const USER_LIMITS = {
@@ -13,7 +13,7 @@ export const USER_LIMITS = {
 export type LimitedAction = keyof typeof USER_LIMITS;
 
 async function consume(db: D1Database, bucketKey: string, limit: number): Promise<void> {
-  const windowStart = Math.floor(Date.now() / WINDOW_MS);
+  const windowStart = Math.floor(Date.now() / RATE_LIMIT_WINDOW_MS);
   const row = await db
     .prepare(
       `insert into api_rate_limits (bucket_key, window_start, request_count) values (?1, ?2, 1)

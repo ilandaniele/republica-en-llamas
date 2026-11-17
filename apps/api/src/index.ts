@@ -1,4 +1,5 @@
 import { createAuth } from './auth.js';
+import { cleanupStaleRows } from './cleanup.js';
 import type { RouteContext } from './context.js';
 import type { Env } from './env.js';
 import {
@@ -69,5 +70,8 @@ export default {
     if (url.pathname.startsWith('/api/')) return handleApi(request, env, url);
     if (url.pathname.startsWith('/assets/')) return serveHashedAsset(request, env);
     return env.ASSETS.fetch(request);
+  },
+  async scheduled(_controller: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+    ctx.waitUntil(cleanupStaleRows(env.DB));
   },
 } satisfies ExportedHandler<Env>;
