@@ -11,6 +11,11 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - No index added for these deletes: they run once a day, and an index on `api_rate_limits.window_start` would add a D1 row write to every rate-limited request.
 - Tests: `apps/api/src/__tests__/cleanup.test.ts` (api 30/30). Not yet verified on the deployed Worker: the cron starts after the next deploy (deploy is blocked until GitHub has `CLOUDFLARE_API_TOKEN`).
 
+## 2026-11-17 — Supabase leftovers removed
+
+- No code, config or current doc depends on Supabase. `turbo.json` env now lists `VITE_POSTHOG_KEY`, `VITE_OFFLINE_MODE`, `EXPO_PUBLIC_API_URL`; ESLint engine purity rule blocks `better-auth` instead of `@supabase/*`; `.gitignore` and ESLint ignores drop `supabase/` paths.
+- Remaining mentions are dated audit reports (`docs/security/*`, `security_best_practices_report.md`, `docs/architecture-plan.md`, `docs/buenas-practicas-2026-11-08.md`, `prompt-audit-report.md`) and the historical sections of this file. They record past state and were left unchanged.
+
 ## 2026-11-11 — Security hardening
 
 Phase notes, checklist coverage and open follow-ups: `docs/security/hardening-2026-11-11.md`.
@@ -36,7 +41,7 @@ Branch `feat/cloudflare-migration`. Supabase and Fly.io were removed entirely. E
 - Web uses `apps/web/src/lib/api.ts` (`apiSend`, `isOfflineMode`) and `apps/web/src/lib/auth.ts` (better-auth/react client). `useAuth` is the Better Auth session; anonymous sessions count as signed out. Security headers are in `apps/web/public/_headers` (CSP enforced since 2026-11-11, HSTS, etc.).
 - Mobile leaderboard fetches `${EXPO_PUBLIC_API_URL}/api/leaderboard`. Mobile type-check was not run.
 - Only `VITE_POSTHOG_KEY` and `VITE_OFFLINE_MODE` remain as `VITE_*` vars (public, baked at build).
-- `scripts/generate-images.ts` still uses Supabase Storage. It is offline tooling and was left as is.
+- `scripts/generate-images.ts` writes to `apps/web/public/illustrations/` (served by Workers Static Assets) instead of Supabase Storage (2026-11-17).
 
 ### Commands
 

@@ -121,7 +121,7 @@ export function handleSummary(data) {
     name: profile.name,
     profile,
     scope:
-      'Read-only build files served by a local Node server, not nginx, browser execution, Supabase or database capacity',
+      'Read-only build files served by a local Node server, not nginx, browser execution, the Cloudflare Worker or D1 capacity',
     target: manifest.baseUrl,
     details: { targets: manifest.targets },
   });

@@ -1,6 +1,6 @@
 # Pruebas locales de carga y fiabilidad
 
-Requiere Node y k6 en PATH. Usa únicamente un servidor Node estático creado por el runner en un puerto aleatorio de `127.0.0.1`. No admite URL remota, no llama a Supabase y no envía datos de usuarios, credenciales ni escrituras. No usa STRIX.
+Requiere Node y k6 en PATH. Usa únicamente un servidor Node estático creado por el runner en un puerto aleatorio de `127.0.0.1`. No admite URL remota, no llama al Worker de Cloudflare ni a D1 y no envía datos de usuarios, credenciales ni escrituras. No usa STRIX.
 
 Desde la raíz:
 

@@ -69,7 +69,7 @@ if (names.some((name) => !PROFILE_NAMES.includes(name))) {
       resolve(output, 'run-summary.json'),
       JSON.stringify(
         {
-          scope: 'Local Node static server + built files; not browser, nginx or Supabase',
+          scope: 'Local Node static server + built files; not browser, nginx, the Cloudflare Worker or D1',
           profiles: summaries,
           serverMemory: {
             source: 'process.memoryUsage() of Node test static server and orchestrator only',
