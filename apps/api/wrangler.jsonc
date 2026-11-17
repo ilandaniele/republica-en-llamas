@@ -4,6 +4,8 @@
   "main": "./src/index.ts",
   "compatibility_date": "2026-11-09",
   "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
   "observability": { "enabled": true },
   "triggers": { "crons": ["0 4 * * *"] },
   "assets": {
@@ -20,6 +22,7 @@
       "migrations_dir": "migrations"
     }
   ],
+  "send_email": [{ "name": "EMAIL" }],
   "vars": {
     "WEB_URL": "https://republica-en-llamas.ilandaniele.workers.dev"
   }

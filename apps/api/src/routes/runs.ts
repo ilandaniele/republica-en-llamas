@@ -1,20 +1,19 @@
 import {
-  canPlayPresident,
-  isFree,
+  canStartRun,
   isRunConfig,
   isTurnDecision,
-  MAX_RUN_DECISIONS,
+  MAX_RANKED_RUN_DECISIONS,
+  normalizeDecision,
   replayRun,
 } from '@republica/game-engine';
 import type { RunConfig, TurnDecision } from '@republica/game-engine';
 import { requireAccount, requireUser, userEntitlements } from '../context.js';
 import type { RouteContext } from '../context.js';
 import { isRecord, isUuid, json, readJsonBody, RequestError, sha256Hex } from '../http.js';
-import { canUseRunModes } from '../policy.js';
 import { enforceUserRateLimit } from '../rateLimit.js';
 import { dayAgo, issueRunTicket } from '../tickets.js';
 
-const SUBMIT_MAX_BYTES = 262_144;
+const SUBMIT_MAX_BYTES = 65_536;
 const HISTORY_LIMIT = 20;
 const HISTORY_EVENTS_LIMIT = 10;
 
@@ -30,7 +29,7 @@ function isSubmission(body: unknown): body is Submission {
     isUuid(body.ticketId) &&
     isRunConfig(body.config) &&
     Array.isArray(body.decisions) &&
-    body.decisions.length <= MAX_RUN_DECISIONS &&
+    body.decisions.length <= MAX_RANKED_RUN_DECISIONS &&
     body.decisions.every(isTurnDecision)
   );
 }
@@ -43,11 +42,9 @@ export async function startRun(ctx: RouteContext): Promise<Response> {
   return json({ ticketId: ticket.id, seed: ticket.seed });
 }
 
-async function assertRunAccess(db: D1Database, userId: string, config: Record<string, unknown>): Promise<void> {
-  const presidentId = typeof config.presidentId === 'string' ? config.presidentId : undefined;
-  if (!(presidentId && !isFree(presidentId)) && !config.crisisExpress && !config.scenarioId) return;
-  const entitlements = await userEntitlements(db, userId);
-  if (!canPlayPresident(presidentId, entitlements) || !canUseRunModes(config, entitlements))
+async function assertRunAccess(db: D1Database, userId: string, config: RunConfig): Promise<void> {
+  if (canStartRun(config, [])) return;
+  if (!canStartRun(config, await userEntitlements(db, userId)))
     throw new RequestError(403, 'Run requires purchased access');
 }
 
@@ -74,7 +71,7 @@ const INSERT_EVENTS_SQL = `insert into run_events (id, run_id, turn_number, card
   from json_each(?2, '$.history') as event
   where exists (select 1 from game_runs where id = ?1)`;
 
-const EXISTING_RUN_SQL = `select id, score from game_runs
+const EXISTING_RUN_SQL = `select id, score, decisions_hash from game_runs
   where user_id = ?1 and (ticket_id = ?2 or (seed = ?3 and decisions_hash = ?4))
   order by created_at limit 1`;
 
@@ -84,9 +81,10 @@ export async function submitRun(ctx: RouteContext): Promise<Response> {
   await enforceUserRateLimit(db, user.id, 'submit-run');
   const body = await readJsonBody(ctx.request, SUBMIT_MAX_BYTES);
   if (!isSubmission(body)) throw new RequestError(400, 'Malformed run');
-  const { ticketId, config, decisions } = body;
-  const options = config as unknown as Record<string, unknown>;
-  if (options.careerStart) throw new RequestError(400, 'Career runs use local progress, outside competitive rankings');
+  const { ticketId, config } = body;
+  const decisions = body.decisions.map(normalizeDecision);
+  if (config.careerStart)
+    throw new RequestError(400, 'Career runs use local progress, outside competitive rankings');
 
   const ticket = await db
     .prepare('select seed from run_tickets where id = ?1 and user_id = ?2 and created_at > ?3')
@@ -94,7 +92,7 @@ export async function submitRun(ctx: RouteContext): Promise<Response> {
     .first<{ seed: number }>();
   if (!ticket || ticket.seed !== config.seed) throw new RequestError(403, 'Invalid run ticket');
 
-  await assertRunAccess(db, user.id, options);
+  await assertRunAccess(db, user.id, config);
   const state = replayFinished(config, decisions);
 
   const stateJson = JSON.stringify(state);
@@ -116,8 +114,8 @@ export async function submitRun(ctx: RouteContext): Promise<Response> {
         state.gameOverReason === 'term_complete' ? 1 : 0,
         stateJson,
         state.language,
-        options.crisisExpress ? 1 : 0,
-        typeof options.scenarioId === 'string' ? options.scenarioId : null,
+        config.crisisExpress ? 1 : 0,
+        config.scenarioId ?? null,
         decisionsJson,
         decisionsHash,
         new Date().toISOString(),
@@ -130,8 +128,8 @@ export async function submitRun(ctx: RouteContext): Promise<Response> {
   const existing = await db
     .prepare(EXISTING_RUN_SQL)
     .bind(user.id, ticketId, ticket.seed, decisionsHash)
-    .first<{ id: string; score: number }>();
-  if (!existing) throw new RequestError(409, 'Run conflict');
+    .first<{ id: string; score: number; decisions_hash: string }>();
+  if (existing?.decisions_hash !== decisionsHash) throw new RequestError(409, 'Run conflict');
   return json({ id: existing.id, score: existing.score, duplicate: true });
 }
 

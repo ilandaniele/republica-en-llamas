@@ -2,6 +2,7 @@ export class RequestError extends Error {
   constructor(
     public status: number,
     message: string,
+    public retryAfterSeconds?: number,
   ) {
     super(message);
   }
@@ -13,11 +14,12 @@ const SECURITY_HEADERS = {
   'Referrer-Policy': 'no-referrer',
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
   'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'",
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+  'Cache-Control': 'no-store',
 };
 
 const API_HEADERS = {
   'Content-Type': 'application/json',
-  'Cache-Control': 'no-store',
   ...SECURITY_HEADERS,
 };
 
@@ -41,12 +43,29 @@ export function json(body: unknown, status = 200, headers: Record<string, string
   return new Response(JSON.stringify(body), { status, headers: { ...API_HEADERS, ...headers } });
 }
 
+const DAY_MS = 86_400_000;
+
+export function secondsUntilUtcMidnight(now = Date.now()): number {
+  return Math.ceil((DAY_MS - (now % DAY_MS)) / 1000);
+}
+
+function retryAfterHeader(error: RequestError): Record<string, string> {
+  if (error.status !== 429) return {};
+  return { 'Retry-After': String(error.retryAfterSeconds ?? secondsUntilUtcMidnight()) };
+}
+
+export function isD1Error(error: unknown): boolean {
+  return error instanceof Error && /\bD1(_| DB)/.test(error.message);
+}
+
 export function errorResponse(error: unknown): Response {
-  if (error instanceof RequestError) {
-    return json({ error: error.message }, error.status, error.status === 429 ? { 'Retry-After': '60' } : {});
-  }
-  console.error('Request failed unexpectedly', error instanceof Error ? error.message : '');
-  return json({ error: 'Service unavailable' }, 503);
+  if (error instanceof RequestError)
+    return json({ error: error.message }, error.status, retryAfterHeader(error));
+  const { name, message } = error instanceof Error ? error : { name: 'Unknown', message: '' };
+  console.error({ event: 'request_failed', name, message });
+  return isD1Error(error)
+    ? json({ error: 'Service unavailable' }, 503)
+    : json({ error: 'Internal server error' }, 500);
 }
 
 export function allowedOrigins(webUrl: string, extra = ''): string[] {
@@ -75,7 +94,7 @@ export function checkContentLength(request: Request, maxBytes: number): void {
 export async function withLimitedBody(request: Request, maxBytes: number): Promise<Request> {
   if (!request.body) return request;
   const body = await readLimitedText(request, maxBytes);
-  return new Request(request.url, { method: request.method, headers: request.headers, body });
+  return new Request(request.url, { method: request.method, headers: request.headers, body: body || null });
 }
 
 export async function readLimitedText(request: Request, maxBytes: number): Promise<string> {

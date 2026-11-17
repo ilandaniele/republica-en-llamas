@@ -1,11 +1,3 @@
-export function canUseRunModes(config: Record<string, unknown>, entitlements: readonly string[]): boolean {
-  if (entitlements.includes('full_access')) return true;
-  return (
-    (!config.crisisExpress || entitlements.includes('mode_crisis_express')) &&
-    (!config.scenarioId || entitlements.includes('mode_historical'))
-  );
-}
-
 export const PRICE_BY_ENTITLEMENT: Readonly<Record<string, string>> = {
   presidents_pack: 'price_1TAaidPF04vzkOdostTuqofY',
   opposition_pack: 'price_1TAaiePF04vzkOdov9PYjTPH',

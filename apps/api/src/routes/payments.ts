@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { requireAccount } from '../context.js';
+import { requireAccount, userEntitlements } from '../context.js';
 import type { RouteContext } from '../context.js';
 import type { Env } from '../env.js';
 import { isRecord, json, readJsonBody, readLimitedText, RequestError } from '../http.js';
@@ -10,12 +10,18 @@ const WEBHOOK_MAX_BYTES = 262_144;
 
 const GRANT_SQL = `insert into user_entitlements (id, user_id, entitlement, stripe_session_id, platform, purchased_at)
   select ?1, ?2, ?3, ?4, 'web', ?5 where exists (select 1 from "user" where id = ?2)
-  on conflict(user_id, entitlement) do update set
-    stripe_session_id = excluded.stripe_session_id, purchased_at = excluded.purchased_at`;
+  on conflict do nothing`;
+
+const GRANT_STATE_SQL = `select exists (select 1 from "user" where id = ?1) as user_exists,
+  (select stripe_session_id from user_entitlements where user_id = ?1 and entitlement = ?2) as owned_session_id`;
 
 function stripeClient(env: Env): Stripe {
   if (!env.STRIPE_SECRET_KEY) throw new RequestError(503, 'Checkout unavailable');
-  return new Stripe(env.STRIPE_SECRET_KEY, { httpClient: Stripe.createFetchHttpClient() });
+  return new Stripe(env.STRIPE_SECRET_KEY, {
+    httpClient: Stripe.createFetchHttpClient(),
+    timeout: 10_000,
+    maxNetworkRetries: 1,
+  });
 }
 
 export async function createCheckout(ctx: RouteContext): Promise<Response> {
@@ -28,6 +34,10 @@ export async function createCheckout(ctx: RouteContext): Promise<Response> {
       ? PRICE_BY_ENTITLEMENT[entitlement]
       : undefined;
   if (typeof entitlement !== 'string' || !priceId) throw new RequestError(400, 'Unknown entitlement');
+
+  const owned = await userEntitlements(ctx.env.DB, user.id);
+  if (owned.includes(entitlement) || owned.includes('full_access'))
+    throw new RequestError(409, 'Entitlement already owned');
 
   const webUrl = new URL(ctx.env.WEB_URL).origin;
   try {
@@ -46,26 +56,45 @@ export async function createCheckout(ctx: RouteContext): Promise<Response> {
   }
 }
 
-async function grantEntitlement(db: D1Database, session: Stripe.Checkout.Session): Promise<Response> {
+async function paidForEntitlement(stripe: Stripe, sessionId: string, entitlement: string): Promise<boolean> {
+  const { data } = await stripe.checkout.sessions.listLineItems(sessionId, { limit: 2 });
+  return data.length === 1 && data[0]?.price?.id === PRICE_BY_ENTITLEMENT[entitlement];
+}
+
+function notGranted(sessionId: string, reason: string, status: number): Response {
+  console.error('stripe-webhook: paid session not granted', { sessionId, reason });
+  return json({ received: true, granted: false }, status);
+}
+
+async function grantEntitlement(
+  db: D1Database,
+  stripe: Stripe,
+  session: Stripe.Checkout.Session,
+): Promise<Response> {
+  if (session.payment_status !== 'paid') return json({ received: true, granted: false });
   const userId = session.metadata?.['userId'];
   const entitlement = session.metadata?.['entitlement'];
-  if (
-    session.payment_status !== 'paid' ||
-    !userId ||
-    !entitlement ||
-    !Object.hasOwn(PRICE_BY_ENTITLEMENT, entitlement)
-  ) {
-    return json({ received: true, granted: false });
-  }
+  if (!userId || !entitlement || !Object.hasOwn(PRICE_BY_ENTITLEMENT, entitlement))
+    return notGranted(session.id, 'invalid metadata', 200);
+
   try {
+    if (!(await paidForEntitlement(stripe, session.id, entitlement)))
+      return notGranted(session.id, 'price mismatch', 200);
     const result = await db
       .prepare(GRANT_SQL)
       .bind(crypto.randomUUID(), userId, entitlement, session.id, new Date().toISOString())
       .run();
-    return json({ received: true, granted: result.meta.changes > 0 });
+    if (result.meta.changes > 0) return json({ received: true, granted: true });
+
+    const state = await db
+      .prepare(GRANT_STATE_SQL)
+      .bind(userId, entitlement)
+      .first<{ user_exists: number; owned_session_id: string | null }>();
+    if (!state?.user_exists) return notGranted(session.id, 'unknown user', 500);
+    if (state.owned_session_id !== session.id) return notGranted(session.id, 'already owned', 200);
+    return json({ received: true, granted: false });
   } catch {
-    console.error('grantEntitlement failed');
-    return json({ error: 'Database error' }, 500);
+    return notGranted(session.id, 'grant failed', 500);
   }
 }
 
@@ -75,19 +104,20 @@ export async function stripeWebhook(ctx: RouteContext): Promise<Response> {
   const rawBody = await readLimitedText(ctx.request, WEBHOOK_MAX_BYTES);
   if (!ctx.env.STRIPE_WEBHOOK_SECRET) throw new RequestError(503, 'Webhook unavailable');
 
+  const stripe = stripeClient(ctx.env);
   let event: Stripe.Event;
   try {
-    event = await stripeClient(ctx.env).webhooks.constructEventAsync(
+    event = await stripe.webhooks.constructEventAsync(
       rawBody,
       signature,
       ctx.env.STRIPE_WEBHOOK_SECRET,
       undefined,
       Stripe.createSubtleCryptoProvider(),
     );
-  } catch (error) {
-    if (error instanceof RequestError) throw error;
+  } catch {
     throw new RequestError(400, 'Invalid signature');
   }
-  if (event.type === 'checkout.session.completed') return grantEntitlement(ctx.env.DB, event.data.object);
+  if (event.type === 'checkout.session.completed')
+    return grantEntitlement(ctx.env.DB, stripe, event.data.object);
   return json({ received: true });
 }

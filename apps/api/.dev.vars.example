@@ -1,0 +1,9 @@
+# Copy to .dev.vars for `wrangler dev`. Production values go in `wrangler secret put <NAME>`.
+BETTER_AUTH_SECRET=
+WEB_URL=http://localhost:8787
+ALLOWED_ORIGINS=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+RESET_EMAIL_FROM=

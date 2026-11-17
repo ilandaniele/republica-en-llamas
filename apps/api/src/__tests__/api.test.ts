@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { drawNextCard, endTurn, initGame, resolveTurn } from '@republica/game-engine';
 import type { TurnDecision } from '@republica/game-engine';
 import worker from '../index.js';
 import type { Auth } from '../auth.js';
 import type { RouteContext } from '../context.js';
 import type { Env } from '../env.js';
-import { errorResponse } from '../http.js';
+import { errorResponse, secondsUntilUtcMidnight } from '../http.js';
 import { leaderboard } from '../routes/leaderboard.js';
 import { getProfile, updateProfile, usernameAvailable } from '../routes/profile.js';
 import { listRuns, startRun, submitRun } from '../routes/runs.js';
@@ -104,7 +104,7 @@ describe('run tickets', () => {
       );
     const response = await call(startRun, context(jsonRequest('/api/start-run', {}), { id: 'alice' }));
     expect(response.status).toBe(429);
-    expect(response.headers.get('Retry-After')).toBe('60');
+    expect(Number(response.headers.get('Retry-After'))).toBeCloseTo(secondsUntilUtcMidnight(), -1);
   });
 
   it('transfers only fresh guest tickets up to the remaining cap', async () => {
@@ -309,10 +309,11 @@ describe('worker routing', () => {
     }
   });
 
-  it('fails closed when the auth secret is missing', async () => {
+  it('fails closed on auth when the auth secret is missing, keeping public routes up', async () => {
     env.BETTER_AUTH_SECRET = '';
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     expect((await worker.fetch(new Request(`${WEB_URL}/api/auth/get-session`), env)).status).toBe(503);
-    expect((await worker.fetch(new Request(`${WEB_URL}/api/leaderboard`), env)).status).toBe(503);
+    expect((await worker.fetch(new Request(`${WEB_URL}/api/leaderboard`), env)).status).toBe(200);
   });
 
   it('answers 404 instead of the SPA shell for missing hashed assets', async () => {
