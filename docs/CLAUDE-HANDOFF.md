@@ -11,6 +11,7 @@ Phase notes, checklist coverage and open follow-ups: `docs/security/hardening-20
 - k6 API load: `npm run test:load:api` against a local `wrangler dev` only (refuses other hosts). Local dev Worker needs `--var BETTER_AUTH_SECRET:<random>` and `--var WEB_URL:http://localhost:8787`.
 - Verification: lint 0 errors; type-check engine, web, api; tests engine 252, web 623, api 27; `npm run test:security` passes. Local only: not proof of remote config.
 - Sign-up shows a neutral message for an existing email (UI only; the API still distinguishes).
+- 2026-11-17: deleted 2 test guest users from remote D1; removed unused GitHub secrets (FLY_API_TOKEN, VITA_SUPABASE_*); set CLOUDFLARE_ACCOUNT_ID. Still missing: GitHub CLOUDFLARE_API_TOKEN and VITE_POSTHOG_KEY; Worker secrets STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET. `tar` audit warning accepted (SEC-025).
 - Open: API-level auth enumeration (needs email verification), Origin-less requests accepted, no cleanup job for `rate_limits` and stale anonymous users, Stripe refunds not handled.
 
 ## 2026-11-09 — Cloudflare migration
