@@ -15,6 +15,7 @@ function NoSession({ onBack }: { onBack: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="text-center">
+        <h1 className="sr-only">Perfil</h1>
         <p className="mb-4 font-mono text-smoke-400">No hay sesión activa.</p>
         <button onClick={onBack} className="font-mono text-sm text-gold-400 underline">
           Volver al inicio
@@ -56,6 +57,7 @@ export default function ProfileScreen() {
   return (
     <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen p-6">
       <div className="mx-auto max-w-2xl">
+        <h1 className="sr-only">Perfil</h1>
         <button
           onClick={() => navigate(-1)}
           className="mb-6 flex items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"

@@ -26,21 +26,31 @@ export default function RegisterScreen() {
   const { available: usernameAvailable, checking: checkingUsername } = useUsernameAvailability(username);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [accountCreated, setAccountCreated] = useState(false);
 
   const goToLogin = () => navigate('/login', { state: routeState });
 
   const register = async () => {
-    const { data, error: err } = await signUp(email, password, username);
-    if (err) {
-      setError(translateAuthError(err.message ?? ''));
+    const result = await signUp(email, password, username);
+    if (result.error) {
+      setError(translateAuthError(result.error.message ?? ''));
       return;
     }
-    setUserId(data.user.id);
+    setUserId(result.data.user.id);
+    if (result.usernameError) {
+      setAccountCreated(true);
+      setError(translateAuthError(result.usernameError));
+      return;
+    }
     await continueAfterAuth();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (accountCreated) {
+      await continueAfterAuth();
+      return;
+    }
     const validationError = validateRegistration({ username, password, usernameAvailable });
     setError(validationError ?? '');
     if (validationError) return;
@@ -128,10 +138,13 @@ export default function RegisterScreen() {
 
           <button
             type="submit"
-            disabled={loading || usernameAvailable === false || username.length < MIN_USERNAME_LENGTH}
+            disabled={
+              loading ||
+              (!accountCreated && (usernameAvailable === false || username.length < MIN_USERNAME_LENGTH))
+            }
             className="w-full rounded-lg bg-crimson-600 px-6 py-3 font-serif font-bold uppercase tracking-wider text-smoke-100 transition-colors hover:bg-crimson-500 disabled:opacity-50"
           >
-            {loading ? 'Creando cuenta...' : 'Registrarse y jugar'}
+            {accountCreated ? 'Continuar' : loading ? 'Creando cuenta...' : 'Registrarse y jugar'}
           </button>
         </form>
 

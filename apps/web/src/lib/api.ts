@@ -22,8 +22,8 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
   return body as T;
 }
 
-export function apiGet<T>(path: string): Promise<T> {
-  return request<T>(path, { method: 'GET' });
+export function apiGet<T>(path: string, init: Pick<RequestInit, 'cache'> = {}): Promise<T> {
+  return request<T>(path, { ...init, method: 'GET' });
 }
 
 export function apiSend<T>(path: string, body: unknown, method: 'POST' | 'PATCH' = 'POST'): Promise<T> {

@@ -66,3 +66,15 @@ Security headers, CORS/origin, 401 on protected routes, IDOR between two users, 
 | F8 | Info | `apps/api/src/http.ts:83` | Writes without `Origin` header accepted (mitigated by `SameSite=Lax`). | Optionally require `Origin` on cookie-authenticated writes. |
 
 No product code was changed in this phase.
+
+## Fix status (2026-11-17, after this report)
+
+| ID | Status |
+|---|---|
+| F1 | Fixed: PBKDF2-SHA256 50k iterations (~6 ms CPU, node), legacy scrypt still verifies. Confirm on the deployed Worker. |
+| F2 | Fixed: separate `auth-session` bucket; web keeps last known user on session errors. |
+| F3 | Fixed: single `<main>` in `App.tsx`; e2e 28/28 without expected failures. |
+| F4 | Deferred: acceptable for a small test group on Free. |
+| F5 | Fixed: `no-cache` on the server and in the web fetch. |
+| F6 | Fixed: `aria-label`s and sr-only h1. |
+| F7, F8 | Deferred. |

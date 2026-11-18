@@ -160,9 +160,9 @@ function PresidentialGameScreen() {
           <aside>
             <VariablesPanel state={gameState} />
           </aside>
-          <main className="min-w-0">
+          <div className="min-w-0">
             <CardArea gameState={gameState} />
-          </main>
+          </div>
         </div>
 
         {hasCrisis && (

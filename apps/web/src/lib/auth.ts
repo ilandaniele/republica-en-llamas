@@ -62,8 +62,7 @@ async function saveUsernameAfterSignUp(username: string): Promise<string | null>
 export async function signUp(email: string, password: string, username: string) {
   const result = await authClient.signUp.email({ email, password, name: username.trim() });
   if (result.error) return result;
-  const usernameError = await saveUsernameAfterSignUp(username);
-  return usernameError ? { ...result, error: { message: usernameError } } : result;
+  return { ...result, usernameError: await saveUsernameAfterSignUp(username) };
 }
 
 export async function signOut() {

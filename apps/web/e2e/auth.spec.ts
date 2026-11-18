@@ -23,8 +23,8 @@ test('registers, logs out, logs back in and renames the profile', async ({ page 
   await expect(page).toHaveURL(/\/profile$/);
   await expect(page.getByRole('heading', { name: account.username })).toBeVisible();
 
-  await page.getByRole('button', { name: '✎' }).click();
-  await page.getByRole('textbox').fill(renamed);
+  await page.getByRole('button', { name: 'Editar nombre de usuario' }).click();
+  await page.getByRole('textbox', { name: 'Nombre de usuario' }).fill(renamed);
   const update = page.waitForResponse(
     (r) => r.request().method() !== 'GET' && /profile|username/.test(r.url()),
   );

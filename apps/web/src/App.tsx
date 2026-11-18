@@ -96,24 +96,26 @@ export default function App() {
     <SoundProvider>
       <BrowserRouter>
         <RouteFocus />
-        <Suspense fallback={<LoadingSpinner />}>
-          <PurchaseSuccessToast />
-          <Routes>
-            <Route path="/" element={<HomeScreen />} />
-            {DebatePracticeScreen && <Route path="/debate" element={<DebatePracticeScreen />} />}
-            <Route path="/president" element={<PresidentSelectRoute />} />
-            <Route path="/game" element={<GameRoute />} />
-            <Route path="/gameover" element={<GameOverRoute />} />
-            <Route path="/leaderboard" element={<LeaderboardScreen />} />
-            <Route path="/history" element={<HistoryScreen />} />
-            <Route path="/auth" element={<AuthScreen />} />
-            <Route path="/register" element={<RegisterScreen />} />
-            <Route path="/login" element={<LoginScreen />} />
-            <Route path="/reset-password" element={<PasswordResetScreen />} />
-            <Route path="/profile" element={<ProfileScreen />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
+        <main>
+          <Suspense fallback={<LoadingSpinner />}>
+            <PurchaseSuccessToast />
+            <Routes>
+              <Route path="/" element={<HomeScreen />} />
+              {DebatePracticeScreen && <Route path="/debate" element={<DebatePracticeScreen />} />}
+              <Route path="/president" element={<PresidentSelectRoute />} />
+              <Route path="/game" element={<GameRoute />} />
+              <Route path="/gameover" element={<GameOverRoute />} />
+              <Route path="/leaderboard" element={<LeaderboardScreen />} />
+              <Route path="/history" element={<HistoryScreen />} />
+              <Route path="/auth" element={<AuthScreen />} />
+              <Route path="/register" element={<RegisterScreen />} />
+              <Route path="/login" element={<LoginScreen />} />
+              <Route path="/reset-password" element={<PasswordResetScreen />} />
+              <Route path="/profile" element={<ProfileScreen />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </main>
       </BrowserRouter>
     </SoundProvider>
   );

@@ -42,7 +42,7 @@ describe('signUp', () => {
     api.apiSend
       .mockRejectedValueOnce(new TypeError('Failed to fetch'))
       .mockResolvedValueOnce({ username: 'ana' });
-    expect(await signUp('a@b.co', 'password1', 'ana')).toEqual(created);
+    expect(await signUp('a@b.co', 'password1', 'ana')).toEqual({ ...created, usernameError: null });
     expect(api.apiSend).toHaveBeenCalledTimes(2);
   });
 
@@ -50,7 +50,8 @@ describe('signUp', () => {
     client.signUp.email.mockResolvedValue(created);
     api.apiSend.mockRejectedValue(new ApiError(503, 'Request failed'));
     const result = await signUp('a@b.co', 'password1', 'ana');
-    expect(translateAuthError(result.error?.message ?? '')).toMatch(
+    expect(result.error).toBeNull();
+    expect(translateAuthError('usernameError' in result ? (result.usernameError ?? '') : '')).toMatch(
       /no pudimos guardar tu nombre de usuario/,
     );
   });
@@ -60,7 +61,9 @@ describe('signUp', () => {
     api.apiSend.mockRejectedValue(new ApiError(409, 'Username taken'));
     const result = await signUp('a@b.co', 'password1', 'ana');
     expect(api.apiSend).toHaveBeenCalledOnce();
-    expect(translateAuthError(result.error?.message ?? '')).toMatch(/Tu cuenta se creó, pero ese nombre/);
+    expect(translateAuthError('usernameError' in result ? (result.usernameError ?? '') : '')).toMatch(
+      /Tu cuenta se creó, pero ese nombre/,
+    );
   });
 });
 

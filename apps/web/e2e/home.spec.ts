@@ -45,7 +45,6 @@ for (const route of ROUTES) {
   });
 
   test(`a11y smoke ${route.path}: main landmark`, async ({ page }) => {
-    test.fail(true, 'Known bug: route renders no <main> landmark');
     await page.goto(route.path);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     expect(await page.getByRole('main').count()).toBe(1);

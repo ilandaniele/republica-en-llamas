@@ -40,7 +40,7 @@ export default function CareerGameScreen({ state }: { state: GameState }) {
   const career = state.career!;
   const promotion = card?.id.endsWith('_promotion');
   return (
-    <main className="mx-auto w-full max-w-6xl p-4 pb-16 font-sans">
+    <div className="mx-auto w-full max-w-6xl p-4 pb-16 font-sans">
       <Link to="/" className="text-celeste-light">
         ← {t('career.mode')}
       </Link>
@@ -129,6 +129,6 @@ export default function CareerGameScreen({ state }: { state: GameState }) {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

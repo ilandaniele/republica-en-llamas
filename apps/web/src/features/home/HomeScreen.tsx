@@ -12,12 +12,12 @@ import { isOfflineMode } from '../../lib/api.js';
 import { translateAuthError } from '../../lib/auth.js';
 import { UserMenu } from '../../components/UserMenu.js';
 import { OfflineBanner } from '../../components/OfflineBanner.js';
-import { useEntitlements, getDailyRunsRemaining, consumeDailyRun } from '../../hooks/useEntitlements.js';
-import { BuyButton } from '../../components/BuyButton.js';
+import { useEntitlements } from '../../hooks/useEntitlements.js';
 import { PaywallModal } from '../../components/PaywallModal.js';
 import { AccessibilitySettings } from '../../components/AccessibilitySettings.js';
 import { prefersReducedMotion } from '../../lib/reducedMotion.js';
 import { ScenarioCard } from './ScenarioCard.js';
+import { DailyCapBanner } from './DailyCapBanner.js';
 import { CareerSetup } from './CareerSetup.js';
 import { trackGameStarted } from '../../lib/analytics.js';
 import { usePrefetchLeaderboard } from '../../hooks/useLeaderboard.js';
@@ -63,6 +63,7 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [accountCreated, setAccountCreated] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('normal');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,15 +77,20 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
           setError(translateAuthError(err.message ?? ''));
           return;
         }
-      } else {
+      } else if (!accountCreated) {
         if (!username.trim()) {
           setError('El nombre de usuario es requerido');
           setLoading(false);
           return;
         }
-        const { error: err } = await signUp(email, password, username);
-        if (err) {
-          setError(translateAuthError(err.message ?? ''));
+        const result = await signUp(email, password, username);
+        if (result.error) {
+          setError(translateAuthError(result.error.message ?? ''));
+          return;
+        }
+        if (result.usernameError) {
+          setAccountCreated(true);
+          setError(translateAuthError(result.usernameError));
           return;
         }
       }
@@ -164,7 +170,13 @@ function AuthForm({ mode, onBack }: { mode: 'login' | 'register'; onBack: () => 
           disabled={loading}
           className="w-full rounded-lg bg-gold-500 px-6 py-3 font-serif font-bold text-navy-900 transition-colors hover:bg-gold-400 disabled:opacity-50"
         >
-          {loading ? 'Cargando...' : mode === 'login' ? 'Entrar' : 'Registrarse'}
+          {loading
+            ? 'Cargando...'
+            : mode === 'login'
+              ? 'Entrar'
+              : accountCreated
+                ? 'Continuar'
+                : 'Registrarse'}
         </button>
       </form>
     </m.div>
@@ -261,7 +273,7 @@ export default function HomeScreen() {
   const careerStart = useGameStore((s) => s.careerStart);
   const setCareerStart = useGameStore((s) => s.setCareerStart);
   const { user, loading: authLoading, signOut } = useAuth();
-  const { hasEntitlement, hasPremium } = useEntitlements();
+  const { hasEntitlement } = useEntitlements();
   const [authMode, setAuthMode] = useState<AuthMode>('menu');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('normal');
   const [homeMode, setHomeMode] = useState<HomeMode>(careerStart ? 'carrera' : 'clasico');
@@ -312,16 +324,12 @@ export default function HomeScreen() {
     { scope: homeContainerRef, dependencies: [homeMode] },
   );
 
-  const dailyRemaining = getDailyRunsRemaining();
-  const dailyLimitReached = !hasPremium && dailyRemaining <= 0;
-
   const isStartingRef = useRef(false);
 
   const launchRun = async (difficulty: Difficulty, mode: 'normal' | 'historical') => {
     if (isStartingRef.current) return;
     isStartingRef.current = true;
     try {
-      consumeDailyRun();
       await startNewGame(difficulty);
       trackGameStarted({ difficulty, president: presidentId, mode });
       navigate('/president');
@@ -480,18 +488,7 @@ export default function HomeScreen() {
               )}
 
               {/* Auth / Start buttons */}
-              {/* Daily run limit banner */}
-              {dailyLimitReached && (
-                <div className="mb-4 rounded-xl border border-crimson-700 bg-crimson-900/40 p-4 text-center">
-                  <p className="mb-1 font-mono text-sm font-bold text-crimson-300">
-                    ⏰ Límite diario alcanzado (3/3)
-                  </p>
-                  <p className="mb-3 font-mono text-xs text-smoke-400">
-                    Volvé mañana o desbloqueá acceso ilimitado
-                  </p>
-                  <BuyButton entitlement="full_access" label="Acceso Total — $5.99" className="mx-auto" />
-                </div>
-              )}
+              <DailyCapBanner />
 
               <div className="home-actions space-y-3">
                 {isPlaytestMode && (
@@ -503,23 +500,22 @@ export default function HomeScreen() {
                     Probar debate presidencial
                   </button>
                 )}
-                {!dailyLimitReached &&
-                  (user ? (
-                    <m.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={handleLoggedInStart}
-                      className="w-full rounded-lg bg-crimson-600 px-8 py-4 font-serif text-xl font-bold uppercase tracking-wider text-smoke-100 shadow-lg transition-colors hover:bg-crimson-500"
-                    >
-                      Nueva Partida
-                    </m.button>
-                  ) : (
-                    <GuestStartButtons
-                      onLogin={() => setAuthMode('login')}
-                      onRegister={() => setAuthMode('register')}
-                      onGuest={handleGuest}
-                    />
-                  ))}
+                {user ? (
+                  <m.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleLoggedInStart}
+                    className="w-full rounded-lg bg-crimson-600 px-8 py-4 font-serif text-xl font-bold uppercase tracking-wider text-smoke-100 shadow-lg transition-colors hover:bg-crimson-500"
+                  >
+                    Nueva Partida
+                  </m.button>
+                ) : (
+                  <GuestStartButtons
+                    onLogin={() => setAuthMode('login')}
+                    onRegister={() => setAuthMode('register')}
+                    onGuest={handleGuest}
+                  />
+                )}
 
                 {gameState && !gameState.isGameOver && (
                   <m.button

@@ -60,7 +60,7 @@ export default function DebatePracticeScreen() {
     setShowResult(true);
   }
   return (
-    <main className="mx-auto max-w-4xl p-4">
+    <div className="mx-auto max-w-4xl p-4">
       <Link to="/" className="text-celeste-light">
         ← Volver al juego
       </Link>
@@ -146,6 +146,6 @@ export default function DebatePracticeScreen() {
           onConfirm={confirm}
         />
       )}
-    </main>
+    </div>
   );
 }

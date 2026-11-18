@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -97,5 +97,26 @@ describe('AuthScreen accessibility', () => {
   it('uses readable text colors for secondary copy', () => {
     mount(<AuthScreen />);
     expect(screen.getByText(/v0\.4\.0/).className).not.toContain('text-smoke-600');
+  });
+});
+
+describe('RegisterScreen when the username cannot be saved', () => {
+  it('lets the new account continue without signing up again', async () => {
+    mocks.signUp.mockResolvedValue({
+      data: { user: { id: 'u1' } },
+      error: null,
+      usernameError: 'Username not saved',
+    });
+    mount(<RegisterScreen />);
+    fireEvent.change(screen.getByLabelText('Nombre de usuario'), { target: { value: 'ilan' } });
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'a@b.com' } });
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'password123' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Registrarse y jugar' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Username not saved');
+    expect(mocks.startNewGame).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Continuar' }));
+    await waitFor(() => expect(mocks.startNewGame).toHaveBeenCalledOnce());
+    expect(mocks.signUp).toHaveBeenCalledOnce();
   });
 });

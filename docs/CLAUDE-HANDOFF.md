@@ -2,6 +2,23 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-17 — Test findings fixed, deploy checklist
+
+- F1: passwords hashed with WebCrypto PBKDF2-SHA256, 50k iterations, ~6 ms CPU in node (`apps/api/src/password.ts`, wired in `auth.ts`). Format `pbkdf2_sha256$<iterations>$<salt>$<hash>`; old Better Auth scrypt hashes still verify. Not yet measured on the deployed Worker.
+- F2: `/api/auth/get-session` has its own IP bucket (`auth-session`, 120/min); web `AuthProvider` keeps the last known user while a session check errors.
+- F3: one `<main>` in `App.tsx`; inner screen `<main>`s became `<div>`; e2e `test.fail` removed.
+- F5: leaderboard `Cache-Control: no-cache`, web fetches it with `cache: 'no-cache'`.
+- F6: profile edit button and input have `aria-label`s; sr-only `<h1>`.
+- Daily cap: local UTC counter removed (`useEntitlements`); `DailyCapBanner` shows only when the server answers `daily_cap`. Register: a failed username save no longer traps the player; sign-up returns `usernameError` and the form offers "Continuar".
+- Deferred: F4 (~134 D1 writes per run, ~740 runs/day on Free; fine for a small test group), F7 (framer-motion inline styles), F8.
+- Verification (local only): lint 0; type-check engine/web/api; tests api 90 + integration 27, engine 257, web 690 (one unreproduced flaky failure in 1 of 4 runs), `test:security` 15, e2e 28/28, web build OK.
+- Remote state checked 2026-11-17: Worker secret `BETTER_AUTH_SECRET` set; GitHub secret `CLOUDFLARE_ACCOUNT_ID` set, `CLOUDFLARE_API_TOKEN` missing, so the deploy job cannot run yet.
+- Deploy checklist (owner):
+  1. GitHub secret `CLOUDFLARE_API_TOKEN` (Workers Scripts edit + D1 edit on the account).
+  2. Email Routing on a domain plus `wrangler secret put RESET_EMAIL_FROM`. If the deploy fails on the `send_email` binding, remove it from `wrangler.jsonc`; reset mail is then skipped, the rest works.
+  3. Stripe and Google secrets are optional, but each pair must be complete or every auth route returns 503.
+  4. Merge PR into `main`; CI migrates D1, deploys, and smoke-tests `/api/health`.
+
 ## 2026-11-17 — Test phase (crear-app phase 7)
 
 Full results and findings: `docs/test-report.md`.

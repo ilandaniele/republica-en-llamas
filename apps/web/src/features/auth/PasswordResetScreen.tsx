@@ -49,10 +49,10 @@ export default function PasswordResetScreen() {
   };
 
   return (
-    <main className="mx-auto max-w-lg p-6">
+    <div className="mx-auto max-w-lg p-6">
       <h1 className="mb-5 text-3xl text-gold-400">Restablecer contraseña</h1>
       {error && (
-        <p role="alert" className="text-crimson-300 mb-4 text-xl">
+        <p role="alert" className="mb-4 text-xl text-crimson-300">
           {error}
         </p>
       )}
@@ -110,6 +110,6 @@ export default function PasswordResetScreen() {
       <Link to="/login" className="mt-5 inline-block text-xl text-celeste-light">
         Volver a iniciar sesión
       </Link>
-    </main>
+    </div>
   );
 }

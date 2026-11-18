@@ -8,7 +8,7 @@ export function CareerEndScreen({ state }: { state: GameState }) {
   const { t } = useTranslation();
   const career = state.career!;
   return (
-    <main className="mx-auto max-w-4xl p-5">
+    <div className="mx-auto max-w-4xl p-5">
       <h1 className="my-5 text-3xl text-gold-400">{t('career.end')}</h1>
       <CareerJourney career={career} />
       <CareerOfficeScene office={career.office} />
@@ -22,6 +22,6 @@ export function CareerEndScreen({ state }: { state: GameState }) {
       <CareerMetrics state={state} />
       <p className="my-4 text-2xl">{state.score} pts</p>
       <GameOverActions />
-    </main>
+    </div>
   );
 }
