@@ -17,9 +17,23 @@ The backend moved from Supabase (Postgres, RLS, Edge functions) and Fly.io (ngin
 - **Fix:** `/assets/*` is now `run_worker_first`; a missing hashed asset returns 404 instead of HTML. `/api/*` also runs the Worker first.
 - **Evidence:** covered by API tests; live smoke on https://republica-en-llamas.ilandaniele.workers.dev was run for `/`, `/api/leaderboard`, `/api/profile` (401), `/api/auth/get-session` (null) and `/api/nope` (404). That is a point-in-time smoke test, not a full pentest.
 
+### 2026-11-11 hardening (local verification only)
+
+Full phase log: `docs/security/hardening-2026-11-11.md`.
+
+- **SEC-018 (medium, fixed):** `/api/*` responses lacked HSTS, CSP, X-Frame-Options and Referrer-Policy. `withSecurityHeaders` in `apps/api/src/http.ts` adds them; CSP is enforced in `_headers`.
+- **SEC-019 (medium, fixed):** PATCH `/api/profile` had no rate limit and accepted any Unicode username. Now 5/min per user and `^[\p{L}\p{N}_.-]{3,24}$` after NFC.
+- **SEC-020 (low, fixed):** public GETs had no rate limit; now limited per IP (`CF-Connecting-IP`).
+- **SEC-021 (low, fixed):** run tickets never expired; submit now rejects tickets older than 24h.
+- **SEC-022 (medium, fixed):** `/api/auth/*` bodies had no size cap. `withLimitedBody` (`apps/api/src/http.ts`) counts bytes on the stream, so chunked requests without `content-length` are also capped (test included).
+- **SEC-023 (low, open):** usernames differing only by case, confusable scripts or fullwidth forms can coexist. Follow-up: NFKC, lowercased unique key in a new migration, single-script check.
+- **SEC-024 (low, mitigated in UI):** Claude Security F2, sign-up revealed whether an email exists. The web app now shows a neutral message (`translateAuthError`, test in `apps/web/src/lib/__tests__/auth.test.ts`). Residual risk: the Better Auth API still returns a distinct error for an existing email; full fix needs email verification.
+- **SEC-025 (accepted, dev only):** `npm audit` reports critical `tar<=7.5.20` via `expo@51 > @expo/cli > tar@6.2.1`. Only the mobile dev CLI uses it to extract templates; it never ships in web or the Worker. An override to tar 7 breaks `@expo/cli` (default import of `tar`). Fix: upgrade Expo when mobile work resumes.
+- Accepted: leaderboard returns opaque `user_id`; requests without `Origin` are allowed for non-browser clients. IPv6 rate-limit keys use the full address, not the /64 prefix.
+
 ### Current status and open items
 
-- CSP is still report-only (`apps/web/public/_headers`); enforcement needs testing on the deployed origin. Session cookies are managed by Better Auth.
+- CSP enforced since 2026-11-11 (`apps/web/public/_headers`); confirm on the deployed origin. Session cookies are managed by Better Auth.
 - `tar` advisory under the Expo toolchain (SEC-010) is unchanged. Mobile type-check was not run.
 - Not verified remotely: Google OAuth and Stripe dashboard configuration (redirect `<url>/api/auth/callback/google`, webhook `<url>/api/stripe-webhook`), the `EMAIL` binding for password reset, and rate-limit behavior behind the real edge. Local tests do not prove any of these.
 - Owner tasks: set the remaining Worker secrets, add GitHub secrets `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID`, decommission the Fly app and the Supabase project.

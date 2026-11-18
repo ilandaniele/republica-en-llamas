@@ -1,8 +1,8 @@
-import { spawn } from 'node:child_process';
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PROFILE_NAMES, discoverTargets, profileFor } from './load-config.mjs';
+import { runK6Profile } from './k6-runner.mjs';
 import { listenLocal } from './static-server.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -40,48 +40,17 @@ if (names.some((name) => !PROFILE_NAMES.includes(name))) {
     for (const name of selected) {
       if (interrupted) throw new Error('Load run interrupted');
       const profile = profileFor(name, extended);
-      const manifest = resolve(output, `${name}-manifest.json`);
-      await writeFile(manifest, JSON.stringify({ baseUrl: started.baseUrl, targets, profile }, null, 2));
-      await rm(resolve(output, `${name}.json`), { force: true });
-      await rm(resolve(output, `${name}.html`), { force: true });
-      console.log(
-        `Running ${name}, ${profile.mode}, max ${profile.maxVus} VUs, ${profile.durationSeconds}s, loopback only.`,
-      );
-      const code = await new Promise((accept, reject) => {
-        child = spawn(
-          process.env.K6_BINARY || 'k6',
-          ['run', '--quiet', '--address=127.0.0.1:0', resolve(root, 'scripts/security/game-load.k6.js')],
-          {
-            cwd: root,
-            windowsHide: true,
-            stdio: 'inherit',
-            env: {
-              ...process.env,
-              K6_NO_USAGE_REPORT: 'true',
-              LOAD_MANIFEST: manifest,
-              LOAD_OUTPUT: output.replaceAll('\\', '/'),
-            },
-          },
-        );
-        const timeout = setTimeout(
-          () => {
-            child.kill();
-            reject(new Error(`k6 ${name} exceeded its execution deadline`));
-          },
-          (profile.durationSeconds + 30) * 1000,
-        );
-        child.once('error', (error) => {
-          clearTimeout(timeout);
-          reject(error);
-        });
-        child.once('exit', (exitCode, signal) => {
-          clearTimeout(timeout);
-          if (signal) reject(new Error(`k6 ${name} interrupted (${signal})`));
-          else accept(exitCode);
-        });
+      const summary = await runK6Profile({
+        script: 'scripts/security/game-load.k6.js',
+        root,
+        output,
+        reportName: name,
+        manifestData: { baseUrl: started.baseUrl, targets, profile },
+        profile,
+        onChild: (spawned) => {
+          child = spawned;
+        },
       });
-      if (code !== 0) throw new Error(`k6 ${name} failed with exit code ${code}`);
-      const summary = JSON.parse(await readFile(resolve(output, `${name}.json`), 'utf8'));
       if (
         summary.target !== started.baseUrl ||
         summary.profile.name !== name ||
@@ -100,7 +69,7 @@ if (names.some((name) => !PROFILE_NAMES.includes(name))) {
       resolve(output, 'run-summary.json'),
       JSON.stringify(
         {
-          scope: 'Local Node static server + built files; not browser, nginx or Supabase',
+          scope: 'Local Node static server + built files; not browser, nginx, the Cloudflare Worker or D1',
           profiles: summaries,
           serverMemory: {
             source: 'process.memoryUsage() of Node test static server and orchestrator only',

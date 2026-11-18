@@ -16,15 +16,21 @@ jobs:
     env:
       HUSKY: 0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
 
       - name: Install
         run: npm ci --legacy-peer-deps
+
+      - name: Audit shipped dependencies
+        continue-on-error: true
+        run: npm audit --omit=dev --audit-level=high --workspace=apps/web --workspace=apps/api --workspace=packages/game-engine
 
       - name: Lint
         run: npm run lint
@@ -55,15 +61,17 @@ jobs:
     needs: verify
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    environment: production
     concurrency: deploy-production
     env:
       HUSKY: 0
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PUBLIC_URL: https://republica-en-llamas.ilandaniele.workers.dev
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -76,8 +84,34 @@ jobs:
         env:
           VITE_POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
 
+      - name: Record D1 Time Travel bookmark
+        working-directory: apps/api
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          {
+            echo '## Pre-migration D1 bookmark'
+            echo '```'
+            npx wrangler d1 time-travel info republica-en-llamas
+            echo '```'
+            echo 'Roll back the Worker: `npx wrangler rollback` (from apps/api).'
+            echo 'Restore D1: `npx wrangler d1 time-travel restore republica-en-llamas --bookmark=<bookmark above>`.'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Apply D1 migrations
         run: npm run db:migrate
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy Worker
         run: npm run deploy --workspace=apps/api
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Smoke test
+        run: |
+          curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 5 "$PUBLIC_URL/" -o /dev/null
+          curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 5 "$PUBLIC_URL/api/health"

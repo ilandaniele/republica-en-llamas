@@ -1,13 +1,14 @@
 import { requireAccount, requireUser, userEntitlements } from '../context.js';
 import type { RouteContext } from '../context.js';
 import { isRecord, json, readJsonBody, RequestError } from '../http.js';
+import { enforceUserRateLimit } from '../rateLimit.js';
 
-const MAX_USERNAME_LENGTH = 64;
+const USERNAME_PATTERN = /^[\p{L}\p{N}_.-]{3,24}$/u;
 
 function validUsername(value: unknown): string | null {
   if (typeof value !== 'string') return null;
-  const name = value.trim();
-  return name.length >= 1 && name.length <= MAX_USERNAME_LENGTH ? name : null;
+  const name = value.trim().normalize('NFC');
+  return USERNAME_PATTERN.test(name) ? name : null;
 }
 
 export async function usernameAvailable(ctx: RouteContext): Promise<Response> {
@@ -27,6 +28,7 @@ export async function getProfile(ctx: RouteContext): Promise<Response> {
 
 export async function updateProfile(ctx: RouteContext): Promise<Response> {
   const user = await requireAccount(ctx);
+  await enforceUserRateLimit(ctx.env.DB, user.id, 'update-profile');
   const body = await readJsonBody(ctx.request, 4096);
   const username = validUsername(isRecord(body) ? body.username : null);
   if (!username) throw new RequestError(400, 'Invalid username');
@@ -39,7 +41,8 @@ export async function updateProfile(ctx: RouteContext): Promise<Response> {
       .bind(user.id, username)
       .run();
   } catch (error) {
-    if (error instanceof Error && error.message.includes('UNIQUE')) throw new RequestError(409, 'Username taken');
+    if (error instanceof Error && error.message.includes('UNIQUE'))
+      throw new RequestError(409, 'Username taken');
     throw error;
   }
   return json({ username });

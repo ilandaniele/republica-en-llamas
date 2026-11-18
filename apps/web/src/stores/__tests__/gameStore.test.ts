@@ -3,9 +3,13 @@ import { drawNextCard, initGame, replayRun } from '@republica/game-engine';
 import { useGameStore } from '../gameStore.js';
 import { restoreGameStore } from '../restoreGameStore.js';
 import { requestRunTicket } from '../../lib/runTicket.js';
+import type { RunTicketResult } from '../../lib/runTicket.js';
 import { trackTurnCompleted } from '../../lib/analytics.js';
 
-vi.mock('../../lib/runTicket.js', () => ({ requestRunTicket: vi.fn() }));
+vi.mock('../../lib/runTicket.js', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../lib/runTicket.js')>()),
+  requestRunTicket: vi.fn(),
+}));
 
 vi.mock('../../lib/analytics.js', () => ({
   trackTurnCompleted: vi.fn(),
@@ -16,7 +20,7 @@ describe('gameStore.confirmChoice', () => {
   beforeEach(() => {
     useGameStore.getState().resetGame();
     vi.clearAllMocks();
-    vi.mocked(requestRunTicket).mockResolvedValue({ id: 'ticket-1', seed: 42 });
+    vi.mocked(requestRunTicket).mockResolvedValue({ ticket: { id: 'ticket-1', seed: 42 }, error: null });
     const gameState = initGame('normal', 42, 'es');
     useGameStore.setState({
       gameState,
@@ -148,7 +152,7 @@ describe('gameStore.confirmChoice', () => {
   });
 
   it('ignores an in-flight ticket response after resetting the game', async () => {
-    let finish!: (value: { id: string; seed: number }) => void;
+    let finish!: (value: RunTicketResult) => void;
     vi.mocked(requestRunTicket).mockReturnValueOnce(
       new Promise((resolve) => {
         finish = resolve;
@@ -156,9 +160,35 @@ describe('gameStore.confirmChoice', () => {
     );
     const pending = useGameStore.getState().startNewGame('hard');
     useGameStore.getState().resetGame();
-    finish({ id: 'old-ticket', seed: 123 });
+    finish({ ticket: { id: 'old-ticket', seed: 123 }, error: null });
     await pending;
     expect(useGameStore.getState().gameState).toBeNull();
     expect(useGameStore.getState().runTicketId).toBeNull();
+  });
+
+  it('records why a run cannot be saved when start-run fails, and keeps it across reloads', async () => {
+    vi.mocked(requestRunTicket).mockResolvedValueOnce({ ticket: null, error: 'daily_cap' });
+    await useGameStore.getState().startNewGame('normal');
+    const state = useGameStore.getState();
+    expect(state.gameState).not.toBeNull();
+    expect(state.runTicketId).toBeNull();
+    expect(state.runTicketError).toBe('daily_cap');
+
+    const restored = restoreGameStore(
+      { runConfig: state.runConfig, decisions: [], runTicketError: 'daily_cap' },
+      useGameStore.getInitialState(),
+    );
+    expect(restored.runTicketError).toBe('daily_cap');
+    expect(
+      restoreGameStore({ runConfig: state.runConfig, decisions: [], runTicketError: 'bogus' }, state)
+        .runTicketError,
+    ).toBeNull();
+  });
+
+  it('clears the previous ticket error when a new run gets a ticket', async () => {
+    useGameStore.setState({ runTicketError: 'network' });
+    await useGameStore.getState().startNewGame('normal');
+    expect(useGameStore.getState().runTicketId).toBe('ticket-1');
+    expect(useGameStore.getState().runTicketError).toBeNull();
   });
 });

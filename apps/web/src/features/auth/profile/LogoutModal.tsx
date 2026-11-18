@@ -1,4 +1,6 @@
+import { useId, useRef } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
+import { Modal } from '../../../components/Modal.js';
 
 interface LogoutModalProps {
   open: boolean;
@@ -7,10 +9,15 @@ interface LogoutModalProps {
 }
 
 export function LogoutModal({ open, onConfirm, onCancel }: LogoutModalProps) {
+  const titleId = useId();
+  const cancelRef = useRef<HTMLButtonElement>(null);
   return (
     <AnimatePresence>
       {open && (
-        <m.div
+        <Modal
+          aria-labelledby={titleId}
+          onEscape={onCancel}
+          initialFocusRef={cancelRef}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -23,6 +30,7 @@ export function LogoutModal({ open, onConfirm, onCancel }: LogoutModalProps) {
             className="pixel-border w-full max-w-sm bg-navy-800 p-6"
           >
             <h3
+              id={titleId}
               style={{
                 fontFamily: 'var(--font-readable)',
                 fontSize: '14px',
@@ -44,6 +52,7 @@ export function LogoutModal({ open, onConfirm, onCancel }: LogoutModalProps) {
                 Cerrar sesión
               </button>
               <button
+                ref={cancelRef}
                 onClick={onCancel}
                 className="pixel-border flex-1 bg-navy-700 px-4 py-2 text-smoke-300 transition-colors hover:bg-navy-600"
                 style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
@@ -52,7 +61,7 @@ export function LogoutModal({ open, onConfirm, onCancel }: LogoutModalProps) {
               </button>
             </div>
           </m.div>
-        </m.div>
+        </Modal>
       )}
     </AnimatePresence>
   );

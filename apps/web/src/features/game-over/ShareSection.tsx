@@ -28,13 +28,13 @@ export function ShareSection({ viralText, shareCardRef }: ShareSectionProps) {
 
   const handleShareX = () => {
     const encoded = encodeURIComponent(viralText.substring(0, 280));
-    window.open(`https://twitter.com/intent/tweet?text=${encoded}`, '_blank');
+    window.open(`https://twitter.com/intent/tweet?text=${encoded}`, '_blank', 'noopener,noreferrer');
     trackShareClicked({ share_type: 'score' });
   };
 
   const handleShareWhatsApp = () => {
     const encoded = encodeURIComponent(viralText);
-    window.open(`https://wa.me/?text=${encoded}`, '_blank');
+    window.open(`https://wa.me/?text=${encoded}`, '_blank', 'noopener,noreferrer');
     trackShareClicked({ share_type: 'game_over' });
   };
 

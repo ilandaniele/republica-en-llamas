@@ -9,7 +9,8 @@
     "type-check": "tsc --noEmit",
     "test": "vitest run",
     "db:migrate": "wrangler d1 migrations apply republica-en-llamas --remote",
-    "db:migrate:local": "wrangler d1 migrations apply republica-en-llamas --local"
+    "db:migrate:local": "wrangler d1 migrations apply republica-en-llamas --local",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
   },
   "dependencies": {
     "@republica/game-engine": "*",
@@ -17,7 +18,9 @@
     "stripe": "^23.1.0"
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.23.0",
     "@cloudflare/workers-types": "^5.20261109.1",
+    "@vitest/coverage-v8": "^4.1.12",
     "typescript": "^5.4.5",
     "vitest": "^4.1.11",
     "wrangler": "^4.158.0"

@@ -13,6 +13,7 @@ import type {
 } from '@republica/game-engine';
 import { trackTurnCompleted, trackCrisisTriggered } from '../lib/analytics.js';
 import { requestRunTicket } from '../lib/runTicket.js';
+import type { RunTicketError } from '../lib/runTicket.js';
 import {
   initGame,
   drawNextCard,
@@ -72,6 +73,7 @@ export interface GameStore {
   careerStart: CareerStartOffice | null;
   runConfig: RunConfig | null;
   runTicketId: string | null;
+  runTicketError: RunTicketError | null;
   decisions: TurnDecision[];
   saveRecoveryMessage: string | null;
 
@@ -231,6 +233,7 @@ export const useGameStore = create<GameStore>()(
       careerStart: null,
       runConfig: null,
       runTicketId: null,
+      runTicketError: null,
       decisions: [],
       saveRecoveryMessage: null,
 
@@ -253,7 +256,9 @@ export const useGameStore = create<GameStore>()(
           runConfig.scenarioId = null;
           runConfig.crisisExpress = false;
         }
-        const ticket = runConfig.careerStart ? null : await requestRunTicket();
+        const { ticket, error } = runConfig.careerStart
+          ? { ticket: null, error: null }
+          : await requestRunTicket();
         if (request !== startRequest) return;
         if (ticket) runConfig.seed = ticket.seed;
         set({
@@ -261,6 +266,7 @@ export const useGameStore = create<GameStore>()(
           isCrisisExpress: runConfig.crisisExpress ?? false,
           scenarioId: runConfig.scenarioId ?? null,
           runTicketId: ticket?.id ?? null,
+          runTicketError: error,
           decisions: [],
           pendingCardId: null,
           pendingChoiceIndex: null,
@@ -382,6 +388,7 @@ export const useGameStore = create<GameStore>()(
         set({
           runConfig: null,
           runTicketId: null,
+          runTicketError: null,
           decisions: [],
           gameState: null,
           currentCard: null,
@@ -467,6 +474,7 @@ export const useGameStore = create<GameStore>()(
         language: s.language,
         runConfig: s.runConfig,
         runTicketId: s.runTicketId,
+        runTicketError: s.runTicketError,
         decisions: s.decisions,
         personalBest: s.personalBest,
         presidentId: s.presidentId,

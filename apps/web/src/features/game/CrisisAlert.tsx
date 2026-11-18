@@ -20,6 +20,7 @@ export function CrisisAlert({ crises }: Props) {
   return (
     <AnimatePresence>
       <m.div
+        role="alert"
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 40, opacity: 0 }}
@@ -29,12 +30,12 @@ export function CrisisAlert({ crises }: Props) {
           <m.span
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
-            className="text-crimson-300 text-lg"
+            className="text-lg text-crimson-300"
           >
             🚨
           </m.span>
           <span
-            className="text-crimson-200 uppercase"
+            className="uppercase text-crimson-200"
             style={{ fontFamily: 'var(--font-readable)', fontSize: '14px' }}
           >
             CRISIS ACTIVA{crises.length > 1 ? 'S' : ''} — ACTUA YA

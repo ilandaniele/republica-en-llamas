@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
@@ -19,27 +19,38 @@ export default function RegisterScreen() {
   const { signUp } = useAuth();
   const setUserId = useGameStore((s) => s.setUserId);
 
+  const emailId = useId();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const { available: usernameAvailable, checking: checkingUsername } = useUsernameAvailability(username);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [accountCreated, setAccountCreated] = useState(false);
 
   const goToLogin = () => navigate('/login', { state: routeState });
 
   const register = async () => {
-    const { data, error: err } = await signUp(email, password, username);
-    if (err) {
-      setError(translateAuthError(err.message ?? ''));
+    const result = await signUp(email, password, username);
+    if (result.error) {
+      setError(translateAuthError(result.error.message ?? ''));
       return;
     }
-    setUserId(data.user.id);
+    setUserId(result.data.user.id);
+    if (result.usernameError) {
+      setAccountCreated(true);
+      setError(translateAuthError(result.usernameError));
+      return;
+    }
     await continueAfterAuth();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (accountCreated) {
+      await continueAfterAuth();
+      return;
+    }
     const validationError = validateRegistration({ username, password, usernameAvailable });
     setError(validationError ?? '');
     if (validationError) return;
@@ -64,7 +75,7 @@ export default function RegisterScreen() {
       <div className="w-full max-w-md">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 flex items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
+          className="mb-6 inline-flex min-h-[44px] min-w-[44px] items-center gap-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
         >
           ← Volver
         </button>
@@ -86,7 +97,7 @@ export default function RegisterScreen() {
 
         <div className="mb-4 flex items-center gap-3">
           <div className="h-px flex-1 bg-navy-600" />
-          <span className="font-mono text-xs text-smoke-600">o registrate con email</span>
+          <span className="font-mono text-xs text-smoke-400">o registrate con email</span>
           <div className="h-px flex-1 bg-navy-600" />
         </div>
 
@@ -102,28 +113,38 @@ export default function RegisterScreen() {
             available={usernameAvailable}
             checking={checkingUsername}
           />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500 focus:outline-none"
-          />
+          <div>
+            <label htmlFor={emailId} className="sr-only">
+              Email
+            </label>
+            <input
+              id={emailId}
+              type="email"
+              autoComplete="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500"
+            />
+          </div>
           <PasswordField value={password} onChange={setPassword} />
 
           {error && (
-            <div className="bg-crimson-900/40 rounded border border-crimson-700 px-3 py-2">
-              <p className="text-crimson-300 font-mono text-xs">{error}</p>
+            <div role="alert" className="rounded border border-crimson-700 bg-crimson-900/40 px-3 py-2">
+              <p className="font-mono text-xs text-crimson-300">{error}</p>
             </div>
           )}
 
           <button
             type="submit"
-            disabled={loading || usernameAvailable === false || username.length < MIN_USERNAME_LENGTH}
+            disabled={
+              loading ||
+              (!accountCreated && (usernameAvailable === false || username.length < MIN_USERNAME_LENGTH))
+            }
             className="w-full rounded-lg bg-crimson-600 px-6 py-3 font-serif font-bold uppercase tracking-wider text-smoke-100 transition-colors hover:bg-crimson-500 disabled:opacity-50"
           >
-            {loading ? 'Creando cuenta...' : 'Registrarse y jugar'}
+            {accountCreated ? 'Continuar' : loading ? 'Creando cuenta...' : 'Registrarse y jugar'}
           </button>
         </form>
 

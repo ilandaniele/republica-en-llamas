@@ -72,6 +72,7 @@ export default function AuthScreen() {
               <button
                 key={d.id}
                 onClick={() => setSelectedDifficulty(d.id)}
+                aria-pressed={selectedDifficulty === d.id}
                 className={`rounded-lg border-2 p-3 text-left text-xs transition-colors ${d.color} ${
                   selectedDifficulty === d.id
                     ? 'bg-navy-700 ring-2 ring-gold-400'
@@ -103,7 +104,7 @@ export default function AuthScreen() {
 
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-navy-600" />
-                <span className="font-mono text-xs text-smoke-600">o</span>
+                <span className="font-mono text-xs text-smoke-400">o</span>
                 <div className="h-px flex-1 bg-navy-600" />
               </div>
 
@@ -127,7 +128,7 @@ export default function AuthScreen() {
                 onClick={handleGuest}
                 className="w-full py-2 font-mono text-sm text-smoke-500 transition-colors hover:text-smoke-300"
               >
-                Jugar sin cuenta → <span className="text-xs text-smoke-600">(el progreso no se guarda)</span>
+                Jugar sin cuenta → <span className="text-xs text-smoke-400">(el progreso no se guarda)</span>
               </button>
             </>
           ) : (
@@ -147,7 +148,7 @@ export default function AuthScreen() {
           )}
         </div>
 
-        <p className="mt-8 text-center font-mono text-xs text-smoke-600">v0.4.0 — República en Llamas</p>
+        <p className="mt-8 text-center font-mono text-xs text-smoke-400">v0.4.0 — República en Llamas</p>
       </div>
     </m.div>
   );

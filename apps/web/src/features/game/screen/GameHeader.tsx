@@ -26,14 +26,20 @@ interface GameHeaderProps {
 function CrisisTimer({ timeLeft }: { timeLeft: number }) {
   return (
     <div
+      role="timer"
+      aria-label={`Crisis Express: ${timeLeft} segundos restantes`}
       className={`pixel-border flex flex-col items-center px-3 py-1 font-mono ${
         timeLeft <= 10
-          ? 'bg-crimson-900/70 text-crimson-300 animate-[shake_0.3s_ease-in-out_infinite]'
+          ? 'animate-[shake_0.3s_ease-in-out_infinite] bg-crimson-900/70 text-crimson-300'
           : 'bg-navy-800 text-smoke-300'
       }`}
     >
-      <p className="text-sm">⚡ EXPRESS</p>
-      <p className="text-lg font-bold leading-none">{timeLeft}s</p>
+      <p className="text-sm" aria-hidden="true">
+        ⚡ EXPRESS
+      </p>
+      <p className="text-lg font-bold leading-none" aria-hidden="true">
+        {timeLeft}s
+      </p>
     </div>
   );
 }
@@ -98,9 +104,9 @@ export function GameHeader({
           </div>
           <button
             onClick={() => navigate('/')}
-            className="font-mono text-xs text-smoke-600 hover:text-smoke-400"
+            className="min-h-[44px] min-w-[44px] font-mono text-xs text-smoke-400 hover:text-smoke-200"
           >
-            ← Salir
+            <span aria-hidden="true">← </span>Salir
           </button>
         </div>
       </div>

@@ -22,13 +22,14 @@ packages/game-engine/src/**/*.d.ts
 packages/game-engine/src/**/*.d.ts.map
 !apps/web/src/vite-env.d.ts
 
-# Engine bundle for edge functions (npm run bundle:engine)
-supabase/functions/_shared/game-engine.js
-supabase/.temp/
-
 # Raw images generated with Codex (scripts/pixel-art.py import)
 art/raw/
 
 # Cloudflare
 .wrangler/
 .dev.vars
+
+# Playwright
+apps/web/test-results/
+apps/web/test-results-*/
+apps/web/playwright-report/

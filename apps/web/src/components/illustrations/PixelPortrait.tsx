@@ -5,6 +5,8 @@ import { MOOD_ANIMATIONS } from './portraits/moodAnimations.js';
 import { PORTRAITS, politicianFor } from './portraits/portraits.js';
 import { useGameImage } from '../../hooks/useGameImage.js';
 import type { PortraitId, PortraitMood } from './portraits/types.js';
+import { imageA11yProps } from './imageA11yProps.js';
+import { prefersReducedMotion } from '../../lib/reducedMotion.js';
 import './event-scenes/raster-effects.css';
 
 export type { PortraitId, PortraitMood } from './portraits/types.js';
@@ -15,9 +17,10 @@ interface Props {
   id: PortraitId;
   mood?: PortraitMood;
   px?: number;
+  label?: string;
 }
 
-export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
+export function PixelPortrait({ id, mood = 'neutral', px = 96, label }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const prevMood = useRef<PortraitMood>(mood);
   const Portrait = PORTRAITS[id];
@@ -27,7 +30,7 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
   // Idle: subtle float animation
   useGSAP(
     () => {
-      if (imageUrl || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+      if (imageUrl || prefersReducedMotion()) return;
       gsap.to(containerRef.current, {
         y: -3,
         duration: 2,
@@ -43,7 +46,7 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
     () => {
       if (prevMood.current === mood) return;
       prevMood.current = mood;
-      if (imageUrl || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+      if (imageUrl || prefersReducedMotion()) return;
       MOOD_ANIMATIONS[mood](containerRef.current);
     },
     { scope: containerRef, dependencies: [mood, imageUrl], revertOnUpdate: true },
@@ -61,7 +64,7 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
           src={imageUrl}
           width={px}
           height={svgH}
-          alt={'Retrato de ' + id}
+          alt={label ?? ''}
           style={{ imageRendering: 'pixelated', display: 'block', objectFit: 'cover' }}
         />
       ) : (
@@ -71,8 +74,7 @@ export function PixelPortrait({ id, mood = 'neutral', px = 96 }: Props) {
           viewBox="0 0 200 240"
           xmlns="http://www.w3.org/2000/svg"
           style={{ imageRendering: 'pixelated', display: 'block' }}
-          role="img"
-          aria-label={'Retrato de ' + id}
+          {...imageA11yProps(label)}
         >
           {Portrait && (
             <Suspense fallback={null}>

@@ -28,6 +28,26 @@ export function profileFor(name, full = false) {
   };
 }
 
+export const LOCAL_API_URL_PATTERN = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/;
+export const DEFAULT_API_URL = 'http://localhost:8787';
+
+export const MAX_SOAK_SECONDS = 600;
+
+export function apiProfileFor(name, full = false, soakSeconds = 0) {
+  const profile = { ...profileFor(name, full), serverErrorRate: 0.001 };
+  if (name !== 'soak' || !soakSeconds) return profile;
+  if (!Number.isInteger(soakSeconds) || soakSeconds < 1 || soakSeconds > MAX_SOAK_SECONDS)
+    throw new Error(`Soak duration must be 1-${MAX_SOAK_SECONDS} seconds`);
+  const stages = [{ duration: `${soakSeconds}s`, target: profile.maxVus }];
+  return { ...profile, mode: 'bounded-soak', stages, durationSeconds: soakSeconds, thinkSeconds: 1 };
+}
+
+export function assertLocalApiUrl(url) {
+  if (!LOCAL_API_URL_PATTERN.test(url))
+    throw new Error('API load tests only permit http://localhost:<port> or http://127.0.0.1:<port>');
+  return url;
+}
+
 export function insideRoot(root, file) {
   const path = relative(root, file);
   return (

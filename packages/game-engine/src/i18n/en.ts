@@ -3,9 +3,11 @@ import { PRESIDENT_EXPANSION_EN } from '../events/presidentExpansion.js';
 import { DEBATE_EN } from './debate.js';
 import { ELECTION_EN } from './election.js';
 import { CAREER_EN } from './career.js';
+import { RUN_SAVE_EN } from './runSave.js';
 
 export const en: Record<string, string> = {
   ...CAREER_EN,
+  ...RUN_SAVE_EN,
   ...ELECTION_EN,
   ...DEBATE_EN,
   ...PRESIDENT_STORY_EN,

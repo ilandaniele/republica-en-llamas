@@ -83,6 +83,7 @@ export {
   isFree,
   entitlementsForFeature,
   canPlayPresident,
+  canStartRun,
 } from './entitlements.js';
 export { es } from './i18n/es.js';
 export { en } from './i18n/en.js';
@@ -118,5 +119,11 @@ export type { TurnDecision, TurnResult, RunConfig } from './run.js';
 export { PARTIES, partyForPresident } from './parties.js';
 export type { PartyId } from './parties.js';
 export { PRESIDENT_EXPANSION_ART } from './events/presidentExpansion.js';
-export { isRunConfig, isTurnDecision, MAX_RUN_DECISIONS } from './runValidation.js';
+export {
+  isRunConfig,
+  isTurnDecision,
+  normalizeDecision,
+  MAX_RUN_DECISIONS,
+  MAX_RANKED_RUN_DECISIONS,
+} from './runValidation.js';
 export { canonicalPresident, isPresidentId, PRESIDENT_IDS, PRESIDENT_LABELS } from './presidents.js';

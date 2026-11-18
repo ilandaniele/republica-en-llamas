@@ -32,6 +32,21 @@ describe('analytics', () => {
     });
   });
 
+  it('masks reset tokens in captured URLs', async () => {
+    vi.stubEnv('VITE_POSTHOG_KEY', 'test-key');
+    const analytics = await loadAnalytics();
+
+    analytics.initAnalytics();
+    await vi.waitFor(() => expect(posthog.init).toHaveBeenCalledOnce());
+    expect(posthog.init).toHaveBeenCalledWith(
+      'test-key',
+      expect.objectContaining({
+        mask_personal_data_properties: true,
+        custom_personal_data_properties: ['token'],
+      }),
+    );
+  });
+
   it('does nothing when no PostHog key is configured', async () => {
     vi.stubEnv('VITE_POSTHOG_KEY', '');
     const analytics = await loadAnalytics();

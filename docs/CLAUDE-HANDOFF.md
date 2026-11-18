@@ -2,7 +2,71 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
-## 2026-11-09 — Cloudflare migration (current state)
+## 2026-11-17 — Test findings fixed, deploy checklist
+
+- F1: passwords hashed with WebCrypto PBKDF2-SHA256, 50k iterations, ~6 ms CPU in node (`apps/api/src/password.ts`, wired in `auth.ts`). Format `pbkdf2_sha256$<iterations>$<salt>$<hash>`; old Better Auth scrypt hashes still verify. Not yet measured on the deployed Worker.
+- F2: `/api/auth/get-session` has its own IP bucket (`auth-session`, 120/min); web `AuthProvider` keeps the last known user while a session check errors.
+- F3: one `<main>` in `App.tsx`; inner screen `<main>`s became `<div>`; e2e `test.fail` removed.
+- F5: leaderboard `Cache-Control: no-cache`, web fetches it with `cache: 'no-cache'`.
+- F6: profile edit button and input have `aria-label`s; sr-only `<h1>`.
+- Daily cap: local UTC counter removed (`useEntitlements`); `DailyCapBanner` shows only when the server answers `daily_cap`. Register: a failed username save no longer traps the player; sign-up returns `usernameError` and the form offers "Continuar".
+- Deferred: F4 (~134 D1 writes per run, ~740 runs/day on Free; fine for a small test group), F7 (framer-motion inline styles), F8.
+- Verification (local only): lint 0; type-check engine/web/api; tests api 90 + integration 27, engine 257, web 690 (one unreproduced flaky failure in 1 of 4 runs), `test:security` 15, e2e 28/28, web build OK.
+- Remote state checked 2026-11-17: Worker secret `BETTER_AUTH_SECRET` set; GitHub secret `CLOUDFLARE_ACCOUNT_ID` set, `CLOUDFLARE_API_TOKEN` missing, so the deploy job cannot run yet.
+- Deploy checklist (owner):
+  1. GitHub secret `CLOUDFLARE_API_TOKEN` (Workers Scripts edit + D1 edit on the account).
+  2. Done 2026-11-18: `CLOUDFLARE_API_TOKEN` added. The `send_email` binding was removed from `wrangler.jsonc` (no custom domain, so no Email Routing); password reset mails are skipped until a domain, the binding and `RESET_EMAIL_FROM` are added back. The "Olvidé mi contraseña" button is hidden in `LoginScreen.tsx` (2026-11-18); re-add it (git history of that file) together with the binding. `/reset-password` route and `requestPasswordReset` in `lib/auth.ts` stay.
+  3. Stripe and Google secrets are optional, but each pair must be complete or every auth route returns 503.
+  4. Merge PR into `main`; CI migrates D1, deploys, and smoke-tests `/api/health`.
+
+## 2026-11-17 — Test phase (crear-app phase 7)
+
+Full results and findings: `docs/test-report.md`.
+
+- New suites: `npm run test:integration --workspace=apps/api` (workerd + real local D1, 27 tests, compat date overridden to `2026-08-22` because of the pool's bundled workerd), `npm run test:e2e --workspace=apps/web` (Playwright on installed Edge, desktop + Pixel 7, 28 tests, starts its own `wrangler dev` on 8788), `npm run test:coverage`, `scripts/security/pentest-local.sh` (loopback only), `run-api-load.mjs` bounded soak (`API_LOAD_SOAK_SECONDS` ≤ 600, `API_LOAD_PER_VU_IP=1`).
+- Blocker before sharing email accounts on Workers Free: scrypt ~55 ms CPU per sign-up/sign-in (F1 = F-04). Guest play is fine.
+- Open product findings, not fixed: F2 `get-session` shares the auth IP bucket and a 429 downgrades the UI to guest; F3 no `<main>` landmark (e2e `test.fail`); F4 ~134 D1 writes per run; F5 stale leaderboard cache; F6 profile a11y labels.
+
+## 2026-11-17 — Security review fixes (crear-app phase 6)
+
+- Full findings, fix batches and per-finding status: `docs/security-report.md` (76 findings; re-verified: 43 fixed, 12 partial, 2 not fixed, 19 deferred). Regression notes R-01..R-10 are in its "Fix status" section.
+- API: Better Auth memoized per env; IP limiter stops writing once over the limit; `/api/auth/*` one `auth` bucket, path cap, Origin check; `/api/health`; structured errors (503 only for D1/misconfig); sign-out without body works; reset token 30 min, mail sent via `waitUntil`.
+- `auth.ts` returns 503 when `findEnvProblems` (`apps/api/src/env.ts`) reports anything: secret < 32 chars, non-https `WEB_URL`, or only one of the Stripe / Google secret pairs. Check production secrets before deploying.
+- Payments: 409 when already owned, idempotent grants, line-item price check, retryable 500 on ungrantable paid sessions.
+- Runs: historical scenarios need `full_access` (`canStartRun` in engine), leaderboard split into two indexed queries, decisions normalized, ticket reuse with different decisions returns 409, ranked runs capped at 58 decisions.
+- Cron: per-table bounded deletes (2000 rows each) for rate limits, run tickets > 24 h, expired verification rows, guests without a live session, expired sessions; one failing table does not block others. Test signs in a real Better Auth guest.
+- CI: Cloudflare token only on D1 bookmark / migrate / deploy steps, actions pinned by SHA (confirm SHAs), `npm audit`, smoke test on `/api/health`, `.github/dependabot.yml`. `wrangler.jsonc` adds `send_email` binding `EMAIL`.
+- Web: run-save errors surfaced, register username retry, shared accessible `Modal`, auth form labels, contrast, live regions, reduced motion, plus an "Accesibilidad" panel on Home (reduce motion, disable 1-4/A-D shortcuts, 90 s Crisis Express) pending owner confirmation.
+- Owner before deploy: enable Email Routing and `wrangler secret put RESET_EMAIL_FROM` (the binding may break deploy otherwise), add reviewers to GitHub environment `production`, decide gitleaks, crisis difficulty paywall, F-04 password hash vs Paid plan.
+- Verification (local only): lint 0, type-check web/api/engine, tests api 86, engine 257, web 681, `test:security` 14, web build OK.
+
+## 2026-11-17 — Scheduled cleanup
+
+- Daily cron `0 4 * * *` (`apps/api/wrangler.jsonc`) runs `cleanupStaleRows` (`apps/api/src/cleanup.ts`) from the Worker `scheduled` handler, in bounded per-table deletes (see security review section above):
+  - `api_rate_limits` rows older than the current 1-minute window.
+  - Better Auth `rateLimit` rows idle for over 1 hour.
+  - Anonymous users with no unexpired session (cascade removes their sessions, accounts and run tickets). Guests cannot buy or save runs, so no purchases or leaderboard rows are lost.
+- No index added for these deletes: they run once a day, and an index on `api_rate_limits.window_start` would add a D1 row write to every rate-limited request.
+- Tests: `apps/api/src/__tests__/cleanup.test.ts` (api 30/30). Not yet verified on the deployed Worker: the cron starts after the next deploy (deploy is blocked until GitHub has `CLOUDFLARE_API_TOKEN`).
+
+## 2026-11-17 — Supabase leftovers removed
+
+- No code, config or current doc depends on Supabase. `turbo.json` env now lists `VITE_POSTHOG_KEY`, `VITE_OFFLINE_MODE`, `EXPO_PUBLIC_API_URL`; ESLint engine purity rule blocks `better-auth` instead of `@supabase/*`; `.gitignore` and ESLint ignores drop `supabase/` paths.
+- Remaining mentions are dated audit reports (`docs/security/*`, `security_best_practices_report.md`, `docs/architecture-plan.md`, `docs/buenas-practicas-2026-11-08.md`, `prompt-audit-report.md`) and the historical sections of this file. They record past state and were left unchanged.
+
+## 2026-11-11 — Security hardening
+
+Phase notes, checklist coverage and open follow-ups: `docs/security/hardening-2026-11-11.md`.
+
+- `/api/*` responses carry HSTS, CSP, X-Frame-Options, nosniff and Referrer-Policy (`apps/api/src/http.ts`). CSP is enforced in `apps/web/public/_headers`; Google Fonts removed.
+- PATCH `/api/profile`: 5/min per user, username pattern `^[\p{L}\p{N}_.-]{3,24}$` (same check in web registration). Public GETs are IP rate limited. Non-GET `/api/auth/*` bodies are size capped. Run tickets expire after 24h.
+- k6 API load: `npm run test:load:api` against a local `wrangler dev` only (refuses other hosts). Local dev Worker needs `--var BETTER_AUTH_SECRET:<random>` and `--var WEB_URL:http://localhost:8787`.
+- Verification: lint 0 errors; type-check engine, web, api; tests engine 252, web 623, api 27; `npm run test:security` passes. Local only: not proof of remote config.
+- Sign-up shows a neutral message for an existing email (UI only; the API still distinguishes).
+- 2026-11-17: deleted 2 test guest users from remote D1; removed unused GitHub secrets (FLY_API_TOKEN, VITA_SUPABASE_*); set CLOUDFLARE_ACCOUNT_ID. Still missing: GitHub CLOUDFLARE_API_TOKEN and VITE_POSTHOG_KEY; Worker secrets STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET. `tar` audit warning accepted (SEC-025).
+- Open: API-level auth enumeration (needs email verification), Origin-less requests accepted, Stripe refunds not handled.
+
+## 2026-11-09 — Cloudflare migration
 
 Branch `feat/cloudflare-migration`. Supabase and Fly.io were removed entirely. Everything below this section that mentions Supabase, Fly, nginx, Docker, Edge functions or migrations 001-011 is **historical** (state on 2026-11-08) and kept for context only. Do not follow its deployment steps.
 
@@ -12,10 +76,10 @@ Branch `feat/cloudflare-migration`. Supabase and Fly.io were removed entirely. E
 - The web build (`apps/web/dist`) is served by Workers Static Assets with SPA fallback. `/api/*` and `/assets/*` run the Worker first; a missing hashed asset returns 404 instead of SPA HTML.
 - Database is Cloudflare D1 `republica-en-llamas`. Migrations are in `apps/api/migrations/` (`0001_init.sql`, applied remotely). It started from zero data: no Supabase data was migrated.
 - Live URL: https://republica-en-llamas.ilandaniele.workers.dev
-- Web uses `apps/web/src/lib/api.ts` (`apiSend`, `isOfflineMode`) and `apps/web/src/lib/auth.ts` (better-auth/react client). `useAuth` is the Better Auth session; anonymous sessions count as signed out. Security headers are in `apps/web/public/_headers` (CSP still report-only, HSTS, etc.).
+- Web uses `apps/web/src/lib/api.ts` (`apiSend`, `isOfflineMode`) and `apps/web/src/lib/auth.ts` (better-auth/react client). `useAuth` is the Better Auth session; anonymous sessions count as signed out. Security headers are in `apps/web/public/_headers` (CSP enforced since 2026-11-11, HSTS, etc.).
 - Mobile leaderboard fetches `${EXPO_PUBLIC_API_URL}/api/leaderboard`. Mobile type-check was not run.
 - Only `VITE_POSTHOG_KEY` and `VITE_OFFLINE_MODE` remain as `VITE_*` vars (public, baked at build).
-- `scripts/generate-images.ts` still uses Supabase Storage. It is offline tooling and was left as is.
+- `scripts/generate-images.ts` writes to `apps/web/public/illustrations/` (served by Workers Static Assets) instead of Supabase Storage (2026-11-17).
 
 ### Commands
 
@@ -47,7 +111,7 @@ With no `BETTER_AUTH_SECRET`, the deployed Worker used Better Auth's public defa
 3. Set the remaining Worker secrets with `wrangler secret put`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`. Password-reset mail also needs `RESET_EMAIL_FROM` and an `EMAIL` send-email binding (names in `apps/api/src/env.ts`); without them reset emails are skipped. `BETTER_AUTH_SECRET` is already set.
 4. Google OAuth redirect URI: `<url>/api/auth/callback/google`. Stripe webhook endpoint: `<url>/api/stripe-webhook`.
 5. Two probe guest users from smoke tests exist in D1; delete them if a clean table is wanted.
-6. Still open from before: CSP enforcement, `tar` advisory under Expo tooling, mobile type errors.
+6. Still open from before: `tar` advisory under Expo tooling, mobile type errors.
 
 ## Estado del proyecto (histórico, 2026-11-08)
 

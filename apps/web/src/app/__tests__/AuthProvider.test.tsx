@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 interface SessionResult {
   data: { user: { id: string; email: string; name: string; isAnonymous?: boolean } } | null;
   isPending: boolean;
+  error?: Error | null;
 }
 
 const signedIn: SessionResult = {
@@ -74,6 +75,17 @@ describe('AuthProvider', () => {
     for (const root of ['entitlements', 'profile-username', 'recent-runs', 'run-history'])
       expect(client.getQueryData([root, 'u1'])).toBeUndefined();
     expect(client.getQueryData(['leaderboard', 'u1'])).toEqual(['private']);
+    client.clear();
+  });
+
+  it('keeps the signed-in user and private data when a session check fails', () => {
+    const client = new QueryClient();
+    const view = render(tree(client));
+    client.setQueryData(['entitlements', 'u1'], ['full_access']);
+    useSession.mockReturnValue({ data: null, isPending: false, error: new Error('Too Many Requests') });
+    view.rerender(tree(client));
+    expect(screen.getAllByText('u1')).toHaveLength(3);
+    expect(client.getQueryData(['entitlements', 'u1'])).toEqual(['full_access']);
     client.clear();
   });
 });

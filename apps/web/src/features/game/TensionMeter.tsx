@@ -26,7 +26,7 @@ export function TensionMeter({ state }: { state: GameState }) {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="whitespace-nowrap font-mono text-xs uppercase tracking-wider text-smoke-400">
+      <span className="whitespace-nowrap font-mono text-xs uppercase tracking-wider text-smoke-100">
         Tensión
       </span>
       <div className="h-2 flex-1 overflow-hidden rounded-full bg-navy-700">
@@ -36,7 +36,7 @@ export function TensionMeter({ state }: { state: GameState }) {
           transition={{ duration: 0.8, ease: 'easeOut' }}
         />
       </div>
-      <span className="w-8 text-right font-mono text-xs text-smoke-300">{Math.round(tension)}</span>
+      <span className="w-8 text-right font-mono text-xs text-smoke-100">{Math.round(tension)}</span>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import http from 'k6/http';
 import { check, sleep, fail } from 'k6';
 import exec from 'k6/execution';
 import { Counter, Trend } from 'k6/metrics';
+import { summarize } from './k6-summary.js';
 
 const manifest = JSON.parse(open(__ENV.LOAD_MANIFEST));
 if (!/^http:\/\/127\.0\.0\.1:\d+$/.test(manifest.baseUrl))
@@ -115,39 +116,13 @@ export default function () {
   sleep(profile.thinkSeconds);
 }
 
-function escape(value) {
-  return String(value).replace(
-    /[&<>"']/g,
-    (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character],
-  );
-}
-
 export function handleSummary(data) {
-  const thresholds = Object.entries(data.metrics).flatMap(([name, metric]) =>
-    Object.entries(metric.thresholds || {}).map(([rule, result]) => ({ name, rule, ok: result.ok })),
-  );
-  const passed = thresholds.length > 0 && thresholds.every((item) => item.ok);
-  const report = {
-    project: 'republica-en-llamas',
-    scope:
-      'Read-only build files served by a local Node server, not nginx, browser execution, Supabase or database capacity',
+  return summarize(data, {
+    name: profile.name,
     profile,
+    scope:
+      'Read-only build files served by a local Node server, not nginx, browser execution, the Cloudflare Worker or D1 capacity',
     target: manifest.baseUrl,
-    targets: manifest.targets,
-    passed,
-    thresholds,
-    k6: data,
-  };
-  const rows = Object.entries(data.metrics)
-    .map(
-      ([name, metric]) =>
-        `<tr><td>${escape(name)}</td><td><pre>${escape(JSON.stringify(metric.values, null, 2))}</pre></td></tr>`,
-    )
-    .join('');
-  const html = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Local load: ${escape(profile.name)}</title><style>body{font-family:system-ui;max-width:1100px;margin:2rem auto;padding:1rem}td{border:1px solid #aaa;padding:.6rem;vertical-align:top}pre{white-space:pre-wrap}</style><h1>${escape(profile.name)}: ${passed ? 'PASS' : 'FAIL'}</h1><p>${escape(report.scope)}</p><pre>${escape(JSON.stringify(profile, null, 2))}</pre><h2>Thresholds</h2><pre>${escape(JSON.stringify(thresholds, null, 2))}</pre><table>${rows}</table></html>`;
-  return {
-    [`${__ENV.LOAD_OUTPUT}/${profile.name}.json`]: JSON.stringify(report, null, 2),
-    [`${__ENV.LOAD_OUTPUT}/${profile.name}.html`]: html,
-    stdout: `${profile.name}: ${passed ? 'PASS' : 'FAIL'}; ${data.metrics.http_reqs?.values?.count || 0} HTTP requests\n`,
-  };
+    details: { targets: manifest.targets },
+  });
 }

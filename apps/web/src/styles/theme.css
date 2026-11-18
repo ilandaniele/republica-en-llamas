@@ -13,6 +13,25 @@
   }
 }
 
+html.reduce-motion .ticker-text {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-text {
+    animation: none !important;
+  }
+}
+
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
 @layer base {
   :root {
     --color-navy: #1e3a5f;
@@ -520,11 +539,21 @@
   .ticker-text {
     display: inline-block;
     animation: ticker-scroll 18s linear infinite;
+    white-space: nowrap;
     font-family: var(--font-readable);
     font-size: 14px;
     color: white;
     padding-top: 2px;
     padding-bottom: 2px;
+  }
+
+  @keyframes ticker-scroll {
+    0% {
+      transform: translateX(100vw);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
   }
 
   /* ─── Pixel confetti ───────────────────────── */

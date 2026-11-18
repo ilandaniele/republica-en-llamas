@@ -5,7 +5,7 @@ const FULL_ACCESS_DAILY_RUNS = 30;
 const DAILY_CAP_SQL = `(case when exists(select 1 from user_entitlements where user_id = ?1 and entitlement = 'full_access')
   then ${FULL_ACCESS_DAILY_RUNS} else ${FREE_DAILY_RUNS} end)`;
 
-function dayAgo(): string {
+export function dayAgo(): string {
   return new Date(Date.now() - DAY_MS).toISOString();
 }
 

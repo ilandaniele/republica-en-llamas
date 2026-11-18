@@ -2,7 +2,6 @@
  * REP EN LLAMAS — Image Generation Script
  *
  * Usage:
- *   SUPABASE_URL=https://... SUPABASE_SERVICE_ROLE_KEY=sb_secret_... \
  *   npx tsx scripts/generate-images.ts [--force] [--no-gif]
  *
  * Generates editorial-caricature illustrations via Pollinations.ai (free, FLUX-based).
@@ -10,8 +9,8 @@
  * `sharp` and `gif-encoder-2` are installed:
  *   npm install -D sharp gif-encoder-2
  *
- * Uploads to Supabase Storage bucket "game-images/illustrations/",
- * then writes apps/web/src/assets/image-manifest.json with public URLs.
+ * Writes files to apps/web/public/illustrations/ (served by Cloudflare Workers Static Assets),
+ * then points apps/web/src/assets/image-manifest.json at them.
  */
 
 import * as fs from 'node:fs';
@@ -22,16 +21,8 @@ import * as crypto from 'node:crypto';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const SUPABASE_URL     = process.env.SUPABASE_URL               ?? process.env.VITE_SUPABASE_URL ?? '';
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY  ?? '';
-
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  console.error('Missing env vars: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
-  process.exit(1);
-}
-
-const BUCKET        = 'game-images';
 const FOLDER        = 'illustrations';
+const PUBLIC_DIR    = path.join(__dirname, '../apps/web/public', FOLDER);
 const MANIFEST_PATH = path.join(__dirname, '../apps/web/src/assets/image-manifest.json');
 
 // ── Style suffixes — 16-bit pixel art, style inspired by Impeached! / SNES political games ─
@@ -200,28 +191,10 @@ async function generateImagePollinations(prompt: string, seed: number): Promise<
   return res.arrayBuffer();
 }
 
-async function uploadToSupabase(id: string, data: ArrayBuffer | Buffer, ext: string = 'png'): Promise<string> {
-  const objectPath = `${FOLDER}/${id}.${ext}`;
-  const uploadUrl  = `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${objectPath}`;
-  const contentType = ext === 'gif' ? 'image/gif' : 'image/png';
-
-  const res = await fetch(uploadUrl, {
-    method: 'POST',
-    headers: {
-      apikey: SERVICE_ROLE_KEY,
-      Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
-      'Content-Type': contentType,
-      'x-upsert': 'true',
-    },
-    body: data instanceof Buffer ? data : Buffer.from(data),
-  });
-
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Supabase upload error ${res.status}: ${body}`);
-  }
-
-  return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${objectPath}`;
+function saveIllustration(id: string, data: ArrayBuffer | Buffer, ext: string = 'png'): string {
+  fs.mkdirSync(PUBLIC_DIR, { recursive: true });
+  fs.writeFileSync(path.join(PUBLIC_DIR, `${id}.${ext}`), new Uint8Array(data));
+  return `/${FOLDER}/${id}.${ext}`;
 }
 
 // Lazy-load GIF deps — gracefully skip if not installed
@@ -315,7 +288,7 @@ async function main() {
           await sleep(wait);
         }
         const buffer = await generateImagePollinations(img.prompt, seedForId(img.id));
-        const url    = await uploadToSupabase(img.id, buffer);
+        const url    = saveIllustration(img.id, buffer);
         manifest[manifestKey] = url;
         fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
         console.log(`✅  ${url.split('/').pop()}`);
@@ -352,7 +325,7 @@ async function main() {
       try {
         const gifBuffer = await generateAnimatedGif(gifDeps, gif.id, gif.prompts);
         if (gifBuffer) {
-          const url = await uploadToSupabase(gif.id, gifBuffer, 'gif');
+          const url = saveIllustration(gif.id, gifBuffer, 'gif');
           manifest[manifestKey] = url;
           fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2));
           console.log(`✅  ${url.split('/').pop()}`);
@@ -378,7 +351,7 @@ async function main() {
     const { execSync } = await import('node:child_process');
     try {
       execSync(
-        `powershell -Command "Add-Type -AssemblyName System.Windows.Forms; $n = New-Object System.Windows.Forms.NotifyIcon; $n.Icon = [System.Drawing.SystemIcons]::Information; $n.Visible = $true; $n.ShowBalloonTip(10000, 'Republica en Llamas', 'Generacion completada: ${done} imagenes subidas a Supabase', 'Info'); Start-Sleep 11; $n.Dispose()"`,
+        `powershell -Command "Add-Type -AssemblyName System.Windows.Forms; $n = New-Object System.Windows.Forms.NotifyIcon; $n.Icon = [System.Drawing.SystemIcons]::Information; $n.Visible = $true; $n.ShowBalloonTip(10000, 'Republica en Llamas', 'Generacion completada: ${done} imagenes guardadas', 'Info'); Start-Sleep 11; $n.Dispose()"`,
         { stdio: 'ignore' }
       );
     } catch { /* non-critical */ }

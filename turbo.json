@@ -1,12 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": [
-    "VITE_SUPABASE_URL",
-    "VITE_SUPABASE_ANON_KEY",
-    "VITE_POSTHOG_KEY",
-    "EXPO_PUBLIC_SUPABASE_URL",
-    "EXPO_PUBLIC_SUPABASE_ANON_KEY"
-  ],
+  "globalEnv": ["VITE_POSTHOG_KEY", "VITE_OFFLINE_MODE", "EXPO_PUBLIC_API_URL"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

@@ -1,64 +1,21 @@
-﻿import { useQuery } from '@tanstack/react-query';
+﻿import { queryOptions, useQuery } from '@tanstack/react-query';
 import { apiGet } from '../lib/api.js';
 import { useAuth } from './useAuth.js';
 import type { EntitlementId } from '@republica/game-engine';
 import { isPlaytestMode } from '../lib/playtest.js';
 
-const DAILY_KEY = 'rep_daily_runs';
-
-interface DailyRuns {
-  date: string;
-  count: number;
-}
-
-function getTodayStr() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-export function getDailyRunsRemaining(): number {
-  try {
-    const raw = localStorage.getItem(DAILY_KEY);
-    if (!raw) return 3;
-    const d: DailyRuns = JSON.parse(raw) as DailyRuns;
-    if (d.date !== getTodayStr()) return 3;
-    return Math.max(0, 3 - d.count);
-  } catch {
-    return 3;
-  }
-}
-
-export function consumeDailyRun() {
-  try {
-    const raw = localStorage.getItem(DAILY_KEY);
-    const today = getTodayStr();
-    const d: DailyRuns = raw ? (JSON.parse(raw) as DailyRuns) : { date: today, count: 0 };
-    if (d.date !== today) {
-      localStorage.setItem(DAILY_KEY, JSON.stringify({ date: today, count: 1 }));
-      return;
-    }
-    localStorage.setItem(DAILY_KEY, JSON.stringify({ date: today, count: d.count + 1 }));
-  } catch {
-    /* ignore */
-  }
+export function entitlementsQuery(userId: string | undefined) {
+  return queryOptions({
+    queryKey: ['entitlements', userId],
+    queryFn: async () => (await apiGet<{ entitlements: EntitlementId[] }>('entitlements')).entitlements,
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+  });
 }
 
 export function useEntitlements() {
   const { user } = useAuth();
-
-  const {
-    data: entitlements = [],
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ['entitlements', user?.id],
-    queryFn: async () => {
-      if (!user) return [] as EntitlementId[];
-      const data = await apiGet<{ entitlements: EntitlementId[] }>('entitlements').catch(() => null);
-      return data?.entitlements ?? [];
-    },
-    enabled: !!user,
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: entitlements = [], isLoading, refetch } = useQuery(entitlementsQuery(user?.id));
 
   function hasEntitlement(id: EntitlementId | string): boolean {
     if (isPlaytestMode) return ['mode_crisis_express', 'mode_historical', 'remove_ads'].includes(id);

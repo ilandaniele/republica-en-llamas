@@ -20,7 +20,14 @@ function withClient(action: (ph: PostHog) => void) {
 export function initAnalytics() {
   if (isPlaytestMode || loading || !KEY) return;
   loading = import('posthog-js').then(({ default: posthog }) => {
-    posthog.init(KEY, { api_host: HOST, capture_pageview: false, persistence: 'localStorage' });
+    posthog.init(KEY, {
+      api_host: HOST,
+      capture_pageview: false,
+      persistence: 'localStorage',
+      mask_personal_data_properties: true,
+      custom_personal_data_properties: ['token'],
+      disable_external_dependency_loading: true,
+    });
     client = posthog;
     pending.splice(0).forEach((action) => action(posthog));
   });

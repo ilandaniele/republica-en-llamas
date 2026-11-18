@@ -45,6 +45,7 @@ function UsernameEditor({
       <div className="flex items-center gap-2">
         <input
           type="text"
+          aria-label="Nombre de usuario"
           value={newUsername}
           onChange={(e) => setNewUsername(e.target.value)}
           className="rounded border border-navy-500 bg-navy-900 px-3 py-1 font-mono text-sm text-smoke-100 focus:border-gold-500 focus:outline-none"
@@ -97,9 +98,10 @@ export function ProfileHeader({
             <h2 className="font-serif text-xl font-bold text-smoke-100">{displayName}</h2>
             <button
               onClick={() => setEditingUsername(true)}
+              aria-label="Editar nombre de usuario"
               className="font-mono text-xs text-smoke-600 hover:text-smoke-400"
             >
-              ✎
+              <span aria-hidden="true">✎</span>
             </button>
           </div>
         )}

@@ -10,6 +10,8 @@ import { CATEGORY_ANIMATIONS } from './event-scenes/sceneAnimations.js';
 import { SCENES } from './event-scenes/scenes.js';
 import { selectScene } from './event-scenes/selectScene.js';
 import { selectPresidentScene } from './event-scenes/presidentScenes.js';
+import { imageA11yProps } from './imageA11yProps.js';
+import { prefersReducedMotion } from '../../lib/reducedMotion.js';
 
 gsap.registerPlugin(useGSAP);
 
@@ -18,9 +20,10 @@ interface Props {
   presidentId: string;
   eventId?: string;
   gameState?: GameState | null | undefined;
+  label?: string;
 }
 
-export function EventIllustration({ eventCategory, presidentId, eventId = '', gameState }: Props) {
+export function EventIllustration({ eventCategory, presidentId, eventId = '', gameState, label }: Props) {
   const baseScene = selectScene(eventCategory, eventId, gameState);
   const scene = selectPresidentScene(baseScene, eventId, presidentId);
   const aiUrl = (imageManifest as Record<string, string>)[scene] ?? null;
@@ -31,7 +34,7 @@ export function EventIllustration({ eventCategory, presidentId, eventId = '', ga
   useGSAP(
     () => {
       if (!containerRef.current) return;
-      if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+      if (prefersReducedMotion()) return;
       gsap.fromTo(
         containerRef.current,
         { clipPath: 'inset(0% 100% 0% 0%)' },
@@ -66,8 +69,7 @@ export function EventIllustration({ eventCategory, presidentId, eventId = '', ga
         xmlns="http://www.w3.org/2000/svg"
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }}
         preserveAspectRatio="xMidYMid meet"
-        role="img"
-        aria-label={`Ilustración: ${eventCategory}`}
+        {...imageA11yProps(label)}
       >
         {aiUrl ? (
           <>

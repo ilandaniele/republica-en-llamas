@@ -1,16 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { authClient } from '../../lib/auth.js';
 
 export default function PasswordResetScreen() {
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get('token');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [token] = useState(() => searchParams.get('token'));
   const [password, setPassword] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (!searchParams.has('token')) return;
+    const withoutToken = new URLSearchParams(searchParams);
+    withoutToken.delete('token');
+    setSearchParams(withoutToken, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -42,10 +49,10 @@ export default function PasswordResetScreen() {
   };
 
   return (
-    <main className="mx-auto max-w-lg p-6">
+    <div className="mx-auto max-w-lg p-6">
       <h1 className="mb-5 text-3xl text-gold-400">Restablecer contraseña</h1>
       {error && (
-        <p role="alert" className="text-crimson-300 mb-4 text-xl">
+        <p role="alert" className="mb-4 text-xl text-crimson-300">
           {error}
         </p>
       )}
@@ -103,6 +110,6 @@ export default function PasswordResetScreen() {
       <Link to="/login" className="mt-5 inline-block text-xl text-celeste-light">
         Volver a iniciar sesión
       </Link>
-    </main>
+    </div>
   );
 }

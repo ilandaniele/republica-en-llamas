@@ -6,7 +6,9 @@
   | 'remove_ads'
   | 'full_access';
 
+import { HISTORICAL_SCENARIOS } from './constants.js';
 import { PRESIDENT_IDS, canonicalPresident, isPresidentId } from './presidents.js';
+import type { RunConfig } from './run.js';
 
 const FREE_PRESIDENTS = ['milei', 'massa', 'kicillof'];
 const PAID_PRESIDENTS = PRESIDENT_IDS.filter((id) => !FREE_PRESIDENTS.includes(id));
@@ -96,10 +98,25 @@ export function isFree(featureId: string): boolean {
   return FREE_PRESIDENTS.includes(canonicalPresident(featureId) ?? '') || FREE_TIER.modes.includes(featureId);
 }
 
+function owns(entitlements: readonly string[], id: EntitlementId): boolean {
+  return entitlements.includes(id) || entitlements.includes('full_access');
+}
+
 export function canPlayPresident(id: string | undefined, entitlements: readonly string[]): boolean {
   if (id === undefined) return true;
   if (!isPresidentId(id)) return false;
-  return isFree(id) || entitlements.includes('presidents_pack') || entitlements.includes('full_access');
+  return isFree(id) || owns(entitlements, 'presidents_pack');
+}
+
+export function canStartRun(
+  config: Pick<RunConfig, 'presidentId' | 'crisisExpress' | 'scenarioId'>,
+  entitlements: readonly string[],
+): boolean {
+  return (
+    canPlayPresident(config.presidentId, entitlements) &&
+    (!config.crisisExpress || owns(entitlements, 'mode_crisis_express')) &&
+    (!config.scenarioId || owns(entitlements, HISTORICAL_SCENARIOS[config.scenarioId].entitlementRequired))
+  );
 }
 
 export function entitlementsForFeature(featureId: string): EntitlementId[] {

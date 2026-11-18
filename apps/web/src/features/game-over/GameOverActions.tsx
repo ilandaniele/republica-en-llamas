@@ -1,22 +1,30 @@
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { useGameStore } from '../../stores/gameStore.js';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useSaveRun } from './useSaveRun.js';
 import { prefetchOnIntent } from '../../app/routes.js';
+import { ApiError } from '../../lib/api.js';
 
 function saveButtonLabel(isSaving: boolean, isSaved: boolean) {
   if (isSaving) return 'GUARDANDO...';
   return isSaved ? '✓ GUARDADO' : '💾 GUARDAR';
 }
 
+function saveErrorKey(error: Error) {
+  return error instanceof ApiError && error.status === 429 ? 'runSave.saveRateLimited' : 'runSave.saveFailed';
+}
+
 export function GameOverActions() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const resetGame = useGameStore((s) => s.resetGame);
   const runConfig = useGameStore((s) => s.runConfig);
   const runTicketId = useGameStore((s) => s.runTicketId);
+  const runTicketError = useGameStore((s) => s.runTicketError);
   const decisions = useGameStore((s) => s.decisions);
   const { user } = useAuth();
-  const { mutate: saveRun, isPending: isSaving, isSuccess: isSaved } = useSaveRun();
+  const { mutate: saveRun, isPending: isSaving, isSuccess: isSaved, error: saveError } = useSaveRun();
 
   const handleSaveScore = () => {
     if (!runTicketId || !runConfig || isSaving || isSaved) return;
@@ -75,6 +83,16 @@ export function GameOverActions() {
           📊 HISTORIAL
         </button>
       </div>
+      {!runTicketId && runTicketError && (
+        <p role="status" className="mt-3 text-gold-400">
+          {t(`runSave.unsaved.${runTicketError}`)}
+        </p>
+      )}
+      {saveError && (
+        <p role="alert" className="mt-3 text-gold-400">
+          {t(saveErrorKey(saveError))}
+        </p>
+      )}
     </>
   );
 }

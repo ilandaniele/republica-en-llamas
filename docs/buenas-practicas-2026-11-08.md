@@ -85,6 +85,17 @@ No propongo microservicios, Next.js, un segundo store ni un caché distribuido p
 - `npm run bundle:engine`: aprobado.
 - Diff sin errores de espacios. Revisión visual en navegador y contenedor nginx: pendientes.
 
+## Addendum 2026-11-11 (Cloudflare)
+
+Verificación actual, separada de las mediciones históricas de arriba:
+
+- Supabase y nginx ya no existen; el hallazgo 1 (persistencia no atómica) aplica a la versión anterior. Los hallazgos 4 y 6 siguen abiertos.
+- Cache API no tiene efecto en `*.workers.dev`. El leaderboard no se cachea en el edge; se protege con rate limit por IP. Cachear requiere dominio propio.
+- Compresión: Cloudflare comprime en el edge; no se agregó compresión en el Worker.
+- Consultas D1: columnas explícitas, una consulta por endpoint, filtradas por el id de la sesión; sin N+1.
+- k6 local contra `wrangler dev` (no producción): p95 18,5 ms (load), 18,8 ms (peak), 29 ms (stress), 0 respuestas 5xx. Los 429 son rate limit esperado.
+- Lint, tipos y tests: ver `docs/CLAUDE-HANDOFF.md`, sección 2026-11-11.
+
 ## Fuentes consultadas
 
 - [Claude Code: buenas prácticas](https://code.claude.com/docs/en/best-practices): contexto de proyecto, comprobaciones reproducibles y reglas verificables.

@@ -4,7 +4,7 @@
 
 Con `npm run playtest --workspace=apps/web`, abrir http://127.0.0.1:5174/debate o usar **Probar debate presidencial** en el inicio. Elegir un personaje, seleccionar una de cuatro respuestas y confirmar. Cada resumen permite pasar al siguiente cruce; después del tercero se abre el escrutinio.
 
-La práctica admite los doce personajes, está separada del guardado y no llama a Supabase, envía puntajes ni altera compras. El build de producción elimina esta ruta, su botón y su módulo. La partida normal conserva los tres personajes gratuitos y los nueve del pack.
+La práctica admite los doce personajes, está separada del guardado y no llama a la API del Worker de Cloudflare, envía puntajes ni altera compras. El build de producción elimina esta ruta, su botón y su módulo. La partida normal conserva los tres personajes gratuitos y los nueve del pack.
 
 ## Integración en la partida
 

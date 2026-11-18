@@ -17,7 +17,7 @@ export interface LeaderboardEntry {
 
 function fetchLeaderboard(difficulty?: string): Promise<LeaderboardEntry[]> {
   const params = difficulty ? `?${new URLSearchParams({ difficulty }).toString()}` : '';
-  return apiGet<LeaderboardEntry[]>(`leaderboard${params}`);
+  return apiGet<LeaderboardEntry[]>(`leaderboard${params}`, { cache: 'no-cache' });
 }
 
 export function leaderboardQuery(difficulty?: string) {

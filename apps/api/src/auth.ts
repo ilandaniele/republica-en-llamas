@@ -1,7 +1,9 @@
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { betterAuth } from 'better-auth';
 import { anonymous } from 'better-auth/plugins';
-import type { Env } from './env.js';
-import { allowedOrigins } from './http.js';
+import { findEnvProblems, type Env } from './env.js';
+import { allowedOrigins, RequestError } from './http.js';
+import { hashPassword, verifyPassword } from './password.js';
 import { neutralUsername } from './policy.js';
 import { transferGuestTickets } from './tickets.js';
 import { sendPasswordResetEmail } from './email.js';
@@ -11,10 +13,25 @@ function googleProvider(env: Env) {
   return { google: { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } };
 }
 
-const MIN_SECRET_LENGTH = 32;
+const RESET_TOKEN_TTL_SECONDS = 30 * 60;
+const EMAIL_TIMEOUT_MS = 10_000;
 
-export function createAuth(env: Env) {
-  if ((env.BETTER_AUTH_SECRET?.length ?? 0) < MIN_SECRET_LENGTH) throw new Error('BETTER_AUTH_SECRET is not configured');
+export const executionContext = new AsyncLocalStorage<ExecutionContext | undefined>();
+
+function withTimeout(promise: Promise<void>, ms: number): Promise<void> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<void>((_, reject) => {
+    timer = setTimeout(() => reject(new Error('Email send timed out')), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
+function createAuth(env: Env) {
+  const problems = findEnvProblems(env);
+  if (problems.length > 0) {
+    console.error({ event: 'auth_misconfigured', problems });
+    throw new RequestError(503, 'Service unavailable');
+  }
   return betterAuth({
     appName: 'República en Llamas',
     baseURL: env.WEB_URL,
@@ -22,15 +39,26 @@ export function createAuth(env: Env) {
     secret: env.BETTER_AUTH_SECRET,
     database: env.DB,
     trustedOrigins: allowedOrigins(env.WEB_URL, env.ALLOWED_ORIGINS),
-    rateLimit: { enabled: true, storage: 'database' },
+    rateLimit: {
+      enabled: true,
+      storage: 'database',
+      customRules: { '/sign-in/anonymous': { window: 3600, max: 10 } },
+    },
     emailAndPassword: {
       enabled: true,
       minPasswordLength: 8,
+      password: { hash: hashPassword, verify: verifyPassword },
       revokeSessionsOnPasswordReset: true,
-      sendResetPassword: ({ user, url }) => sendPasswordResetEmail(env, user.email, url),
+      resetPasswordTokenExpiresIn: RESET_TOKEN_TTL_SECONDS,
+      sendResetPassword: ({ user, url }) =>
+        withTimeout(sendPasswordResetEmail(env, user.email, url), EMAIL_TIMEOUT_MS),
     },
     socialProviders: googleProvider(env),
-    advanced: { ipAddress: { ipAddressHeaders: ['cf-connecting-ip'] } },
+    advanced: {
+      ipAddress: { ipAddressHeaders: ['cf-connecting-ip'] },
+      disableOriginCheck: false,
+      backgroundTasks: { handler: (promise) => executionContext.getStore()?.waitUntil(promise) },
+    },
     databaseHooks: {
       user: {
         create: {
@@ -55,6 +83,17 @@ export function createAuth(env: Env) {
 }
 
 export type Auth = ReturnType<typeof createAuth>;
+
+const instances = new WeakMap<Env, Auth>();
+
+export function getAuth(env: Env): Auth {
+  let auth = instances.get(env);
+  if (!auth) {
+    auth = createAuth(env);
+    instances.set(env, auth);
+  }
+  return auth;
+}
 
 export interface SessionUser {
   id: string;

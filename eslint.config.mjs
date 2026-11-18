@@ -31,7 +31,7 @@ const featureBoundaryZones = [
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/.expo/**', 'apps/mobile/**', 'art/raw/**', 'scripts/**', 'supabase/functions/**'],
+    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/playwright-report/**', '**/test-results/**', '**/.expo/**', '**/.wrangler/**', 'apps/mobile/**', 'art/raw/**', 'scripts/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -80,7 +80,7 @@ export default tseslint.config(
     rules: {
       'no-restricted-imports': [
         'error',
-        { patterns: [{ group: ['react', 'react-*', '@supabase/*', 'posthog-js'], message: 'game-engine must stay pure: no UI or IO imports.' }] },
+        { patterns: [{ group: ['react', 'react-*', 'better-auth', 'better-auth/*', 'posthog-js'], message: 'game-engine must stay pure: no UI or IO imports.' }] },
       ],
       'no-restricted-properties': [
         'error',

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence } from 'framer-motion';
 import { isLowerOffice } from '@republica/game-engine';
 import CareerGameScreen from './career/CareerGameScreen.js';
@@ -82,6 +83,7 @@ function PresidentialGameScreen() {
   const presidentId = useGameStore((s) => s.presidentId);
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
   const timeoutSelection = useGameStore((s) => s.timeoutSelection);
+  const { t } = useTranslation();
   const [showDiary, setShowDiary] = useState(false);
   const tutorialComplete = useGameStore((s) => s.tutorialComplete);
   const [showMidGamePaywall, closeMidGamePaywall] = useMidGamePaywall(gameState?.turn);
@@ -125,7 +127,11 @@ function PresidentialGameScreen() {
       <MilestoneToast message={milestoneToast} />
       <DecisionDiary isOpen={showDiary} onClose={() => setShowDiary(false)} />
 
-      <div className={`p-4 ${hasCrisis || cardShaking ? 'animate-screen-shake' : ''}`}>
+      <p className="sr-only" role="status">
+        {`Turno ${gameState.turn}: ${t(currentCard.titleKey)}`}
+      </p>
+
+      <div className={`p-4 pb-12 ${hasCrisis || cardShaking ? 'animate-screen-shake' : ''}`}>
         {hasCrisis && <div className="crisis-vignette" />}
 
         <TutorialOverlay />
@@ -154,9 +160,9 @@ function PresidentialGameScreen() {
           <aside>
             <VariablesPanel state={gameState} />
           </aside>
-          <main className="min-w-0">
+          <div className="min-w-0">
             <CardArea gameState={gameState} />
-          </main>
+          </div>
         </div>
 
         {hasCrisis && (

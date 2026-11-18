@@ -18,6 +18,7 @@
     "lint": "eslint src"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.12",
     "typescript": "^5.4.5",
     "vitest": "^4.1.11"
   },

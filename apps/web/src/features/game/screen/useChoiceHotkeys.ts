@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import type { EventCard } from '@republica/game-engine';
+import { usePreferencesStore } from '../../../stores/preferencesStore.js';
 
 const CHOICE_KEYS: Record<string, number> = { '1': 0, '2': 1, '3': 2, '4': 3, a: 0, b: 1, c: 2, d: 3 };
 
@@ -19,8 +20,9 @@ export function useChoiceHotkeys({
   selectChoice,
   confirmChoice,
 }: ChoiceHotkeysOptions) {
+  const hotkeysEnabled = usePreferencesStore((s) => s.hotkeysEnabled);
   useEffect(() => {
-    if (!enabled || !card || card.isLaw) return;
+    if (!hotkeysEnabled || !enabled || !card || card.isLaw) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
       if (document.querySelector('[data-choices-disabled="true"]')) return;
@@ -44,5 +46,5 @@ export function useChoiceHotkeys({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [enabled, card, pendingChoiceIndex, selectChoice, confirmChoice]);
+  }, [hotkeysEnabled, enabled, card, pendingChoiceIndex, selectChoice, confirmChoice]);
 }
