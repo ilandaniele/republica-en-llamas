@@ -3,6 +3,7 @@ import { betterAuth } from 'better-auth';
 import { anonymous } from 'better-auth/plugins';
 import { findEnvProblems, type Env } from './env.js';
 import { allowedOrigins, RequestError } from './http.js';
+import { hashPassword, verifyPassword } from './password.js';
 import { neutralUsername } from './policy.js';
 import { transferGuestTickets } from './tickets.js';
 import { sendPasswordResetEmail } from './email.js';
@@ -46,6 +47,7 @@ function createAuth(env: Env) {
     emailAndPassword: {
       enabled: true,
       minPasswordLength: 8,
+      password: { hash: hashPassword, verify: verifyPassword },
       revokeSessionsOnPasswordReset: true,
       resetPasswordTokenExpiresIn: RESET_TOKEN_TTL_SECONDS,
       sendResetPassword: ({ user, url }) =>

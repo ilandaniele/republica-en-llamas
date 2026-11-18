@@ -40,6 +40,7 @@ const ROUTES: Record<string, Route> = {
 };
 
 const MAX_AUTH_PATH_LENGTH = 64;
+const SESSION_PATH = '/api/auth/get-session';
 
 async function health(ctx: RouteContext): Promise<Response> {
   await ctx.env.DB.prepare('select 1').first();
@@ -54,7 +55,7 @@ function assertAllowedWriteOrigin(request: Request, env: Env): void {
 async function handleAuth(request: Request, env: Env, url: URL): Promise<Response> {
   if (url.pathname.length > MAX_AUTH_PATH_LENGTH) return json({ error: 'Not found' }, 404);
   assertAllowedWriteOrigin(request, env);
-  await enforceIpRateLimit(env.DB, request, 'auth');
+  await enforceIpRateLimit(env.DB, request, url.pathname === SESSION_PATH ? 'auth-session' : 'auth');
   const auth = getAuth(env);
   return withSecurityHeaders(await auth.handler(await withLimitedBody(request, DEFAULT_MAX_BYTES)));
 }

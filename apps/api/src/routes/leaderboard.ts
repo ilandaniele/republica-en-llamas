@@ -36,5 +36,5 @@ export async function leaderboard(ctx: RouteContext): Promise<Response> {
   if (difficulty !== null && !DIFFICULTIES.has(difficulty)) throw new RequestError(400, 'Unknown difficulty');
   const { results } = await leaderboardQuery(ctx.env.DB, difficulty).all<LeaderboardRow>();
   const entries = results.map((row) => ({ ...row, is_win: row.is_win === 1 }));
-  return json(entries, 200, { 'Cache-Control': 'public, max-age=30' });
+  return json(entries, 200, { 'Cache-Control': 'no-cache' });
 }

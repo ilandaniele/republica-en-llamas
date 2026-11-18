@@ -130,7 +130,7 @@ describe('leaderboard', () => {
     await insertRun('alice', 'easy', 1_000);
 
     const all = await leaderboardRequest();
-    expect(all.headers.get('Cache-Control')).toBe('public, max-age=30');
+    expect(all.headers.get('Cache-Control')).toBe('no-cache');
     const allRows = (await all.json()) as { score: number; difficulty: string }[];
     expect(allRows).toHaveLength(100);
     expect(allRows[0]).toMatchObject({ score: 1_000, difficulty: 'easy' });

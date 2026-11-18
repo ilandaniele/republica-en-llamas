@@ -113,9 +113,12 @@ describe('ip limiter', () => {
     expect((await post('/api/start-run', {})).status).toBe(503);
   });
 
-  it('rate limits every auth path under one bucket and rejects long paths', async () => {
+  it('rate limits auth paths under one bucket, session checks apart, and rejects long paths', async () => {
     expect((await fetchApi(`/api/auth/${'x'.repeat(200)}`)).status).toBe(404);
     for (let i = 0; i < 120; i++) await fetchApi(`/api/auth/probe-${i}`);
+    expect((await fetchApi('/api/auth/probe-last')).status).toBe(429);
+    expect((await fetchApi('/api/auth/get-session')).status).not.toBe(429);
+    for (let i = 0; i < 119; i++) await fetchApi('/api/auth/get-session');
     expect((await fetchApi('/api/auth/get-session')).status).toBe(429);
     const { n } = (await env.DB.prepare(
       "select count(*) as n from api_rate_limits where bucket_key like 'ip:auth:%'",
