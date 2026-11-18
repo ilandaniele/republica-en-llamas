@@ -2,6 +2,15 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-18 — PR #41 merged, first CI deploy
+
+- PR #41 merged to main. CI run 44356547274: verify, D1 bookmark and migrations passed.
+- `wrangler deploy` uploaded version `af4e8b87` (live, 100%), then failed on the cron schedule:
+  "This account has reached the Workers Free limit of 5 cron triggers per account" (code 10072).
+- Fixed the same day: removed the `* * * * *` cron from `franja-morada-uns` (its `wrangler.jsonc`
+  now has `crons: []`), re-ran the failed job; Deploy and smoke test passed, cron `0 4 * * *` is live.
+- Manual smoke on the live URL: `/` 200, `/api/health` 200, `/api/profile` 401.
+
 ## 2026-11-17 — Test findings fixed, deploy checklist
 
 - F1: passwords hashed with WebCrypto PBKDF2-SHA256, 50k iterations, ~6 ms CPU in node (`apps/api/src/password.ts`, wired in `auth.ts`). Format `pbkdf2_sha256$<iterations>$<salt>$<hash>`; old Better Auth scrypt hashes still verify. Not yet measured on the deployed Worker.
