@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
 import { isOfflineMode } from '../../lib/api.js';
-import { requestPasswordReset, signInWithGoogle, translateAuthError } from '../../lib/auth.js';
+import { signInWithGoogle, translateAuthError } from '../../lib/auth.js';
 import { useGameStore } from '../../stores/gameStore.js';
 import { GoogleIcon } from './GoogleIcon.js';
 import { useAuthDestination } from './useAuthDestination.js';
@@ -20,7 +20,6 @@ export default function LoginScreen() {
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,27 +39,6 @@ export default function LoginScreen() {
       await continueAfterAuth();
     } catch {
       setError('Error inesperado. Intentá de nuevo.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleForgotPassword = async () => {
-    if (!email) {
-      setError('Ingresá tu email primero');
-      return;
-    }
-    setLoading(true);
-    setError('');
-    try {
-      const { error: resetError } = await requestPasswordReset(email);
-      if (resetError) {
-        setError('No se pudo enviar la recuperación. Intentá nuevamente más tarde.');
-        return;
-      }
-      setResetSent(true);
-    } catch {
-      setError('No se pudo enviar la recuperación. Revisá tu conexión.');
     } finally {
       setLoading(false);
     }
@@ -101,77 +79,62 @@ export default function LoginScreen() {
           <div className="h-px flex-1 bg-navy-600" />
         </div>
 
-        {resetSent ? (
-          <div className="rounded-lg border border-emerald-700 bg-emerald-900/40 p-4 font-mono text-sm text-emerald-300">
-            ✓ Si la cuenta existe, recibirás un email para restablecer tu contraseña.
+        <form
+          onSubmit={(e) => {
+            void handleSubmit(e);
+          }}
+          className="space-y-4"
+        >
+          <input
+            type="email"
+            aria-label="Email"
+            autoComplete="username"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500"
+          />
+          <input
+            type="password"
+            aria-label="Contraseña"
+            autoComplete="current-password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500"
+          />
+
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="accent-gold-500"
+            />
+            <label htmlFor="rememberMe" className="cursor-pointer font-mono text-xs text-smoke-400">
+              Recordarme
+            </label>
           </div>
-        ) : (
-          <form
-            onSubmit={(e) => {
-              void handleSubmit(e);
-            }}
-            className="space-y-4"
-          >
-            <input
-              type="email"
-              aria-label="Email"
-              autoComplete="username"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500"
-            />
-            <input
-              type="password"
-              aria-label="Contraseña"
-              autoComplete="current-password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 font-mono text-sm text-smoke-100 focus:border-gold-500"
-            />
 
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="accent-gold-500"
-              />
-              <label htmlFor="rememberMe" className="cursor-pointer font-mono text-xs text-smoke-400">
-                Recordarme
-              </label>
+          {error && (
+            <div role="alert" className="rounded border border-crimson-700 bg-crimson-900/40 px-3 py-2">
+              <p className="font-mono text-xs text-crimson-300">{error}</p>
             </div>
+          )}
 
-            {error && (
-              <div role="alert" className="rounded border border-crimson-700 bg-crimson-900/40 px-3 py-2">
-                <p className="font-mono text-xs text-crimson-300">{error}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-crimson-600 px-6 py-3 font-serif font-bold uppercase tracking-wider text-smoke-100 transition-colors hover:bg-crimson-500 disabled:opacity-50"
-            >
-              {loading ? 'Ingresando...' : 'Entrar y jugar'}
-            </button>
-          </form>
-        )}
-
-        <div className="mt-4 flex justify-between">
           <button
+            type="submit"
             disabled={loading}
-            onClick={() => {
-              void handleForgotPassword();
-            }}
-            className="font-mono text-xs text-smoke-500 underline hover:text-smoke-300"
+            className="w-full rounded-lg bg-crimson-600 px-6 py-3 font-serif font-bold uppercase tracking-wider text-smoke-100 transition-colors hover:bg-crimson-500 disabled:opacity-50"
           >
-            Olvidé mi contraseña
+            {loading ? 'Ingresando...' : 'Entrar y jugar'}
           </button>
+        </form>
+
+        <div className="mt-4 flex justify-end">
           <button
             onClick={() => navigate('/register', { state: routeState })}
             className="font-mono text-xs text-gold-400 underline hover:text-gold-300"

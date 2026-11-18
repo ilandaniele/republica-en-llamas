@@ -15,7 +15,7 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - Remote state checked 2026-11-17: Worker secret `BETTER_AUTH_SECRET` set; GitHub secret `CLOUDFLARE_ACCOUNT_ID` set, `CLOUDFLARE_API_TOKEN` missing, so the deploy job cannot run yet.
 - Deploy checklist (owner):
   1. GitHub secret `CLOUDFLARE_API_TOKEN` (Workers Scripts edit + D1 edit on the account).
-  2. Done 2026-11-18: `CLOUDFLARE_API_TOKEN` added. The `send_email` binding was removed from `wrangler.jsonc` (no custom domain, so no Email Routing); password reset mails are skipped until a domain, the binding and `RESET_EMAIL_FROM` are added back.
+  2. Done 2026-11-18: `CLOUDFLARE_API_TOKEN` added. The `send_email` binding was removed from `wrangler.jsonc` (no custom domain, so no Email Routing); password reset mails are skipped until a domain, the binding and `RESET_EMAIL_FROM` are added back. The "Olvidé mi contraseña" button is hidden in `LoginScreen.tsx` (2026-11-18); re-add it (git history of that file) together with the binding. `/reset-password` route and `requestPasswordReset` in `lib/auth.ts` stay.
   3. Stripe and Google secrets are optional, but each pair must be complete or every auth route returns 503.
   4. Merge PR into `main`; CI migrates D1, deploys, and smoke-tests `/api/health`.
 
