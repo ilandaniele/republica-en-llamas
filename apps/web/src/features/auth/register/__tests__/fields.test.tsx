@@ -11,9 +11,9 @@ function renderUsername(value: string, available: boolean | null, checking = fal
 }
 
 describe('UsernameField accessibility', () => {
-  it('labels the input and sets the username autocomplete token', () => {
+  it('labels the input with a nickname autocomplete token so browsers do not fill the email', () => {
     const input = renderUsername('', null);
-    expect(input).toHaveAttribute('autocomplete', 'username');
+    expect(input).toHaveAttribute('autocomplete', 'nickname');
   });
 
   it('announces availability as text in a polite live region', () => {
@@ -29,6 +29,16 @@ describe('UsernameField accessibility', () => {
     const input = renderUsername('ilan', false);
     expect(screen.getByText('No disponible')).toBeInTheDocument();
     expect(input).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('explains why an email-like name is rejected', () => {
+    renderUsername('ilan@mail.com', false);
+    expect(screen.getByText(/letras, números, punto, guion o guion bajo/)).toBeInTheDocument();
+  });
+
+  it('says a well-formed unavailable name is taken', () => {
+    renderUsername('ilan', false);
+    expect(screen.getByText('Ese nombre de usuario ya está ocupado')).toBeInTheDocument();
   });
 
   it('announces the checking state without marking the input invalid', () => {

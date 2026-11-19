@@ -10,6 +10,11 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - Fixed the same day: removed the `* * * * *` cron from `franja-morada-uns` (its `wrangler.jsonc`
   now has `crons: []`), re-ran the failed job; Deploy and smoke test passed, cron `0 4 * * *` is live.
 - Manual smoke on the live URL: `/` 200, `/api/health` 200, `/api/profile` 401.
+- Live signup test (2026-11-19) found: Google button did nothing (no `GOOGLE_CLIENT_*` secrets, server
+  returns `PROVIDER_NOT_FOUND`), browser autofilled the email into the username field, and the submit
+  stayed disabled with only a ✗. Fix: `GoogleSignIn` renders only when `VITE_GOOGLE_SIGN_IN=true`
+  (set it in the CI build together with the Google secrets), username uses `autocomplete="nickname"`
+  and shows why the name is rejected (`usernameFormatError`).
 
 ## 2026-11-17 — Test findings fixed, deploy checklist
 
