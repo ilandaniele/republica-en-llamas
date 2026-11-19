@@ -83,6 +83,7 @@ jobs:
         run: npm run build --workspace=apps/web
         env:
           VITE_POSTHOG_KEY: ${{ secrets.VITE_POSTHOG_KEY }}
+          VITE_GOOGLE_SIGN_IN: 'true'
 
       - name: Record D1 Time Travel bookmark
         working-directory: apps/api
