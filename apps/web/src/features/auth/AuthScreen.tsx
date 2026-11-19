@@ -2,10 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
 import { isOfflineMode } from '../../lib/api.js';
-import { signInWithGoogle } from '../../lib/auth.js';
 import { useGameStore } from '../../stores/gameStore.js';
 import type { Difficulty } from '@republica/game-engine';
-import { GoogleIcon } from './GoogleIcon.js';
+import { GoogleSignIn } from './GoogleSignIn.js';
 
 const DIFFICULTIES: { id: Difficulty; label: string; flavor: string; color: string }[] = [
   {
@@ -90,23 +89,7 @@ export default function AuthScreen() {
         <div className="space-y-3">
           {!isOfflineMode ? (
             <>
-              <m.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  void signInWithGoogle();
-                }}
-                className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-800 transition-colors hover:bg-gray-50"
-              >
-                <GoogleIcon />
-                Continuar con Google
-              </m.button>
-
-              <div className="flex items-center gap-3">
-                <div className="h-px flex-1 bg-navy-600" />
-                <span className="font-mono text-xs text-smoke-400">o</span>
-                <div className="h-px flex-1 bg-navy-600" />
-              </div>
+              <GoogleSignIn dividerLabel="o" className="space-y-3" />
 
               <m.button
                 whileHover={{ scale: 1.02 }}

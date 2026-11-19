@@ -74,6 +74,8 @@ export async function signOut() {
   return result;
 }
 
+export const isGoogleSignInEnabled = import.meta.env['VITE_GOOGLE_SIGN_IN'] === 'true';
+
 export function signInWithGoogle() {
   return authClient.signIn.social({ provider: 'google', callbackURL: '/' });
 }

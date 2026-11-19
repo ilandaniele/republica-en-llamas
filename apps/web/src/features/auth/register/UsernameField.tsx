@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import { MIN_USERNAME_LENGTH } from '../useUsernameAvailability.js';
+import { usernameFormatError } from './validateRegistration.js';
 
 interface UsernameFieldProps {
   value: string;
@@ -19,6 +20,8 @@ export function UsernameField({ value, onChange, available, checking }: Username
   const statusId = useId();
   const indicator = availabilityIndicator(checking, available);
   const showStatus = value.length >= MIN_USERNAME_LENGTH;
+  const isInvalid = showStatus && !checking && !available;
+  const hint = isInvalid ? (usernameFormatError(value) ?? 'Ese nombre de usuario ya está ocupado') : null;
   return (
     <div className="relative">
       <label htmlFor={inputId} className="sr-only">
@@ -27,11 +30,11 @@ export function UsernameField({ value, onChange, available, checking }: Username
       <input
         id={inputId}
         type="text"
-        autoComplete="username"
+        autoComplete="nickname"
         placeholder="Nombre de usuario (mín. 3 caracteres)"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        aria-invalid={showStatus && !checking && !available}
+        aria-invalid={isInvalid}
         aria-describedby={statusId}
         className="w-full rounded-lg border border-navy-600 bg-navy-800 px-4 py-3 pr-8 font-mono text-sm text-smoke-100 focus:border-gold-500"
       />
@@ -47,6 +50,7 @@ export function UsernameField({ value, onChange, available, checking }: Username
           </>
         )}
       </span>
+      {hint && <p className="mt-1 font-mono text-xs text-crimson-300">{hint}</p>}
     </div>
   );
 }

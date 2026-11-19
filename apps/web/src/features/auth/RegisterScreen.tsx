@@ -4,9 +4,9 @@ import { m } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
 import { MIN_USERNAME_LENGTH, useUsernameAvailability } from './useUsernameAvailability.js';
 import { isOfflineMode } from '../../lib/api.js';
-import { signInWithGoogle, translateAuthError } from '../../lib/auth.js';
+import { translateAuthError } from '../../lib/auth.js';
 import { useGameStore } from '../../stores/gameStore.js';
-import { GoogleIcon } from './GoogleIcon.js';
+import { GoogleSignIn } from './GoogleSignIn.js';
 import { useAuthDestination } from './useAuthDestination.js';
 import { OfflineNotice } from './OfflineNotice.js';
 import { UsernameField } from './register/UsernameField.js';
@@ -84,22 +84,7 @@ export default function RegisterScreen() {
           Tu historial de partidas se guarda automáticamente.
         </p>
 
-        <button
-          type="button"
-          onClick={() => {
-            void signInWithGoogle();
-          }}
-          className="mb-4 flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 font-semibold text-gray-800 transition-colors hover:bg-gray-50"
-        >
-          <GoogleIcon />
-          Continuar con Google
-        </button>
-
-        <div className="mb-4 flex items-center gap-3">
-          <div className="h-px flex-1 bg-navy-600" />
-          <span className="font-mono text-xs text-smoke-400">o registrate con email</span>
-          <div className="h-px flex-1 bg-navy-600" />
-        </div>
+        <GoogleSignIn dividerLabel="o registrate con email" className="mb-4 space-y-4" />
 
         <form
           onSubmit={(e) => {

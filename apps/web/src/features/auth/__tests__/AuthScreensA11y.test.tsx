@@ -13,6 +13,7 @@ vi.mock('../../../hooks/useAuth.js', () => ({
 }));
 vi.mock('../../../lib/api.js', () => ({ isOfflineMode: false }));
 vi.mock('../../../lib/auth.js', () => ({
+  isGoogleSignInEnabled: false,
   signInWithGoogle: vi.fn(),
   requestPasswordReset: vi.fn(),
   translateAuthError: (message: string) => message,
@@ -44,7 +45,7 @@ describe('RegisterScreen accessibility', () => {
   it('exposes labelled fields with autocomplete tokens', () => {
     mount(<RegisterScreen />);
     expect(screen.getByLabelText('Email')).toHaveAttribute('autocomplete', 'email');
-    expect(screen.getByLabelText('Nombre de usuario')).toHaveAttribute('autocomplete', 'username');
+    expect(screen.getByLabelText('Nombre de usuario')).toHaveAttribute('autocomplete', 'nickname');
     expect(screen.getByLabelText('Contraseña')).toHaveAttribute('autocomplete', 'new-password');
   });
 
