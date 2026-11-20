@@ -65,19 +65,24 @@ interface PaidSession {
 }
 
 async function webhookRequest(session: PaidSession, secret = WEBHOOK_SECRET): Promise<Request> {
-  const payload = JSON.stringify({
-    id: 'evt_test',
-    object: 'event',
-    type: 'checkout.session.completed',
-    data: {
-      object: {
-        id: session.id,
-        object: 'checkout.session',
-        payment_status: 'paid',
-        metadata: { userId: session.userId, entitlement: session.entitlement },
-      },
+  return signedEventRequest(
+    'checkout.session.completed',
+    {
+      id: session.id,
+      object: 'checkout.session',
+      payment_status: 'paid',
+      metadata: { userId: session.userId, entitlement: session.entitlement },
     },
-  });
+    secret,
+  );
+}
+
+async function signedEventRequest(
+  type: string,
+  object: Record<string, unknown>,
+  secret = WEBHOOK_SECRET,
+): Promise<Request> {
+  const payload = JSON.stringify({ id: 'evt_test', object: 'event', type, data: { object } });
   const signature = await stripe.webhooks.generateTestHeaderStringAsync({
     payload,
     secret,
@@ -203,5 +208,40 @@ describe('stripe-webhook', () => {
     expect(fetch).toHaveBeenCalledTimes(2);
     expect(response.status).toBe(500);
     notGrantedLog({ sessionId: 'cs_test_1', reason: 'grant failed' });
+  });
+});
+
+describe('stripe-webhook refunds', () => {
+  const refund = (refunded: boolean) =>
+    signedEventRequest('charge.refunded', { id: 'ch_1', object: 'charge', payment_intent: 'pi_1', refunded });
+
+  beforeEach(() => {
+    vi.mocked(fetch).mockImplementation(async () =>
+      Response.json({
+        object: 'list',
+        has_more: false,
+        data: [{ id: 'cs_paid', object: 'checkout.session' }],
+      }),
+    );
+  });
+
+  it('revokes the entitlement bought in a fully refunded checkout', async () => {
+    await grant('alice', 'presidents_pack', 'cs_paid');
+    const response = await call(stripeWebhook, context(await refund(true)));
+    expect(await response.json()).toMatchObject({ revoked: true });
+    expect(await grantedSession('alice', 'presidents_pack')).toBeUndefined();
+  });
+
+  it('keeps the entitlement on a partial refund', async () => {
+    await grant('alice', 'presidents_pack', 'cs_paid');
+    const response = await call(stripeWebhook, context(await refund(false)));
+    expect(await response.json()).toMatchObject({ revoked: false });
+    expect(await grantedSession('alice', 'presidents_pack')).toBe('cs_paid');
+  });
+
+  it('keeps entitlements from other checkouts', async () => {
+    await grant('alice', 'presidents_pack', 'cs_other');
+    await call(stripeWebhook, context(await refund(true)));
+    expect(await grantedSession('alice', 'presidents_pack')).toBe('cs_other');
   });
 });
