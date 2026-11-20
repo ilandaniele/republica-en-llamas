@@ -272,7 +272,7 @@ export default function HomeScreen() {
   const setScenario = useGameStore((s) => s.setScenario);
   const careerStart = useGameStore((s) => s.careerStart);
   const setCareerStart = useGameStore((s) => s.setCareerStart);
-  const { user, loading: authLoading, signOut } = useAuth();
+  const { user } = useAuth();
   const { hasEntitlement } = useEntitlements();
   const [authMode, setAuthMode] = useState<AuthMode>('menu');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('normal');
@@ -360,9 +360,6 @@ export default function HomeScreen() {
   const handleContinue = () => {
     navigate('/game');
   };
-  const handleLogout = () => {
-    void signOut();
-  };
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden p-6">
@@ -417,22 +414,6 @@ export default function HomeScreen() {
         <AnimatePresence mode="wait">
           {authMode === 'menu' ? (
             <m.div key="menu" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              {/* Logged-in user header */}
-              {!authLoading && user && (
-                <div className="mb-6 flex items-center justify-between rounded-lg border border-navy-600 bg-navy-800 px-4 py-3">
-                  <div>
-                    <p className="font-mono text-xs text-smoke-400">Sesión activa</p>
-                    <p className="font-mono text-sm font-bold text-gold-400">{user.email}</p>
-                  </div>
-                  <button
-                    onClick={handleLogout}
-                    className="rounded border border-navy-500 px-3 py-1 font-mono text-xs text-smoke-500 hover:text-smoke-300"
-                  >
-                    Cerrar sesión
-                  </button>
-                </div>
-              )}
-
               <ModeTabs
                 homeMode={homeMode}
                 onChange={(mode) => {
