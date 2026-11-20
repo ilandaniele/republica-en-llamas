@@ -2,6 +2,19 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-19 — Google sign-in setup
+
+- Google Cloud project `republica-en-llamas-515220` created; Google Auth Platform (External) set up
+  in the console. OAuth web client: origin `https://republica-en-llamas.ilandaniele.workers.dev`,
+  redirect `https://republica-en-llamas.ilandaniele.workers.dev/api/auth/callback/google`.
+- Owner set both Worker secrets (2026-11-20; social sign-in returns a Google `url`) from `apps/api`: `npx wrangler secret put GOOGLE_CLIENT_ID` and
+  `npx wrangler secret put GOOGLE_CLIENT_SECRET` (one without the other makes the API return 503).
+- CI build now sets `VITE_GOOGLE_SIGN_IN: 'true'`; merge only after both secrets are set.
+- Static privacy page `apps/web/public/privacidad.html` (served at `/privacidad`) for the consent
+  screen privacy link; Google requires it before the app can be published out of Testing.
+- Check: POST `/api/auth/sign-in/social` with `{"provider":"google"}` returns a `url`, not
+  `PROVIDER_NOT_FOUND`.
+
 ## 2026-11-18 — PR #41 merged, first CI deploy
 
 - PR #41 merged to main. CI run 44356547274: verify, D1 bookmark and migrations passed.
