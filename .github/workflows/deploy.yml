@@ -56,10 +56,25 @@ jobs:
       - name: Build production game
         run: npm run build --workspace=apps/web
 
-  deploy:
-    name: Deploy
+  latest:
+    name: Check latest main
     needs: verify
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      is-latest: ${{ steps.head.outputs.is-latest }}
+    steps:
+      - id: head
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          head=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
+          echo "is-latest=$([ "$head" = "$GITHUB_SHA" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy
+    needs: latest
+    if: needs.latest.outputs.is-latest == 'true'
     runs-on: ubuntu-latest
     environment: production
     concurrency: deploy-production
