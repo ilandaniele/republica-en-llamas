@@ -15,6 +15,8 @@ const GRANT_SQL = `insert into user_entitlements (id, user_id, entitlement, stri
 const GRANT_STATE_SQL = `select exists (select 1 from "user" where id = ?1) as user_exists,
   (select stripe_session_id from user_entitlements where user_id = ?1 and entitlement = ?2) as owned_session_id`;
 
+const REVOKE_SQL = 'delete from user_entitlements where stripe_session_id = ?1';
+
 function stripeClient(env: Env): Stripe {
   if (!env.STRIPE_SECRET_KEY) throw new RequestError(503, 'Checkout unavailable');
   return new Stripe(env.STRIPE_SECRET_KEY, {
@@ -98,6 +100,21 @@ async function grantEntitlement(
   }
 }
 
+async function revokeRefundedEntitlement(
+  db: D1Database,
+  stripe: Stripe,
+  charge: Stripe.Charge,
+): Promise<Response> {
+  const paymentIntent =
+    typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id;
+  if (!charge.refunded || !paymentIntent) return json({ received: true, revoked: false });
+  const { data } = await stripe.checkout.sessions.list({ payment_intent: paymentIntent, limit: 1 });
+  const sessionId = data[0]?.id;
+  if (!sessionId) return json({ received: true, revoked: false });
+  const result = await db.prepare(REVOKE_SQL).bind(sessionId).run();
+  return json({ received: true, revoked: result.meta.changes > 0 });
+}
+
 export async function stripeWebhook(ctx: RouteContext): Promise<Response> {
   const signature = ctx.request.headers.get('stripe-signature');
   if (!signature) throw new RequestError(400, 'Invalid signature');
@@ -119,5 +136,7 @@ export async function stripeWebhook(ctx: RouteContext): Promise<Response> {
   }
   if (event.type === 'checkout.session.completed')
     return grantEntitlement(ctx.env.DB, stripe, event.data.object);
+  if (event.type === 'charge.refunded')
+    return revokeRefundedEntitlement(ctx.env.DB, stripe, event.data.object);
   return json({ received: true });
 }

@@ -2,6 +2,21 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-20 — Open findings closed
+
+- Stripe refunds: `charge.refunded` with `refunded: true` (full refund) looks up the checkout session
+  by `payment_intent` and deletes the entitlement granted by that session (`payments.ts`, tests in
+  `payments.test.ts`). Owner must add `charge.refunded` to the Stripe webhook endpoint events when
+  Stripe is configured. Partial refunds keep the entitlement.
+- Re-verified against the Worker code, closed: Google sign-up gets `neutralUsername()` (no email
+  local part on the leaderboard); guest ticket transfer only moves tickets newer than 24 h and caps
+  them at the daily limit (`transferGuestTickets`); the free cap is server-side only.
+- Accepted, not changed: requests without `Origin` pass the write-origin check. Browsers always send
+  `Origin` on POST, so CSRF is covered; non-browser clients can forge it anyway, and the Stripe
+  webhook has no `Origin`.
+- Still open: API-level email enumeration on sign-up. Fix needs email verification, which needs the
+  `EMAIL` binding and a custom domain (same blocker as password reset).
+
 ## 2026-11-19 — Google sign-in setup
 
 - Google Cloud project `republica-en-llamas-515220` created; Google Auth Platform (External) set up
