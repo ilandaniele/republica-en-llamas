@@ -12,6 +12,12 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - CI build now sets `VITE_GOOGLE_SIGN_IN: 'true'`; merge only after both secrets are set.
 - Static privacy page `apps/web/public/privacidad.html` (served at `/privacidad`) for the consent
   screen privacy link; Google requires it before the app can be published out of Testing.
+- PR #50 merged and deployed; consent screen published (In production). Owner signed in with Google
+  on 2026-11-20. `wrangler tail` CPU: `sign-in/social` 43 ms, `callback/google` 56 ms, `get-session`
+  15 ms, `entitlements` 8 ms; all `outcome: ok`. These exceed the Free plan's nominal 10 ms, so watch
+  for `exceededCpu` as traffic grows (Workers Paid lifts the limit). Email signup CPU still unmeasured.
+- Old Google Cloud project `republica-en-llamas` (Supabase-era `supabase-auth` client) still active;
+  owner to shut it down.
 - Check: POST `/api/auth/sign-in/social` with `{"provider":"google"}` returns a `url`, not
   `PROVIDER_NOT_FOUND`.
 
