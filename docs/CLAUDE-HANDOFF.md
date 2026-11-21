@@ -14,6 +14,15 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - Accepted, not changed: requests without `Origin` pass the write-origin check. Browsers always send
   `Origin` on POST, so CSRF is covered; non-browser clients can forge it anyway, and the Stripe
   webhook has no `Origin`.
+- CI: two pushes to main deployed out of order (older bundle won). Job `latest` in `deploy.yml`
+  now skips the deploy unless the run's commit is still the head of main (PR #54).
+- Home: duplicate "Sesión activa" card removed (PR #52); prod serves the new bundle.
+- Chrome check of prod after PR #53 deploy (desktop 1366 px): home renders, no app console errors
+  (only Chrome-extension "message channel closed" noise). Chrome cannot shrink the window to
+  390 px, so phone width was not checked in a real browser.
+- Email sign-up/sign-in CPU (PBKDF2) still unmeasured: owner created an email test account at
+  23:54 UTC, after `wrangler tail` had stopped; a second tail saw no login. Re-run `npx wrangler tail
+  --format json` from `apps/api` while signing in with email.
 - Still open: API-level email enumeration on sign-up. Fix needs email verification, which needs the
   `EMAIL` binding and a custom domain (same blocker as password reset).
 
@@ -31,8 +40,8 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
   on 2026-11-20. `wrangler tail` CPU: `sign-in/social` 43 ms, `callback/google` 56 ms, `get-session`
   15 ms, `entitlements` 8 ms; all `outcome: ok`. These exceed the Free plan's nominal 10 ms, so watch
   for `exceededCpu` as traffic grows (Workers Paid lifts the limit). Email signup CPU still unmeasured.
-- Old Google Cloud project `republica-en-llamas` (Supabase-era `supabase-auth` client) still active;
-  owner to shut it down.
+- Old Google Cloud project `republica-en-llamas` (Supabase-era `supabase-auth` client) shut down by
+  the owner (scheduled for deletion).
 - Check: POST `/api/auth/sign-in/social` with `{"provider":"google"}` returns a `url`, not
   `PROVIDER_NOT_FOUND`.
 
