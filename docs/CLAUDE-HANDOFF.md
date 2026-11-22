@@ -2,6 +2,16 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-22 — Kicillof likeness retouch
+
+- Kicillof art looked generic (light-brown hair, blue eyes). Retouched by hand-scripted pixel edits, no paid generation:
+  dark wavy hair, sideburns, dark eyes in `portrait_kicillof_{neutral,panic,victory}.webp` (portraits also drop the tie
+  for an open collar), `president_kicillof_{office,congress,press,diplomacy,crisis}.webp` and `cr_president_kicillof.webp`
+  (scenes and diorama keep tie/sash). Filenames unchanged, so `image-manifest.json` needs no change.
+- Re-running `scripts/pixel-art.py import` from new raws would overwrite these edits; any regeneration should prompt
+  for dark wavy hair, sideburns, dark eyes, open collar (`art/new-candidates.json`).
+- Verified locally: lint, type-check (web + engine), web 694 and engine 257 tests, web build.
+
 ## 2026-11-20 — Open findings closed
 
 - Stripe refunds: `charge.refunded` with `refunded: true` (full refund) looks up the checkout session
