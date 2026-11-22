@@ -12,8 +12,9 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
   for dark wavy hair, sideburns, dark eyes, open collar (`art/new-candidates.json`).
 - Verified locally: lint, type-check (web + engine), web 694 and engine 257 tests, web build.
 - Follow-up: orange rim highlights on the hair in the five `president_kicillof_*` scenes darkened (warm light pixels
-  enclosed by hair or outline on 3 of 4 sides); hair ramp top capped at `#5a4032`. Small forelock highlights over the
-  forehead in `crisis` stay, since darkening them would hit the skin.
+  enclosed by hair or outline on 3 of 4 sides); hair ramp top capped at `#5a4032`. Forelock highlights over the
+  forehead in `crisis` darkened inside a box that stops above the widow's peak, so the skin is untouched.
+- Verified in Claude in Chrome on prod: Kicillof portrait on the president select screen and all five scene files.
 
 ## 2026-11-20 — Open findings closed
 
