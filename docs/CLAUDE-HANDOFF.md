@@ -11,6 +11,9 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - Re-running `scripts/pixel-art.py import` from new raws would overwrite these edits; any regeneration should prompt
   for dark wavy hair, sideburns, dark eyes, open collar (`art/new-candidates.json`).
 - Verified locally: lint, type-check (web + engine), web 694 and engine 257 tests, web build.
+- Follow-up: orange rim highlights on the hair in the five `president_kicillof_*` scenes darkened (warm light pixels
+  enclosed by hair or outline on 3 of 4 sides); hair ramp top capped at `#5a4032`. Small forelock highlights over the
+  forehead in `crisis` stay, since darkening them would hit the skin.
 
 ## 2026-11-20 — Open findings closed
 
