@@ -13,8 +13,8 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
   `/?purchase_success=1&entitlement=mode_historical` and `/api/entitlements` returns `["mode_historical"]`. Grants only
   happen in `stripeWebhook`, so `we_1UemGdPF04vzkOdoj7DJRZoq` delivered and verified the event. Stray webhooks
   `we_1UemEGPIopTpIk2ciFaZajkm` (empty sandbox) and `we_1T9935PF04vzkOdoruIfKlor` (dead Supabase URL) deleted 2026-11-23.
-- Home screen shows the full-width (max-w-2xl) Plaza de Mayo island (`cr_island` via exported `Island`) with walking
-  people (`AnimatedPeople`) above the title (`components/casa-rosada/CasaRosadaEmblem.tsx`); fire/smoke particles removed. `playtestFlow.test.tsx` is flaky in the full web suite on main too (passes alone); CI is the gate.
+- Home screen shows the full-width (max-w-2xl) Plaza de Mayo island (`cr_island` via exported `Island`) with 48 walking(
+  people (`PlazaStrollers`: depth-scaled lanes around the monument) above the title (`components/casa-rosada/CasaRosadaEmblem.tsx`); fire/smoke particles removed. `playtestFlow.test.tsx` is flaky in the full web suite on main too (passes alone); CI is the gate.
 - Kicillof has light blue eyes: irises recolored in all 9 Kicillof images (PR #62). This supersedes the "dark eyes"
   note below.
 
