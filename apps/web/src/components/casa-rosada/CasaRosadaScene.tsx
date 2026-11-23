@@ -23,7 +23,7 @@ import { useGameImage } from '../../hooks/useGameImage.js';
 const ISLAND_BOX = { x: 0, y: 18, w: 160, h: 72 };
 const FIRE_X = [32, 114];
 
-function Island({ mood }: { mood: CasaRosadaMood }) {
+export function Island({ mood }: { mood: CasaRosadaMood }) {
   const maskId = useId();
   const islandImage = useGameImage('cr_island');
   const plaza = (
