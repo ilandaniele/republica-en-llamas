@@ -392,18 +392,7 @@ export default function HomeScreen() {
 
         {/* Logo */}
         <div ref={homeContainerRef} className="mb-10 text-center">
-          <div className="fire-container mx-auto mb-4 h-16 w-48">
-            <div className="fire-particle" />
-            <div className="fire-particle" />
-            <div className="fire-particle" />
-            <div className="fire-particle" />
-            <div className="fire-particle" />
-            <div className="fire-particle" />
-            <div className="smoke-particle" />
-            <div className="smoke-particle" />
-            <div className="smoke-particle" />
-          </div>
-          <CasaRosadaEmblem className="mx-auto mb-4 w-72 sm:w-[28rem]" />
+          <CasaRosadaEmblem className="mx-auto mb-4 w-full max-w-2xl" />
           <h1 className="font-pixel text-[22px] font-black leading-relaxed text-smoke-100 sm:text-[32px] lg:text-[40px]">
             <span className="home-title-line text-shadow-crimson block text-crimson-400">República</span>
             <span className="home-title-line text-shadow-gold block text-gold-400">en Llamas</span>
