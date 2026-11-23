@@ -13,7 +13,7 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
   `/?purchase_success=1&entitlement=mode_historical` and `/api/entitlements` returns `["mode_historical"]`. Grants only
   happen in `stripeWebhook`, so `we_1UemGdPF04vzkOdoj7DJRZoq` delivered and verified the event. Stray webhooks
   `we_1UemEGPIopTpIk2ciFaZajkm` (empty sandbox) and `we_1T9935PF04vzkOdoruIfKlor` (dead Supabase URL) deleted 2026-11-23.
-- Home screen shows the pixel Casa Rosada (`components/casa-rosada/CasaRosadaEmblem.tsx`, reuses `Building`) above
+- Home screen shows a large pixel Casa Rosada (w-72, sm:28rem) (`components/casa-rosada/CasaRosadaEmblem.tsx`, reuses `Building`) above
   the title. `playtestFlow.test.tsx` is flaky in the full web suite on main too (passes alone); CI is the gate.
 - Kicillof has light blue eyes: irises recolored in all 9 Kicillof images (PR #62). This supersedes the "dark eyes"
   note below.

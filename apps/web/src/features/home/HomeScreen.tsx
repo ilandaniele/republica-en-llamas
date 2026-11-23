@@ -403,7 +403,7 @@ export default function HomeScreen() {
             <div className="smoke-particle" />
             <div className="smoke-particle" />
           </div>
-          <CasaRosadaEmblem className="mx-auto mb-4 w-56 sm:w-72" />
+          <CasaRosadaEmblem className="mx-auto mb-4 w-72 sm:w-[28rem]" />
           <h1 className="font-pixel text-[22px] font-black leading-relaxed text-smoke-100 sm:text-[32px] lg:text-[40px]">
             <span className="home-title-line text-shadow-crimson block text-crimson-400">República</span>
             <span className="home-title-line text-shadow-gold block text-gold-400">en Llamas</span>
