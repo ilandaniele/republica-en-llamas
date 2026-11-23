@@ -10,8 +10,8 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
   client only accepted `/c/pay/`, so the buy button showed a connection error. PR #61 accepts `/c/pay/` and `/g/pay/`.
   Buy button works on prod only after #61 merges and deploys.
 - Pending: one sandbox payment with test card 4242 (owner fills it in; agents do not type card data), then check
-  `/api/entitlements` and the webhook deliveries on `we_1UemGdPF04vzkOdoj7DJRZoq`. A stray webhook
-  `we_1UemEGPIopTpIk2ciFaZajkm` exists; owner decides whether to delete it.
+  `/api/entitlements` and the webhook deliveries on `we_1UemGdPF04vzkOdoj7DJRZoq`. Stray webhooks
+  `we_1UemEGPIopTpIk2ciFaZajkm` (empty sandbox) and `we_1T9935PF04vzkOdoruIfKlor` (dead Supabase URL) deleted 2026-11-23.
 - Kicillof has light blue eyes: irises recolored in all 9 Kicillof images (PR #62). This supersedes the "dark eyes"
   note below.
 
@@ -39,8 +39,8 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - Stripe: webhook destination `republica-en-llamas-worker` (`we_1UemGdPF04vzkOdoj7DJRZoq`) created in the sandbox
   "Entorno de prueba de República en Llamas" (`acct_1T95ZbPF04vzkOdo`, the one holding the `PRICE_BY_ENTITLEMENT`
   prices), URL `/api/stripe-webhook`, events `checkout.session.completed` and `charge.refunded`, API
-  `2026-02-25.clover`. The old Supabase-era destination there was left untouched. An extra destination
-  `we_1UemEGPIopTpIk2ciFaZajkm` was created by mistake in the empty sandbox `acct_1T95XhPIopTpIk2c`; it gets no events.
+  `2026-02-25.clover`. The old Supabase-era destination and an extra one in the empty sandbox
+  `acct_1T95XhPIopTpIk2c` were deleted on 2026-11-23; the Worker destination is the only one left.
 - Stripe secrets not set yet (`wrangler secret list` shows only Better Auth and Google). Owner, from `apps/api`, sets
   both together (one alone makes auth routes return 503): `npx wrangler secret put STRIPE_SECRET_KEY` (sandbox
   `sk_test_…`) and `npx wrangler secret put STRIPE_WEBHOOK_SECRET` (`whsec_…` from that destination).
