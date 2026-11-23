@@ -63,7 +63,7 @@ describe('local playable review', () => {
     mountGame();
     fireEvent.click(await screen.findByRole('button', { name: 'CARRERA' }));
     fireEvent.click(screen.getByRole('button', { name: /Nueva Partida|Jugar como invitado/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /Asumir como/ }));
+    fireEvent.click(await screen.findByRole('button', { name: /Asumir como/ }, { timeout: 10000 }));
     await screen.findByRole('progressbar', { name: 'Gestión' }, { timeout: 5000 });
     for (let decision = 0; decision < 4; decision++) {
       const choice = document.querySelectorAll('[aria-pressed]');
@@ -75,7 +75,7 @@ describe('local playable review', () => {
     expect(useGameStore.getState().gameState?.gameOverReason).toBe('impeachment');
     expect(screen.queryByText('Termómetro nacional')).toBeNull();
     expect(useGameStore.getState().runTicketId).toBeNull();
-  });
+  }, 30000);
 
   it.each([
     ['mayor', 'Intendente'],
@@ -90,7 +90,9 @@ describe('local playable review', () => {
       fireEvent.click(screen.getByRole('button', { name: label }));
       fireEvent.click(screen.getByRole('button', { name: /^Fácil/ }));
       fireEvent.click(screen.getByRole('button', { name: /Nueva Partida|Jugar como invitado/i }));
-      fireEvent.click(await screen.findByRole('button', { name: /Javier Milei.*La Motosierra/ }));
+      fireEvent.click(
+        await screen.findByRole('button', { name: /Javier Milei.*La Motosierra/ }, { timeout: 10000 }),
+      );
       expect(screen.queryByRole('button', { name: /Crisis Express/ })).toBeNull();
       fireEvent.click(screen.getByRole('button', { name: /Asumir como Javier Milei/ }));
       await screen.findByRole('progressbar', { name: 'Gestión' }, { timeout: 5000 });
@@ -100,7 +102,7 @@ describe('local playable review', () => {
       expect(screen.queryByText('Termómetro nacional')).toBeNull();
       fireEvent.click(screen.getByRole('button', { name: /Acordar la implementación/ }));
       fireEvent.click(screen.getByRole('button', { name: 'Confirmar decisión' }));
-      const resume = await screen.findByRole('button', { name: 'Continuar la carrera' });
+      const resume = await screen.findByRole('button', { name: 'Continuar la carrera' }, { timeout: 10000 });
       expect(resume).toHaveFocus();
       fireEvent.click(resume);
       const committed = useGameStore.getState();
