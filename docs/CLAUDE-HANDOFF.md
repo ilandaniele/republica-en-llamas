@@ -2,6 +2,19 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-23 — Stripe secrets set, checkout URL fix, Kicillof blue eyes
+
+- Owner set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` (sandbox) on the Worker; `/api/auth/get-session`
+  answers 200 on prod, so the env check passes.
+- `/api/create-checkout` with `mode_historical` returns 200 and a `https://checkout.stripe.com/g/pay/…` URL. The web
+  client only accepted `/c/pay/`, so the buy button showed a connection error. PR #61 accepts `/c/pay/` and `/g/pay/`.
+  Buy button works on prod only after #61 merges and deploys.
+- Pending: one sandbox payment with test card 4242 (owner fills it in; agents do not type card data), then check
+  `/api/entitlements` and the webhook deliveries on `we_1UemGdPF04vzkOdoj7DJRZoq`. A stray webhook
+  `we_1UemEGPIopTpIk2ciFaZajkm` exists; owner decides whether to delete it.
+- Kicillof has light blue eyes: irises recolored in all 9 Kicillof images (PR #62). This supersedes the "dark eyes"
+  note below.
+
 ## 2026-11-22 — Kicillof likeness retouch
 
 - Kicillof art looked generic (light-brown hair, blue eyes). Retouched by hand-scripted pixel edits, no paid generation:
