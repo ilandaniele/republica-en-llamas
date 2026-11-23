@@ -9,9 +9,12 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - `/api/create-checkout` with `mode_historical` returns 200 and a `https://checkout.stripe.com/g/pay/…` URL. The web
   client only accepted `/c/pay/`, so the buy button showed a connection error. PR #61 accepts `/c/pay/` and `/g/pay/`.
   Buy button works on prod only after #61 merges and deploys.
-- Pending: one sandbox payment with test card 4242 (owner fills it in; agents do not type card data), then check
-  `/api/entitlements` and the webhook deliveries on `we_1UemGdPF04vzkOdoj7DJRZoq`. Stray webhooks
+- Sandbox payment done by owner with test card 4242 (agents do not type card data): prod redirected to
+  `/?purchase_success=1&entitlement=mode_historical` and `/api/entitlements` returns `["mode_historical"]`. Grants only
+  happen in `stripeWebhook`, so `we_1UemGdPF04vzkOdoj7DJRZoq` delivered and verified the event. Stray webhooks
   `we_1UemEGPIopTpIk2ciFaZajkm` (empty sandbox) and `we_1T9935PF04vzkOdoruIfKlor` (dead Supabase URL) deleted 2026-11-23.
+- Home screen shows the pixel Casa Rosada (`components/casa-rosada/CasaRosadaEmblem.tsx`, reuses `Building`) above
+  the title. `playtestFlow.test.tsx` is flaky in the full web suite on main too (passes alone); CI is the gate.
 - Kicillof has light blue eyes: irises recolored in all 9 Kicillof images (PR #62). This supersedes the "dark eyes"
   note below.
 

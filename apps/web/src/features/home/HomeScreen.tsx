@@ -14,6 +14,7 @@ import { UserMenu } from '../../components/UserMenu.js';
 import { OfflineBanner } from '../../components/OfflineBanner.js';
 import { useEntitlements } from '../../hooks/useEntitlements.js';
 import { PaywallModal } from '../../components/PaywallModal.js';
+import { CasaRosadaEmblem } from '../../components/casa-rosada/CasaRosadaEmblem.js';
 import { AccessibilitySettings } from '../../components/AccessibilitySettings.js';
 import { prefersReducedMotion } from '../../lib/reducedMotion.js';
 import { ScenarioCard } from './ScenarioCard.js';
@@ -402,6 +403,7 @@ export default function HomeScreen() {
             <div className="smoke-particle" />
             <div className="smoke-particle" />
           </div>
+          <CasaRosadaEmblem className="mx-auto mb-4 w-56 sm:w-72" />
           <h1 className="font-pixel text-[22px] font-black leading-relaxed text-smoke-100 sm:text-[32px] lg:text-[40px]">
             <span className="home-title-line text-shadow-crimson block text-crimson-400">República</span>
             <span className="home-title-line text-shadow-gold block text-gold-400">en Llamas</span>
