@@ -1,11 +1,10 @@
 import { Island } from './CasaRosadaScene.js';
-import { AnimatedPeople } from './AnimatedPlaza.js';
+import { PlazaStrollers } from './PlazaStrollers.js';
 import type { CasaRosadaMood } from './getCasaRosadaMood.js';
-import type { DioramaSituation } from './getDioramaSituation.js';
 
 const PLAZA_MOOD: CasaRosadaMood = {
   sky: 'day',
-  crowd: 1,
+  crowd: 0,
   fire: false,
   police: false,
   helicopter: false,
@@ -19,26 +18,18 @@ const PLAZA_MOOD: CasaRosadaMood = {
   label: 'Casa Rosada',
 };
 
-const PLAZA_SITUATION: DioramaSituation = {
-  vacant: false,
-  inauguration: false,
-  britishFleet: false,
-  landing: false,
-  combat: false,
-};
-
 export function CasaRosadaEmblem({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="0 14 160 76"
+      viewBox="26 16 108 74"
       shapeRendering="crispEdges"
       role="img"
       aria-label="Casa Rosada"
-      className={className}
+      className={`casa-rosada-scene ${className ?? ''}`}
       style={{ imageRendering: 'pixelated' }}
     >
       <Island mood={PLAZA_MOOD} />
-      <AnimatedPeople mood={PLAZA_MOOD} situation={PLAZA_SITUATION} />
+      <PlazaStrollers />
     </svg>
   );
 }
