@@ -16,6 +16,17 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
   forehead in `crisis` darkened inside a box that stops above the widow's peak, so the skin is untouched.
 - Verified in Claude in Chrome on prod: Kicillof portrait on the president select screen and all five scene files.
 
+## 2026-11-22 — PBKDF2 CPU on the deployed Worker
+
+- Measured in Workers Observability (dashboard, last 7 days): `POST /api/auth/sign-up/email` on 2026-11-20 23:54 UTC
+  took 37 ms CPU (1426 ms wall), status 200, outcome ok. No email `sign-in/email` event in the window.
+- Worker metrics, last 24 h: CPU P50 11.49 ms, P99 30.73 ms, 0 "Exceeded CPU Time Limits", 0 errors. Plan is
+  Workers Free (nominal 10 ms); nothing was rejected so far, but email auth is ~4× the nominal limit. Watch
+  `exceededCpu` or move to Workers Paid before sharing email accounts widely.
+- Still owner decisions: Stripe account for the `charge.refunded` webhook (the only Stripe account signed in is
+  another project's test account), and a domain for Email Routing (the only zone on the account belongs to another
+  site; changing its MX records or buying a domain needs the owner's OK).
+
 ## 2026-11-20 — Open findings closed
 
 - Stripe refunds: `charge.refunded` with `refunded: true` (full refund) looks up the checkout session
@@ -34,9 +45,7 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - Chrome check of prod after PR #53 deploy (desktop 1366 px): home renders, no app console errors
   (only Chrome-extension "message channel closed" noise). Chrome cannot shrink the window to
   390 px, so phone width was not checked in a real browser.
-- Email sign-up/sign-in CPU (PBKDF2) still unmeasured: owner created an email test account at
-  23:54 UTC, after `wrangler tail` had stopped; a second tail saw no login. Re-run `npx wrangler tail
-  --format json` from `apps/api` while signing in with email.
+- Email sign-up CPU (PBKDF2) measured on 2026-11-22 from Observability: 37 ms (see that section).
 - Still open: API-level email enumeration on sign-up. Fix needs email verification, which needs the
   `EMAIL` binding and a custom domain (same blocker as password reset).
 
