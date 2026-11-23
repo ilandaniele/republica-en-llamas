@@ -23,9 +23,15 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - Worker metrics, last 24 h: CPU P50 11.49 ms, P99 30.73 ms, 0 "Exceeded CPU Time Limits", 0 errors. Plan is
   Workers Free (nominal 10 ms); nothing was rejected so far, but email auth is ~4× the nominal limit. Watch
   `exceededCpu` or move to Workers Paid before sharing email accounts widely.
-- Still owner decisions: Stripe account for the `charge.refunded` webhook (the only Stripe account signed in is
-  another project's test account), and a domain for Email Routing (the only zone on the account belongs to another
-  site; changing its MX records or buying a domain needs the owner's OK).
+- Stripe: webhook destination `republica-en-llamas-worker` (`we_1UemGdPF04vzkOdoj7DJRZoq`) created in the sandbox
+  "Entorno de prueba de República en Llamas" (`acct_1T95ZbPF04vzkOdo`, the one holding the `PRICE_BY_ENTITLEMENT`
+  prices), URL `/api/stripe-webhook`, events `checkout.session.completed` and `charge.refunded`, API
+  `2026-02-25.clover`. The old Supabase-era destination there was left untouched. An extra destination
+  `we_1UemEGPIopTpIk2ciFaZajkm` was created by mistake in the empty sandbox `acct_1T95XhPIopTpIk2c`; it gets no events.
+- Stripe secrets not set yet (`wrangler secret list` shows only Better Auth and Google). Owner, from `apps/api`, sets
+  both together (one alone makes auth routes return 503): `npx wrangler secret put STRIPE_SECRET_KEY` (sandbox
+  `sk_test_…`) and `npx wrangler secret put STRIPE_WEBHOOK_SECRET` (`whsec_…` from that destination).
+- Email Routing left pending by the owner: the only zone on the account belongs to another site.
 
 ## 2026-11-20 — Open findings closed
 
