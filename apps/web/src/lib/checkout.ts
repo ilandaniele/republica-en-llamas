@@ -1,6 +1,8 @@
 import type { EntitlementId } from '@republica/game-engine';
 import { apiSend } from './api.js';
 
+const CHECKOUT_PATH = /^\/[cg]\/pay\//;
+
 export function checkoutUrl(value: unknown): string | null {
   if (typeof value !== 'string') return null;
   try {
@@ -11,7 +13,7 @@ export function checkoutUrl(value: unknown): string | null {
       url.port !== '' ||
       url.username !== '' ||
       url.password !== '' ||
-      !url.pathname.startsWith('/c/pay/')
+      !CHECKOUT_PATH.test(url.pathname)
     )
       return null;
     return url.href;

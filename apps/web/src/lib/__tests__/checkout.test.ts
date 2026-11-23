@@ -4,10 +4,9 @@ vi.mock('../api.js', () => ({ apiSend }));
 import { checkoutUrl, createCheckout } from '../checkout.js';
 
 describe('checkout boundary', () => {
-  it('accepts only a hosted Stripe checkout session', () => {
-    expect(checkoutUrl('https://checkout.stripe.com/c/pay/cs_test_example#session')).toBe(
-      'https://checkout.stripe.com/c/pay/cs_test_example#session',
-    );
+  it.each(['c', 'g'])('accepts a hosted Stripe checkout session under /%s/pay/', (prefix) => {
+    const target = `https://checkout.stripe.com/${prefix}/pay/cs_test_example#session`;
+    expect(checkoutUrl(target)).toBe(target);
   });
 
   it.each([
@@ -19,6 +18,7 @@ describe('checkout boundary', () => {
     'https://attacker:secret@checkout.stripe.com/c/pay/cs_test_example',
     'https://checkout.stripe.com:8080/c/pay/cs_test_example',
     'https://checkout.stripe.com/other',
+    'https://checkout.stripe.com/x/pay/cs_test_example',
     '//checkout.stripe.com/c/pay/cs_test_example',
     null,
   ])('rejects an unsafe checkout target: %s', (target) => {
