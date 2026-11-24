@@ -27,7 +27,8 @@ art/raw/
 
 # Cloudflare
 .wrangler/
-.dev.vars
+.dev.vars*
+!.dev.vars.example
 
 # Playwright
 apps/web/test-results/
