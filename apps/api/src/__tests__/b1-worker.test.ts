@@ -89,6 +89,11 @@ describe('ip limiter', () => {
       .bind('ip:/api/leaderboard:%')
       .first<{ request_count: number }>();
 
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+  });
+
   it('stops writing once a bucket is over the limit and sends the window reset', async () => {
     for (let i = 0; i < 125; i++) await fetchApi('/api/leaderboard');
     expect((await rateRow())?.request_count).toBe(121);
