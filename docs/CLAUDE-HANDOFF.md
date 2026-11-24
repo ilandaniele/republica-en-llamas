@@ -2,7 +2,13 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
-## 2026-11-24 — English card text complete, F1-F4 re-verified
+## 2026-11-24 — D1 write budget, Origin on cookie writes, username keys
+
+- Product F4 (D1 writes per run): `submitRun` no longer copies `history` into `run_events`; one `game_runs` insert per run. `GET /api/runs` reads the first 10 events from `json_each(final_state, '$.history')`. The `run_events` table stays (unused); dropping it deletes old rows, so that is the owner's call.
+- F8: `assertAllowedOrigin` (`http.ts`) rejects writes that carry a `Cookie` but no `Origin`. Cookieless clients (Stripe webhook) are unchanged. Test in `b1-worker.test.ts`.
+- SEC-023: migration `0002_username_key.sql` adds `profiles.username_key` (lowercased NFKC) with a unique index. `apps/api/src/username.ts` normalizes with NFKC and rejects names that mix Latin and non-Latin letters. Prod had 2 profiles, no key conflicts (checked before the migration).
+- Verification (local): lint 0, type-check api/web/engine, api 97, integration 27, `test:security` 15.
+
 
 - All 522 legacy card strings that fell back to Spanish now have English (`packages/game-engine/src/i18n/legacyEvents.ts`, spread into `en`). `npm run verify:content` and `englishCoverage.test.ts` now fail on any missing English card text.
 - All planned art is imported: every key in `art/*.json` (event scenes, president scenes, extra scenes, plaza pack, candidates) and every historical scenario image exists in `image-manifest.json`. No pending scene generation.
@@ -120,7 +126,7 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - F5: leaderboard `Cache-Control: no-cache`, web fetches it with `cache: 'no-cache'`.
 - F6: profile edit button and input have `aria-label`s; sr-only `<h1>`.
 - Daily cap: local UTC counter removed (`useEntitlements`); `DailyCapBanner` shows only when the server answers `daily_cap`. Register: a failed username save no longer traps the player; sign-up returns `usernameError` and the form offers "Continuar".
-- Deferred: F4 (~134 D1 writes per run, ~740 runs/day on Free; fine for a small test group), F7 (framer-motion inline styles), F8.
+- Deferred: F4 (~134 D1 writes per run; fixed 2026-11-24), F7 (framer-motion inline styles), F8 (fixed 2026-11-24).
 - Verification (local only): lint 0; type-check engine/web/api; tests api 90 + integration 27, engine 257, web 690 (one unreproduced flaky failure in 1 of 4 runs), `test:security` 15, e2e 28/28, web build OK.
 - Remote state checked 2026-11-17: Worker secret `BETTER_AUTH_SECRET` set; GitHub secret `CLOUDFLARE_ACCOUNT_ID` set, `CLOUDFLARE_API_TOKEN` missing, so the deploy job cannot run yet.
 - Deploy checklist (owner):

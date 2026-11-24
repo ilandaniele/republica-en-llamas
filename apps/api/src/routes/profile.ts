@@ -2,19 +2,14 @@ import { requireAccount, requireUser, userEntitlements } from '../context.js';
 import type { RouteContext } from '../context.js';
 import { isRecord, json, readJsonBody, RequestError } from '../http.js';
 import { enforceUserRateLimit } from '../rateLimit.js';
-
-const USERNAME_PATTERN = /^[\p{L}\p{N}_.-]{3,24}$/u;
-
-function validUsername(value: unknown): string | null {
-  if (typeof value !== 'string') return null;
-  const name = value.trim().normalize('NFC');
-  return USERNAME_PATTERN.test(name) ? name : null;
-}
+import { usernameKey, validUsername } from '../username.js';
 
 export async function usernameAvailable(ctx: RouteContext): Promise<Response> {
   const name = validUsername(ctx.url.searchParams.get('name'));
   if (!name) return json({ available: false });
-  const taken = await ctx.env.DB.prepare('select 1 from profiles where username = ?1').bind(name).first();
+  const taken = await ctx.env.DB.prepare('select 1 from profiles where username_key = ?1')
+    .bind(usernameKey(name))
+    .first();
   return json({ available: !taken });
 }
 
@@ -34,11 +29,11 @@ export async function updateProfile(ctx: RouteContext): Promise<Response> {
   if (!username) throw new RequestError(400, 'Invalid username');
   try {
     await ctx.env.DB.prepare(
-      `insert into profiles (id, username) values (?1, ?2)
-       on conflict(id) do update set username = excluded.username,
+      `insert into profiles (id, username, username_key) values (?1, ?2, ?3)
+       on conflict(id) do update set username = excluded.username, username_key = excluded.username_key,
          updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')`,
     )
-      .bind(user.id, username)
+      .bind(user.id, username, usernameKey(username))
       .run();
   } catch (error) {
     if (error instanceof Error && error.message.includes('UNIQUE'))
