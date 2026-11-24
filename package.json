@@ -28,9 +28,9 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
-    "@eslint/js": "^9.39.5",
+    "@eslint/js": "^10.0.1",
     "esbuild": "^0.28.2",
-    "eslint": "^9.39.5",
+    "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.32.0",
@@ -52,5 +52,13 @@
   "engines": {
     "node": ">=20.19.0"
   },
-  "packageManager": "npm@10.2.3"
+  "packageManager": "npm@10.2.3",
+  "overrides": {
+    "eslint-plugin-import": {
+      "eslint": "$eslint"
+    },
+    "eslint-plugin-jsx-a11y": {
+      "eslint": "$eslint"
+    }
+  }
 }
