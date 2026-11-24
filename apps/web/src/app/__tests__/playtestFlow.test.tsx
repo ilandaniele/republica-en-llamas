@@ -65,11 +65,15 @@ describe('local playable review', () => {
     fireEvent.click(screen.getByRole('button', { name: /Nueva Partida|Jugar como invitado/i }));
     fireEvent.click(await screen.findByRole('button', { name: /Asumir como/ }, { timeout: 10000 }));
     await screen.findByRole('progressbar', { name: 'Gestión' }, { timeout: 5000 });
-    for (let decision = 0; decision < 4; decision++) {
+    const isOver = () => Boolean(useGameStore.getState().gameState?.gameOverReason);
+    while (!isOver()) {
       const choice = document.querySelectorAll('[aria-pressed]');
       fireEvent.click(choice[3]!);
       fireEvent.click(screen.getByRole('button', { name: 'Confirmar decisión' }));
-      if (decision < 3) fireEvent.click(screen.getByRole('button', { name: 'Continuar la carrera' }));
+      if (!isOver())
+        fireEvent.click(
+          await screen.findByRole('button', { name: 'Continuar la carrera' }, { timeout: 5000 }),
+        );
     }
     expect(await screen.findByRole('heading', { name: 'FIN DE ESTA CARRERA' })).toBeTruthy();
     expect(useGameStore.getState().gameState?.gameOverReason).toBe('impeachment');

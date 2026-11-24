@@ -163,6 +163,18 @@ describe('auth hardening', () => {
     expect(reset.status).toBe(403);
   });
 
+  it('rejects cookie-authenticated writes without an Origin', async () => {
+    const cookie = await signUp('erin@example.test');
+    const response = await fetchApi('/api/start-run', {
+      method: 'POST',
+      headers: { cookie, 'content-type': 'application/json' },
+      body: '{}',
+    });
+    expect(response.status).toBe(403);
+    const signOut = await fetchApi('/api/auth/sign-out', { method: 'POST', headers: { cookie } });
+    expect(signOut.status).toBe(403);
+  });
+
   it('rejects a foreign redirectTo', async () => {
     const response = await post('/api/auth/request-password-reset', {
       email: 'nobody@example.test',

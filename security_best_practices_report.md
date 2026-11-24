@@ -26,10 +26,10 @@ Full phase log: `docs/security/hardening-2026-11-11.md`.
 - **SEC-020 (low, fixed):** public GETs had no rate limit; now limited per IP (`CF-Connecting-IP`).
 - **SEC-021 (low, fixed):** run tickets never expired; submit now rejects tickets older than 24h.
 - **SEC-022 (medium, fixed):** `/api/auth/*` bodies had no size cap. `withLimitedBody` (`apps/api/src/http.ts`) counts bytes on the stream, so chunked requests without `content-length` are also capped (test included).
-- **SEC-023 (low, open):** usernames differing only by case, confusable scripts or fullwidth forms can coexist. Follow-up: NFKC, lowercased unique key in a new migration, single-script check.
+- **SEC-023 (low, fixed 2026-11-24):** usernames are NFKC-normalized, mixed Latin/non-Latin names are rejected, and `profiles.username_key` (lowercase) has a unique index (migration `0002_username_key.sql`).
 - **SEC-024 (low, mitigated in UI):** Claude Security F2, sign-up revealed whether an email exists. The web app now shows a neutral message (`translateAuthError`, test in `apps/web/src/lib/__tests__/auth.test.ts`). Residual risk: the Better Auth API still returns a distinct error for an existing email; full fix needs email verification.
 - **SEC-025 (accepted, dev only):** `npm audit` reports critical `tar<=7.5.20` via `expo@51 > @expo/cli > tar@6.2.1`. Only the mobile dev CLI uses it to extract templates; it never ships in web or the Worker. An override to tar 7 breaks `@expo/cli` (default import of `tar`). Fix: upgrade Expo when mobile work resumes.
-- Accepted: leaderboard returns opaque `user_id`; requests without `Origin` are allowed for non-browser clients. IPv6 rate-limit keys use the full address, not the /64 prefix.
+- Accepted: leaderboard returns opaque `user_id`; requests without `Origin` are allowed for non-browser clients unless they carry a cookie (F8, 2026-11-24). IPv6 rate-limit keys use the full address, not the /64 prefix.
 
 ### Current status and open items
 

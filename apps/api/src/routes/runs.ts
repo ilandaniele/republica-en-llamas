@@ -64,13 +64,6 @@ const INSERT_RUN_SQL = `insert into game_runs (id, user_id, ticket_id, difficult
   values (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)
   on conflict do nothing returning id, score`;
 
-const INSERT_EVENTS_SQL = `insert into run_events (id, run_id, turn_number, card_id, choice_index, negotiation, effects_json)
-  select lower(hex(randomblob(16))), ?1, event.value ->> '$.turn', event.value ->> '$.cardId',
-    event.value ->> '$.choiceIndex', event.value ->> '$.negotiationUsed',
-    coalesce(event.value -> '$.effectsApplied', '{}')
-  from json_each(?2, '$.history') as event
-  where exists (select 1 from game_runs where id = ?1)`;
-
 const EXISTING_RUN_SQL = `select id, score, decisions_hash from game_runs
   where user_id = ?1 and (ticket_id = ?2 or (seed = ?3 and decisions_hash = ?4))
   order by created_at limit 1`;
@@ -99,30 +92,27 @@ export async function submitRun(ctx: RouteContext): Promise<Response> {
   const decisionsJson = JSON.stringify(decisions);
   const decisionsHash = await sha256Hex(decisionsJson);
   const runId = crypto.randomUUID();
-  const [inserted] = await db.batch<{ id: string; score: number }>([
-    db
-      .prepare(INSERT_RUN_SQL)
-      .bind(
-        runId,
-        user.id,
-        ticketId,
-        state.difficulty,
-        state.seed,
-        state.score,
-        state.turn,
-        state.gameOverReason ?? null,
-        state.gameOverReason === 'term_complete' ? 1 : 0,
-        stateJson,
-        state.language,
-        config.crisisExpress ? 1 : 0,
-        config.scenarioId ?? null,
-        decisionsJson,
-        decisionsHash,
-        new Date().toISOString(),
-      ),
-    db.prepare(INSERT_EVENTS_SQL).bind(runId, stateJson),
-  ]);
-  const run = inserted?.results[0];
+  const run = await db
+    .prepare(INSERT_RUN_SQL)
+    .bind(
+      runId,
+      user.id,
+      ticketId,
+      state.difficulty,
+      state.seed,
+      state.score,
+      state.turn,
+      state.gameOverReason ?? null,
+      state.gameOverReason === 'term_complete' ? 1 : 0,
+      stateJson,
+      state.language,
+      config.crisisExpress ? 1 : 0,
+      config.scenarioId ?? null,
+      decisionsJson,
+      decisionsHash,
+      new Date().toISOString(),
+    )
+    .first<{ id: string; score: number }>();
   if (run) return json({ id: run.id, score: run.score });
 
   const existing = await db
@@ -146,10 +136,12 @@ interface HistoryRow {
 }
 
 const HISTORY_SQL = `select r.id, r.difficulty, r.turns_survived, r.created_at, r.game_over_reason, r.score, r.is_win,
-    (select json_group_array(json_object('turn_number', e.turn_number, 'card_id', e.card_id,
+    (select json_group_array(json_object('turn_number', e.turn, 'card_id', e.card_id,
         'choice_index', e.choice_index))
-      from (select turn_number, card_id, choice_index from run_events
-            where run_id = r.id order by turn_number limit ?3) as e) as run_events,
+      from (select event.value ->> '$.turn' as turn, event.value ->> '$.cardId' as card_id,
+              event.value ->> '$.choiceIndex' as choice_index
+            from json_each(r.final_state, '$.history') as event
+            order by turn limit ?3) as e) as run_events,
     count(*) over () as total
   from game_runs r where r.user_id = ?1
   order by r.created_at desc limit ?2`;

@@ -52,7 +52,10 @@ async function addUser(id: string, isAnonymous = false): Promise<void> {
     .bind(id, `${id}@example.test`, now, isAnonymous ? 1 : 0)
     .run();
   if (!isAnonymous)
-    await db.prepare('insert into profiles (id, username) values (?1, ?2)').bind(id, `jugador_${id}`).run();
+    await db
+      .prepare('insert into profiles (id, username, username_key) values (?1, ?2, ?2)')
+      .bind(id, `jugador_${id}`)
+      .run();
 }
 
 async function grant(userId: string, entitlement: string): Promise<void> {
@@ -203,11 +206,8 @@ describe('submit-run', () => {
     const saved = (await first.json()) as { id: string; score: number };
     expect(saved.score).toBe(run.state.score);
 
-    const events = await db
-      .prepare('select count(*) as n from run_events where run_id = ?1')
-      .bind(saved.id)
-      .first<{ n: number }>();
-    expect(events?.n).toBe(run.state.history.length);
+    const events = await db.prepare('select count(*) as n from run_events').first<{ n: number }>();
+    expect(events?.n).toBe(0);
 
     const retry = await submit(body);
     expect(await retry.json()).toEqual({ id: saved.id, score: saved.score, duplicate: true });
@@ -255,7 +255,19 @@ describe('profile', () => {
     expect(await profile.json()).toEqual({ username: 'Alicia' });
   });
 
-  it.each(['ab', 'a'.repeat(25), 'ali\u200bce', 'bad name', '<script>', 'admin\u0000'])(
+  it.each(['JUGADOR_BOB', '\uff2a\uff35\uff27\uff21\uff24\uff2f\uff32_bob'])(
+    'treats %j as the taken username jugador_bob',
+    async (username) => {
+      await addUser('bob');
+      const response = await call(
+        updateProfile,
+        context(jsonRequest('/api/profile', { username }, 'PATCH'), { id: 'alice' }),
+      );
+      expect(response.status).toBe(409);
+    },
+  );
+
+  it.each(['ab', 'a'.repeat(25), 'ali\u200bce', 'bad name', '<script>', 'admin\u0000', 'p\u0430ypal'])(
     'rejects the username %j',
     async (username) => {
       const params = new URLSearchParams({ name: username });
