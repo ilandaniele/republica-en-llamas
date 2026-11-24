@@ -6,6 +6,7 @@ import { allowedOrigins, RequestError } from './http.js';
 import { hashPassword, verifyPassword } from './password.js';
 import { neutralUsername } from './policy.js';
 import { transferGuestTickets } from './tickets.js';
+import { usernameKey } from './username.js';
 import { sendPasswordResetEmail } from './email.js';
 
 function googleProvider(env: Env) {
@@ -64,8 +65,11 @@ function createAuth(env: Env) {
         create: {
           after: async (user) => {
             if ((user as { isAnonymous?: boolean | null }).isAnonymous) return;
-            await env.DB.prepare('insert or ignore into profiles (id, username) values (?1, ?2)')
-              .bind(user.id, neutralUsername())
+            const username = neutralUsername();
+            await env.DB.prepare(
+              'insert or ignore into profiles (id, username, username_key) values (?1, ?2, ?3)',
+            )
+              .bind(user.id, username, usernameKey(username))
               .run();
           },
         },
@@ -103,5 +107,8 @@ export interface SessionUser {
 export async function sessionUser(auth: Auth, request: Request): Promise<SessionUser | null> {
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session) return null;
-  return { id: session.user.id, isAnonymous: Boolean((session.user as { isAnonymous?: boolean | null }).isAnonymous) };
+  return {
+    id: session.user.id,
+    isAnonymous: Boolean((session.user as { isAnonymous?: boolean | null }).isAnonymous),
+  };
 }

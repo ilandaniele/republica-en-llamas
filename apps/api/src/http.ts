@@ -80,7 +80,9 @@ export function allowedOrigins(webUrl: string, extra = ''): string[] {
 
 export function assertAllowedOrigin(request: Request, origins: readonly string[]): void {
   const origin = request.headers.get('Origin');
-  if (origin !== null && !origins.includes(origin)) throw new RequestError(403, 'Origin not allowed');
+  const cookieWithoutOrigin = origin === null && request.headers.has('Cookie');
+  if (cookieWithoutOrigin || (origin !== null && !origins.includes(origin)))
+    throw new RequestError(403, 'Origin not allowed');
 }
 
 export function checkContentLength(request: Request, maxBytes: number): void {
