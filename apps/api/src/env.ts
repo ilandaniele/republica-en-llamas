@@ -41,4 +41,3 @@ export function findEnvProblems(env: Partial<Env>): string[] {
   }
   return problems;
 }
-

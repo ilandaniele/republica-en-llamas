@@ -200,7 +200,9 @@ describe('scheduled cleanup with Better Auth guests', () => {
 
   async function runScheduled(workerEnv: Env): Promise<void> {
     const pending: Promise<unknown>[] = [];
-    const ctx = { waitUntil: (promise: Promise<unknown>) => pending.push(promise) } as unknown as ExecutionContext;
+    const ctx = {
+      waitUntil: (promise: Promise<unknown>) => pending.push(promise),
+    } as unknown as ExecutionContext;
     await worker.scheduled({} as ScheduledController, workerEnv, ctx);
     await Promise.all(pending);
   }

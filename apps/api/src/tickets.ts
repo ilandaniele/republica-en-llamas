@@ -9,7 +9,10 @@ export function dayAgo(): string {
   return new Date(Date.now() - DAY_MS).toISOString();
 }
 
-export async function issueRunTicket(db: D1Database, userId: string): Promise<{ id: string; seed: number } | null> {
+export async function issueRunTicket(
+  db: D1Database,
+  userId: string,
+): Promise<{ id: string; seed: number } | null> {
   const seed = crypto.getRandomValues(new Uint32Array(1))[0]! % 1_000_000;
   return db
     .prepare(

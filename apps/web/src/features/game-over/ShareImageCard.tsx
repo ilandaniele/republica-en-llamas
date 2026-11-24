@@ -228,7 +228,7 @@ export const ShareImageCard = forwardRef<HTMLDivElement, Props>(({ gameState, pr
           letterSpacing: '2px',
         }}
       >
-        REPÚBLICA EN LLAMAS — JUGÁ EN republica.app
+        REPÚBLICA EN LLAMAS — JUGÁ EN {window.location.host}
       </div>
     </div>
   );
