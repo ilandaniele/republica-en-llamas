@@ -13,6 +13,7 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - Accesibilidad panel checked on prod in Chrome: "Reducir animaciones" adds `html.reduce-motion` (animations 15.7 s to 0.01 ms) and survives reload; "Atajos de teclado" on, key `2` picks choice 2, off, key `1` does nothing; "Tiempo extendido" shows 90 s instead of 45 s per Crisis Express turn. Preferences restored afterwards.
 - Prod checked after deploy: `curl -I` shows the new CSP; in Chrome, home, leaderboard, mode tabs, president pick and 3 played turns render fully with no CSP violation.
 - Flaky: `playtestFlow.test.tsx` "corrupt local administration" timed out on the CI runner (5 s wait for "Continuar la carrera"); raised to 10 s like the other waits.
+- `ip limiter` tests froze `Date` at a window start: the auth-bucket test flaked on main when its 120 requests crossed the fixed 60 s window boundary.
 - lint-staged now also runs eslint and prettier on `apps/api/src`; 4 api files that had drifted were formatted. `*.md` stays out on purpose (`.prettierignore`).
 
 ## 2026-11-24 — D1 write budget, Origin on cookie writes, username keys
