@@ -13,7 +13,6 @@ for (const font of readdirSync(resolve(publicDirectory, 'fonts')).filter((file) 
     failures.push(`Invalid font: ${font}`);
 }
 const ids = new Set<string>();
-const englishFallbacks = new Set<string>();
 for (const card of ALL_CARDS) {
   if (ids.has(card.id)) failures.push(`Duplicate card: ${card.id}`);
   ids.add(card.id);
@@ -23,10 +22,7 @@ for (const card of ALL_CARDS) {
     ['en', en],
   ] as const) {
     for (const key of [card.titleKey, card.bodyKey, ...card.choices.map((choice) => choice.textKey)])
-      if (!dictionary[key]?.trim()) {
-        if (language === 'en' && es[key]?.trim()) englishFallbacks.add(key);
-        else failures.push(`Missing ${language}: ${key}`);
-      }
+      if (!dictionary[key]?.trim()) failures.push(`Missing ${language}: ${key}`);
   }
   if (card.requiredChoice && !ALL_CARDS.some((source) => source.id === card.requiredChoice!.cardId))
     failures.push(`Missing predecessor: ${card.id}`);
@@ -45,8 +41,6 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Verified ${ALL_CARDS.length} cards with complete Spanish text and ${Object.keys(manifest).length} illustration files.`,
+    `Verified ${ALL_CARDS.length} cards with complete Spanish and English text and ${Object.keys(manifest).length} illustration files.`,
   );
-  if (englishFallbacks.size)
-    console.warn(`${englishFallbacks.size} legacy English strings use the Spanish fallback.`);
 }

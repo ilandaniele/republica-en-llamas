@@ -45,7 +45,7 @@ Resultado local actual: 230 pruebas del motor y 580 de la web aprobadas (810 tot
 
 ## Límites y publicación
 
-- El mazo contiene 1.528 tarjetas y 324 ilustraciones locales registradas. Español tiene todos los textos; 522 textos anteriores carecen de traducción inglesa y usan respaldo español. Las nuevas tarjetas presidenciales sí tienen ambos idiomas. No se presentan claves internas como opciones.
+- El mazo contiene 1.528 tarjetas y 324 ilustraciones locales registradas. Español e inglés tienen todos los textos de tarjetas (los 522 textos anteriores sin inglés se tradujeron el 2026-11-24; `verify:content` y `englishCoverage.test.ts` fallan si falta alguno). No se presentan claves internas como opciones.
 - Ranking, compra, autenticación remota y reclamo de tickets requieren validar su integración con el Worker de Cloudflare (D1, Better Auth) y Stripe en un entorno publicado de prueba. Los tests locales comprueban las reglas compartidas y las respuestas simuladas, sin generar compras ni escrituras remotas.
 - La comprobación visual automática del build en Chrome no devolvió captura ni DOM en este entorno tras dos intentos; no se marca como aprobada. Docker está instalado pero su servicio no está disponible, por lo que el contenedor nginx no se ejecutó aquí. Quedan la revisión visual y la prueba del contenedor en el entorno de destino.
 - Publicar web y funciones que reproducen partidas con la misma versión del motor. Generar el bundle antes de desplegar `submit-run`. Revisar aplicación de las migraciones existentes en el entorno de destino; esta revisión no agrega ni aplica migraciones.

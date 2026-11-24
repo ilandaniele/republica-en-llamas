@@ -2,6 +2,14 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-24 — English card text complete, F1-F4 re-verified
+
+- All 522 legacy card strings that fell back to Spanish now have English (`packages/game-engine/src/i18n/legacyEvents.ts`, spread into `en`). `npm run verify:content` and `englishCoverage.test.ts` now fail on any missing English card text.
+- All planned art is imported: every key in `art/*.json` (event scenes, president scenes, extra scenes, plaza pack, candidates) and every historical scenario image exists in `image-manifest.json`. No pending scene generation.
+- Claude Security F1-F4 re-verified against the Worker: F1 Google sign-in gets `neutralUsername()` (`auth.ts`); F2/F3 `transferGuestTickets` resets `created_at` and caps at the remaining daily quota (`tickets.ts`); F4 daily cap (3 free / 30 `full_access`) is enforced server-side in `issueRunTicket`. Treat as closed.
+- Dependabot ignores `react-native` (0.x minors break the frozen Expo app); group PR #71 failed only on mobile type-check because of it. Major bumps #42-#48 (eslint 10, lint-staged 17, commitlint 21, globals 17, actions v7) left for the owner.
+- Still owner-only: Email Routing + `RESET_EMAIL_FROM`, Accesibilidad panel confirmation, GitHub `production` reviewers, gitleaks decision.
+
 ## 2026-11-23 — Stripe secrets set, checkout URL fix, Kicillof blue eyes
 
 - Owner set `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` (sandbox) on the Worker; `/api/auth/get-session`
@@ -13,7 +21,7 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
   `/?purchase_success=1&entitlement=mode_historical` and `/api/entitlements` returns `["mode_historical"]`. Grants only
   happen in `stripeWebhook`, so `we_1UemGdPF04vzkOdoj7DJRZoq` delivered and verified the event. Stray webhooks
   `we_1UemEGPIopTpIk2ciFaZajkm` (empty sandbox) and `we_1T9935PF04vzkOdoruIfKlor` (dead Supabase URL) deleted 2026-11-23.
-- Home screen shows the full-width (max-w-2xl) Plaza de Mayo island (`cr_island` via exported `Island`) with 48 walking(
+- Home screen shows the full-width (max-w-2xl) Plaza de Mayo island (`cr_island` via exported `Island`) with 48 walking
   people (`PlazaStrollers`: depth-scaled lanes around the monument) above the title (`components/casa-rosada/CasaRosadaEmblem.tsx`); fire/smoke particles removed. `playtestFlow.test.tsx` is flaky in the full web suite on main too (passes alone); CI is the gate.
 - Kicillof has light blue eyes: irises recolored in all 9 Kicillof images (PR #62). This supersedes the "dark eyes"
   note below.
