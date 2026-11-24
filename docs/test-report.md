@@ -62,7 +62,7 @@ Security headers, CORS/origin, 401 on protected routes, IDOR between two users, 
 | F4 | Medium (cost) | `apps/api/src/routes/runs.ts:67`, `rateLimit.ts:20` | ~134 D1 writes per run; IP limiter writes on every GET. | Store decisions as one JSON column; rate limit cheap GETs outside D1. |
 | F5 | Low | `apps/api/src/routes/leaderboard.ts:39` | `Cache-Control: public, max-age=30` plus persisted query keeps leaderboard stale 30–90 s after saving. | `no-cache` / `s-maxage` only; refetch after save. |
 | F6 | Low | `ProfileHeader.tsx:46,98` | Edit button named only "✎"; username input unlabeled; profile has no h1. | Add `aria-label`s and an h1. |
-| F7 | Low | `apps/web/public/_headers:7` | CSP `style-src 'unsafe-inline'`. | Remove when inline styles are gone. |
+| F7 | Low | `apps/web/public/_headers:7` | CSP `style-src 'unsafe-inline'`. | Fixed 2026-11-24: `style-src 'self'` (see handoff). |
 | F8 | Info | `apps/api/src/http.ts:83` | Writes without `Origin` header accepted (mitigated by `SameSite=Lax`). | Optionally require `Origin` on cookie-authenticated writes. |
 
 No product code was changed in this phase.

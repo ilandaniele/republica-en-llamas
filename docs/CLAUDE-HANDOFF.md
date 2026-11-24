@@ -2,6 +2,16 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-24 — Deps, SEC re-check, strict style CSP, share card
+
+- Merged #76 (global `afterEach(cleanup)` in web test setup), #77 (i18next 27, react-i18next 18, globals 17, lint-staged 17, commitlint 21, actions v7 pinned by SHA, `npm audit fix`), #78 (SEC-009: `.dev.vars*` ignored; inherited-key entitlement test). Dependabot #42-#47 superseded by #77. #48 (eslint 10) blocked: plugin peers do not accept eslint 10 yet (ERESOLVE), commented on the PR.
+- `npm audit` remainder: Expo/React Native tree (mobile, out of scope; `tar` critical = SEC-025) and `@cloudflare/vitest-pool-workers` nested wrangler/miniflare/undici (dev-only; 0.12+ needs vitest 3). Accepted.
+- `security_best_practices_report.md`: SEC-001..009 and SEC-013..015 re-verified against the Worker code and local tests. Remote D1 state and `ALLOWED_ORIGINS` are not proven by these tests.
+- F7: `_headers` CSP is now `style-src 'self'` plus `form-action 'self'`. Checked on a local preview with that header: full game, game over, share image, login, register, leaderboard, history, reset-password, home and the Accesibilidad toggles report no violation. The only one is html2canvas cloning the share card (one inline `<style>` it uses for pseudo-elements); the PNG renders the same. PostHog runs with `disable_external_dependency_loading`, so no survey or toolbar styles. If a future library injects `<style>` tags, it breaks under this CSP.
+- Share card: stats render with `Math.round` (inflation showed `43.77698455116164`). Test `features/game-over/__tests__/ShareImageCard.test.tsx`.
+- Owner questions: the share card footer says `JUGÁ EN republica.app`, but prod is `republica-en-llamas.ilandaniele.workers.dev`; change it once there is a domain. Drop the unused `run_events` table (deletes old rows)?
+- Gap: `.lintstagedrc.json` does not cover `apps/api` or `*.md`; run prettier on those by hand before committing.
+
 ## 2026-11-24 — D1 write budget, Origin on cookie writes, username keys
 
 - Product F4 (D1 writes per run): `submitRun` no longer copies `history` into `run_events`; one `game_runs` insert per run. `GET /api/runs` reads the first 10 events from `json_each(final_state, '$.history')`. The `run_events` table stays (unused); dropping it deletes old rows, so that is the owner's call.
