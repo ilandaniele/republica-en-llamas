@@ -236,7 +236,7 @@ Totals: 43 Fixed, 12 Partial, 2 Not fixed, 19 Deferred.
 | F-29 | Fixed | `AccessibilitySettings.tsx` toggle, `html.reduce-motion` rules in `theme.css`, `UserMotionConfig.tsx`. Test: `a11yControls.test.tsx:17`. The toggle is only on the home screen. |
 | F-30 | Fixed | `DecisionDiary.tsx:128` `aria-label`; decorative glyphs are `aria-hidden`. Test: `gameA11y.test.tsx:47`. |
 | F-31 | Fixed | `lib/crisisExpress.ts` gives 90 s with `extendedTime`. Test: `gameA11y.test.tsx:85`. The timer cannot be turned off. |
-| F-32 | Partial | `wrangler.jsonc:25` declares `send_email` `EMAIL`. Missing: `RESET_EMAIL_FROM`, `keep_vars`, and the reset link is still shown (`LoginScreen.tsx:173`). See R-02. |
+| F-32 | Accepted 2026-11-24 | No domain, so no binding; the reset link is hidden and sending is skipped. Earlier note: `wrangler.jsonc:25` declared `send_email` `EMAIL`. Missing: `RESET_EMAIL_FROM`, `keep_vars`, and the reset link is still shown (`LoginScreen.tsx:173`). See R-02. |
 | F-33 | Fixed | `deploy.yml` records a D1 Time Travel bookmark and smoke-tests `/` and `/api/health`. Config only. Rollback is manual. |
 | F-34 | Fixed | `index.ts` `GET /api/health`. Test: `b1-worker.test.ts` (health). |
 | F-35 | Partial | `http.ts:57-66` logs `request_failed` and returns 500, or 503 for D1 errors. Test: `b1-worker.test.ts` (500 vs 503). Missing: payments logs are unstructured and drop the error detail (`payments.ts:97`); D1 constraint errors are reported as 503. |
