@@ -2,10 +2,11 @@
 useDefault = true
 
 [[allowlists]]
-description = "Installed dependencies and generated output are not application source"
+description = "Installed dependencies and generated output are not application source; API test fixtures hold dummy secrets"
 paths = [
   '''(^|[\\/])(node_modules|dist|\.git|\.turbo|\.expo|coverage)([\\/]|$)''',
   '''^art[\\/]raw[\\/]''',
+  '''^apps[\\/]api[\\/]src[\\/]__(tests|integration)__[\\/]''',
 ]
 
 [[rules]]

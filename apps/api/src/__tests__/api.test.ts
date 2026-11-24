@@ -206,7 +206,9 @@ describe('submit-run', () => {
     const saved = (await first.json()) as { id: string; score: number };
     expect(saved.score).toBe(run.state.score);
 
-    const events = await db.prepare('select count(*) as n from run_events').first<{ n: number }>();
+    const events = await db
+      .prepare("select count(*) as n from sqlite_master where type = 'table' and name = 'run_events'")
+      .first<{ n: number }>();
     expect(events?.n).toBe(0);
 
     const retry = await submit(body);

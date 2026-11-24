@@ -67,9 +67,9 @@ describe('local playable review', () => {
     await screen.findByRole('progressbar', { name: 'Gestión' }, { timeout: 5000 });
     const isOver = () => Boolean(useGameStore.getState().gameState?.gameOverReason);
     while (!isOver()) {
-      const choice = document.querySelectorAll('[aria-pressed]');
-      fireEvent.click(choice[3]!);
-      fireEvent.click(screen.getByRole('button', { name: 'Confirmar decisión' }));
+      const confirm = screen.getByRole('button', { name: 'Confirmar decisión' });
+      fireEvent.click(confirm.closest('section')!.querySelectorAll('[aria-pressed]')[3]!);
+      fireEvent.click(confirm);
       if (!isOver())
         fireEvent.click(
           await screen.findByRole('button', { name: 'Continuar la carrera' }, { timeout: 10000 }),

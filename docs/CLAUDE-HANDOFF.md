@@ -9,11 +9,13 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - `security_best_practices_report.md`: SEC-001..009 and SEC-013..015 re-verified against the Worker code and local tests. Remote D1 state and `ALLOWED_ORIGINS` are not proven by these tests.
 - F7: `_headers` CSP is now `style-src 'self'` plus `form-action 'self'`. Checked on a local preview with that header: full game, game over, share image, login, register, leaderboard, history, reset-password, home and the Accesibilidad toggles report no violation. The only one is html2canvas cloning the share card (one inline `<style>` it uses for pseudo-elements); the PNG renders the same. PostHog runs with `disable_external_dependency_loading`, so no survey or toolbar styles. If a future library injects `<style>` tags, it breaks under this CSP.
 - Share card: stats render with `Math.round` (inflation showed `43.77698455116164`). Test `features/game-over/__tests__/ShareImageCard.test.tsx`.
-- Share card footer now prints `window.location.host` (was a non-existent `republica.app`). Owner question left: drop the unused `run_events` table (deletes old rows)?
+- Share card footer now prints `window.location.host` (was a non-existent `republica.app`). Owner approved dropping `run_events`: migration `0003_drop_run_events.sql` (old rows gone; `GET /api/runs` still returns a `run_events` field built from `final_state`). Test in `api.test.ts` checks the table no longer exists.
 - Accesibilidad panel checked on prod in Chrome: "Reducir animaciones" adds `html.reduce-motion` (animations 15.7 s to 0.01 ms) and survives reload; "Atajos de teclado" on, key `2` picks choice 2, off, key `1` does nothing; "Tiempo extendido" shows 90 s instead of 45 s per Crisis Express turn. Preferences restored afterwards.
 - Prod checked after deploy: `curl -I` shows the new CSP; in Chrome, home, leaderboard, mode tabs, president pick and 3 played turns render fully with no CSP violation.
-- Flaky: `playtestFlow.test.tsx` "corrupt local administration" timed out on the CI runner (5 s wait for "Continuar la carrera"); raised to 10 s like the other waits.
+- Flaky: `playtestFlow.test.tsx` "corrupt local administration" timed out on the CI runner (5 s wait for "Continuar la carrera"); raised to 10 s like the other waits. It flaked again: the root cause was `document.querySelectorAll('[aria-pressed]')[3]`, which could hit a global toggle (SoundManager etc.) instead of choice D, so nothing was confirmed. The query is now scoped to the card `section`.
 - `ip limiter` tests froze `Date` at a window start: the auth-bucket test flaked on main when its 120 requests crossed the fixed 60 s window boundary.
+- Secret scan: CI job `Secret scan` downloads gitleaks 8.30.1 (sha256-checked) and scans full history with `.gitleaks.toml`; `verify` and `secrets` both gate deploy. Allowlist adds `apps/api/src/__tests__|__integration__` (dummy fixture secrets); `.gitleaksignore` holds 3 fingerprints for old Supabase `anon` JWTs (public role, Supabase no longer used). Local Windows runs need `GIT_CONFIG_NOSYSTEM=1` (Git for Windows `astextplain` textconv breaks `git log -p` on a `.docx`).
+- GitHub environment `production` now requires the owner as reviewer: every main deploy waits for approval in Actions (admins can bypass).
 - lint-staged now also runs eslint and prettier on `apps/api/src`; 4 api files that had drifted were formatted. `*.md` stays out on purpose (`.prettierignore`).
 
 ## 2026-11-24 — D1 write budget, Origin on cookie writes, username keys
@@ -28,7 +30,7 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - All planned art is imported: every key in `art/*.json` (event scenes, president scenes, extra scenes, plaza pack, candidates) and every historical scenario image exists in `image-manifest.json`. No pending scene generation.
 - Claude Security F1-F4 re-verified against the Worker: F1 Google sign-in gets `neutralUsername()` (`auth.ts`); F2/F3 `transferGuestTickets` resets `created_at` and caps at the remaining daily quota (`tickets.ts`); F4 daily cap (3 free / 30 `full_access`) is enforced server-side in `issueRunTicket`. Treat as closed.
 - Dependabot ignores `react-native` (0.x minors break the frozen Expo app); group PR #71 failed only on mobile type-check because of it. Major bumps #42-#48 (eslint 10, lint-staged 17, commitlint 21, globals 17, actions v7) left for the owner.
-- Still owner-only: Email Routing + `RESET_EMAIL_FROM`, Accesibilidad panel confirmation, GitHub `production` reviewers, gitleaks decision.
+- Still owner-only: Email Routing + `RESET_EMAIL_FROM` (Cloudflare dashboard + domain). Accesibilidad, `production` reviewers and gitleaks closed on 2026-11-24.
 
 ## 2026-11-23 — Stripe secrets set, checkout URL fix, Kicillof blue eyes
 
