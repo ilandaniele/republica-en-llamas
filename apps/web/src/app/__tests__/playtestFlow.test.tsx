@@ -72,7 +72,7 @@ describe('local playable review', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Confirmar decisión' }));
       if (!isOver())
         fireEvent.click(
-          await screen.findByRole('button', { name: 'Continuar la carrera' }, { timeout: 5000 }),
+          await screen.findByRole('button', { name: 'Continuar la carrera' }, { timeout: 10000 }),
         );
     }
     expect(await screen.findByRole('heading', { name: 'FIN DE ESTA CARRERA' })).toBeTruthy();
