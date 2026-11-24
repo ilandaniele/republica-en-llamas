@@ -26,8 +26,8 @@
     "db:migrate": "npm run db:migrate --workspace=apps/api"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@eslint/js": "^9.39.5",
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
@@ -38,9 +38,9 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.8",
     "gif-encoder-2": "^1.0.5",
-    "globals": "^16.5.0",
+    "globals": "^17.14.0",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.2",
+    "lint-staged": "^17.6.2",
     "prettier": "^3.10.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "sharp": "^0.35.5",
