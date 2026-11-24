@@ -15,4 +15,9 @@ describe('ShareImageCard', () => {
     expect(screen.getByText('71')).toBeInTheDocument();
     expect(screen.queryByText(/\d+\.\d+/)).not.toBeInTheDocument();
   });
+
+  it('points players to the host serving the game', () => {
+    render(<ShareImageCard gameState={initGame('normal', 42)} presidentId="populista" score={0} />);
+    expect(screen.getByText(`REPÚBLICA EN LLAMAS — JUGÁ EN ${window.location.host}`)).toBeInTheDocument();
+  });
 });

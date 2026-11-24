@@ -1,5 +1,5 @@
 {
-  "{apps/web/src,packages/game-engine/src}/**/*.{ts,tsx}": [
+  "{apps/web/src,apps/api/src,packages/game-engine/src}/**/*.{ts,tsx}": [
     "eslint --fix --no-warn-ignored",
     "prettier --write"
   ],
