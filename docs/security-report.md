@@ -119,7 +119,7 @@ Paths are relative to `apps/api/src/` unless they start with `apps/`, `packages/
 | --- | --- | --- | --- | --- | --- |
 | F-68 | security | `routes/payments.ts:49-70` | The webhook trusts the metadata of any signed session. It does not check the price. | Compare the session's price with the price of the entitlement. | ARCH-14 |
 | F-69 | security | product | Users cannot delete their account. A cascading delete would be costly. | Owner decides whether to build it. | SA-12, DBA-10 |
-| F-70 | security | `apps/web/public/_headers:1-7` | The CSP has no `form-action`. It allows wildcard PostHog hosts and `unsafe-inline` styles. There is no COOP or CORP. | Tighten after verifying remote headers. | V-7, SE-12, SA-15 |
+| F-70 | security | `apps/web/public/_headers:1-7` | The CSP has no `form-action`. It allows wildcard PostHog hosts and `unsafe-inline` styles. There is no COOP or CORP. | Partly fixed 2026-11-24: `form-action 'self'` added, `unsafe-inline` removed. Wildcard PostHog host, COOP and CORP still open. | V-7, SE-12, SA-15 |
 | F-71 | security | `apps/api/wrangler.jsonc` | `preview_urls` is not set explicitly. | Set `preview_urls: false`. | SE-10 |
 | F-72 | security | `ShareSection.tsx:31,37`, `gameStore.ts:457-473` | `window.open` is called without `noopener`. Persisted game state survives sign-out. | Pass `noopener,noreferrer`. Clear the stored game state on sign-out. | SA-16, SA-17 |
 | F-73 | cost-availability | `routes/runs.ts:81-98`, `auth.ts:64-68` | D1 round trips are sequential, and `session.cookieCache` is off. | Batch the queries and turn on the cookie cache. | ARCH-15, CR-14 |

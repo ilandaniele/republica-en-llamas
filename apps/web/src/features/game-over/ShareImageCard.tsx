@@ -154,7 +154,7 @@ export const ShareImageCard = forwardRef<HTMLDivElement, Props>(({ gameState, pr
                 }}
               >
                 <span>{label.toUpperCase()}</span>
-                <span style={{ color: value < 25 ? '#ff5252' : '#69f0ae' }}>{value}</span>
+                <span style={{ color: value < 25 ? '#ff5252' : '#69f0ae' }}>{Math.round(value)}</span>
               </div>
             ))}
           </div>
