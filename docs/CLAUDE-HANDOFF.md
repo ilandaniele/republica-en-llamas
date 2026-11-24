@@ -30,7 +30,7 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - All planned art is imported: every key in `art/*.json` (event scenes, president scenes, extra scenes, plaza pack, candidates) and every historical scenario image exists in `image-manifest.json`. No pending scene generation.
 - Claude Security F1-F4 re-verified against the Worker: F1 Google sign-in gets `neutralUsername()` (`auth.ts`); F2/F3 `transferGuestTickets` resets `created_at` and caps at the remaining daily quota (`tickets.ts`); F4 daily cap (3 free / 30 `full_access`) is enforced server-side in `issueRunTicket`. Treat as closed.
 - Dependabot ignores `react-native` (0.x minors break the frozen Expo app); group PR #71 failed only on mobile type-check because of it. Major bumps #42-#48 (eslint 10, lint-staged 17, commitlint 21, globals 17, actions v7) left for the owner.
-- Still owner-only: Email Routing + `RESET_EMAIL_FROM` (Cloudflare dashboard + domain). Accesibilidad, `production` reviewers and gitleaks closed on 2026-11-24.
+- Email reset closed as not applicable on 2026-11-24: the owner has no domain, so there is no Email Routing, `EMAIL` binding or `RESET_EMAIL_FROM`. The reset link stays hidden and `email.ts` skips sending. To enable it later, see the re-enable steps under deployment (binding, secret, `LoginScreen.tsx` button). Accesibilidad, `production` reviewers and gitleaks closed on 2026-11-24. No owner items left.
 
 ## 2026-11-23 — Stripe secrets set, checkout URL fix, Kicillof blue eyes
 
