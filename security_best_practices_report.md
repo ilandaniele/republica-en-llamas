@@ -31,9 +31,28 @@ Full phase log: `docs/security/hardening-2026-11-11.md`.
 - **SEC-025 (accepted, dev only):** `npm audit` reports critical `tar<=7.5.20` via `expo@51 > @expo/cli > tar@6.2.1`. Only the mobile dev CLI uses it to extract templates; it never ships in web or the Worker. An override to tar 7 breaks `@expo/cli` (default import of `tar`). Fix: upgrade Expo when mobile work resumes.
 - Accepted: leaderboard returns opaque `user_id`; requests without `Origin` are allowed for non-browser clients unless they carry a cookie (F8, 2026-11-24). IPv6 rate-limit keys use the full address, not the /64 prefix.
 
+### 2026-11-24 — Historical findings re-verified against the Worker (code review, local tests)
+
+| ID | Verdict | Evidence |
+|---|---|---|
+| SEC-001 | closed | `routes/runs.ts` `assertRunAccess` checks D1 entitlements before replay; `api.test.ts` "requires purchased access for premium modes" |
+| SEC-002 | closed | exact `METHOD path` routing (`index.ts`), Origin check, streamed body cap and 415 on encodings (`http.ts`), per-IP and per-user limits (`rateLimit.ts`). No app-level wall-clock timeout; Workers CPU cap plus 10 s Stripe/email timeouts |
+| SEC-003 | closed | `Object.hasOwn(PRICE_BY_ENTITLEMENT, …)`; new test rejects `__proto__`, `constructor`, `toString` (`payments.test.ts`) |
+| SEC-004 | closed | events live in `game_runs.final_state`, one INSERT; unique `ticket_id` and `(user_id, seed, decisions_hash)` |
+| SEC-005 | closed | `username.ts` (3–24, NFKC, no mixed scripts), DB length checks; no Worker route writes `avatar_url` |
+| SEC-006 | closed | Better Auth HttpOnly cookies (bearer storage N/A); cache cleared on identity change (`AuthProvider.test.tsx`) |
+| SEC-007 | closed | `lib/checkout.ts` exact Stripe host/path; `checkout.test.ts` |
+| SEC-008 | closed | generic 500/503 in `http.ts`; purchase toast waits for server entitlements (`purchaseStatus.test.tsx`) |
+| SEC-009 | fixed 2026-11-24 | `.gitignore` now ignores `.dev.vars*` (per-environment wrangler secrets such as `.dev.vars.production`), keeps `.dev.vars.example` |
+| SEC-013 | closed | neutral `jugador_<hex>` username on sign-up; leaderboard never reads email |
+| SEC-014 | closed | `tickets.ts` claim resets `created_at`, takes only last-day tickets up to the remaining cap |
+| SEC-015 | closed | atomic daily cap INSERT…SELECT (3, or 30 with `full_access`); 429 at cap |
+
+Limit: this is a code and local-test review. It does not prove remote D1 has migrations 0001–0002 applied or that `ALLOWED_ORIGINS` is set in production.
+
 ### Current status and open items
 
-- CSP enforced since 2026-11-11 (`apps/web/public/_headers`); confirm on the deployed origin. Session cookies are managed by Better Auth.
+- CSP enforced since 2026-11-11 (`apps/web/public/_headers`); confirmed on the deployed origin 2026-11-24 (`curl -I`). Session cookies are managed by Better Auth.
 - `tar` advisory under the Expo toolchain (SEC-010) is unchanged. Mobile type-check was not run.
 - Not verified remotely: Google OAuth and Stripe dashboard configuration (redirect `<url>/api/auth/callback/google`, webhook `<url>/api/stripe-webhook`), the `EMAIL` binding for password reset, and rate-limit behavior behind the real edge. Local tests do not prove any of these.
 - Owner tasks: set the remaining Worker secrets, add GitHub secrets `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID`, decommission the Fly app and the Supabase project.

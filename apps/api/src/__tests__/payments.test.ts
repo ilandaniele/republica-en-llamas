@@ -151,6 +151,14 @@ describe('create-checkout', () => {
     const response = await call(createCheckout, context(checkoutRequest('mode_historical'), 'alice'));
     expect(response.status).toBe(409);
   });
+
+  it.each(['__proto__', 'constructor', 'toString'])(
+    'rejects inherited key %s as an entitlement',
+    async (key) => {
+      const response = await call(createCheckout, context(checkoutRequest(key), 'alice'));
+      expect(response.status).toBe(400);
+    },
+  );
 });
 
 describe('stripe-webhook', () => {
