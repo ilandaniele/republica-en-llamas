@@ -4,10 +4,12 @@ import { DEBATE_EN } from './debate.js';
 import { ELECTION_EN } from './election.js';
 import { CAREER_EN } from './career.js';
 import { RUN_SAVE_EN } from './runSave.js';
+import { LEGACY_EVENTS_EN } from './legacyEvents.js';
 
 export const en: Record<string, string> = {
   ...CAREER_EN,
   ...RUN_SAVE_EN,
+  ...LEGACY_EVENTS_EN,
   ...ELECTION_EN,
   ...DEBATE_EN,
   ...PRESIDENT_STORY_EN,
