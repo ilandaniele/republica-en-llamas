@@ -10,6 +10,8 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - F7: `_headers` CSP is now `style-src 'self'` plus `form-action 'self'`. Checked on a local preview with that header: full game, game over, share image, login, register, leaderboard, history, reset-password, home and the Accesibilidad toggles report no violation. The only one is html2canvas cloning the share card (one inline `<style>` it uses for pseudo-elements); the PNG renders the same. PostHog runs with `disable_external_dependency_loading`, so no survey or toolbar styles. If a future library injects `<style>` tags, it breaks under this CSP.
 - Share card: stats render with `Math.round` (inflation showed `43.77698455116164`). Test `features/game-over/__tests__/ShareImageCard.test.tsx`.
 - Owner questions: the share card footer says `JUGÁ EN republica.app`, but prod is `republica-en-llamas.ilandaniele.workers.dev`; change it once there is a domain. Drop the unused `run_events` table (deletes old rows)?
+- Prod checked after deploy: `curl -I` shows the new CSP; in Chrome, home, leaderboard, mode tabs, president pick and 3 played turns render fully with no CSP violation.
+- Flaky: `playtestFlow.test.tsx` "corrupt local administration" timed out on the CI runner (5 s wait for "Continuar la carrera"); raised to 10 s like the other waits.
 - Gap: `.lintstagedrc.json` does not cover `apps/api` or `*.md`; run prettier on those by hand before committing.
 
 ## 2026-11-24 — D1 write budget, Origin on cookie writes, username keys
