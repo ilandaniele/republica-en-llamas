@@ -30,6 +30,7 @@ Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_repor
 - All planned art is imported: every key in `art/*.json` (event scenes, president scenes, extra scenes, plaza pack, candidates) and every historical scenario image exists in `image-manifest.json`. No pending scene generation.
 - Claude Security F1-F4 re-verified against the Worker: F1 Google sign-in gets `neutralUsername()` (`auth.ts`); F2/F3 `transferGuestTickets` resets `created_at` and caps at the remaining daily quota (`tickets.ts`); F4 daily cap (3 free / 30 `full_access`) is enforced server-side in `issueRunTicket`. Treat as closed.
 - Dependabot ignores `react-native` (0.x minors break the frozen Expo app); group PR #71 failed only on mobile type-check because of it. Major bumps #42-#48 (eslint 10, lint-staged 17, commitlint 21, globals 17, actions v7) left for the owner.
+- 2026-11-25 owner decisions: Workers Free kept for now (email auth ~37 ms CPU vs 10 ms nominal, 0 rejections; watch `exceededCpu`, move to Paid if it appears); Crisis difficulty stays free, historical scenarios keep requiring `full_access`; Fly and Supabase decommissioned by the owner. Deploy of #85 approved and checked: `/` 200, `/api/health` 200, `/api/runs` 401, home renders with no console errors in Chrome.
 - Email reset closed as not applicable on 2026-11-24: the owner has no domain, so there is no Email Routing, `EMAIL` binding or `RESET_EMAIL_FROM`. The reset link stays hidden and `email.ts` skips sending. To enable it later, see the re-enable steps under deployment (binding, secret, `LoginScreen.tsx` button). Accesibilidad, `production` reviewers and gitleaks closed on 2026-11-24. No owner items left.
 
 ## 2026-11-23 — Stripe secrets set, checkout URL fix, Kicillof blue eyes
@@ -238,12 +239,12 @@ With no `BETTER_AUTH_SECRET`, the deployed Worker used Better Auth's public defa
 
 ### Owner leftovers (manual)
 
-1. Decommission the Fly app and the Supabase project (the INACTIVE project mentioned in the historical notes below is no longer needed).
+1. Closed 2026-11-25 (owner shuts them down in their dashboards): decommission the Fly app and the Supabase project (the INACTIVE project mentioned in the historical notes below is no longer needed).
 2. Add GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (plus `VITE_POSTHOG_KEY` if analytics is wanted) so the deploy job works.
 3. Set the remaining Worker secrets with `wrangler secret put`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`. Password-reset mail also needs `RESET_EMAIL_FROM` and an `EMAIL` send-email binding (names in `apps/api/src/env.ts`); without them reset emails are skipped. `BETTER_AUTH_SECRET` is already set.
 4. Google OAuth redirect URI: `<url>/api/auth/callback/google`. Stripe webhook endpoint: `<url>/api/stripe-webhook`.
-5. Two probe guest users from smoke tests exist in D1; delete them if a clean table is wanted.
-6. Still open from before: `tar` advisory under Expo tooling, mobile type errors.
+5. Closed 2026-11-25: the two probe guests are gone (scheduled cleanup removed them); remote D1 holds only one guest with a live session and two real accounts.
+6. Still open, mobile only (`apps/mobile` is frozen): `tar` and the other `npm audit` advisories all come from Expo / react-native tooling; web, api and engine pass `npm audit --audit-level=high` in CI.
 
 ## Estado del proyecto (histórico, 2026-11-08)
 
