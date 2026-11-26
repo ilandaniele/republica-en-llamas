@@ -240,9 +240,9 @@ With no `BETTER_AUTH_SECRET`, the deployed Worker used Better Auth's public defa
 ### Owner leftovers (manual)
 
 1. Done 2026-11-26 with the owner's confirmation: Fly app `republica-en-llamas` destroyed (`fly apps destroy`, absent from `fly apps list`) and Supabase project `djlamsrefnyforzhjeip` deleted from the dashboard (absent from the org's project list).
-2. Add GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (plus `VITE_POSTHOG_KEY` if analytics is wanted) so the deploy job works.
-3. Set the remaining Worker secrets with `wrangler secret put`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`. Password-reset mail also needs `RESET_EMAIL_FROM` and an `EMAIL` send-email binding (names in `apps/api/src/env.ts`); without them reset emails are skipped. `BETTER_AUTH_SECRET` is already set.
-4. Google OAuth redirect URI: `<url>/api/auth/callback/google`. Stripe webhook endpoint: `<url>/api/stripe-webhook`.
+2. Done (checked 2026-11-26): GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` set, deploy job green. `VITE_POSTHOG_KEY` optional, not set.
+3. Done (checked 2026-11-26): Worker secrets `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` set. Email reset closed as not applicable (no domain).
+4. Done: Google OAuth redirect `<url>/api/auth/callback/google` and Stripe webhook `<url>/api/stripe-webhook` (events `checkout.session.completed`, `charge.refunded`) configured earlier.
 5. Closed 2026-11-25: the two probe guests are gone (scheduled cleanup removed them); remote D1 holds only one guest with a live session and two real accounts.
 6. Accepted risk 2026-11-26 (owner keeps `apps/mobile` frozen, app unpublished): `tar` and the other `npm audit` advisories all come from Expo / react-native tooling; web, api and engine pass `npm audit --audit-level=high` in CI.
 
