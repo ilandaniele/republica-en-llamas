@@ -255,6 +255,23 @@ const SCENARIO_MECHANICS: Partial<Record<ScenarioId, (s: GameState) => GameState
       inflation: clamp(s.economic.inflation + 1.5, -20, 200),
       marketConfidence: clamp(s.economic.marketConfidence - 0.5, 0, 100),
     }),
+  // Inertial inflation from the military era rises every turn
+  primavera_1983: (s) => withEconomic(s, { inflation: clamp(s.economic.inflation + 1, -20, 200) }),
+  // Road blockades erode stability during the first months
+  crisis_campo_2008: (s) =>
+    s.turn <= 10 ? withPolitical(s, { socialStability: clamp(s.political.socialStability - 1, 0, 100) }) : s,
+  // Capital flight drains reserves and the peso every turn
+  corrida_2018: (s) =>
+    withEconomic(s, {
+      foreignReserves: clamp(s.economic.foreignReserves - 1.5, 0, 100),
+      currencyStrength: clamp(s.economic.currencyStrength - 1, 0, 100),
+    }),
+  // Emergency aid widens the deficit while the economy slowly reopens
+  pandemia_2020: (s) =>
+    withEconomic(s, {
+      publicDeficit: clamp(s.economic.publicDeficit + 1, 0, 100),
+      gdpGrowth: clamp(s.economic.gdpGrowth + 0.3, -10, 10),
+    }),
 };
 
 function applyScenarioMechanics(state: GameState): GameState {

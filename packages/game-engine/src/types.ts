@@ -11,7 +11,11 @@ export type ScenarioId =
   | 'kirchnerismo_boom'
   | 'libertad_avanza_2023'
   | 'guerra_ucrania_2022'
-  | 'conflicto_iran_2024';
+  | 'conflicto_iran_2024'
+  | 'primavera_1983'
+  | 'crisis_campo_2008'
+  | 'corrida_2018'
+  | 'pandemia_2020';
 
 /** One phase in a scenario's narrative arc. Cards whose category matches
  *  weightedCategories receive a 3× draw-weight bonus during this phase. */

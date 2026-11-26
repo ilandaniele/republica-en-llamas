@@ -661,6 +661,18 @@ export const en: Record<string, string> = {
   'shock.kirchner.inflsubestimada': 'Real Inflation vs. INDEC Data',
   'shock.lla.herencia': 'Inherited Economic Disaster',
   'shock.lla.devaluacion': 'Peso Devaluation',
+  'shock.prim.deuda': 'Inherited Foreign Debt',
+  'shock.prim.cuarteles': 'Pressure from the Barracks',
+  'shock.campo.paro': 'Farm Strike',
+  'shock.campo.lehman': 'Global Financial Crisis',
+  'shock.corr.dolar': 'Currency Run',
+  'shock.corr.sequia': 'Record Drought',
+  'shock.pand.cuarentena': 'Strict Lockdown',
+  'shock.pand.vacunas': 'Vaccine Shortage',
+  'shock.ucrania.invasion': 'Invasion of Ukraine',
+  'shock.ucrania.energia': 'Energy Crisis',
+  'shock.iran.petroleo': 'Oil Price Spike',
+  'shock.iran.misiles': 'Missile Barrage',
 
   // ── Months ────────────────────────────────────────────────────────────────
   'month.1': 'January',
@@ -934,6 +946,142 @@ export const en: Record<string, string> = {
   'scenario.conflicto_iran_2024.period': '2024',
   'scenario.conflicto_iran_2024.description':
     'Iran, Israel and the US on the brink. Oil prices surge and the global energy crisis hits Argentina just as it was trying to stabilize.',
+
+  // ── Scenario: La Primavera Democrática ──
+  'scenario.primavera_1983.label': 'The Democratic Spring',
+  'scenario.primavera_1983.period': '1983–1987',
+  'scenario.primavera_1983.description':
+    'Democracy returns after seven years of dictatorship. Hope is huge, so is the debt, and the barracks still reject the trials.',
+
+  'event.hist_prim_001.title': 'THE TRIAL OF THE JUNTAS',
+  'event.hist_prim_001.body':
+    'CONADEP has delivered the Nunca Más report. Society demands justice for the disappeared and the military warns it will not accept trials.',
+  'event.hist_prim_001.choice_a': 'Full civilian trial of the commanders',
+  'event.hist_prim_001.choice_b': 'Try only the top brass and close the rest',
+  'event.hist_prim_001.choice_c': 'Leave the case to military courts',
+
+  'event.hist_prim_002.title': 'THE AUSTRAL PLAN',
+  'event.hist_prim_002.body':
+    'Inflation tops 1,000% a year. Sourrouille proposes a new currency, the austral, with a freeze on prices and wages.',
+  'event.hist_prim_002.choice_a': 'Launch the austral with a full freeze',
+  'event.hist_prim_002.choice_b': 'Gradual adjustment without a new currency',
+  'event.hist_prim_002.choice_c': 'Declare a moratorium on foreign debt',
+
+  'event.hist_prim_003.title': 'EASTER WEEK: THE CARAPINTADAS',
+  'event.hist_prim_003.body':
+    'Rebel officers at Campo de Mayo demand an end to the trials. Thousands surround the barracks to defend democracy.',
+  'event.hist_prim_003.choice_a': 'Negotiate in person and declare the house in order',
+  'event.hist_prim_003.choice_b': 'Call people to the Plaza and concede nothing',
+  'event.hist_prim_003.choice_c': 'Send the due obedience law to Congress',
+
+  // ── Scenario: La Guerra del Campo ──
+  'scenario.crisis_campo_2008.label': 'The Farm War',
+  'scenario.crisis_campo_2008.period': '2008',
+  'scenario.crisis_campo_2008.description':
+    'Resolution 125 raises soybean export taxes. Farmers block the roads, shelves empty and Congress decides the fate of the government.',
+
+  'event.hist_campo_001.title': 'RESOLUTION 125: SLIDING EXPORT TAXES',
+  'event.hist_campo_001.body':
+    'The government ties export taxes to the world soybean price. The four farm associations call an indefinite strike.',
+  'event.hist_campo_001.choice_a': 'Keep Resolution 125 unchanged',
+  'event.hist_campo_001.choice_b': 'Back down and suspend the measure',
+  'event.hist_campo_001.choice_c': 'Compensate small producers',
+
+  'event.hist_campo_002.title': 'ROSARIO VERSUS PLAZA DE MAYO',
+  'event.hist_campo_002.body':
+    'Farmers gather 200,000 people at the Flag Memorial. Roads remain blocked and milk is missing from supermarkets.',
+  'event.hist_campo_002.choice_a': 'Answer with a mass rally in Plaza de Mayo',
+  'event.hist_campo_002.choice_b': 'Open talks with the farm leaders',
+  'event.hist_campo_002.choice_c': 'Import food to break the shortages',
+
+  'event.hist_campo_003.title': 'THE NON-POSITIVE VOTE',
+  'event.hist_campo_003.body':
+    'The Senate is tied. The vice-president must break the tie and hints he will vote against his own government.',
+  'event.hist_campo_003.choice_a': 'Put Resolution 125 to the vote anyway',
+  'event.hist_campo_003.choice_b': 'Repeal the measure by decree before the vote',
+  'event.hist_campo_003.choice_c': 'Nationalise the private pension funds to recover cash',
+
+  // ── Scenario: La Corrida Cambiaria ──
+  'scenario.corrida_2018.label': 'The Currency Run',
+  'scenario.corrida_2018.period': '2018–2019',
+  'scenario.corrida_2018.description':
+    'Investment funds dump their peso positions. The dollar doubles, a drought hits exports and the IMF returns to Argentina.',
+
+  'event.hist_corr_001.title': 'THE DOLLAR JUMPS FROM 20 TO 40',
+  'event.hist_corr_001.body':
+    'Central bank notes mature and nobody rolls them over. The peso loses half its value in a few weeks.',
+  'event.hist_corr_001.choice_a': 'Raise rates to 60% to stop the run',
+  'event.hist_corr_001.choice_b': 'Sell reserves to prop up the peso',
+  'event.hist_corr_001.choice_c': 'Let the dollar float freely',
+
+  'event.hist_corr_002.title': 'BACK TO THE IMF',
+  'event.hist_corr_002.body':
+    'The Fund offers the largest loan in its history in exchange for a zero deficit. The letters IMF still burn in the memory of 2001.',
+  'event.hist_corr_002.choice_a': 'Sign the record stand-by deal',
+  'event.hist_corr_002.choice_b': 'Reject the loan and look for another way out',
+  'event.hist_corr_002.choice_c': 'Expand the currency swap with China',
+
+  'event.hist_corr_003.title': 'BLACK MONDAY AFTER THE PRIMARIES',
+  'event.hist_corr_003.body':
+    'The government loses the primaries by 15 points. The next day the dollar jumps 30% and bonds collapse.',
+  'event.hist_corr_003.choice_a': 'Reprofile the debt and impose capital controls',
+  'event.hist_corr_003.choice_b': 'Freeze essential prices and cut VAT',
+  'event.hist_corr_003.choice_c': 'Call for calm and change nothing',
+
+  // ── Scenario: La Cuarentena ──
+  'scenario.pandemia_2020.label': 'The Lockdown',
+  'scenario.pandemia_2020.period': '2020–2021',
+  'scenario.pandemia_2020.description':
+    'A new virus brings the world to a halt. You must weigh health against the economy with hospitals at capacity, shops closed and freshly restructured debt.',
+
+  'event.hist_pand_001.title': 'MANDATORY SOCIAL ISOLATION',
+  'event.hist_pand_001.body':
+    'Infections double every three days. Epidemiologists want everything closed and shopkeepers warn they will not survive.',
+  'event.hist_pand_001.choice_a': 'Strict nationwide lockdown',
+  'event.hist_pand_001.choice_b': 'Targeted lockdown in the big cities',
+  'event.hist_pand_001.choice_c': 'Keep the economy open',
+
+  'event.hist_pand_002.title': 'EMERGENCY AID: PRINT TO SURVIVE?',
+  'event.hist_pand_002.body':
+    'Nine million people apply for emergency income. Companies cannot pay wages without state help.',
+  'event.hist_pand_002.choice_a': 'Print pesos to pay for everything',
+  'event.hist_pand_002.choice_b': 'Fund the aid with peso debt',
+  'event.hist_pand_002.choice_c': 'Limit the aid to the poorest',
+
+  'event.hist_pand_003.title': 'THE VIP VACCINATION SCANDAL',
+  'event.hist_pand_003.body':
+    'Officials and friends of power got vaccinated before doctors and the elderly. Outrage is total.',
+  'event.hist_pand_003.choice_a': 'Fire the health minister immediately',
+  'event.hist_pand_003.choice_b': 'Defend the minister as an administrative error',
+  'event.hist_pand_003.choice_c': 'Order an independent audit',
+
+  'event.hist_lla_001.title': 'THE CHAINSAW DECREE',
+  'event.hist_lla_001.body':
+    'The decree repeals more than 300 rules at a stroke. Markets cheer, the CGT calls it an attack on labour rights and the courts block the labour chapter.',
+  'event.hist_lla_001.choice_a': 'Keep the full decree and defy the courts',
+  'event.hist_lla_001.choice_b': 'Send the reforms to Congress as an omnibus bill',
+  'event.hist_lla_001.choice_c': 'Trim the decree and negotiate with the governors',
+
+  'event.hist_lla_002.title': 'A GENERAL STRIKE AFTER 45 DAYS',
+  'event.hist_lla_002.body':
+    'The CGT shuts the country down before the government turns two months old. Pensioners march every Wednesday outside Congress.',
+  'event.hist_lla_002.choice_a': 'Enforce the anti-blockade protocol in full',
+  'event.hist_lla_002.choice_b': 'Meet the CGT and offer pensioners a bonus',
+  'event.hist_lla_002.choice_c': 'Ignore the strike and speak only on social media',
+
+  'event.hist_lla_003.title': 'LIFT THE CURRENCY CONTROLS?',
+  'event.hist_lla_003.body':
+    'Monthly inflation falls from 25% to single digits. The IMF and markets want the controls lifted, but net reserves are still negative.',
+  'event.hist_lla_003.choice_a': 'Lift the controls overnight',
+  'event.hist_lla_003.choice_b': 'Exchange-rate bands with a new IMF deal',
+  'event.hist_lla_003.choice_c': 'Keep the controls until after the elections',
+
+  'event.hist_iran_001.title': 'FULL ALIGNMENT WITH ISRAEL',
+  'event.hist_iran_001.body':
+    'Washington wants clear gestures. The Jewish community remembers the AMIA and Embassy bombings, and security agencies warn of attack risk.',
+  'event.hist_iran_001.choice_a': 'Align fully with Israel and the United States',
+  'event.hist_iran_001.choice_b': 'Keep the traditional neutrality at the UN',
+  'event.hist_iran_001.choice_c': 'Tighten security and list Hamas as a terrorist group',
 
   // ── Geopolitical event cards ──────────────────────────────────────────────
   'event.geo_001.title': 'GLOBAL ENERGY CRISIS',
