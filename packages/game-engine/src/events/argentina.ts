@@ -1036,4 +1036,432 @@ export const ARGENTINA_CARDS: EventCard[] = [
       },
     ],
   },
+
+  // ── La Primavera Democrática ──
+  {
+    id: 'hist_prim_001',
+    category: 'political',
+    titleKey: 'event.hist_prim_001.title',
+    bodyKey: 'event.hist_prim_001.body',
+    weight: 10,
+    minTurn: 1,
+    maxTurn: 6,
+    requiredFlags: ['scenario_primavera_1983'],
+    choices: [
+      {
+        id: 'hist_prim_001_a',
+        textKey: 'event.hist_prim_001.choice_a',
+        effects: { popularityDelta: 15, stabilityDelta: -10, mediaCredibilityDelta: 10 },
+      },
+      {
+        id: 'hist_prim_001_b',
+        textKey: 'event.hist_prim_001.choice_b',
+        effects: { popularityDelta: -10, stabilityDelta: 10, mediaCredibilityDelta: -10 },
+      },
+      {
+        id: 'hist_prim_001_c',
+        textKey: 'event.hist_prim_001.choice_c',
+        effects: { popularityDelta: -20, stabilityDelta: 5, mediaCredibilityDelta: -15 },
+      },
+    ],
+  },
+  {
+    id: 'hist_prim_002',
+    category: 'economic',
+    titleKey: 'event.hist_prim_002.title',
+    bodyKey: 'event.hist_prim_002.body',
+    weight: 9,
+    minTurn: 3,
+    requiredFlags: ['scenario_primavera_1983'],
+    choices: [
+      {
+        id: 'hist_prim_002_a',
+        textKey: 'event.hist_prim_002.choice_a',
+        effects: { inflationDelta: -25, popularityDelta: 10, deficitDelta: -5, marketConfidenceDelta: 10 },
+      },
+      {
+        id: 'hist_prim_002_b',
+        textKey: 'event.hist_prim_002.choice_b',
+        effects: { inflationDelta: -5, marketConfidenceDelta: -5 },
+      },
+      {
+        id: 'hist_prim_002_c',
+        textKey: 'event.hist_prim_002.choice_c',
+        effects: {
+          marketConfidenceDelta: -25,
+          foreignReservesDelta: 10,
+          popularityDelta: 10,
+          inflationDelta: 5,
+        },
+      },
+    ],
+  },
+  {
+    id: 'hist_prim_003',
+    category: 'crisis',
+    titleKey: 'event.hist_prim_003.title',
+    bodyKey: 'event.hist_prim_003.body',
+    weight: 8,
+    minTurn: 6,
+    requiredFlags: ['scenario_primavera_1983'],
+    choices: [
+      {
+        id: 'hist_prim_003_a',
+        textKey: 'event.hist_prim_003.choice_a',
+        effects: { popularityDelta: -15, stabilityDelta: 10, mediaCredibilityDelta: -10 },
+      },
+      {
+        id: 'hist_prim_003_b',
+        textKey: 'event.hist_prim_003.choice_b',
+        effects: { popularityDelta: 10, stabilityDelta: -15 },
+      },
+      {
+        id: 'hist_prim_003_c',
+        textKey: 'event.hist_prim_003.choice_c',
+        effects: { popularityDelta: -20, stabilityDelta: 15, mediaCredibilityDelta: -15 },
+      },
+    ],
+  },
+
+  // ── La Guerra del Campo ──
+  {
+    id: 'hist_campo_001',
+    category: 'economic',
+    titleKey: 'event.hist_campo_001.title',
+    bodyKey: 'event.hist_campo_001.body',
+    weight: 10,
+    minTurn: 1,
+    maxTurn: 5,
+    requiredFlags: ['scenario_crisis_campo_2008'],
+    choices: [
+      {
+        id: 'hist_campo_001_a',
+        textKey: 'event.hist_campo_001.choice_a',
+        effects: { deficitDelta: -10, popularityDelta: -15, stabilityDelta: -10, marketConfidenceDelta: -5 },
+      },
+      {
+        id: 'hist_campo_001_b',
+        textKey: 'event.hist_campo_001.choice_b',
+        effects: { popularityDelta: 5, deficitDelta: 5, mediaCredibilityDelta: -10 },
+      },
+      {
+        id: 'hist_campo_001_c',
+        textKey: 'event.hist_campo_001.choice_c',
+        effects: { popularityDelta: -5, deficitDelta: -5, stabilityDelta: -3 },
+      },
+    ],
+  },
+  {
+    id: 'hist_campo_002',
+    category: 'social',
+    titleKey: 'event.hist_campo_002.title',
+    bodyKey: 'event.hist_campo_002.body',
+    weight: 9,
+    minTurn: 2,
+    requiredFlags: ['scenario_crisis_campo_2008'],
+    choices: [
+      {
+        id: 'hist_campo_002_a',
+        textKey: 'event.hist_campo_002.choice_a',
+        effects: { popularityDelta: 5, stabilityDelta: -10, mediaCredibilityDelta: -5 },
+      },
+      {
+        id: 'hist_campo_002_b',
+        textKey: 'event.hist_campo_002.choice_b',
+        effects: { popularityDelta: 5, stabilityDelta: 10, deficitDelta: 3 },
+      },
+      {
+        id: 'hist_campo_002_c',
+        textKey: 'event.hist_campo_002.choice_c',
+        effects: { inflationDelta: 5, foreignReservesDelta: -10, stabilityDelta: 5 },
+      },
+    ],
+  },
+  {
+    id: 'hist_campo_003',
+    category: 'political',
+    titleKey: 'event.hist_campo_003.title',
+    bodyKey: 'event.hist_campo_003.body',
+    weight: 8,
+    minTurn: 5,
+    requiredFlags: ['scenario_crisis_campo_2008'],
+    choices: [
+      {
+        id: 'hist_campo_003_a',
+        textKey: 'event.hist_campo_003.choice_a',
+        effects: { governmentSeatsDelta: -20, popularityDelta: -10, mediaCredibilityDelta: -5 },
+      },
+      {
+        id: 'hist_campo_003_b',
+        textKey: 'event.hist_campo_003.choice_b',
+        effects: { popularityDelta: 10, deficitDelta: 5, mediaCredibilityDelta: 5 },
+      },
+      {
+        id: 'hist_campo_003_c',
+        textKey: 'event.hist_campo_003.choice_c',
+        effects: { deficitDelta: -15, marketConfidenceDelta: -20, popularityDelta: -5 },
+      },
+    ],
+  },
+
+  // ── La Corrida Cambiaria ──
+  {
+    id: 'hist_corr_001',
+    category: 'economic',
+    titleKey: 'event.hist_corr_001.title',
+    bodyKey: 'event.hist_corr_001.body',
+    weight: 10,
+    minTurn: 1,
+    maxTurn: 5,
+    requiredFlags: ['scenario_corrida_2018'],
+    choices: [
+      {
+        id: 'hist_corr_001_a',
+        textKey: 'event.hist_corr_001.choice_a',
+        effects: { inflationDelta: -5, marketConfidenceDelta: 10, gdpGrowthDelta: -2, popularityDelta: -10 },
+      },
+      {
+        id: 'hist_corr_001_b',
+        textKey: 'event.hist_corr_001.choice_b',
+        effects: { foreignReservesDelta: -20, currencyStrengthDelta: 10, marketConfidenceDelta: -5 },
+      },
+      {
+        id: 'hist_corr_001_c',
+        textKey: 'event.hist_corr_001.choice_c',
+        effects: { inflationDelta: 10, currencyStrengthDelta: -15, marketConfidenceDelta: 5 },
+      },
+    ],
+  },
+  {
+    id: 'hist_corr_002',
+    category: 'international',
+    titleKey: 'event.hist_corr_002.title',
+    bodyKey: 'event.hist_corr_002.body',
+    weight: 9,
+    minTurn: 2,
+    requiredFlags: ['scenario_corrida_2018'],
+    choices: [
+      {
+        id: 'hist_corr_002_a',
+        textKey: 'event.hist_corr_002.choice_a',
+        effects: {
+          foreignReservesDelta: 30,
+          marketConfidenceDelta: 15,
+          popularityDelta: -15,
+          deficitDelta: -5,
+        },
+      },
+      {
+        id: 'hist_corr_002_b',
+        textKey: 'event.hist_corr_002.choice_b',
+        effects: { marketConfidenceDelta: -20, foreignReservesDelta: -10, popularityDelta: 5 },
+      },
+      {
+        id: 'hist_corr_002_c',
+        textKey: 'event.hist_corr_002.choice_c',
+        effects: { foreignReservesDelta: 10, marketConfidenceDelta: -5, mediaCredibilityDelta: -5 },
+      },
+    ],
+  },
+  {
+    id: 'hist_corr_003',
+    category: 'political',
+    titleKey: 'event.hist_corr_003.title',
+    bodyKey: 'event.hist_corr_003.body',
+    weight: 8,
+    minTurn: 6,
+    requiredFlags: ['scenario_corrida_2018'],
+    choices: [
+      {
+        id: 'hist_corr_003_a',
+        textKey: 'event.hist_corr_003.choice_a',
+        effects: { currencyStrengthDelta: 10, marketConfidenceDelta: -20, popularityDelta: -5 },
+      },
+      {
+        id: 'hist_corr_003_b',
+        textKey: 'event.hist_corr_003.choice_b',
+        effects: { popularityDelta: 10, inflationDelta: -5, deficitDelta: 8 },
+      },
+      {
+        id: 'hist_corr_003_c',
+        textKey: 'event.hist_corr_003.choice_c',
+        effects: { marketConfidenceDelta: -10, currencyStrengthDelta: -10, popularityDelta: -10 },
+      },
+    ],
+  },
+
+  // ── La Cuarentena ──
+  {
+    id: 'hist_pand_001',
+    category: 'social',
+    titleKey: 'event.hist_pand_001.title',
+    bodyKey: 'event.hist_pand_001.body',
+    weight: 10,
+    minTurn: 1,
+    maxTurn: 5,
+    requiredFlags: ['scenario_pandemia_2020'],
+    choices: [
+      {
+        id: 'hist_pand_001_a',
+        textKey: 'event.hist_pand_001.choice_a',
+        effects: { stabilityDelta: 10, popularityDelta: 10, gdpGrowthDelta: -2, deficitDelta: 5 },
+      },
+      {
+        id: 'hist_pand_001_b',
+        textKey: 'event.hist_pand_001.choice_b',
+        effects: { popularityDelta: -5, stabilityDelta: -5, gdpGrowthDelta: -1 },
+      },
+      {
+        id: 'hist_pand_001_c',
+        textKey: 'event.hist_pand_001.choice_c',
+        effects: { popularityDelta: -15, stabilityDelta: -15, marketConfidenceDelta: 5 },
+      },
+    ],
+  },
+  {
+    id: 'hist_pand_002',
+    category: 'economic',
+    titleKey: 'event.hist_pand_002.title',
+    bodyKey: 'event.hist_pand_002.body',
+    weight: 9,
+    minTurn: 2,
+    requiredFlags: ['scenario_pandemia_2020'],
+    choices: [
+      {
+        id: 'hist_pand_002_a',
+        textKey: 'event.hist_pand_002.choice_a',
+        effects: { popularityDelta: 10, deficitDelta: 15, inflationDelta: 10 },
+      },
+      {
+        id: 'hist_pand_002_b',
+        textKey: 'event.hist_pand_002.choice_b',
+        effects: { deficitDelta: 5, foreignReservesDelta: -5, marketConfidenceDelta: -5 },
+      },
+      {
+        id: 'hist_pand_002_c',
+        textKey: 'event.hist_pand_002.choice_c',
+        effects: { popularityDelta: -15, deficitDelta: -5, marketConfidenceDelta: 10 },
+      },
+    ],
+  },
+  {
+    id: 'hist_pand_003',
+    category: 'political',
+    titleKey: 'event.hist_pand_003.title',
+    bodyKey: 'event.hist_pand_003.body',
+    weight: 8,
+    minTurn: 5,
+    requiredFlags: ['scenario_pandemia_2020'],
+    choices: [
+      {
+        id: 'hist_pand_003_a',
+        textKey: 'event.hist_pand_003.choice_a',
+        effects: { popularityDelta: -5, mediaCredibilityDelta: 10, stabilityDelta: 5 },
+      },
+      {
+        id: 'hist_pand_003_b',
+        textKey: 'event.hist_pand_003.choice_b',
+        effects: { popularityDelta: -20, mediaCredibilityDelta: -20 },
+      },
+      {
+        id: 'hist_pand_003_c',
+        textKey: 'event.hist_pand_003.choice_c',
+        effects: { popularityDelta: -10, mediaCredibilityDelta: 5, deficitDelta: 2 },
+      },
+    ],
+  },
+  {
+    id: 'hist_lla_001',
+    category: 'economic',
+    titleKey: 'event.hist_lla_001.title',
+    bodyKey: 'event.hist_lla_001.body',
+    weight: 10,
+    minTurn: 1,
+    maxTurn: 5,
+    requiredFlags: ['scenario_libertad_avanza_2023'],
+    choices: [
+      {
+        id: 'hist_lla_001_a',
+        textKey: 'event.hist_lla_001.choice_a',
+        effects: {
+          marketConfidenceDelta: 15,
+          popularityDelta: -10,
+          stabilityDelta: -10,
+          mediaCredibilityDelta: -5,
+        },
+      },
+      {
+        id: 'hist_lla_001_b',
+        textKey: 'event.hist_lla_001.choice_b',
+        effects: { marketConfidenceDelta: 5, popularityDelta: -5, governmentSeatsDelta: -10 },
+      },
+      {
+        id: 'hist_lla_001_c',
+        textKey: 'event.hist_lla_001.choice_c',
+        effects: { marketConfidenceDelta: -5, stabilityDelta: 5, deficitDelta: 3 },
+      },
+    ],
+  },
+  {
+    id: 'hist_lla_002',
+    category: 'social',
+    titleKey: 'event.hist_lla_002.title',
+    bodyKey: 'event.hist_lla_002.body',
+    weight: 9,
+    minTurn: 2,
+    requiredFlags: ['scenario_libertad_avanza_2023'],
+    choices: [
+      {
+        id: 'hist_lla_002_a',
+        textKey: 'event.hist_lla_002.choice_a',
+        effects: { stabilityDelta: -15, popularityDelta: 5, mediaCredibilityDelta: -10 },
+      },
+      {
+        id: 'hist_lla_002_b',
+        textKey: 'event.hist_lla_002.choice_b',
+        effects: { stabilityDelta: 10, deficitDelta: 5, marketConfidenceDelta: -5 },
+      },
+      {
+        id: 'hist_lla_002_c',
+        textKey: 'event.hist_lla_002.choice_c',
+        effects: { popularityDelta: -5, mediaCredibilityDelta: -10, stabilityDelta: -5 },
+      },
+    ],
+  },
+  {
+    id: 'hist_lla_003',
+    category: 'economic',
+    titleKey: 'event.hist_lla_003.title',
+    bodyKey: 'event.hist_lla_003.body',
+    weight: 8,
+    minTurn: 6,
+    requiredFlags: ['scenario_libertad_avanza_2023'],
+    choices: [
+      {
+        id: 'hist_lla_003_a',
+        textKey: 'event.hist_lla_003.choice_a',
+        effects: {
+          marketConfidenceDelta: 15,
+          inflationDelta: 8,
+          currencyStrengthDelta: -15,
+          popularityDelta: -5,
+        },
+      },
+      {
+        id: 'hist_lla_003_b',
+        textKey: 'event.hist_lla_003.choice_b',
+        effects: {
+          foreignReservesDelta: 20,
+          marketConfidenceDelta: 10,
+          inflationDelta: 3,
+          popularityDelta: -3,
+        },
+      },
+      {
+        id: 'hist_lla_003_c',
+        textKey: 'event.hist_lla_003.choice_c',
+        effects: { inflationDelta: -5, marketConfidenceDelta: -10, foreignReservesDelta: -5 },
+      },
+    ],
+  },
 ];

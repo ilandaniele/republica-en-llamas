@@ -1360,6 +1360,18 @@ export const es: Record<string, string> = {
   'shock.kirchner.inflsubestimada': 'Inflación Real vs INDEC',
   'shock.lla.herencia': 'Herencia Maldita',
   'shock.lla.devaluacion': 'Devaluación del Peso',
+  'shock.prim.deuda': 'Deuda Externa Heredada',
+  'shock.prim.cuarteles': 'Presión de los Cuarteles',
+  'shock.campo.paro': 'Paro Agropecuario',
+  'shock.campo.lehman': 'Crisis Financiera Global',
+  'shock.corr.dolar': 'Corrida Cambiaria',
+  'shock.corr.sequia': 'Sequía Récord',
+  'shock.pand.cuarentena': 'Cuarentena Estricta',
+  'shock.pand.vacunas': 'Escasez de Vacunas',
+  'shock.ucrania.invasion': 'Invasión de Ucrania',
+  'shock.ucrania.energia': 'Crisis Energética',
+  'shock.iran.petroleo': 'Petróleo por las Nubes',
+  'shock.iran.misiles': 'Lluvia de Misiles',
 
   // ── Months ────────────────────────────────────────────────────────────────
   'month.1': 'Enero',
@@ -1633,6 +1645,142 @@ export const es: Record<string, string> = {
   'scenario.conflicto_iran_2024.period': '2024',
   'scenario.conflicto_iran_2024.description':
     'Irán, Israel y Estados Unidos al borde del abismo. El petróleo se dispara y la crisis energética global sacude a la Argentina justo cuando intentaba estabilizarse.',
+
+  // ── Scenario: La Primavera Democrática ──
+  'scenario.primavera_1983.label': 'La Primavera Democrática',
+  'scenario.primavera_1983.period': '1983–1987',
+  'scenario.primavera_1983.description':
+    'Vuelve la democracia tras siete años de dictadura. La ilusión es enorme, la deuda también, y los cuarteles todavía no aceptan el juicio.',
+
+  'event.hist_prim_001.title': 'EL JUICIO A LAS JUNTAS',
+  'event.hist_prim_001.body':
+    'La CONADEP entregó el Nunca Más. La sociedad exige justicia por los desaparecidos y los militares advierten que no aceptarán ser juzgados.',
+  'event.hist_prim_001.choice_a': 'Juicio civil pleno a los comandantes',
+  'event.hist_prim_001.choice_b': 'Juzgar sólo a las cúpulas y cerrar el resto',
+  'event.hist_prim_001.choice_c': 'Dejar el caso en manos de la justicia militar',
+
+  'event.hist_prim_002.title': 'PLAN AUSTRAL',
+  'event.hist_prim_002.body':
+    'La inflación supera el 1.000% anual. Sourrouille propone una moneda nueva, el austral, con congelamiento de precios y salarios.',
+  'event.hist_prim_002.choice_a': 'Lanzar el austral con congelamiento total',
+  'event.hist_prim_002.choice_b': 'Ajuste gradual sin cambiar la moneda',
+  'event.hist_prim_002.choice_c': 'Declarar una moratoria de la deuda externa',
+
+  'event.hist_prim_003.title': 'SEMANA SANTA: LOS CARAPINTADAS',
+  'event.hist_prim_003.body':
+    'Oficiales sublevados en Campo de Mayo exigen frenar los juicios. Miles de personas rodean los cuarteles para defender la democracia.',
+  'event.hist_prim_003.choice_a': 'Negociar en persona y anunciar que la casa está en orden',
+  'event.hist_prim_003.choice_b': 'Llamar a la Plaza y no ceder nada',
+  'event.hist_prim_003.choice_c': 'Enviar al Congreso la ley de obediencia debida',
+
+  // ── Scenario: La Guerra del Campo ──
+  'scenario.crisis_campo_2008.label': 'La Guerra del Campo',
+  'scenario.crisis_campo_2008.period': '2008',
+  'scenario.crisis_campo_2008.description':
+    'La Resolución 125 sube las retenciones a la soja. El campo corta las rutas, las góndolas se vacían y el Congreso decide el futuro del gobierno.',
+
+  'event.hist_campo_001.title': 'RESOLUCIÓN 125: RETENCIONES MÓVILES',
+  'event.hist_campo_001.body':
+    'El gobierno ata las retenciones al precio internacional de la soja. Las cuatro entidades del campo anuncian un paro por tiempo indeterminado.',
+  'event.hist_campo_001.choice_a': 'Sostener la 125 sin cambios',
+  'event.hist_campo_001.choice_b': 'Retroceder y suspender la medida',
+  'event.hist_campo_001.choice_c': 'Compensar a los pequeños productores',
+
+  'event.hist_campo_002.title': 'ROSARIO CONTRA PLAZA DE MAYO',
+  'event.hist_campo_002.body':
+    'El campo reúne a 200.000 personas en el Monumento a la Bandera. Las rutas siguen cortadas y falta leche en los supermercados.',
+  'event.hist_campo_002.choice_a': 'Responder con un acto masivo en Plaza de Mayo',
+  'event.hist_campo_002.choice_b': 'Abrir una mesa de diálogo con la Mesa de Enlace',
+  'event.hist_campo_002.choice_c': 'Importar alimentos para romper el desabastecimiento',
+
+  'event.hist_campo_003.title': 'EL VOTO NO POSITIVO',
+  'event.hist_campo_003.body':
+    'Empate en el Senado. El vicepresidente debe desempatar y anticipa que votará contra su propio gobierno.',
+  'event.hist_campo_003.choice_a': 'Llevar la 125 a votación igual',
+  'event.hist_campo_003.choice_b': 'Derogar la medida por decreto antes de la votación',
+  'event.hist_campo_003.choice_c': 'Estatizar las AFJP para recuperar la caja',
+
+  // ── Scenario: La Corrida Cambiaria ──
+  'scenario.corrida_2018.label': 'La Corrida Cambiaria',
+  'scenario.corrida_2018.period': '2018–2019',
+  'scenario.corrida_2018.description':
+    'Los fondos de inversión desarman sus posiciones en pesos. El dólar se duplica, la sequía golpea las exportaciones y el FMI vuelve a la Argentina.',
+
+  'event.hist_corr_001.title': 'EL DÓLAR SALTA DE 20 A 40',
+  'event.hist_corr_001.body':
+    'Las LEBAC vencen y nadie las renueva. El peso pierde la mitad de su valor en pocas semanas.',
+  'event.hist_corr_001.choice_a': 'Subir la tasa al 60% para frenar la corrida',
+  'event.hist_corr_001.choice_b': 'Vender reservas para sostener el peso',
+  'event.hist_corr_001.choice_c': 'Dejar flotar el dólar sin intervenir',
+
+  'event.hist_corr_002.title': 'VOLVER AL FMI',
+  'event.hist_corr_002.body':
+    'El Fondo ofrece el préstamo más grande de su historia a cambio de déficit cero. La palabra FMI todavía quema en la memoria de 2001.',
+  'event.hist_corr_002.choice_a': 'Firmar el stand-by récord',
+  'event.hist_corr_002.choice_b': 'Rechazar el préstamo y buscar otra salida',
+  'event.hist_corr_002.choice_c': 'Ampliar el swap con China',
+
+  'event.hist_corr_003.title': 'EL LUNES NEGRO DESPUÉS DE LAS PASO',
+  'event.hist_corr_003.body':
+    'El gobierno pierde las primarias por 15 puntos. Al día siguiente el dólar salta 30% y los bonos se desploman.',
+  'event.hist_corr_003.choice_a': 'Reperfilar la deuda y poner control de cambios',
+  'event.hist_corr_003.choice_b': 'Congelar precios esenciales y bajar el IVA',
+  'event.hist_corr_003.choice_c': 'Pedir calma y no tocar nada',
+
+  // ── Scenario: La Cuarentena ──
+  'scenario.pandemia_2020.label': 'La Cuarentena',
+  'scenario.pandemia_2020.period': '2020–2021',
+  'scenario.pandemia_2020.description':
+    'Un virus nuevo paraliza el mundo. Hay que elegir entre salud y economía con hospitales al límite, comercios cerrados y una deuda recién renegociada.',
+
+  'event.hist_pand_001.title': 'AISLAMIENTO SOCIAL OBLIGATORIO',
+  'event.hist_pand_001.body':
+    'Los contagios se duplican cada tres días. Los infectólogos piden cerrar todo y los comerciantes advierten que no sobrevivirán.',
+  'event.hist_pand_001.choice_a': 'Cuarentena estricta en todo el país',
+  'event.hist_pand_001.choice_b': 'Cuarentena focalizada en las grandes ciudades',
+  'event.hist_pand_001.choice_c': 'Mantener la economía abierta',
+
+  'event.hist_pand_002.title': 'IFE Y ATP: ¿EMITIR PARA SOSTENER?',
+  'event.hist_pand_002.body':
+    'Nueve millones de personas piden el ingreso de emergencia. Las empresas no pueden pagar sueldos sin ayuda del Estado.',
+  'event.hist_pand_002.choice_a': 'Emitir pesos para pagar todo',
+  'event.hist_pand_002.choice_b': 'Financiar la ayuda con deuda en pesos',
+  'event.hist_pand_002.choice_c': 'Limitar la ayuda a los más pobres',
+
+  'event.hist_pand_003.title': 'EL VACUNATORIO VIP',
+  'event.hist_pand_003.body':
+    'Se revela que funcionarios y amigos del poder se vacunaron antes que los médicos y los mayores. La indignación es total.',
+  'event.hist_pand_003.choice_a': 'Echar al ministro de Salud de inmediato',
+  'event.hist_pand_003.choice_b': 'Defender al ministro: fue un error administrativo',
+  'event.hist_pand_003.choice_c': 'Ordenar una auditoría independiente',
+
+  'event.hist_lla_001.title': 'LA MOTOSIERRA: DNU 70/2023',
+  'event.hist_lla_001.body':
+    'El decreto deroga más de 300 normas de un plumazo. Los mercados aplauden, la CGT denuncia un golpe a los derechos laborales y la justicia frena el capítulo laboral.',
+  'event.hist_lla_001.choice_a': 'Sostener el DNU completo y desafiar a la justicia',
+  'event.hist_lla_001.choice_b': 'Mandar las reformas al Congreso como ley ómnibus',
+  'event.hist_lla_001.choice_c': 'Recortar el decreto y negociar con los gobernadores',
+
+  'event.hist_lla_002.title': 'PARO GENERAL A LOS 45 DÍAS',
+  'event.hist_lla_002.body':
+    'La CGT para el país antes de que el gobierno cumpla dos meses. Los jubilados marchan cada miércoles frente al Congreso.',
+  'event.hist_lla_002.choice_a': 'Aplicar el protocolo antipiquetes con todo',
+  'event.hist_lla_002.choice_b': 'Recibir a la CGT y ofrecer un bono a jubilados',
+  'event.hist_lla_002.choice_c': 'Ignorar el paro y hablar sólo en redes',
+
+  'event.hist_lla_003.title': '¿SALIR DEL CEPO?',
+  'event.hist_lla_003.body':
+    'La inflación mensual baja de 25% a un dígito. El FMI y los mercados piden levantar el cepo, pero las reservas netas siguen en rojo.',
+  'event.hist_lla_003.choice_a': 'Liberar el cepo de golpe',
+  'event.hist_lla_003.choice_b': 'Bandas cambiarias con un nuevo acuerdo con el FMI',
+  'event.hist_lla_003.choice_c': 'Mantener el cepo hasta después de las elecciones',
+
+  'event.hist_iran_001.title': 'ALINEAMIENTO TOTAL CON ISRAEL',
+  'event.hist_iran_001.body':
+    'Washington pide gestos claros. La comunidad judía recuerda la AMIA y la Embajada, y las agencias de seguridad advierten sobre riesgo de atentados.',
+  'event.hist_iran_001.choice_a': 'Alinearse sin matices con Israel y Estados Unidos',
+  'event.hist_iran_001.choice_b': 'Mantener la neutralidad tradicional en la ONU',
+  'event.hist_iran_001.choice_c': 'Reforzar la seguridad y declarar a Hamás organización terrorista',
 
   // ── Geopolitical event cards ──────────────────────────────────────────────
   'event.geo_001.title': 'CRISIS ENERGÉTICA GLOBAL',

@@ -29,6 +29,10 @@ const ERA_ACCENT: Record<string, string> = {
   libertad_avanza_2023: '#CC2200',
   guerra_ucrania_2022: '#ffd500', // Ukrainian yellow
   conflicto_iran_2024: '#ff9900', // orange — oil/conflict
+  primavera_1983: '#74ACDF',
+  crisis_campo_2008: '#2e7d32',
+  corrida_2018: '#CC2200',
+  pandemia_2020: '#00897b',
 };
 
 export function ScenarioCard({ id, label, period, description, locked, index, onClick }: Props) {

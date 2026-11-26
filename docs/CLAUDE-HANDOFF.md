@@ -2,6 +2,13 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-26 — Four new historical scenarios, shock labels
+
+- Branch `feat/more-historical-scenarios`. New `ScenarioId`s, all `mode_historical`: `primavera_1983` (Alfonsín 1983), `crisis_campo_2008` (Resolución 125), `corrida_2018` (2018 run on the peso), `pandemia_2020` (lockdown). Each has config, calendar, arc, 2 opening shocks, a per-turn mechanic in `gameLoop.ts`, 3 `hist_*` cards, es/en texts, a raster from `SCENARIO_IMAGES` (existing art reused) and an `ERA_ACCENT`.
+- Gaps closed: `libertad_avanza_2023` had no cards of its own (added `hist_lla_001..003`); `conflicto_iran_2024` had 2 (added `hist_iran_001`); Ukraine/Iran shocks had no i18n labels; `apps/web/src/lib/shockLabel.ts` showed raw keys for historical shocks (now uses `i18n.t`).
+- Tests: `packages/game-engine/src/__tests__/historicalScenarios.test.ts` checks every scenario for texts, calendar, arc end, seats, 2 translated shocks and at least 3 own cards; `apps/web/src/lib/__tests__/shockLabel.test.ts`.
+- Pending idea: dedicated art per new scenario and for `hist_*` cards (paid generation, ask first).
+
 ## 2026-11-24 — Deps, SEC re-check, strict style CSP, share card
 
 - Merged #76 (global `afterEach(cleanup)` in web test setup), #77 (i18next 27, react-i18next 18, globals 17, lint-staged 17, commitlint 21, actions v7 pinned by SHA, `npm audit fix`), #78 (SEC-009: `.dev.vars*` ignored; inherited-key entitlement test). Dependabot #42-#47 superseded by #77. #48 (eslint 10) superseded by `chore/eslint-10`: eslint 10.15 + `@eslint/js` 10, with npm `overrides` forcing `eslint-plugin-import` and `eslint-plugin-jsx-a11y` (peer `^9` only) onto eslint 10. Probe showed `import/no-restricted-paths` and jsx-a11y rules fire identically; lint 0 problems. Drop the overrides once those plugins declare eslint 10.

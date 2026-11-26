@@ -1,3 +1,5 @@
+import { i18n } from './i18n.js';
+
 const SHOCK_NAMES_ES: Record<string, string> = {
   'shock.oilPriceSpike': 'SUBA DEL PETRÓLEO',
   'shock.globalRecession': 'RECESIÓN GLOBAL',
@@ -10,5 +12,7 @@ const SHOCK_NAMES_ES: Record<string, string> = {
 };
 
 export function shockLabel(name: string): string {
-  return SHOCK_NAMES_ES[name] ?? name.replace('shock.', '').toUpperCase();
+  const known = SHOCK_NAMES_ES[name];
+  if (known) return known;
+  return (i18n.exists(name) ? i18n.t(name) : name.replace('shock.', '')).toUpperCase();
 }

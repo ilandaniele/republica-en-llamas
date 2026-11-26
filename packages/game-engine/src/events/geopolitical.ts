@@ -242,4 +242,35 @@ export const GEOPOLITICAL_CARDS: EventCard[] = [
       },
     ],
   },
+  {
+    id: 'hist_iran_001',
+    category: 'political',
+    titleKey: 'event.hist_iran_001.title',
+    bodyKey: 'event.hist_iran_001.body',
+    weight: 8,
+    minTurn: 3,
+    requiredFlags: ['scenario_conflicto_iran_2024'],
+    choices: [
+      {
+        id: 'hist_iran_001_a',
+        textKey: 'event.hist_iran_001.choice_a',
+        effects: {
+          marketConfidenceDelta: 10,
+          foreignReservesDelta: 5,
+          stabilityDelta: -10,
+          popularityDelta: -5,
+        },
+      },
+      {
+        id: 'hist_iran_001_b',
+        textKey: 'event.hist_iran_001.choice_b',
+        effects: { marketConfidenceDelta: -10, popularityDelta: 5 },
+      },
+      {
+        id: 'hist_iran_001_c',
+        textKey: 'event.hist_iran_001.choice_c',
+        effects: { stabilityDelta: 5, deficitDelta: 3, mediaCredibilityDelta: 5 },
+      },
+    ],
+  },
 ];
