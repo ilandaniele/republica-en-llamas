@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router';
 import { m, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useRunHistory } from './useRunHistory.js';
+import { useAchievements } from './useAchievements.js';
+import { ScenarioAchievements } from './ScenarioAchievements.js';
 import { getCard } from '@republica/game-engine';
 
 export default function HistoryScreen() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: runs, isLoading } = useRunHistory(user?.id);
+  const { data: achievements } = useAchievements(user?.id);
   const [expandedRunId, setExpandedRunId] = useState<string | null>(null);
 
   if (!user) {
@@ -39,6 +42,8 @@ export default function HistoryScreen() {
             ← Volver
           </button>
         </div>
+
+        {achievements && <ScenarioAchievements achievements={achievements} />}
 
         {isLoading && (
           <div className="animate-pulse py-12 text-center font-mono text-smoke-400">

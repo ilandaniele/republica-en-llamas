@@ -2,6 +2,14 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-27 — Scenario achievements
+
+- Branch `feat/scenario-achievements`. Engine `achievements.ts`: `scenarioAchievements(records)` maps per-scenario run stats to a tier (`locked`, `played`, `won`) plus best score for every `HISTORICAL_SCENARIOS` entry; unknown ids are ignored.
+- Migration `0005_scenario_achievements.sql`: partial index `game_runs_user_scenario_idx (user_id, scenario_id)`. No new table: achievements are derived from the user's completed, server-validated runs.
+- API: `GET /api/achievements` (session required, one grouped query filtered by the session user id).
+- Web: `features/history/useAchievements.ts` (`achievementsQuery`) and `ScenarioAchievements.tsx`, shown at the top of the history screen.
+- Deployed 2026-11-27: daily challenge (PR #94, migration 0004 applied by CI, prod `/api/leaderboard?daily=1` 200).
+
 ## 2026-11-27 — Daily challenge
 
 - Branch `feat/daily-challenge`. Engine `dailyChallenge.ts`: UTC day key, FNV-1a seed per day, `dailyChallengeConfig` (normal, no scenario, no Crisis Express, no career, any president) and `isDailyChallengeConfig`.

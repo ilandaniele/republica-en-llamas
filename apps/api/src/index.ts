@@ -12,6 +12,7 @@ import {
   withSecurityHeaders,
 } from './http.js';
 import { enforceIpRateLimit } from './rateLimit.js';
+import { listAchievements } from './routes/achievements.js';
 import { leaderboard } from './routes/leaderboard.js';
 import { createCheckout, stripeWebhook } from './routes/payments.js';
 import { getEntitlements, getProfile, updateProfile, usernameAvailable } from './routes/profile.js';
@@ -35,6 +36,7 @@ const ROUTES: Record<string, Route> = {
   'GET /api/profile': { handler: getProfile, ipLimited: true },
   'PATCH /api/profile': { handler: updateProfile, ipLimited: true },
   'GET /api/runs': { handler: listRuns, ipLimited: true },
+  'GET /api/achievements': { handler: listAchievements, ipLimited: true },
   'GET /api/entitlements': { handler: getEntitlements, ipLimited: true },
   'GET /api/health': { handler: health },
 };
