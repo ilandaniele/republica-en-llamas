@@ -1,6 +1,8 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { SoundContext } from '../hooks/useSounds.js';
 import { browserStorage } from '../lib/browserStorage.js';
+import { vibrate } from '../lib/haptics.js';
+import { usePreferencesStore } from '../stores/preferencesStore.js';
 
 function getCtx(ref: React.MutableRefObject<AudioContext | null>): AudioContext | null {
   try {
@@ -37,6 +39,7 @@ function tone(ctx: AudioContext, type: OscillatorType, freq: number, dur: number
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
   const [soundEnabled, setSoundEnabled] = useState(() => browserStorage.getItem('soundEnabled') !== 'false');
+  const haptics = usePreferencesStore((s) => s.haptics);
   const ctxRef = useRef<AudioContext | null>(null);
   useEffect(
     () => () => {
@@ -55,37 +58,51 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const playCardFlip = useCallback(() => {
-    if (!soundEnabled) return;
-    const ctx = getCtx(ctxRef);
-    if (!ctx) return;
-    tone(ctx, 'square', 440, 0.05, 0.12);
-    tone(ctx, 'square', 660, 0.05, 0.08, ctx.currentTime + 0.06);
-  }, [soundEnabled]);
+  const cue = useCallback(
+    (pattern: number | number[], play: (ctx: AudioContext) => void) => {
+      if (haptics) vibrate(pattern);
+      if (!soundEnabled) return;
+      const ctx = getCtx(ctxRef);
+      if (ctx) play(ctx);
+    },
+    [soundEnabled, haptics],
+  );
 
-  const playCrisisAlert = useCallback(() => {
-    if (!soundEnabled) return;
-    const ctx = getCtx(ctxRef);
-    if (!ctx) return;
-    tone(ctx, 'sawtooth', 80, 0.35, 0.4);
-    tone(ctx, 'sawtooth', 55, 0.35, 0.3, ctx.currentTime + 0.04);
-  }, [soundEnabled]);
+  const playCardFlip = useCallback(
+    () =>
+      cue(10, (ctx) => {
+        tone(ctx, 'square', 440, 0.05, 0.12);
+        tone(ctx, 'square', 660, 0.05, 0.08, ctx.currentTime + 0.06);
+      }),
+    [cue],
+  );
 
-  const playGameOver = useCallback(() => {
-    if (!soundEnabled) return;
-    const ctx = getCtx(ctxRef);
-    if (!ctx) return;
-    [440, 370, 311, 261, 220].forEach((f, i) =>
-      tone(ctx, 'triangle', f, 0.3, 0.3, ctx.currentTime + i * 0.22),
-    );
-  }, [soundEnabled]);
+  const playCrisisAlert = useCallback(
+    () =>
+      cue([80, 40, 80], (ctx) => {
+        tone(ctx, 'sawtooth', 80, 0.35, 0.4);
+        tone(ctx, 'sawtooth', 55, 0.35, 0.3, ctx.currentTime + 0.04);
+      }),
+    [cue],
+  );
 
-  const playVictoryTick = useCallback(() => {
-    if (!soundEnabled) return;
-    const ctx = getCtx(ctxRef);
-    if (!ctx) return;
-    [523, 659, 784, 1047].forEach((f, i) => tone(ctx, 'sine', f, 0.12, 0.22, ctx.currentTime + i * 0.1));
-  }, [soundEnabled]);
+  const playGameOver = useCallback(
+    () =>
+      cue(300, (ctx) =>
+        [440, 370, 311, 261, 220].forEach((f, i) =>
+          tone(ctx, 'triangle', f, 0.3, 0.3, ctx.currentTime + i * 0.22),
+        ),
+      ),
+    [cue],
+  );
+
+  const playVictoryTick = useCallback(
+    () =>
+      cue([40, 30, 40, 30, 80], (ctx) =>
+        [523, 659, 784, 1047].forEach((f, i) => tone(ctx, 'sine', f, 0.12, 0.22, ctx.currentTime + i * 0.1)),
+      ),
+    [cue],
+  );
 
   const playVoteTick = useCallback(
     (frequency: number) => {

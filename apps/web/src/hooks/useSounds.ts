@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 
 export interface SoundCtx {
   soundEnabled: boolean;
@@ -22,4 +22,13 @@ export const SoundContext = createContext<SoundCtx>({
 
 export function useSounds() {
   return useContext(SoundContext);
+}
+
+export type SoundCue = 'playCardFlip' | 'playCrisisAlert' | 'playGameOver' | 'playVictoryTick';
+
+export function useSoundCue(cue: SoundCue, trigger?: unknown) {
+  const sounds = useSounds();
+  useEffect(() => {
+    sounds[cue]();
+  }, [cue, trigger]); // eslint-disable-line react-hooks/exhaustive-deps
 }

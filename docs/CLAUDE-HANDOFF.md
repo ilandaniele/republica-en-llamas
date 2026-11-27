@@ -2,6 +2,11 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-27 — Sound and haptics
+
+- Branch `feat/sound-haptics`. The `SoundProvider` cues were defined but never called. `useSoundCue(cue, trigger?)` (`hooks/useSounds.ts`) now plays them: card flip on each new card (`GameScreen`), crisis alert when `CrisisScreen` opens, victory or game-over jingle on `GameOverScreen`.
+- Each cue also vibrates through `lib/haptics.ts` (`navigator.vibrate`, no-op where unsupported, e.g. iOS Safari). New preference `haptics` (default on) in `preferencesStore`, toggle "Vibración en el celular" in accessibility settings; vibration is independent of the mute button.
+
 ## 2026-11-27 — Timed crisis cards
 
 - Branch `feat/timed-crisis-cards`. `isTimedTurn(card, isCrisisExpress, difficulty)` in `lib/crisisExpress.ts`: Crisis Express times every card (unchanged); normal and hard runs now also time `crisis` category cards (easy never). Same 45 s / 90 s with extended time.

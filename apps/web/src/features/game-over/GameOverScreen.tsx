@@ -5,6 +5,7 @@ import { getAnibalLine, isLowerOffice } from '@republica/game-engine';
 import { CareerEndScreen } from './CareerEndScreen.js';
 import { CareerJourney } from '../../components/career/CareerOverview.js';
 import { useGameStore } from '../../stores/gameStore.js';
+import { useSoundCue } from '../../hooks/useSounds.js';
 import { trackGameOver } from '../../lib/analytics.js';
 import { ShareImageCard } from './ShareImageCard.js';
 import { ShareSection } from './ShareSection.js';
@@ -30,6 +31,7 @@ function PresidentialGameOverScreen() {
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
   const isCounterfactual = useGameStore((s) => s.isCounterfactual);
   const shareCardRef = useRef<HTMLDivElement>(null);
+  useSoundCue(gameState?.gameOverReason === 'term_complete' ? 'playVictoryTick' : 'playGameOver');
 
   useEffect(() => {
     if (!gameState?.career && !isCounterfactual) updatePersonalBest();

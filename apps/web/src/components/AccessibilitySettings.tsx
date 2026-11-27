@@ -5,6 +5,7 @@ const OPTIONS: { key: PreferenceKey; label: string }[] = [
   { key: 'reduceMotion', label: 'Reducir animaciones' },
   { key: 'hotkeysEnabled', label: 'Atajos de teclado (1-4, A-D)' },
   { key: 'extendedTime', label: 'Tiempo extendido en Crisis Express (90 s)' },
+  { key: 'haptics', label: 'Vibración en el celular' },
 ];
 
 function PreferenceToggle({ preference, label }: { preference: PreferenceKey; label: string }) {

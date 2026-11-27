@@ -1,7 +1,8 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SoundProvider } from '../SoundManager.js';
-import { useSounds } from '../../hooks/useSounds.js';
+import { useSoundCue, useSounds } from '../../hooks/useSounds.js';
+import { usePreferencesStore } from '../../stores/preferencesStore.js';
 
 function VoteSounds() {
   const { playVoteTick } = useSounds();
@@ -52,6 +53,50 @@ beforeEach(() => localStorage.clear());
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  usePreferencesStore.setState({ haptics: true });
+});
+
+function CardCue({ cardId }: { cardId: string }) {
+  useSoundCue('playCardFlip', cardId);
+  return null;
+}
+
+function renderCue(cardId: string) {
+  return render(
+    <SoundProvider>
+      <CardCue cardId={cardId} />
+    </SoundProvider>,
+  );
+}
+
+describe('game cues', () => {
+  it('plays the card cue once per new card and vibrates even when muted', () => {
+    localStorage.setItem('soundEnabled', 'false');
+    const vibrate = vi.fn();
+    vi.stubGlobal('navigator', { vibrate });
+    const { rerender } = renderCue('c1');
+    rerender(
+      <SoundProvider>
+        <CardCue cardId="c1" />
+      </SoundProvider>,
+    );
+    expect(vibrate).toHaveBeenCalledTimes(1);
+    rerender(
+      <SoundProvider>
+        <CardCue cardId="c2" />
+      </SoundProvider>,
+    );
+    expect(vibrate).toHaveBeenCalledTimes(2);
+  });
+
+  it('skips vibration when the player turns haptics off', () => {
+    usePreferencesStore.setState({ haptics: false });
+    const vibrate = vi.fn();
+    vi.stubGlobal('navigator', { vibrate });
+    mockAudio();
+    renderCue('c1');
+    expect(vibrate).not.toHaveBeenCalled();
+  });
 });
 
 describe('congressional audio resources', () => {
