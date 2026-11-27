@@ -50,6 +50,13 @@ describe('requestRunTicket', () => {
     expect(anonymous).not.toHaveBeenCalled();
   });
 
+  it('asks for the daily challenge seed when requested', async () => {
+    signedIn();
+    apiSend.mockResolvedValue({ ticketId: 'ticket-1', seed: 42 });
+    await requestRunTicket(true);
+    expect(apiSend).toHaveBeenCalledWith('start-run?daily=1', {});
+  });
+
   it.each([
     [new ApiError(429, 'Daily run limit reached'), 'daily_cap'],
     [new ApiError(429, 'Too many requests'), 'rate_limit'],

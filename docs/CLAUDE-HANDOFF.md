@@ -2,6 +2,14 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-27 — Daily challenge
+
+- Branch `feat/daily-challenge`. Engine `dailyChallenge.ts`: UTC day key, FNV-1a seed per day, `dailyChallengeConfig` (normal, no scenario, no Crisis Express, no career, any president) and `isDailyChallengeConfig`.
+- Migration `0004_daily_challenge.sql`: `daily_date` on `run_tickets` and `game_runs`, partial index `game_runs_daily_score_idx`. Must run on remote D1 before the Worker deploy (CI does it).
+- API: `POST /api/start-run?daily=1` issues the day's seed (counts against the normal daily cap) and stores `daily_date`; `submit-run` answers 422 when a daily ticket comes with other rules and stores `daily_date`; `GET /api/leaderboard?daily=1` returns each user's best run of today.
+- Web: "Desafío diario" button on home, `startNewGame(difficulty, { daily: true })`, leaderboard filter "Desafío de hoy". Offline/playtest uses the local seed and is not ranked.
+- Next ideas, in order: persistent achievements, newspaper recap from decisions, counterfactual replay, cabinet advice, timers on crisis cards, sound/haptics wiring (only `playVoteTick` is used today), dedicated art (paid, ask first).
+
 ## 2026-11-26 — Four new historical scenarios, shock labels
 
 - Branch `feat/more-historical-scenarios`. New `ScenarioId`s, all `mode_historical`: `primavera_1983` (Alfonsín 1983), `crisis_campo_2008` (Resolución 125), `corrida_2018` (2018 run on the peso), `pandemia_2020` (lockdown). Each has config, calendar, arc, 2 opening shocks, a per-turn mechanic in `gameLoop.ts`, 3 `hist_*` cards, es/en texts, a raster from `SCENARIO_IMAGES` (existing art reused) and an `ERA_ACCENT`.

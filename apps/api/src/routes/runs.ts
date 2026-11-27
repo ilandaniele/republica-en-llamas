@@ -1,5 +1,7 @@
 import {
   canStartRun,
+  dailyChallengeDate,
+  isDailyChallengeConfig,
   isRunConfig,
   isTurnDecision,
   MAX_RANKED_RUN_DECISIONS,
@@ -37,9 +39,10 @@ function isSubmission(body: unknown): body is Submission {
 export async function startRun(ctx: RouteContext): Promise<Response> {
   const user = await requireUser(ctx);
   await enforceUserRateLimit(ctx.env.DB, user.id, 'start-run');
-  const ticket = await issueRunTicket(ctx.env.DB, user.id);
+  const dailyDate = ctx.url.searchParams.get('daily') === '1' ? dailyChallengeDate() : null;
+  const ticket = await issueRunTicket(ctx.env.DB, user.id, dailyDate);
   if (!ticket) throw new RequestError(429, 'Daily run limit reached');
-  return json({ ticketId: ticket.id, seed: ticket.seed });
+  return json({ ticketId: ticket.id, seed: ticket.seed, dailyDate });
 }
 
 async function assertRunAccess(db: D1Database, userId: string, config: RunConfig): Promise<void> {
@@ -60,8 +63,9 @@ function replayFinished(config: RunConfig, decisions: TurnDecision[]) {
 }
 
 const INSERT_RUN_SQL = `insert into game_runs (id, user_id, ticket_id, difficulty, seed, score, turns_survived,
-    game_over_reason, is_win, final_state, language, crisis_express, scenario_id, decisions, decisions_hash, completed_at)
-  values (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)
+    game_over_reason, is_win, final_state, language, crisis_express, scenario_id, decisions, decisions_hash, completed_at,
+    daily_date)
+  values (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17)
   on conflict do nothing returning id, score`;
 
 const EXISTING_RUN_SQL = `select id, score, decisions_hash from game_runs
@@ -80,10 +84,12 @@ export async function submitRun(ctx: RouteContext): Promise<Response> {
     throw new RequestError(400, 'Career runs use local progress, outside competitive rankings');
 
   const ticket = await db
-    .prepare('select seed from run_tickets where id = ?1 and user_id = ?2 and created_at > ?3')
+    .prepare('select seed, daily_date from run_tickets where id = ?1 and user_id = ?2 and created_at > ?3')
     .bind(ticketId, user.id, dayAgo())
-    .first<{ seed: number }>();
+    .first<{ seed: number; daily_date: string | null }>();
   if (!ticket || ticket.seed !== config.seed) throw new RequestError(403, 'Invalid run ticket');
+  if (ticket.daily_date !== null && !isDailyChallengeConfig(config, ticket.daily_date))
+    throw new RequestError(422, 'Run breaks daily challenge rules');
 
   await assertRunAccess(db, user.id, config);
   const state = replayFinished(config, decisions);
@@ -111,6 +117,7 @@ export async function submitRun(ctx: RouteContext): Promise<Response> {
       decisionsJson,
       decisionsHash,
       new Date().toISOString(),
+      ticket.daily_date,
     )
     .first<{ id: string; score: number }>();
   if (run) return json({ id: run.id, score: run.score });

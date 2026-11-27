@@ -7,7 +7,7 @@ const apiGet = vi.hoisted(() => vi.fn());
 vi.mock('../../app/routes.js', () => ({ prefetchRoute: vi.fn() }));
 vi.mock('../../lib/api.js', () => ({ apiGet }));
 
-const { leaderboardQuery, useLeaderboard } = await import('../useLeaderboard.js');
+const { DAILY_LEADERBOARD, leaderboardQuery, useLeaderboard } = await import('../useLeaderboard.js');
 const { PERSISTED_GC_TIME } = await import('../../app/queryClient.js');
 
 describe('leaderboardQuery', () => {
@@ -17,6 +17,15 @@ describe('leaderboardQuery', () => {
 
   it('keys per-difficulty boards separately', () => {
     expect(leaderboardQuery('hard').queryKey).toEqual(['leaderboard', 'hard']);
+  });
+
+  it('requests the daily board with its own key', async () => {
+    const client = new QueryClient();
+    apiGet.mockResolvedValue([]);
+    await client.fetchQuery(leaderboardQuery(DAILY_LEADERBOARD));
+    expect(leaderboardQuery(DAILY_LEADERBOARD).queryKey).toEqual(['leaderboard', 'daily']);
+    expect(apiGet).toHaveBeenCalledWith('leaderboard?daily=1', { cache: 'no-cache' });
+    client.clear();
   });
 
   it('keeps cached data at least as long as the persisted cache lives', () => {

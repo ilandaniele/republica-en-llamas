@@ -115,6 +115,13 @@ export {
   TIMEOUT_POPULARITY_PENALTY,
 } from './run.js';
 export type { TurnDecision, TurnResult, RunConfig } from './run.js';
+export {
+  DAILY_CHALLENGE_DIFFICULTY,
+  dailyChallengeConfig,
+  dailyChallengeDate,
+  dailyChallengeSeed,
+  isDailyChallengeConfig,
+} from './dailyChallenge.js';
 
 export { PARTIES, partyForPresident } from './parties.js';
 export type { PartyId } from './parties.js';

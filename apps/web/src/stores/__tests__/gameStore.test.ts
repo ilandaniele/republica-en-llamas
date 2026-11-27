@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { drawNextCard, initGame, replayRun } from '@republica/game-engine';
+import {
+  dailyChallengeDate,
+  drawNextCard,
+  initGame,
+  isDailyChallengeConfig,
+  replayRun,
+} from '@republica/game-engine';
 import { useGameStore } from '../gameStore.js';
 import { restoreGameStore } from '../restoreGameStore.js';
 import { requestRunTicket } from '../../lib/runTicket.js';
@@ -183,6 +189,17 @@ describe('gameStore.confirmChoice', () => {
       restoreGameStore({ runConfig: state.runConfig, decisions: [], runTicketError: 'bogus' }, state)
         .runTicketError,
     ).toBeNull();
+  });
+
+  it('starts the daily challenge with its fixed rules and the server seed', async () => {
+    const date = dailyChallengeDate();
+    useGameStore.setState({ isCrisisExpress: true, scenarioId: 'corralito_2001' });
+    vi.mocked(requestRunTicket).mockResolvedValueOnce({ ticket: null, error: 'network' });
+    await useGameStore.getState().startNewGame('hard', { daily: true });
+    expect(requestRunTicket).toHaveBeenCalledWith(true);
+    const { runConfig } = useGameStore.getState();
+    expect(isDailyChallengeConfig(runConfig!, date)).toBe(true);
+    expect(runConfig?.presidentId).toBe('populista');
   });
 
   it('clears the previous ticket error when a new run gets a ticket', async () => {

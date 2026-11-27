@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  dailyChallengeDate,
+  dailyChallengeSeed,
   drawNextCard,
   endTurn,
   initGame,
@@ -11,7 +13,12 @@ import type { Auth } from '../auth.js';
 import type { RouteContext } from '../context.js';
 import type { Env } from '../env.js';
 import { errorResponse } from '../http.js';
-import { LEADERBOARD_BY_DIFFICULTY_SQL, LEADERBOARD_SQL, leaderboard } from '../routes/leaderboard.js';
+import {
+  DAILY_LEADERBOARD_SQL,
+  LEADERBOARD_BY_DIFFICULTY_SQL,
+  LEADERBOARD_SQL,
+  leaderboard,
+} from '../routes/leaderboard.js';
 import { startRun, submitRun } from '../routes/runs.js';
 import { createTestDb } from './d1.js';
 
@@ -95,13 +102,18 @@ function submit(body: unknown): Promise<Response> {
   return call(submitRun, context(post('/api/submit-run', body), 'alice'));
 }
 
-async function insertRun(userId: string, difficulty: string, score: number): Promise<void> {
+async function insertRun(
+  userId: string,
+  difficulty: string,
+  score: number,
+  dailyDate: string | null = null,
+): Promise<void> {
   await db
     .prepare(
-      `insert into game_runs (id, user_id, difficulty, seed, score, decisions, decisions_hash, completed_at)
-       values (?1, ?2, ?3, ?4, ?5, '[]', ?1, ?6)`,
+      `insert into game_runs (id, user_id, difficulty, seed, score, decisions, decisions_hash, completed_at, daily_date)
+       values (?1, ?2, ?3, ?4, ?5, '[]', ?1, ?6, ?7)`,
     )
-    .bind(crypto.randomUUID(), userId, difficulty, score, score, new Date().toISOString())
+    .bind(crypto.randomUUID(), userId, difficulty, score, score, new Date().toISOString(), dailyDate)
     .run();
 }
 
@@ -224,5 +236,66 @@ describe('submit-run', () => {
     const run = finishedRun({ seed: 42, difficulty: 'normal', presidentId: 'milei' });
     const decisions = Array(MAX_RANKED_RUN_DECISIONS + 1).fill(run.decisions[0]);
     expect((await submit({ ticketId: await ticketFor(42), config: run.config, decisions })).status).toBe(400);
+  });
+});
+
+describe('daily challenge', () => {
+  const today = dailyChallengeDate();
+  const dailyConfig = {
+    seed: dailyChallengeSeed(today),
+    difficulty: 'normal',
+    presidentId: 'milei',
+  } as const;
+
+  async function dailyTicket(): Promise<{ ticketId: string; seed: number; dailyDate: string }> {
+    const response = await call(startRun, context(post('/api/start-run?daily=1', {}), 'alice'));
+    expect(response.status).toBe(200);
+    return (await response.json()) as { ticketId: string; seed: number; dailyDate: string };
+  }
+
+  it('issues the shared seed of the UTC day', async () => {
+    expect(await dailyTicket()).toMatchObject({ seed: dailyConfig.seed, dailyDate: today });
+  });
+
+  it('rejects daily runs that change the fixed rules', async () => {
+    const { ticketId } = await dailyTicket();
+    const response = await submit({ ticketId, ...finishedRun({ ...dailyConfig, difficulty: 'easy' }) });
+    expect(response.status).toBe(422);
+  });
+
+  it('stores the day on accepted daily runs', async () => {
+    const { ticketId } = await dailyTicket();
+    const saved = (await (await submit({ ticketId, ...finishedRun(dailyConfig) })).json()) as { id: string };
+    const row = await db
+      .prepare('select daily_date from game_runs where id = ?1')
+      .bind(saved.id)
+      .first<{ daily_date: string }>();
+    expect(row?.daily_date).toBe(today);
+  });
+
+  it('ranks only the best run per user for today', async () => {
+    await addUser('bob');
+    await insertRun('alice', 'normal', 300, today);
+    await insertRun('alice', 'normal', 500, today);
+    await insertRun('bob', 'normal', 400, today);
+    await insertRun('bob', 'normal', 900, '2000-01-01');
+    await insertRun('bob', 'normal', 1_000);
+
+    const rows = (await (await leaderboardRequest('?daily=1')).json()) as {
+      user_id: string;
+      score: number;
+    }[];
+    expect(rows.map((row) => [row.user_id, row.score])).toEqual([
+      ['alice', 500],
+      ['bob', 400],
+    ]);
+  });
+
+  it('reads daily runs through the daily index', async () => {
+    const { results } = await db
+      .prepare(`explain query plan ${DAILY_LEADERBOARD_SQL}`)
+      .bind(100, today)
+      .all<{ detail: string }>();
+    expect(results.map((row) => row.detail).join('\n')).toContain('game_runs_daily_score_idx');
   });
 });
