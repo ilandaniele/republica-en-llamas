@@ -134,7 +134,8 @@ function GameRoute() {
 
 function GameOverRoute() {
   const gameState = useGameStore((s) => s.gameState);
-  if (!gameState?.isGameOver) return <Navigate to="/" replace />;
+  if (!gameState) return <Navigate to="/" replace />;
+  if (!gameState.isGameOver) return <Navigate to="/game" replace />;
   return <GameOverScreen />;
 }
 

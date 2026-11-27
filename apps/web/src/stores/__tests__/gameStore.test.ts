@@ -9,6 +9,7 @@ import {
 import { useGameStore } from '../gameStore.js';
 import { restoreGameStore } from '../restoreGameStore.js';
 import { requestRunTicket } from '../../lib/runTicket.js';
+import type { RunConfig, TurnDecision } from '@republica/game-engine';
 import type { RunTicketResult } from '../../lib/runTicket.js';
 import { trackTurnCompleted } from '../../lib/analytics.js';
 
@@ -207,5 +208,65 @@ describe('gameStore.confirmChoice', () => {
     await useGameStore.getState().startNewGame('normal');
     expect(useGameStore.getState().runTicketId).toBe('ticket-1');
     expect(useGameStore.getState().runTicketError).toBeNull();
+  });
+});
+
+function finishedRun(config: RunConfig): TurnDecision[] {
+  const decisions: TurnDecision[] = [];
+  let state = replayRun(config, decisions);
+  while (!state.isGameOver) {
+    const card = drawNextCard(state);
+    decisions.push(
+      card.isLaw
+        ? { kind: 'congress', cardId: card.id, decisions: { actions: [], swingChoices: [] } }
+        : { kind: 'choice', cardId: card.id, choiceIndex: card.choices.length - 1 },
+    );
+    state = replayRun(config, decisions);
+  }
+  return decisions;
+}
+
+describe('gameStore.rewindLastDecision', () => {
+  it('replays the run up to the last card as an unranked alternative', () => {
+    const config: RunConfig = { difficulty: 'normal', seed: 1234, language: 'es' };
+    const decisions = finishedRun(config);
+    useGameStore.setState({
+      runConfig: config,
+      decisions,
+      gameState: replayRun(config, decisions),
+      runTicketId: 'ticket-1',
+      isCounterfactual: false,
+    });
+
+    useGameStore.getState().rewindLastDecision();
+
+    const store = useGameStore.getState();
+    expect(store.gameState!.isGameOver).toBe(false);
+    expect(store.decisions).toEqual(decisions.slice(0, -1));
+    expect(store.currentCard!.id).toBe(decisions.at(-1)!.cardId);
+    expect(store.runTicketId).toBeNull();
+    expect(store.isCounterfactual).toBe(true);
+  });
+
+  it('does nothing while the run is still going', () => {
+    const gameState = initGame('normal', 42, 'es');
+    useGameStore.setState({ runConfig: { difficulty: 'normal', seed: 42 }, gameState, decisions: [] });
+    useGameStore.getState().rewindLastDecision();
+    expect(useGameStore.getState().gameState).toBe(gameState);
+  });
+
+  it('keeps the alternative mode after a reload', () => {
+    const config: RunConfig = { difficulty: 'normal', seed: 42 };
+    const restored = restoreGameStore(
+      { runConfig: config, decisions: [], isCounterfactual: true },
+      useGameStore.getState(),
+    );
+    expect(restored.isCounterfactual).toBe(true);
+  });
+
+  it('starts a new game outside the alternative mode', async () => {
+    useGameStore.setState({ isCounterfactual: true });
+    await useGameStore.getState().startNewGame('normal');
+    expect(useGameStore.getState().isCounterfactual).toBe(false);
   });
 });

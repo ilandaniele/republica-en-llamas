@@ -36,7 +36,13 @@ beforeAll(async () => {
 });
 beforeEach(() => {
   vi.clearAllMocks();
-  useGameStore.setState({ runConfig: config, runTicketId: null, runTicketError: null, decisions: [] });
+  useGameStore.setState({
+    runConfig: config,
+    runTicketId: null,
+    runTicketError: null,
+    decisions: [],
+    isCounterfactual: false,
+  });
 });
 afterEach(cleanup);
 
@@ -63,5 +69,23 @@ describe('GameOverActions', () => {
     renderActions();
     fireEvent.click(screen.getByRole('button', { name: /GUARDAR/ }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Demasiados intentos de guardado');
+  });
+
+  it('offers to rewind the last decision and labels the alternative run', () => {
+    const rewindLastDecision = vi.fn();
+    useGameStore.setState({
+      decisions: [{ kind: 'timeout', cardId: 'eco_001' }],
+      isCounterfactual: true,
+      rewindLastDecision,
+    });
+    renderActions();
+    fireEvent.click(screen.getByRole('button', { name: /Y SI ELEGÍAS/ }));
+    expect(rewindLastDecision).toHaveBeenCalledOnce();
+    expect(screen.getByRole('status')).toHaveTextContent('no cuenta para el ranking');
+  });
+
+  it('hides the rewind button without decisions', () => {
+    renderActions();
+    expect(screen.queryByRole('button', { name: /Y SI ELEGÍAS/ })).toBeNull();
   });
 });

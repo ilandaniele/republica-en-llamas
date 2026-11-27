@@ -28,10 +28,11 @@ function PresidentialGameOverScreen() {
   const updatePersonalBest = useGameStore((s) => s.updatePersonalBest);
   const presidentId = useGameStore((s) => s.presidentId);
   const isCrisisExpress = useGameStore((s) => s.isCrisisExpress);
+  const isCounterfactual = useGameStore((s) => s.isCounterfactual);
   const shareCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!gameState?.career) updatePersonalBest();
+    if (!gameState?.career && !isCounterfactual) updatePersonalBest();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
