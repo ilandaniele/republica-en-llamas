@@ -124,6 +124,8 @@ export {
 } from './dailyChallenge.js';
 
 export { scenarioAchievements } from './achievements.js';
+export { keyDecisions } from './newspaperRecap.js';
+export type { KeyDecision } from './newspaperRecap.js';
 export type { AchievementTier, ScenarioAchievement, ScenarioRecord } from './achievements.js';
 
 export { PARTIES, partyForPresident } from './parties.js';
