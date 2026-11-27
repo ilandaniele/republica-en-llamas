@@ -21,6 +21,7 @@ import { AnibalTicker } from './AnibalTicker.js';
 import { PaywallModal } from '../../components/PaywallModal.js';
 import { useEntitlements } from '../../hooks/useEntitlements.js';
 import { useCrisisCountdown } from './screen/useCrisisCountdown.js';
+import { useSoundCue } from '../../hooks/useSounds.js';
 import { useCardShake } from './screen/useCardShake.js';
 import { useIdlePresidentMood } from './screen/useIdlePresidentMood.js';
 import { useEasterEggs } from './screen/useEasterEggs.js';
@@ -98,6 +99,7 @@ function PresidentialGameScreen() {
     onTimeout: timeoutSelection,
   });
   const cardShaking = useCardShake(currentCard);
+  useSoundCue('playCardFlip', currentCard);
   const idlePresidentMood = useIdlePresidentMood();
   const { showDolarFloat, showCrowd, showConfetti, milestoneToast } = useEasterEggs(gameState);
   useChoiceHotkeys({

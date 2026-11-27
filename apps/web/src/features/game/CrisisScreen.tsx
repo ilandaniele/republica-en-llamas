@@ -1,6 +1,7 @@
 import React from 'react';
 import { m } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore.js';
+import { useSoundCue } from '../../hooks/useSounds.js';
 
 const CRISIS_INFO: Record<string, { title: string; description: string; icon: string }> = {
   debtCrisis: {
@@ -38,6 +39,7 @@ const CRISIS_INFO: Record<string, { title: string; description: string; icon: st
 export default function CrisisScreen() {
   const gameState = useGameStore((s) => s.gameState);
   const dismissCrisisScreen = useGameStore((s) => s.dismissCrisisScreen);
+  useSoundCue('playCrisisAlert');
 
   if (!gameState) return null;
 
@@ -47,7 +49,7 @@ export default function CrisisScreen() {
     <m.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-crimson-900/95 fixed inset-0 z-50 flex items-center justify-center p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-crimson-900/95 p-6 backdrop-blur-sm"
     >
       <div className="crisis-vignette" />
 
@@ -74,13 +76,13 @@ export default function CrisisScreen() {
             const info = CRISIS_INFO[crisis.type];
             const turnsLeft = crisis.turnsToResolve - crisis.turnsActive;
             return (
-              <div key={crisis.type} className="bg-crimson-900/50 rounded-lg border border-crimson-700 p-4">
+              <div key={crisis.type} className="rounded-lg border border-crimson-700 bg-crimson-900/50 p-4">
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">{info?.icon ?? '⚠'}</span>
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
-                      <h3 className="text-crimson-300 font-serif font-bold">{info?.title ?? crisis.type}</h3>
-                      <span className="bg-crimson-900 rounded px-2 py-0.5 font-mono text-sm text-crimson-400">
+                      <h3 className="font-serif font-bold text-crimson-300">{info?.title ?? crisis.type}</h3>
+                      <span className="rounded bg-crimson-900 px-2 py-0.5 font-mono text-sm text-crimson-400">
                         {turnsLeft}t
                       </span>
                     </div>

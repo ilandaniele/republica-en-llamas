@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { browserStorage } from '../lib/browserStorage.js';
 import { REDUCE_MOTION_CLASS } from '../lib/reducedMotion.js';
 
-export type PreferenceKey = 'reduceMotion' | 'hotkeysEnabled' | 'extendedTime';
+export type PreferenceKey = 'reduceMotion' | 'hotkeysEnabled' | 'extendedTime' | 'haptics';
 type Preferences = Record<PreferenceKey, boolean>;
 
 const storageKey = (key: PreferenceKey) => `pref.${key}`;
@@ -13,6 +13,7 @@ function loadPreferences(): Preferences {
     reduceMotion: stored('reduceMotion') === 'true',
     hotkeysEnabled: stored('hotkeysEnabled') !== 'false',
     extendedTime: stored('extendedTime') === 'true',
+    haptics: stored('haptics') !== 'false',
   };
 }
 
