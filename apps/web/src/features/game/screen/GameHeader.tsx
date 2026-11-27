@@ -19,15 +19,15 @@ interface GameHeaderProps {
   presidentId: string;
   presidentMood: PortraitMood;
   isCrisisExpress: boolean;
-  crisisTimeLeft: number;
+  crisisTimeLeft: number | null;
   onOpenDiary: () => void;
 }
 
-function CrisisTimer({ timeLeft }: { timeLeft: number }) {
+function CrisisTimer({ timeLeft, label }: { timeLeft: number; label: string }) {
   return (
     <div
       role="timer"
-      aria-label={`Crisis Express: ${timeLeft} segundos restantes`}
+      aria-label={`${label}: ${timeLeft} segundos restantes`}
       className={`pixel-border flex flex-col items-center px-3 py-1 font-mono ${
         timeLeft <= 10
           ? 'animate-[shake_0.3s_ease-in-out_infinite] bg-crimson-900/70 text-crimson-300'
@@ -35,7 +35,7 @@ function CrisisTimer({ timeLeft }: { timeLeft: number }) {
       }`}
     >
       <p className="text-sm" aria-hidden="true">
-        ⚡ EXPRESS
+        {label === 'Crisis Express' ? '⚡ EXPRESS' : '🔥 CRISIS'}
       </p>
       <p className="text-lg font-bold leading-none" aria-hidden="true">
         {timeLeft}s
@@ -85,7 +85,9 @@ export function GameHeader({
           >
             Diario
           </button>
-          {isCrisisExpress && <CrisisTimer timeLeft={crisisTimeLeft} />}
+          {crisisTimeLeft !== null && (
+            <CrisisTimer timeLeft={crisisTimeLeft} label={isCrisisExpress ? 'Crisis Express' : 'Crisis'} />
+          )}
           <div className="text-right">
             <p className="font-mono text-sm text-smoke-500">Turno</p>
             <p className="font-mono font-bold text-gold-400">

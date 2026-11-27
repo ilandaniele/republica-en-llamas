@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { LazyMotion, domAnimation } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { drawNextCard, initGame } from '@republica/game-engine';
+import type { EventCard } from '@republica/game-engine';
 import { TurnTransitionScreen } from '../TurnTransitionScreen.js';
 import { DecisionDiary } from '../DecisionDiary.js';
 import { CrisisAlert } from '../CrisisAlert.js';
@@ -18,6 +19,8 @@ afterEach(() => {
   usePreferencesStore.setState({ hotkeysEnabled: true, extendedTime: false });
   useGameStore.setState({ gameState: null });
 });
+
+const timedCard = (category: EventCard['category']) => ({ id: 'c1', category }) as EventCard;
 
 const withMotion = (ui: ReactNode) => render(<LazyMotion features={domAnimation}>{ui}</LazyMotion>);
 
@@ -91,8 +94,28 @@ describe('game preferences', () => {
   it('gives 90 seconds per Crisis Express turn with extended time', () => {
     usePreferencesStore.setState({ extendedTime: true });
     const { result } = renderHook(() =>
-      useCrisisCountdown({ cardId: 'c1', enabled: true, paused: true, onTimeout: vi.fn() }),
+      useCrisisCountdown({
+        card: timedCard('economic'),
+        isCrisisExpress: true,
+        paused: true,
+        onTimeout: vi.fn(),
+      }),
     );
     expect(result.current).toBe(90);
+  });
+
+  it('times crisis cards in a normal run and leaves the rest untimed', () => {
+    useGameStore.setState({ gameState: initGame('normal', 42, 'es') });
+    const countdown = (category: EventCard['category']) =>
+      renderHook(() =>
+        useCrisisCountdown({
+          card: timedCard(category),
+          isCrisisExpress: false,
+          paused: true,
+          onTimeout: vi.fn(),
+        }),
+      ).result.current;
+    expect(countdown('crisis')).toBe(45);
+    expect(countdown('political')).toBeNull();
   });
 });
