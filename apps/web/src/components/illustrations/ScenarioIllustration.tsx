@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import type { ScenarioId } from '@republica/game-engine';
 import { useGameImage } from '../../hooks/useGameImage.js';
-import { SCENARIO_IMAGES } from './event-scenes/scenarioImages.js';
+import { scenarioImage } from './event-scenes/scenarioImages.js';
 import { RasterSceneEffects } from './event-scenes/RasterSceneEffects.js';
 import { imageA11yProps } from './imageA11yProps.js';
 import { prefersReducedMotion } from '../../lib/reducedMotion.js';
@@ -749,7 +749,7 @@ function SceneConflictoIran({ pid }: { pid: string }) {
 // ── Main export ────────────────────────────────────────────────────────────────
 export function ScenarioIllustration({ id, presidentId = 'ingeniero', label }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const sceneId = SCENARIO_IMAGES[id] ?? '';
+  const sceneId = scenarioImage(id) ?? '';
   const imageUrl = useGameImage(sceneId);
 
   useGSAP(

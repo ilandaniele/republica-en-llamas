@@ -1,0 +1,268 @@
+{
+  "scenario_primavera_1983": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina at the return of democracy in late 1983: a jubilant crowd filling Plaza de Mayo at dusk, light-blue and white flags, a civilian leader with open arms on a balcony of a pink government palace, ballot boxes carried overhead, hopeful warm atmosphere.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "scenario_crisis_campo_2008": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina during the 2008 farm conflict: a long highway roadblock of tractors and grain trucks crossing the pampas, farmers standing by bonfires under a wide sky, soybean fields to the horizon, tense windy afternoon.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "scenario_corrida_2018": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina during the 2018 run on the peso: a downtown Buenos Aires exchange street, a huge electronic rate board showing only abstract rising bars, worried savers queuing at exchange houses, office towers, grey stressed afternoon.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "scenario_pandemia_2020": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina during the 2020 lockdown: an empty Buenos Aires avenue with the obelisk in the distance, a lone masked delivery rider, closed shop shutters, neighbours applauding health workers from balconies at night.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_hiper_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 1989 hyperinflation: a supermarket employee frantically relabelling prices with a sticker gun while shoppers race with carts, chaotic late afternoon.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_hiper_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 1989: a tired outgoing civilian president handing an oversized presidential sash to a sideburned provincial governor in a dim office, rain outside the window.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_hiper_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 1990: a bank clerk swapping savers' cash for thick bundles of government bonds, outraged depositors holding empty passbooks, cold fluorescent light.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_corral_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, December 2001: armoured trucks leaving a bank at night loaded with sacks of dollars while a queue of depositors waits at a closed metal shutter.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_corral_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, December 2001 cacerolazo: a crowd banging pots and pans in front of a pink government palace at night, mounted police, smoke from a burning tyre.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_corral_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, late 2001: a congress chamber where legislators stand and cheer while a giant debt ledger tears in half above the podium.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_conv_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, early 1990s Buenos Aires: a minister in a grey suit presenting a giant coin and a green note glued together, happy savers applauding, a shiny new shopping mall behind.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_conv_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, late 1990s: a central bank vault almost empty, a single stack of gold bars on a pallet, a sweating economist with a flashlight, alarm lights blinking.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_conv_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2000: a ministry desk with two doors behind it, one bright with a steel armoured shield, one dark with a cracked peso coin, an anxious economist choosing.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_rod_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, June 1975: a petrol station attendant replacing the price board with a much taller one, a queue of 1970s cars and shocked drivers, harsh light.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_rod_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 1975 general strike: factory gates closed with chains, workers in overalls marching with union flags down a cobbled avenue, idle smokestacks.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_rod_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 1975: a lonely woman president in an office at a crossroads of three hallways, generals waiting in one, union leaders in another, a dark storm through the window.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_mal_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, April 1982: landing craft reaching a rocky South Atlantic beach at dawn, soldiers in green parkas, a light-blue and white flag on a hill, cold grey sea.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_mal_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 1982: a grey naval fleet with an aircraft carrier crossing a stormy South Atlantic, seen from a cold Argentine radar station with operators staring at the screen.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_mal_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, June 1982: exhausted young conscripts walking through snow and mud of a windswept island town, abandoned helmets, a lowered flag, sombre sky.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_kirch_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, mid-2000s pampas: combine harvesters pouring soybeans into a giant grain silo, a ship loading at a river port, golden sunset of prosperity.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_kirch_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2006: an official ceremony where a giant cheque is handed across a table to a stern international banker, a crowd half cheering and half worried.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_kirch_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, a statistics office where a technician paints over a rising chart with a lower line while colleagues watch from behind filing cabinets.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_prim_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 1985 courtroom: a row of stone-faced military officers in uniform facing a tribunal of judges, a prosecutor standing, a packed public gallery.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_prim_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, mid-1980s: a minister unveiling new banknotes with an abstract sun design on a TV studio set, families watching on old television sets at home.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_prim_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, Easter 1987: soldiers with camouflage face paint barricaded inside a barracks, a massive civilian crowd outside holding flags, tension at sunset.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_campo_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2008: a ministry press room with a big sliding-scale chart of export taxes, farmers in caps furiously watching on a TV in a rural bar.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_campo_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2008 split scene of two rallies: farmers with tractors by a riverside flag monument on one side, a government rally in Plaza de Mayo on the other.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_campo_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2008: a senate chamber at dawn with a tied vote board shown only as two equal bars, a vice-president at the podium hesitating with all eyes on him.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_corr_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2018: an exchange house with a rate board showing an abstract arrow doubling upwards, savers queuing out the door, a trader on the phone in panic.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_corr_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2018: a finance minister and an international fund director shaking hands under camera flashes, a huge loan briefcase between them.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_corr_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, August 2019: a trading floor after the primaries, red screens with falling abstract bars, brokers with hands on their heads, papers flying.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_pand_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, March 2020: a police checkpoint at an empty highway entrance to the city, masked officers stopping a lone car, ghostly quiet.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_pand_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2020: a central bank printing press running at full speed with sheets of banknotes, families queuing masked at a post office for emergency aid.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_pand_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2021: a ministry back room where well-dressed insiders roll up their sleeves for vaccines while a long masked queue of elderly people waits outside the window.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_lla_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, December 2023: a shaggy-haired president revving a giant chainsaw over a mountain of government folders on a stage, startled officials, confetti.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_lla_002": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, January 2024 general strike: union columns with drums and banners marching toward the congress building, riot police lines, hot summer haze.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_lla_003": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, a central bank vault door half open with a chain and padlock falling off, nervous bankers and eager savers peeking in, uncertain dawn light.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  },
+  "event_hist_iran_001": {
+    "prompt": "Authentic 16-bit pixel art in the style of a SNES / Sega Genesis game. Visible square pixels, hard edges, no anti-aliasing, no blur, limited palette of about 32 colors, flat colors with 1-pixel dark outlines. Satirical Argentine political video game. Absolutely no text, letters, numbers, logos or watermarks anywhere. Wide 16:9 game scene, readable at small size, strong silhouette, one clear focal point in the center third. Argentina, 2024 diplomatic summit: an Argentine president embracing a foreign ally on a stage between two flags, protesters and worried diplomats in the background.",
+    "size": "1536x864",
+    "grid": [320, 180],
+    "transparent": false,
+    "group": "scenes"
+  }
+}

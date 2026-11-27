@@ -1,4 +1,5 @@
 import type { ScenarioId } from '@republica/game-engine';
+import manifest from '../../../assets/image-manifest.json';
 
 export const SCENARIO_IMAGES: Partial<Record<ScenarioId, string>> = {
   hiperinflacion_1989: 'scenario_hyperinflation',
@@ -15,3 +16,9 @@ export const SCENARIO_IMAGES: Partial<Record<ScenarioId, string>> = {
   corrida_2018: 'arg_dolar',
   pandemia_2020: 'soc_health',
 };
+
+/** Dedicated `scenario_<id>` cover once imported, otherwise the shared scene above. */
+export function scenarioImage(id: ScenarioId): string | undefined {
+  const dedicated = `scenario_${id}`;
+  return dedicated in manifest ? dedicated : SCENARIO_IMAGES[id];
+}

@@ -155,7 +155,7 @@ def main() -> None:
     if command == "prompts":
         write_prompts(assets)
     elif command == "import":
-        for filename in ("extra-scenes.json", "event-scenes-100.json", "extra-characters.json", "extra-presidents.json", "president-scenes.json", "diorama-animation-pack.json", "plaza-life-pack.json", "riot-response-pack.json", "new-candidates.json", "context-corrections.json"):
+        for filename in ("extra-scenes.json", "event-scenes-100.json", "extra-characters.json", "extra-presidents.json", "president-scenes.json", "diorama-animation-pack.json", "plaza-life-pack.json", "riot-response-pack.json", "new-candidates.json", "context-corrections.json", "historical-art-pack.json"):
             extra_scenes = ROOT / "art" / filename
             if extra_scenes.exists():
                 assets.update(json.loads(extra_scenes.read_text(encoding="utf-8")))
