@@ -123,6 +123,9 @@ export {
   isDailyChallengeConfig,
 } from './dailyChallenge.js';
 
+export { scenarioAchievements } from './achievements.js';
+export type { AchievementTier, ScenarioAchievement, ScenarioRecord } from './achievements.js';
+
 export { PARTIES, partyForPresident } from './parties.js';
 export type { PartyId } from './parties.js';
 export { PRESIDENT_EXPANSION_ART } from './events/presidentExpansion.js';
