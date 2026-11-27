@@ -2,6 +2,13 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-27 — Newspaper recap
+
+- Branch `feat/newspaper-recap`. Engine `newspaperRecap.ts`: `keyDecisions(history, limit = 3)` picks the turns whose applied effects moved the six main stats the most (sum of absolute deltas), skips unknown cards, missing choices and zero-impact turns, and returns them in turn order with card title and choice text keys.
+- Web: `features/game-over/newspaper/NewspaperRecap.tsx` prints "Las decisiones que marcaron el mandato" under the front page on game over. No API or DB change.
+- Checked in the browser on a full simulated run (`/gameover`): three translated decisions shown.
+- Scenario achievements deployed 2026-11-27 (PR #95, migration 0005 applied by CI).
+
 ## 2026-11-27 — Scenario achievements
 
 - Branch `feat/scenario-achievements`. Engine `achievements.ts`: `scenarioAchievements(records)` maps per-scenario run stats to a tier (`locked`, `played`, `won`) plus best score for every `HISTORICAL_SCENARIOS` entry; unknown ids are ignored.

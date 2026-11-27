@@ -11,6 +11,7 @@ import { ShareSection } from './ShareSection.js';
 import { GameOverActions } from './GameOverActions.js';
 import { buildViralText } from './gameOverCopy.js';
 import { NewspaperFront } from './newspaper/NewspaperFront.js';
+import { NewspaperRecap } from './newspaper/NewspaperRecap.js';
 import { StatBoxes } from './newspaper/StatBoxes.js';
 import { ScoreReport } from './newspaper/ScoreReport.js';
 import { CasaRosadaScene } from '../../components/casa-rosada/CasaRosadaScene.js';
@@ -71,6 +72,7 @@ function PresidentialGameOverScreen() {
           </div>
           <div className="pixel-border overflow-hidden bg-[#f4f4f0] text-smoke-900">
             <NewspaperFront turn={gameState.turn} reason={reason} presidentId={presidentId} isWin={isWin} />
+            <NewspaperRecap history={gameState.history} />
             <StatBoxes gameState={gameState} isWin={isWin} />
             <ScoreReport
               gameState={gameState}
