@@ -126,6 +126,8 @@ export {
 export { scenarioAchievements } from './achievements.js';
 export { keyDecisions } from './newspaperRecap.js';
 export type { KeyDecision } from './newspaperRecap.js';
+export { cabinetAdvice } from './cabinetAdvice.js';
+export type { CabinetAdvice } from './cabinetAdvice.js';
 export type { AchievementTier, ScenarioAchievement, ScenarioRecord } from './achievements.js';
 
 export { PARTIES, partyForPresident } from './parties.js';
