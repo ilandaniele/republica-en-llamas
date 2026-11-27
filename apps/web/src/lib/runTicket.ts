@@ -38,11 +38,14 @@ function failure(error: RunTicketError): RunTicketResult {
   return { ticket: null, error };
 }
 
-export async function requestRunTicket(): Promise<RunTicketResult> {
+export async function requestRunTicket(daily = false): Promise<RunTicketResult> {
   if (isPlaytestMode || isOfflineMode) return LOCAL_ONLY;
   try {
     if (!(await ensureSession())) return failure('network');
-    const data = await apiSend<{ ticketId?: unknown; seed?: unknown }>('start-run', {});
+    const data = await apiSend<{ ticketId?: unknown; seed?: unknown }>(
+      daily ? 'start-run?daily=1' : 'start-run',
+      {},
+    );
     if (typeof data.ticketId !== 'string' || !Number.isSafeInteger(data.seed) || (data.seed as number) < 0)
       return failure('unavailable');
     return { ticket: { id: data.ticketId, seed: data.seed as number }, error: null };

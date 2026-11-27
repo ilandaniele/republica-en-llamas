@@ -15,8 +15,15 @@ export interface LeaderboardEntry {
   created_at: string;
 }
 
-function fetchLeaderboard(difficulty?: string): Promise<LeaderboardEntry[]> {
-  const params = difficulty ? `?${new URLSearchParams({ difficulty }).toString()}` : '';
+export const DAILY_LEADERBOARD = 'daily';
+
+function leaderboardParams(filter?: string): string {
+  if (filter === DAILY_LEADERBOARD) return '?daily=1';
+  return filter ? `?${new URLSearchParams({ difficulty: filter }).toString()}` : '';
+}
+
+function fetchLeaderboard(filter?: string): Promise<LeaderboardEntry[]> {
+  const params = leaderboardParams(filter);
   return apiGet<LeaderboardEntry[]>(`leaderboard${params}`, { cache: 'no-cache' });
 }
 

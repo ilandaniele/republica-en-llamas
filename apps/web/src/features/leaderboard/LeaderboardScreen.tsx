@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { m } from 'framer-motion';
-import { useLeaderboard } from '../../hooks/useLeaderboard.js';
+import { DAILY_LEADERBOARD, useLeaderboard } from '../../hooks/useLeaderboard.js';
 import { useAuth } from '../../hooks/useAuth.js';
 
 const DIFFICULTY_FILTERS = [
   { id: '', label: 'Todos' },
+  { id: DAILY_LEADERBOARD, label: 'Desafío de hoy' },
   { id: 'easy', label: 'Fácil' },
   { id: 'normal', label: 'Normal' },
   { id: 'hard', label: 'Difícil' },

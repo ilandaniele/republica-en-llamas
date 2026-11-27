@@ -1,3 +1,5 @@
+import { dailyChallengeSeed } from '@republica/game-engine';
+
 const DAY_MS = 86_400_000;
 const FREE_DAILY_RUNS = 3;
 const FULL_ACCESS_DAILY_RUNS = 30;
@@ -12,16 +14,20 @@ export function dayAgo(): string {
 export async function issueRunTicket(
   db: D1Database,
   userId: string,
+  dailyDate: string | null = null,
 ): Promise<{ id: string; seed: number } | null> {
-  const seed = crypto.getRandomValues(new Uint32Array(1))[0]! % 1_000_000;
+  const seed =
+    dailyDate === null
+      ? crypto.getRandomValues(new Uint32Array(1))[0]! % 1_000_000
+      : dailyChallengeSeed(dailyDate);
   return db
     .prepare(
-      `insert into run_tickets (id, user_id, seed, created_at)
-       select ?2, ?1, ?3, ?4
+      `insert into run_tickets (id, user_id, seed, created_at, daily_date)
+       select ?2, ?1, ?3, ?4, ?6
        where (select count(*) from run_tickets where user_id = ?1 and created_at > ?5) < ${DAILY_CAP_SQL}
        returning id, seed`,
     )
-    .bind(userId, crypto.randomUUID(), seed, new Date().toISOString(), dayAgo())
+    .bind(userId, crypto.randomUUID(), seed, new Date().toISOString(), dayAgo(), dailyDate)
     .first<{ id: string; seed: number }>();
 }
 

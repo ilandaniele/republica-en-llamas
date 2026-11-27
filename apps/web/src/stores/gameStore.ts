@@ -15,6 +15,8 @@ import { trackTurnCompleted, trackCrisisTriggered } from '../lib/analytics.js';
 import { requestRunTicket } from '../lib/runTicket.js';
 import type { RunTicketError } from '../lib/runTicket.js';
 import {
+  dailyChallengeConfig,
+  dailyChallengeDate,
   initGame,
   drawNextCard,
   isPresidentId,
@@ -79,7 +81,7 @@ export interface GameStore {
 
   // Actions
   resolveCongressSession: (cardId: string, decisions: CongressDecisions) => void;
-  startNewGame: (difficulty: Difficulty) => Promise<void>;
+  startNewGame: (difficulty: Difficulty, options?: { daily?: boolean }) => Promise<void>;
   setUserId: (id: string | null) => void;
   clearRunTicket: () => void;
   setCrisisExpress: (val: boolean) => void;
@@ -241,24 +243,26 @@ export const useGameStore = create<GameStore>()(
         get().commitDecision({ kind: 'congress', cardId, decisions });
       },
 
-      startNewGame: async (difficulty) => {
+      startNewGame: async (difficulty, { daily = false } = {}) => {
         const request = ++startRequest;
-        const runConfig: RunConfig = {
-          seed: Math.floor(Math.random() * 1_000_000),
-          difficulty,
-          language: get().language,
-          scenarioId: get().scenarioId,
-          crisisExpress: get().isCrisisExpress,
-          presidentId: get().presidentId,
-          ...(get().careerStart ? { careerStart: get().careerStart! } : {}),
-        };
+        const runConfig: RunConfig = daily
+          ? dailyChallengeConfig(dailyChallengeDate(), get().presidentId, get().language)
+          : {
+              seed: Math.floor(Math.random() * 1_000_000),
+              difficulty,
+              language: get().language,
+              scenarioId: get().scenarioId,
+              crisisExpress: get().isCrisisExpress,
+              presidentId: get().presidentId,
+              ...(get().careerStart ? { careerStart: get().careerStart! } : {}),
+            };
         if (runConfig.careerStart) {
           runConfig.scenarioId = null;
           runConfig.crisisExpress = false;
         }
         const { ticket, error } = runConfig.careerStart
           ? { ticket: null, error: null }
-          : await requestRunTicket();
+          : await requestRunTicket(daily);
         if (request !== startRequest) return;
         if (ticket) runConfig.seed = ticket.seed;
         set({

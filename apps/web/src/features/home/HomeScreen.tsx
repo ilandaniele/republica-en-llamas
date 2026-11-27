@@ -327,11 +327,11 @@ export default function HomeScreen() {
 
   const isStartingRef = useRef(false);
 
-  const launchRun = async (difficulty: Difficulty, mode: 'normal' | 'historical') => {
+  const launchRun = async (difficulty: Difficulty, mode: 'normal' | 'historical' | 'daily') => {
     if (isStartingRef.current) return;
     isStartingRef.current = true;
     try {
-      await startNewGame(difficulty);
+      await startNewGame(difficulty, { daily: mode === 'daily' });
       trackGameStarted({ difficulty, president: presidentId, mode });
       navigate('/president');
     } finally {
@@ -354,6 +354,12 @@ export default function HomeScreen() {
     setScenario(scenarioId);
     setCareerStart(null);
     await launchRun('hard', 'historical');
+  };
+
+  const startDailyChallenge = () => {
+    setScenario(null);
+    setCareerStart(null);
+    void launchRun('normal', 'daily');
   };
 
   const handleGuest = () => void startGame(selectedDifficulty);
@@ -488,6 +494,14 @@ export default function HomeScreen() {
                     onGuest={handleGuest}
                   />
                 )}
+
+                <button
+                  type="button"
+                  onClick={startDailyChallenge}
+                  className="w-full rounded-lg border-2 border-gold-500 bg-navy-800 px-8 py-3 font-serif font-bold text-gold-400 transition-colors hover:bg-navy-700"
+                >
+                  Desafío diario — misma partida para todos hoy
+                </button>
 
                 {gameState && !gameState.isGameOver && (
                   <m.button
