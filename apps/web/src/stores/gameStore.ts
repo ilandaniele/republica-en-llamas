@@ -23,6 +23,7 @@ import {
   isTurnDecision,
   resolveTurn,
   endTurn,
+  replayRun,
 } from '@republica/game-engine';
 import type { EventCard } from '@republica/game-engine';
 import { browserStorage } from '../lib/browserStorage.js';
@@ -78,6 +79,7 @@ export interface GameStore {
   runTicketError: RunTicketError | null;
   decisions: TurnDecision[];
   saveRecoveryMessage: string | null;
+  isCounterfactual: boolean;
 
   // Actions
   resolveCongressSession: (cardId: string, decisions: CongressDecisions) => void;
@@ -89,6 +91,7 @@ export interface GameStore {
   selectChoice: (cardId: string, choiceIndex: number) => void;
   confirmChoice: () => void;
   commitDecision: (decision: TurnDecision) => void;
+  rewindLastDecision: () => void;
   dismissCrisisScreen: () => void;
   dismissTransition: () => void;
   resetGame: () => void;
@@ -238,6 +241,7 @@ export const useGameStore = create<GameStore>()(
       runTicketError: null,
       decisions: [],
       saveRecoveryMessage: null,
+      isCounterfactual: false,
 
       resolveCongressSession: (cardId, decisions) => {
         get().commitDecision({ kind: 'congress', cardId, decisions });
@@ -281,6 +285,7 @@ export const useGameStore = create<GameStore>()(
           prevVarSnapshot: null,
           crisisCountdown: null,
           saveRecoveryMessage: null,
+          isCounterfactual: false,
         });
       },
 
@@ -387,6 +392,29 @@ export const useGameStore = create<GameStore>()(
 
       dismissCrisisScreen: () => set({ showCrisisScreen: false }),
 
+      rewindLastDecision: () => {
+        const { runConfig, decisions, gameState } = get();
+        if (!runConfig || !gameState?.isGameOver || decisions.length === 0) return;
+        const kept = decisions.slice(0, -1);
+        const rewound = replayRun(runConfig, kept);
+        set({
+          gameState: rewound,
+          currentCard: drawNextCard(rewound),
+          decisions: kept,
+          runTicketId: null,
+          runTicketError: null,
+          isCounterfactual: true,
+          pendingCardId: null,
+          pendingChoiceIndex: null,
+          isAnimating: false,
+          showCrisisScreen: false,
+          showTransition: false,
+          transitionData: null,
+          prevVarSnapshot: null,
+          crisisCountdown: null,
+        });
+      },
+
       resetGame: () => {
         startRequest++;
         set({
@@ -405,6 +433,7 @@ export const useGameStore = create<GameStore>()(
           prevVarSnapshot: null,
           crisisCountdown: null,
           saveRecoveryMessage: null,
+          isCounterfactual: false,
         });
       },
 
@@ -484,6 +513,7 @@ export const useGameStore = create<GameStore>()(
         presidentId: s.presidentId,
         isCrisisExpress: s.isCrisisExpress,
         careerStart: s.careerStart,
+        isCounterfactual: s.isCounterfactual,
       }),
     },
   ),

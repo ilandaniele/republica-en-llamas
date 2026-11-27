@@ -23,6 +23,8 @@ export function GameOverActions() {
   const runTicketId = useGameStore((s) => s.runTicketId);
   const runTicketError = useGameStore((s) => s.runTicketError);
   const decisions = useGameStore((s) => s.decisions);
+  const rewindLastDecision = useGameStore((s) => s.rewindLastDecision);
+  const isCounterfactual = useGameStore((s) => s.isCounterfactual);
   const { user } = useAuth();
   const { mutate: saveRun, isPending: isSaving, isSuccess: isSaved, error: saveError } = useSaveRun();
 
@@ -82,7 +84,26 @@ export function GameOverActions() {
         >
           📊 HISTORIAL
         </button>
+        {runConfig && decisions.length > 0 && (
+          <button
+            onClick={rewindLastDecision}
+            className="pixel-border px-6 py-3 transition-colors hover:bg-navy-800"
+            style={{
+              fontFamily: 'var(--font-readable)',
+              fontSize: '14px',
+              color: 'var(--gold)',
+              borderColor: 'var(--gold)',
+            }}
+          >
+            ⏪ ¿Y SI ELEGÍAS OTRA COSA?
+          </button>
+        )}
       </div>
+      {isCounterfactual && (
+        <p role="status" className="mt-3 text-smoke-400">
+          Partida alternativa: no cuenta para el ranking ni para tu récord.
+        </p>
+      )}
       {!runTicketId && runTicketError && (
         <p role="status" className="mt-3 text-gold-400">
           {t(`runSave.unsaved.${runTicketError}`)}

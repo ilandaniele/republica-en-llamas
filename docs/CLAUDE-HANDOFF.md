@@ -2,6 +2,13 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-27 — Counterfactual replay
+
+- Branch `feat/counterfactual-replay`. Store action `rewindLastDecision()` replays the finished run without its last decision (`replayRun`), drops the run ticket and sets `isCounterfactual` (persisted and restored on reload, cleared by `startNewGame` and `resetGame`).
+- Game over: button "¿Y SI ELEGÍAS OTRA COSA?" when the run has decisions; alternative runs show a note and skip `updatePersonalBest`, and cannot be saved to the ranking (no ticket).
+- `GameOverRoute` now sends a running game to `/game` instead of `/` (symmetric with `GameRoute`), which is what moves the player back to the card after the rewind.
+- Checked in the browser: simulated run, rewind returns to the last card, a different choice ends in a new game over with the note.
+
 ## 2026-11-27 — Newspaper recap
 
 - Branch `feat/newspaper-recap`. Engine `newspaperRecap.ts`: `keyDecisions(history, limit = 3)` picks the turns whose applied effects moved the six main stats the most (sum of absolute deltas), skips unknown cards, missing choices and zero-impact turns, and returns them in turn order with card title and choice text keys.

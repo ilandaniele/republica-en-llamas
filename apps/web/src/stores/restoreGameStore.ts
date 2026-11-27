@@ -87,6 +87,7 @@ export function restoreGameStore(saved: unknown, current: GameStore): GameStore 
       isCrisisExpress: saved.runConfig.crisisExpress ?? false,
       scenarioId: saved.runConfig.scenarioId ?? null,
       careerStart: saved.runConfig.careerStart ?? null,
+      isCounterfactual: saved.isCounterfactual === true,
     };
   } catch {
     return {
