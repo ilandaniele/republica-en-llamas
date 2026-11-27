@@ -10,6 +10,7 @@ import { CharacterPortrait } from '../../components/illustrations/characters/Cha
 import { EventCharacterBadge } from '../../components/illustrations/characters/EventCharacterBadge.js';
 import { EventIllustration } from '../../components/illustrations/EventIllustration.js';
 import { CardParticles } from './event-card/CardParticles.js';
+import { CabinetAdvice } from './event-card/CabinetAdvice.js';
 import { PixelPortrait } from '../../components/illustrations/PixelPortrait.js';
 import type { PortraitId } from '../../components/illustrations/PixelPortrait.js';
 import { prefersReducedMotion } from '../../lib/reducedMotion.js';
@@ -280,6 +281,8 @@ export function EventCardComponent({
       {/* Body + choices + confirm */}
       <div className="event-content">
         <p className="event-description">{t(card.bodyKey)}</p>
+
+        <CabinetAdvice card={card} />
 
         <div className="event-choices grid grid-cols-1 gap-2 md:grid-cols-2">
           {Array.from({ length: 4 }).map((_, index) => {

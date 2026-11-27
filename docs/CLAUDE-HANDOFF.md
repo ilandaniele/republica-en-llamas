@@ -2,6 +2,11 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-27 — Cabinet advice
+
+- Branch `feat/cabinet-advice`. Engine `cabinetAdvice(card, characters, limit = 2)` (`cabinetAdvice.ts`): each recurring character scores the choices with fixed portfolio weights (ministro: inflation/deficit/markets, sindicalista: popularity, etc.) and backs the best one; only the two advisors with the widest score spread speak. Silent on laws, single-choice cards and choices outside every portfolio.
+- Web `features/game/event-card/CabinetAdvice.tsx` reads `gameState.characters` from the store and renders "Tu gabinete opina: 👤 Nombre → A" under the card description. Advice is a hint only; it never changes effects.
+
 ## 2026-11-27 — Counterfactual replay
 
 - Branch `feat/counterfactual-replay`. Store action `rewindLastDecision()` replays the finished run without its last decision (`replayRun`), drops the run ticket and sets `isCounterfactual` (persisted and restored on reload, cleared by `startNewGame` and `resetGame`).
