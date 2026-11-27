@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import type { ComponentType, LazyExoticComponent } from 'react';
 import type { SceneProps } from './pixel.js';
-import { EVENT_ART } from './eventArt.js';
+import { DEDICATED_ART } from './dedicatedArt.js';
 
 type SceneComponent = LazyExoticComponent<ComponentType<SceneProps>>;
 
@@ -23,13 +23,17 @@ const CATEGORY_FALLBACKS = {
 // One lazy chunk per scene; some scene IDs reuse another scene's artwork.
 export const SCENES: Partial<Record<string, SceneComponent>> = {
   ...Object.fromEntries(
-    Object.values(EVENT_ART).map(({ scene, category }) => [scene, CATEGORY_FALLBACKS[category]]),
+    Object.values(DEDICATED_ART).map(({ scene, category }) => [scene, CATEGORY_FALLBACKS[category]]),
   ),
   scenario_hyperinflation: crisis,
   scenario_convertibility: scene(() => import('./SceneEcoGrowth.js')),
   scenario_rodrigazo: scene(() => import('./SceneSocUnrest.js')),
   scenario_commodity_boom: argCampo,
   scenario_austerity: scene(() => import('./SceneSocHousing.js')),
+  scenario_primavera_1983: polCongress,
+  scenario_crisis_campo_2008: argCampo,
+  scenario_corrida_2018: scene(() => import('./SceneEcoReserves.js')),
+  scenario_pandemia_2020: scene(() => import('./SceneSocHousing.js')),
   eco_drought: argCampo,
   eco_cyberattack: scene(() => import('./SceneEcoReserves.js')),
   eco_lithium: argCampo,

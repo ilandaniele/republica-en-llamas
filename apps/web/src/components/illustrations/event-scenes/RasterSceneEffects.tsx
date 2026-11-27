@@ -1,12 +1,12 @@
 import type { CSSProperties } from 'react';
-import { EVENT_ART } from './eventArt.js';
+import { DEDICATED_ART } from './dedicatedArt.js';
 import { presidentSceneEffect } from './presidentScenes.js';
 import './raster-effects.css';
 
 type Effect = 'smoke' | 'embers' | 'confetti' | 'rain' | 'flash' | 'signal';
 
 const EVENT_EFFECTS = Object.fromEntries(
-  Object.values(EVENT_ART).map(({ scene, effect }) => [scene, [effect]]),
+  Object.values(DEDICATED_ART).map(({ scene, effect }) => [scene, [effect]]),
 );
 
 const EFFECTS: Record<string, Effect[]> = {
@@ -15,6 +15,10 @@ const EFFECTS: Record<string, Effect[]> = {
   scenario_rodrigazo: ['smoke'],
   scenario_commodity_boom: ['smoke'],
   scenario_austerity: ['rain'],
+  scenario_primavera_1983: ['confetti'],
+  scenario_crisis_campo_2008: ['smoke'],
+  scenario_corrida_2018: ['rain'],
+  scenario_pandemia_2020: ['signal'],
   eco_drought: ['smoke'],
   eco_cyberattack: ['signal'],
   eco_lithium: ['signal'],

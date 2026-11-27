@@ -1,6 +1,6 @@
 import type { GameState } from '@republica/game-engine';
-import { SCENARIO_IMAGES } from './scenarioImages.js';
-import { EVENT_ART } from './eventArt.js';
+import { scenarioImage } from './scenarioImages.js';
+import { DEDICATED_ART } from './dedicatedArt.js';
 import manifest from '../../../assets/image-manifest.json';
 
 type EventMatcher = (eventId: string) => boolean;
@@ -107,13 +107,13 @@ export function selectScene(
   eventId: string,
   gameState: GameState | null | undefined,
 ): string {
-  const dedicatedScene = EVENT_ART[eventId]?.scene;
+  const dedicatedScene = DEDICATED_ART[eventId]?.scene;
   if (dedicatedScene && (manifest as Record<string, string>)[dedicatedScene]) return dedicatedScene;
   const eventScene = matchRule(EVENT_RULES, eventId);
   if (eventScene) return eventScene;
   if (category === 'crisis') return 'crisis';
 
-  const scenarioScene = gameState?.activeScenario ? SCENARIO_IMAGES[gameState.activeScenario] : undefined;
+  const scenarioScene = gameState?.activeScenario ? scenarioImage(gameState.activeScenario) : undefined;
   if (scenarioScene) return scenarioScene;
 
   const group = CATEGORY_SCENES[category];
