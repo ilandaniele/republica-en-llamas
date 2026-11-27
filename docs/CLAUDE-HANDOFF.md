@@ -2,6 +2,12 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-27 — Timed crisis cards
+
+- Branch `feat/timed-crisis-cards`. `isTimedTurn(card, isCrisisExpress, difficulty)` in `lib/crisisExpress.ts`: Crisis Express times every card (unchanged); normal and hard runs now also time `crisis` category cards (easy never). Same 45 s / 90 s with extended time.
+- `useCrisisCountdown` takes the card and returns `null` on untimed turns; `GameHeader` shows the timer whenever it is not null, labelled "🔥 CRISIS" outside Express. Running out commits the existing `timeout` decision (worst choice plus penalty), which the server already replays for any mode, so no API change.
+- Checked in the browser: normal run, crisis card counts down, political card shows no timer.
+
 ## 2026-11-27 — Cabinet advice
 
 - Branch `feat/cabinet-advice`. Engine `cabinetAdvice(card, characters, limit = 2)` (`cabinetAdvice.ts`): each recurring character scores the choices with fixed portfolio weights (ministro: inflation/deficit/markets, sindicalista: popularity, etc.) and backs the best one; only the two advisors with the widest score spread speak. Silent on laws, single-choice cards and choices outside every portfolio.

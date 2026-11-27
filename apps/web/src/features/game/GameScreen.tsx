@@ -92,8 +92,8 @@ function PresidentialGameScreen() {
   );
 
   const crisisTimeLeft = useCrisisCountdown({
-    cardId: currentCard?.id,
-    enabled: isCrisisExpress,
+    card: currentCard,
+    isCrisisExpress,
     paused: controlsPaused,
     onTimeout: timeoutSelection,
   });

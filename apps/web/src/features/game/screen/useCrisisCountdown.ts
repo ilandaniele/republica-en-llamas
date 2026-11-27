@@ -1,17 +1,27 @@
 import { useEffect, useState } from 'react';
+import type { EventCard } from '@republica/game-engine';
+import { useGameStore } from '../../../stores/gameStore.js';
 import { usePreferencesStore } from '../../../stores/preferencesStore.js';
-import { crisisSecondsPerTurn } from '../../../lib/crisisExpress.js';
+import { crisisSecondsPerTurn, isTimedTurn } from '../../../lib/crisisExpress.js';
 
 interface CountdownOptions {
-  cardId: string | undefined;
-  enabled: boolean;
+  card: EventCard | null;
+  isCrisisExpress: boolean;
   paused: boolean;
   onTimeout: () => void;
 }
 
-/** Crisis Express countdown: restarts on every new card and fires onTimeout when it reaches zero. */
-export function useCrisisCountdown({ cardId, enabled, paused, onTimeout }: CountdownOptions): number {
+/** Turn countdown (Crisis Express, crisis cards): restarts on every new card, fires onTimeout at zero, null when the turn is untimed. */
+export function useCrisisCountdown({
+  card,
+  isCrisisExpress,
+  paused,
+  onTimeout,
+}: CountdownOptions): number | null {
+  const difficulty = useGameStore((s) => s.gameState?.difficulty);
   const totalSeconds = crisisSecondsPerTurn(usePreferencesStore((s) => s.extendedTime));
+  const cardId = card?.id;
+  const enabled = isTimedTurn(card, isCrisisExpress, difficulty);
   const [countdown, setCountdown] = useState({ cardId, timeLeft: totalSeconds });
   const timeLeft = countdown.cardId === cardId ? countdown.timeLeft : totalSeconds;
   const running = enabled && cardId !== undefined && !paused;
@@ -31,5 +41,5 @@ export function useCrisisCountdown({ cardId, enabled, paused, onTimeout }: Count
     if (running && timeLeft === 0) onTimeout();
   }, [running, timeLeft, onTimeout]);
 
-  return timeLeft;
+  return enabled ? timeLeft : null;
 }
