@@ -2,6 +2,10 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
+## 2026-11-28 — Kicillof and Grabois art regenerated
+
+- The 18 images in `art/new-candidates.json` were regenerated with Codex and reimported (same ids, manifest unchanged). Raw PNGs now sit in `art/raw/`, so `pixel-art.py import` no longer reports them as missing. `cr_president_kicillof` lost its black background and is transparent now; both sprites have no magenta pixels.
+
 ## 2026-11-27 — Historical art pack (done)
 
 - Idea 8 (dedicated art). Paid generation not approved yet: Higgsfield balance 0.5 credits; quote GPT Image 2 low 0.5/image (~19 for all), medium 1.25, Nano Banana 2 1.5. Codex path (`art/README.md`) costs nothing extra.
