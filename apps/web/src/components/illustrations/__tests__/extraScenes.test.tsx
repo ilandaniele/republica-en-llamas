@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { selectScene } from '../event-scenes/selectScene.js';
 import { ScenarioIllustration } from '../ScenarioIllustration.js';
-import { SCENARIO_IMAGES } from '../event-scenes/scenarioImages.js';
+import { SCENARIO_IMAGES, scenarioImage } from '../event-scenes/scenarioImages.js';
 import manifest from '../../../assets/image-manifest.json';
 
 vi.mock('@gsap/react', () => ({ useGSAP: vi.fn() }));
@@ -23,7 +23,7 @@ describe('expanded scene coverage', () => {
   it.each(Object.keys(SCENARIO_IMAGES) as (keyof typeof SCENARIO_IMAGES)[])(
     'shows imported artwork and animation effects in the scenario card %s',
     (id) => {
-      const sceneId = SCENARIO_IMAGES[id]!;
+      const sceneId = scenarioImage(id)!;
       const { container } = render(<ScenarioIllustration id={id} />);
       expect(container.querySelector('image')).toHaveAttribute(
         'href',

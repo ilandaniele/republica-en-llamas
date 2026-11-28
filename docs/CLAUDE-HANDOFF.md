@@ -2,12 +2,12 @@
 
 Leer primero `CLAUDE.md`, después este archivo y `security_best_practices_report.md`.
 
-## 2026-11-27 — Historical art pack (images pending)
+## 2026-11-27 — Historical art pack (done)
 
 - Idea 8 (dedicated art). Paid generation not approved yet: Higgsfield balance 0.5 credits; quote GPT Image 2 low 0.5/image (~19 for all), medium 1.25, Nano Banana 2 1.5. Codex path (`art/README.md`) costs nothing extra.
 - `art/historical-art-pack.json` + `art/HISTORICAL-ART-PACK.md`: 38 prompts, covers `scenario_<scenarioId>` for primavera_1983, crisis_campo_2008, corrida_2018, pandemia_2020 and `event_<hist card id>` for the 34 `hist_*` cards. No real politician names. `scripts/pixel-art.py` loads the pack.
 - Web: `event-scenes/dedicatedArt.ts` (`HISTORICAL_ART` built from `ALL_CARDS`, `DEDICATED_ART` = `EVENT_ART` + historical) used by `selectScene`, `scenes.ts`, `RasterSceneEffects`. `scenarioImage(id)` in `scenarioImages.ts` prefers `scenario_<id>` once it is in the manifest. Until import, every card and cover keeps its current art.
-- To finish: save raws as `art/raw/<id>.png`, run `uvx --with pillow python scripts/pixel-art.py import`, commit the webp + manifest. Test `historicalArt.test.ts` switches assertions automatically.
+- All 38 images imported (31 generated with Codex on 2026-11-27, 7 already in main). Every `hist_*` card and the 4 scenario covers now use dedicated art. `extraScenes.test.tsx` checks covers through `scenarioImage(id)`.
 
 ## 2026-11-27 — Sound and haptics
 
